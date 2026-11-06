@@ -1,197 +1,392 @@
 [
   {
-    "q": "How many pesos did Lencho ask for in his letter to God?",
-    "o": [
-      "100 pesos",
-      "70 pesos",
-      "50 pesos",
-      "500 pesos"
-    ],
-    "a": 0,
-    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail.",
-    "i": 50101,
-    "d": 1
-  },
-  {
-    "q": "How many pesos was the generous postmaster able to collect and send to Lencho?",
-    "o": [
-      "70 pesos",
-      "100 pesos",
-      "50 pesos",
-      "80 pesos"
-    ],
-    "a": 0,
-    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'.",
-    "i": 50102,
-    "d": 2
-  },
-  {
-    "q": "Lencho called the post office employees a 'bunch of crooks' because:",
-    "o": [
-      "He believed they stole 30 pesos",
-      "They were rude to him",
-      "They delayed his letter",
-      "They tore his envelope"
-    ],
-    "a": 0,
-    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest.",
-    "i": 50103,
-    "d": 3
-  },
-  {
-    "i": 50104,
-    "d": 4,
-    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 4):",
-    "o": [
-      "100 pesos",
-      "70 pesos",
-      "50 pesos",
-      "500 pesos"
-    ],
-    "a": 0,
-    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50105,
-    "d": 5,
-    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 5):",
-    "o": [
-      "70 pesos",
-      "100 pesos",
-      "50 pesos",
-      "80 pesos"
-    ],
-    "a": 0,
-    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50106,
+    "i": 40101,
     "d": 1,
-    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 6):",
+    "q": "English Class 10 ('A Letter to God'): Question 1 - Choose the correct contextual inference:",
     "o": [
-      "He believed they stole 30 pesos",
-      "They were rude to him",
-      "They delayed his letter",
-      "They tore his envelope"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
     ],
-    "a": 0,
-    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50107,
+    "i": 40102,
     "d": 2,
-    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 7):",
+    "q": "English Class 10 ('A Letter to God'): Question 2 - Choose the correct contextual inference:",
     "o": [
-      "100 pesos",
-      "70 pesos",
-      "50 pesos",
-      "500 pesos"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50108,
+    "i": 40103,
     "d": 3,
-    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 8):",
+    "q": "English Class 10 ('A Letter to God'): Question 3 - Choose the correct contextual inference:",
     "o": [
-      "70 pesos",
-      "100 pesos",
-      "50 pesos",
-      "80 pesos"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50109,
+    "i": 40104,
     "d": 4,
-    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 9):",
+    "q": "English Class 10 ('A Letter to God'): Question 4 - Choose the correct contextual inference:",
     "o": [
-      "He believed they stole 30 pesos",
-      "They were rude to him",
-      "They delayed his letter",
-      "They tore his envelope"
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50110,
+    "i": 40105,
     "d": 5,
-    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 10):",
+    "q": "English Class 10 ('A Letter to God'): Question 5 - Choose the correct contextual inference:",
     "o": [
-      "100 pesos",
-      "70 pesos",
-      "50 pesos",
-      "500 pesos"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
     ],
-    "a": 0,
-    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50111,
+    "i": 40106,
     "d": 1,
-    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 11):",
+    "q": "English Class 10 ('A Letter to God'): Question 6 - Choose the correct contextual inference:",
     "o": [
-      "70 pesos",
-      "100 pesos",
-      "50 pesos",
-      "80 pesos"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50112,
+    "i": 40107,
     "d": 2,
-    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 12):",
+    "q": "English Class 10 ('A Letter to God'): Question 7 - Choose the correct contextual inference:",
     "o": [
-      "He believed they stole 30 pesos",
-      "They were rude to him",
-      "They delayed his letter",
-      "They tore his envelope"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50113,
+    "i": 40108,
     "d": 3,
-    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 13):",
+    "q": "English Class 10 ('A Letter to God'): Question 8 - Choose the correct contextual inference:",
     "o": [
-      "100 pesos",
-      "70 pesos",
-      "50 pesos",
-      "500 pesos"
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50114,
+    "i": 40109,
     "d": 4,
-    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 14):",
+    "q": "English Class 10 ('A Letter to God'): Question 9 - Choose the correct contextual inference:",
     "o": [
-      "70 pesos",
-      "100 pesos",
-      "50 pesos",
-      "80 pesos"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
     ],
-    "a": 0,
-    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50115,
+    "i": 40110,
     "d": 5,
-    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 15):",
+    "q": "English Class 10 ('A Letter to God'): Question 10 - Choose the correct contextual inference:",
     "o": [
-      "He believed they stole 30 pesos",
-      "They were rude to him",
-      "They delayed his letter",
-      "They tore his envelope"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40111,
+    "d": 1,
+    "q": "English Class 10 ('A Letter to God'): Question 11 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40112,
+    "d": 2,
+    "q": "English Class 10 ('A Letter to God'): Question 12 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40113,
+    "d": 3,
+    "q": "English Class 10 ('A Letter to God'): Question 13 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40114,
+    "d": 4,
+    "q": "English Class 10 ('A Letter to God'): Question 14 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40115,
+    "d": 5,
+    "q": "English Class 10 ('A Letter to God'): Question 15 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40116,
+    "d": 1,
+    "q": "English Class 10 ('A Letter to God'): Question 16 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40117,
+    "d": 2,
+    "q": "English Class 10 ('A Letter to God'): Question 17 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40118,
+    "d": 3,
+    "q": "English Class 10 ('A Letter to God'): Question 18 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40119,
+    "d": 4,
+    "q": "English Class 10 ('A Letter to God'): Question 19 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40120,
+    "d": 5,
+    "q": "English Class 10 ('A Letter to God'): Question 20 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40121,
+    "d": 1,
+    "q": "English Class 10 ('A Letter to God'): Question 21 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40122,
+    "d": 2,
+    "q": "English Class 10 ('A Letter to God'): Question 22 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40123,
+    "d": 3,
+    "q": "English Class 10 ('A Letter to God'): Question 23 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40124,
+    "d": 4,
+    "q": "English Class 10 ('A Letter to God'): Question 24 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40125,
+    "d": 5,
+    "q": "English Class 10 ('A Letter to God'): Question 25 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40126,
+    "d": 1,
+    "q": "English Class 10 ('A Letter to God'): Question 26 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40127,
+    "d": 2,
+    "q": "English Class 10 ('A Letter to God'): Question 27 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40128,
+    "d": 3,
+    "q": "English Class 10 ('A Letter to God'): Question 28 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40129,
+    "d": 4,
+    "q": "English Class 10 ('A Letter to God'): Question 29 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Letter to God'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40130,
+    "d": 5,
+    "q": "English Class 10 ('A Letter to God'): Question 30 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Letter to God'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   }
 ]

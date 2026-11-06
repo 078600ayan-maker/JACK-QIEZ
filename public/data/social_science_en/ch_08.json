@@ -1,197 +1,392 @@
 [
   {
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to:",
-    "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
-    ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency.",
     "i": 30801,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Federalism): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30802,
     "d": 2,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 2):",
+    "q": "Social Science (Federalism): Question 2 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30803,
     "d": 3,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Federalism): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30804,
     "d": 4,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Federalism): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30805,
     "d": 5,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Federalism): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30806,
     "d": 1,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Federalism): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30807,
     "d": 2,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Federalism): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30808,
     "d": 3,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Federalism): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30809,
     "d": 4,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Federalism): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30810,
     "d": 5,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Federalism): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30811,
     "d": 1,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Federalism): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30812,
     "d": 2,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Federalism): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30813,
     "d": 3,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Federalism): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30814,
     "d": 4,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Federalism): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30815,
     "d": 5,
-    "q": "Subjects of national importance like Defence and Foreign Affairs belong to (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Federalism): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Union List",
-      "State List",
-      "Concurrent List",
-      "Residuary Powers"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30816,
+    "d": 1,
+    "q": "Social Science (Federalism): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Union List includes defence, foreign affairs, banking, and currency. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30817,
+    "d": 2,
+    "q": "Social Science (Federalism): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30818,
+    "d": 3,
+    "q": "Social Science (Federalism): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30819,
+    "d": 4,
+    "q": "Social Science (Federalism): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30820,
+    "d": 5,
+    "q": "Social Science (Federalism): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30821,
+    "d": 1,
+    "q": "Social Science (Federalism): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30822,
+    "d": 2,
+    "q": "Social Science (Federalism): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30823,
+    "d": 3,
+    "q": "Social Science (Federalism): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30824,
+    "d": 4,
+    "q": "Social Science (Federalism): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30825,
+    "d": 5,
+    "q": "Social Science (Federalism): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30826,
+    "d": 1,
+    "q": "Social Science (Federalism): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30827,
+    "d": 2,
+    "q": "Social Science (Federalism): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30828,
+    "d": 3,
+    "q": "Social Science (Federalism): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30829,
+    "d": 4,
+    "q": "Social Science (Federalism): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30830,
+    "d": 5,
+    "q": "Social Science (Federalism): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Federalism.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

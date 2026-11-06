@@ -1,197 +1,392 @@
 [
   {
-    "q": "What kind of appearance did secret agent Ausable possess?",
-    "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
-    ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes.",
-    "i": 50901,
-    "d": 1
-  },
-  {
-    "i": 50902,
-    "d": 2,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 2):",
-    "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
-    ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50903,
-    "d": 3,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 3):",
-    "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
-    ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50904,
-    "d": 4,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 4):",
-    "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
-    ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50905,
-    "d": 5,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 5):",
-    "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
-    ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50906,
+    "i": 40901,
     "d": 1,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 6):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 1 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50907,
+    "i": 40902,
     "d": 2,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 7):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 2 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50908,
+    "i": 40903,
     "d": 3,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 8):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 3 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50909,
+    "i": 40904,
     "d": 4,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 9):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 4 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50910,
+    "i": 40905,
     "d": 5,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 10):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 5 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50911,
+    "i": 40906,
     "d": 1,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 11):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 6 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50912,
+    "i": 40907,
     "d": 2,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 12):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 7 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50913,
+    "i": 40908,
     "d": 3,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 13):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 8 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50914,
+    "i": 40909,
     "d": 4,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 14):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 9 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
     ],
-    "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50915,
+    "i": 40910,
     "d": 5,
-    "q": "What kind of appearance did secret agent Ausable possess (JAC Board Standard Pattern - Part 15):",
+    "q": "English Class 10 ('The Midnight Visitor'): Question 10 - Choose the correct contextual inference:",
     "o": [
-      "Fat and sloppy",
-      "Tall and handsome",
-      "Athletic martial artist",
-      "Robotic"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40911,
+    "d": 1,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 11 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40912,
+    "d": 2,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 12 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Ausable was very fat and sloppy, differing completely from romanticized spy stereotypes. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40913,
+    "d": 3,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 13 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40914,
+    "d": 4,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 14 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40915,
+    "d": 5,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 15 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40916,
+    "d": 1,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 16 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40917,
+    "d": 2,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 17 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40918,
+    "d": 3,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 18 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40919,
+    "d": 4,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 19 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40920,
+    "d": 5,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 20 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40921,
+    "d": 1,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 21 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40922,
+    "d": 2,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 22 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40923,
+    "d": 3,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 23 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40924,
+    "d": 4,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 24 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40925,
+    "d": 5,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 25 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40926,
+    "d": 1,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 26 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40927,
+    "d": 2,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 27 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40928,
+    "d": 3,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 28 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40929,
+    "d": 4,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 29 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40930,
+    "d": 5,
+    "q": "English Class 10 ('The Midnight Visitor'): Question 30 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Midnight Visitor'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   }
 ]

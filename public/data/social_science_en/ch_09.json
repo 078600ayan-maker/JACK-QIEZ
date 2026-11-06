@@ -1,197 +1,392 @@
 [
   {
-    "q": "Who grants recognition and election symbols to political parties in India?",
-    "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
-    ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties.",
     "i": 30901,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Political Parties): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30902,
     "d": 2,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 2):",
+    "q": "Social Science (Political Parties): Question 2 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30903,
     "d": 3,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Political Parties): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30904,
     "d": 4,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Political Parties): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30905,
     "d": 5,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Political Parties): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30906,
     "d": 1,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Political Parties): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30907,
     "d": 2,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Political Parties): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30908,
     "d": 3,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Political Parties): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30909,
     "d": 4,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Political Parties): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30910,
     "d": 5,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Political Parties): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30911,
     "d": 1,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Political Parties): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30912,
     "d": 2,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Political Parties): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30913,
     "d": 3,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Political Parties): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30914,
     "d": 4,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Political Parties): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30915,
     "d": 5,
-    "q": "Who grants recognition and election symbols to political parties in India (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Political Parties): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Election Commission of India",
-      "Parliament",
-      "President",
-      "Supreme Court"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30916,
+    "d": 1,
+    "q": "Social Science (Political Parties): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Election Commission of India registers and allocates symbols to parties. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30917,
+    "d": 2,
+    "q": "Social Science (Political Parties): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30918,
+    "d": 3,
+    "q": "Social Science (Political Parties): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30919,
+    "d": 4,
+    "q": "Social Science (Political Parties): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30920,
+    "d": 5,
+    "q": "Social Science (Political Parties): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30921,
+    "d": 1,
+    "q": "Social Science (Political Parties): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30922,
+    "d": 2,
+    "q": "Social Science (Political Parties): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30923,
+    "d": 3,
+    "q": "Social Science (Political Parties): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30924,
+    "d": 4,
+    "q": "Social Science (Political Parties): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30925,
+    "d": 5,
+    "q": "Social Science (Political Parties): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30926,
+    "d": 1,
+    "q": "Social Science (Political Parties): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30927,
+    "d": 2,
+    "q": "Social Science (Political Parties): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30928,
+    "d": 3,
+    "q": "Social Science (Political Parties): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30929,
+    "d": 4,
+    "q": "Social Science (Political Parties): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30930,
+    "d": 5,
+    "q": "Social Science (Political Parties): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Political Parties.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

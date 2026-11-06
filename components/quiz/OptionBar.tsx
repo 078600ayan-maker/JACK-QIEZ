@@ -72,7 +72,7 @@ export const OptionBar: React.FC<OptionBarProps> = ({
       onClick={onSelect}
       disabled={isAnswerSubmitted || isEliminated}
       className={`
-        w-full flex items-center justify-between p-3.5 rounded-[16px]
+        w-full flex items-center justify-between py-2 px-3 sm:py-2.5 sm:px-4 md:py-2.5 md:px-4 rounded-xl sm:rounded-2xl
         border-t border-x border-b
         backdrop-blur-xl transition-all duration-150 select-none
         ${cardStyles}
@@ -81,11 +81,11 @@ export const OptionBar: React.FC<OptionBarProps> = ({
         boxShadow: shadowStyle
       }}
     >
-      <div className="flex items-center gap-3.5 flex-1 pr-2">
+      <div className="flex items-center gap-2 sm:gap-3 flex-1 pr-2">
         {/* 3D Keycap [A], [B], [C], [D] */}
         <div
           className={`
-            w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black
+            w-6 h-6 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl flex items-center justify-center text-[10px] sm:text-xs font-black
             border-t border-x border-b shadow-[0_2px_0_rgba(0,0,0,0.4)]
             shrink-0 transition-colors duration-150
             ${keycapStyles}
@@ -95,7 +95,7 @@ export const OptionBar: React.FC<OptionBarProps> = ({
         </div>
 
         {/* Option Text */}
-        <span className="text-left text-sm font-semibold leading-relaxed tracking-wide">
+        <span className="text-left text-xs sm:text-sm font-semibold leading-snug tracking-normal">
           {text}
         </span>
       </div>

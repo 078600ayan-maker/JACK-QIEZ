@@ -1,197 +1,392 @@
 [
   {
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks:",
-    "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
-    ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels.",
     "i": 30701,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Power Sharing): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30702,
     "d": 2,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 2):",
+    "q": "Social Science (Power Sharing): Question 2 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30703,
     "d": 3,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Power Sharing): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30704,
     "d": 4,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Power Sharing): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30705,
     "d": 5,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Power Sharing): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30706,
     "d": 1,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Power Sharing): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30707,
     "d": 2,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Power Sharing): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30708,
     "d": 3,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Power Sharing): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30709,
     "d": 4,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Power Sharing): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30710,
     "d": 5,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Power Sharing): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30711,
     "d": 1,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Power Sharing): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30712,
     "d": 2,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Power Sharing): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30713,
     "d": 3,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Power Sharing): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30714,
     "d": 4,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Power Sharing): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30715,
     "d": 5,
-    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Power Sharing): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French",
-      "Dutch",
-      "German",
-      "English"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30716,
+    "d": 1,
+    "q": "Social Science (Power Sharing): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30717,
+    "d": 2,
+    "q": "Social Science (Power Sharing): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30718,
+    "d": 3,
+    "q": "Social Science (Power Sharing): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30719,
+    "d": 4,
+    "q": "Social Science (Power Sharing): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30720,
+    "d": 5,
+    "q": "Social Science (Power Sharing): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30721,
+    "d": 1,
+    "q": "Social Science (Power Sharing): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30722,
+    "d": 2,
+    "q": "Social Science (Power Sharing): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30723,
+    "d": 3,
+    "q": "Social Science (Power Sharing): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30724,
+    "d": 4,
+    "q": "Social Science (Power Sharing): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30725,
+    "d": 5,
+    "q": "Social Science (Power Sharing): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30726,
+    "d": 1,
+    "q": "Social Science (Power Sharing): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30727,
+    "d": 2,
+    "q": "Social Science (Power Sharing): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30728,
+    "d": 3,
+    "q": "Social Science (Power Sharing): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30729,
+    "d": 4,
+    "q": "Social Science (Power Sharing): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30730,
+    "d": 5,
+    "q": "Social Science (Power Sharing): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Power Sharing.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

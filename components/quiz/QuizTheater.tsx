@@ -14,6 +14,8 @@ import { MinecraftAvatar3D } from '@/components/avatar/MinecraftAvatar3D';
 import { AvatarAnimationState } from '@/types/avatar';
 import { LiveCallModal } from '@/components/ai-calling/LiveCallModal';
 import { BilingualLanguageToggle } from '@/components/ui/BilingualLanguageToggle';
+import { fetchQuestionsByLanguage } from '@/lib/supabaseClient';
+import { getQuestionsForLevel } from '@/lib/questionLoader';
 import { getJackVoice } from '@/lib/jackVoiceSynthesizer';
 import { getChapterPredictionProbability } from '@/lib/jacPredictiveEngine';
 import {
@@ -56,6 +58,32 @@ export const QuizTheater: React.FC = () => {
     const playing = toggleLofiAmbient();
     setIsLofiOn(playing);
   };
+
+  const userLang = user.profile?.languagePreference || 'hi';
+
+  // Live dynamic language switch when user toggles [HINDI] / [ENGLISH] in Quiz Theater
+  const prevLangRef = React.useRef(userLang);
+  useEffect(() => {
+    if (prevLangRef.current === userLang) return;
+    prevLangRef.current = userLang;
+
+    async function handleLanguageSwitch() {
+      if (!quiz.subjectId || !quiz.chapterId) return;
+      try {
+        const chNumMatch = quiz.chapterId.match(/\d+/);
+        const chNum = chNumMatch ? chNumMatch[0].padStart(2, '0') : '01';
+        const refreshed = await fetchQuestionsByLanguage(quiz.subjectId, userLang, `ch_${chNum}`);
+        if (refreshed && refreshed.length > 0) {
+          const levelQ = getQuestionsForLevel(refreshed, quiz.level);
+          quiz.updateQuestions(levelQ.length > 0 ? levelQ : refreshed);
+        }
+      } catch (err) {
+        console.warn('Language switch fetch error:', err);
+      }
+    }
+
+    handleLanguageSwitch();
+  }, [userLang, quiz.subjectId, quiz.chapterId, quiz.level]);
 
   // Exit quiz
   const handleExit = () => {
@@ -318,11 +346,11 @@ export const QuizTheater: React.FC = () => {
       )}
 
       {/* 2. QUESTION & OPTIONS THEATER (ZERO SCROLL) */}
-      <main className="flex-1 flex flex-col justify-center px-4 py-1 z-20 overflow-hidden relative">
+      <main className="flex-1 flex flex-col justify-center px-3 sm:px-4 py-1 z-20 overflow-hidden relative">
         {/* Floating 3D Duolingo Octopus Bot Companion (Three.js 60FPS, Reacts Dynamically) */}
         {!zenMode && (
-          <div className="absolute top-0 right-3 z-30 pointer-events-auto">
-            <div className="w-28 h-28 rounded-2xl bg-[rgba(20,27,45,0.85)] backdrop-blur-md border border-emerald-400/40 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(16,185,129,0.2)] overflow-hidden flex flex-col items-center justify-center p-0.5">
+          <div className="absolute top-0 right-2 sm:right-4 z-30 pointer-events-auto">
+            <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl bg-[rgba(20,27,45,0.85)] backdrop-blur-md border border-emerald-400/40 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(16,185,129,0.2)] overflow-hidden flex flex-col items-center justify-center p-0.5">
               <DuolingoOctopus3D
                 emotion={
                   !quiz.isAnswerSubmitted
@@ -334,7 +362,7 @@ export const QuizTheater: React.FC = () => {
                     : 'sad'
                 }
                 streakCount={quiz.comboStreak}
-                size={110}
+                size={75}
                 showBubble={false}
                 interactive={false}
               />
@@ -352,15 +380,15 @@ export const QuizTheater: React.FC = () => {
             x: quiz.isAnswerSubmitted && quiz.isCorrect === false ? [-10, 10, -6, 6, 0] : 0
           }}
           transition={{ duration: 0.25 }}
-          className="relative rounded-2xl p-4 sm:p-5 bg-[rgba(30,41,59,0.7)] backdrop-blur-2xl border-t border-white/20 border-x border-b border-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.5)] mb-3"
+          className="relative max-w-xl mx-auto w-full rounded-2xl p-3 sm:p-4 md:p-5 bg-[rgba(30,41,59,0.7)] backdrop-blur-2xl border-t border-white/20 border-x border-b border-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.5)] mb-2 sm:mb-3"
         >
           {/* Question Meta Header with 10-Year Teacher Predictive Probability */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="text-[10px] font-black uppercase tracking-wider text-[#F59E0B]">
                 Question {quiz.currentIndex + 1} of {quiz.questions.length}
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[9px] font-black text-emerald-300">
+              <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[9px] font-black text-emerald-300">
                 {currentPrediction.recommendationTag} ({currentPrediction.probabilityPercent}% Recurrence)
               </span>
             </div>
@@ -381,13 +409,13 @@ export const QuizTheater: React.FC = () => {
           </div>
 
           {/* Question Text */}
-          <h2 className="text-base sm:text-lg font-bold text-white tracking-wide leading-[1.65]">
+          <h2 className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wide leading-snug sm:leading-relaxed">
             {currentQ?.q}
           </h2>
         </motion.div>
 
         {/* 4 Full-Width Tactile Option Cards */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-2 sm:gap-2.5 max-w-xl mx-auto w-full">
           {currentQ?.o.map((optionText, index) => {
             const isEliminated = quiz.eliminatedOptions.includes(index);
             const isSelected = quiz.selectedOption === index;
@@ -414,10 +442,10 @@ export const QuizTheater: React.FC = () => {
       </main>
 
       {/* 3. POST-QUIZ REASONING & CHECK/NEXT FOOTER */}
-      <footer className="px-4 py-3 shrink-0 z-30 border-t border-white/5 bg-[rgba(9,13,22,0.9)] backdrop-blur-xl">
+      <footer className="px-3 sm:px-4 py-2 sm:py-3 shrink-0 z-30 border-t border-white/5 bg-[rgba(9,13,22,0.92)] backdrop-blur-xl">
         {/* Post-Quiz Reasoning Drawer (Shows on wrong answer or question clear) */}
         {showExplanationDrawer && currentQ && (
-          <div className="mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-red-950/40 to-slate-900 border border-red-500/30 text-xs space-y-1.5 shadow-xl">
+          <div className="max-w-xl mx-auto mb-2 p-2.5 sm:p-3 rounded-xl bg-gradient-to-r from-red-950/40 to-slate-900 border border-red-500/30 text-xs space-y-1 shadow-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-amber-400 font-black uppercase text-[10px]">
                 <HelpCircle className="w-3.5 h-3.5" />
@@ -427,21 +455,18 @@ export const QuizTheater: React.FC = () => {
                 Saved in Mistake Vault ✓
               </span>
             </div>
-            <p className="text-slate-200 leading-relaxed font-medium">{currentQ.e}</p>
-            <div className="text-[10px] text-amber-300 font-bold bg-black/40 p-1.5 rounded-lg border border-amber-500/20">
-              💡 Examiner Tip: NCERT Class 10 Syllabus blueprint topic. Focus on step-by-step reasoning.
-            </div>
+            <p className="text-slate-200 leading-relaxed font-medium text-[11px] sm:text-xs">{currentQ.e}</p>
           </div>
         )}
 
-        <div className="flex items-center gap-3">
+        <div className="max-w-xl mx-auto w-full flex items-center gap-2 sm:gap-3">
           {!quiz.isAnswerSubmitted ? (
             <button
               onClick={() => quiz.submitAnswer()}
               disabled={quiz.selectedOption === null}
-              className={`w-full py-3.5 rounded-2xl font-black text-sm tracking-wider uppercase transition-all shadow-[0_5px_0_#065F46] active:translate-y-1 active:shadow-[0_1px_0_#065F46] cursor-pointer ${
+              className={`w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm tracking-wider uppercase transition-all shadow-[0_4px_0_#065F46] active:translate-y-0.5 active:shadow-[0_1px_0_#065F46] cursor-pointer ${
                 quiz.selectedOption !== null
-                  ? 'bg-gradient-to-r from-[#10B981] to-[#059669] text-white hover:brightness-110 shadow-[0_5px_0_#065F46,0_0_20px_rgba(16,185,129,0.3)]'
+                  ? 'bg-gradient-to-r from-[#10B981] to-[#059669] text-white hover:brightness-110 shadow-[0_4px_0_#065F46,0_0_16px_rgba(16,185,129,0.3)]'
                   : 'bg-white/10 border border-white/10 text-slate-500 opacity-50 cursor-not-allowed shadow-none'
               }`}
             >
@@ -450,7 +475,7 @@ export const QuizTheater: React.FC = () => {
           ) : (
             <button
               onClick={() => quiz.nextQuestion()}
-              className="w-full py-3.5 rounded-2xl font-black text-sm tracking-wider uppercase bg-gradient-to-r from-amber-500 to-yellow-400 text-black shadow-[0_5px_0_#B45309,0_0_20px_rgba(245,158,11,0.4)] hover:brightness-110 active:translate-y-1 active:shadow-[0_1px_0_#B45309] transition-all cursor-pointer"
+              className="w-full py-2.5 sm:py-3 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm tracking-wider uppercase bg-gradient-to-r from-amber-500 to-yellow-400 text-black shadow-[0_4px_0_#B45309,0_0_16px_rgba(245,158,11,0.4)] hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#B45309] transition-all cursor-pointer"
             >
               Continue (आगे बढ़ें) 🚀
             </button>

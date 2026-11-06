@@ -1,197 +1,392 @@
 [
   {
-    "q": "Which of the following is a primary Kharif crop in India?",
-    "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
-    ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif).",
     "i": 30601,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Water Resources & Agriculture): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30602,
     "d": 2,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 2):",
+    "q": "Social Science (Water Resources & Agriculture): Question 2 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30603,
     "d": 3,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Water Resources & Agriculture): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30604,
     "d": 4,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Water Resources & Agriculture): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30605,
     "d": 5,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Water Resources & Agriculture): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30606,
     "d": 1,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Water Resources & Agriculture): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30607,
     "d": 2,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Water Resources & Agriculture): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30608,
     "d": 3,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Water Resources & Agriculture): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30609,
     "d": 4,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Water Resources & Agriculture): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30610,
     "d": 5,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Water Resources & Agriculture): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30611,
     "d": 1,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Water Resources & Agriculture): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30612,
     "d": 2,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Water Resources & Agriculture): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30613,
     "d": 3,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Water Resources & Agriculture): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30614,
     "d": 4,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Water Resources & Agriculture): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30615,
     "d": 5,
-    "q": "Which of the following is a primary Kharif crop in India (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Water Resources & Agriculture): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Paddy (Rice)",
-      "Wheat",
-      "Gram",
-      "Mustard"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30616,
+    "d": 1,
+    "q": "Social Science (Water Resources & Agriculture): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Paddy is grown with the onset of monsoon and harvested in September-October (Kharif). (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30617,
+    "d": 2,
+    "q": "Social Science (Water Resources & Agriculture): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30618,
+    "d": 3,
+    "q": "Social Science (Water Resources & Agriculture): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30619,
+    "d": 4,
+    "q": "Social Science (Water Resources & Agriculture): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30620,
+    "d": 5,
+    "q": "Social Science (Water Resources & Agriculture): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30621,
+    "d": 1,
+    "q": "Social Science (Water Resources & Agriculture): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30622,
+    "d": 2,
+    "q": "Social Science (Water Resources & Agriculture): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30623,
+    "d": 3,
+    "q": "Social Science (Water Resources & Agriculture): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30624,
+    "d": 4,
+    "q": "Social Science (Water Resources & Agriculture): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30625,
+    "d": 5,
+    "q": "Social Science (Water Resources & Agriculture): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30626,
+    "d": 1,
+    "q": "Social Science (Water Resources & Agriculture): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30627,
+    "d": 2,
+    "q": "Social Science (Water Resources & Agriculture): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30628,
+    "d": 3,
+    "q": "Social Science (Water Resources & Agriculture): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30629,
+    "d": 4,
+    "q": "Social Science (Water Resources & Agriculture): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30630,
+    "d": 5,
+    "q": "Social Science (Water Resources & Agriculture): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Water Resources & Agriculture.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

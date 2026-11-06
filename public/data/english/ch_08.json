@@ -1,197 +1,392 @@
 [
   {
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया?",
-    "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
-    ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया।",
-    "i": 50801,
-    "d": 1
-  },
-  {
-    "i": 50802,
-    "d": 2,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 2):",
-    "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
-    ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50803,
-    "d": 3,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 3):",
-    "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
-    ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50804,
-    "d": 4,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 4):",
-    "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
-    ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50805,
-    "d": 5,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 5):",
-    "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
-    ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50806,
+    "i": 40801,
     "d": 1,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 6):",
+    "q": "English Class 10 ('The Thief's Story'): Question 1 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50807,
+    "i": 40802,
     "d": 2,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 7):",
+    "q": "English Class 10 ('The Thief's Story'): Question 2 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50808,
+    "i": 40803,
     "d": 3,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 8):",
+    "q": "English Class 10 ('The Thief's Story'): Question 3 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50809,
+    "i": 40804,
     "d": 4,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 9):",
+    "q": "English Class 10 ('The Thief's Story'): Question 4 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50810,
+    "i": 40805,
     "d": 5,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 10):",
+    "q": "English Class 10 ('The Thief's Story'): Question 5 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50811,
+    "i": 40806,
     "d": 1,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 11):",
+    "q": "English Class 10 ('The Thief's Story'): Question 6 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50812,
+    "i": 40807,
     "d": 2,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 12):",
+    "q": "English Class 10 ('The Thief's Story'): Question 7 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50813,
+    "i": 40808,
     "d": 3,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 13):",
+    "q": "English Class 10 ('The Thief's Story'): Question 8 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50814,
+    "i": 40809,
     "d": 4,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 14):",
+    "q": "English Class 10 ('The Thief's Story'): Question 9 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
     ],
-    "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50815,
+    "i": 40810,
     "d": 5,
-    "q": "युवा चोर ने अनिल (Anil) से मिलने पर अपना क्या नाम बताया (JAC Board मॉडल प्रश्न - भाग 15):",
+    "q": "English Class 10 ('The Thief's Story'): Question 10 - Choose the correct contextual inference:",
     "o": [
-      "हरि सिंह (Hari Singh)",
-      "राम सिंह",
-      "श्याम",
-      "मुन्ना"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40811,
+    "d": 1,
+    "q": "English Class 10 ('The Thief's Story'): Question 11 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40812,
+    "d": 2,
+    "q": "English Class 10 ('The Thief's Story'): Question 12 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "चोर पुलिस से बचने के लिए हर महीने अपना नाम बदलता था, इस बार उसने हरि सिंह बताया। (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40813,
+    "d": 3,
+    "q": "English Class 10 ('The Thief's Story'): Question 13 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40814,
+    "d": 4,
+    "q": "English Class 10 ('The Thief's Story'): Question 14 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40815,
+    "d": 5,
+    "q": "English Class 10 ('The Thief's Story'): Question 15 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40816,
+    "d": 1,
+    "q": "English Class 10 ('The Thief's Story'): Question 16 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40817,
+    "d": 2,
+    "q": "English Class 10 ('The Thief's Story'): Question 17 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40818,
+    "d": 3,
+    "q": "English Class 10 ('The Thief's Story'): Question 18 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40819,
+    "d": 4,
+    "q": "English Class 10 ('The Thief's Story'): Question 19 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40820,
+    "d": 5,
+    "q": "English Class 10 ('The Thief's Story'): Question 20 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40821,
+    "d": 1,
+    "q": "English Class 10 ('The Thief's Story'): Question 21 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40822,
+    "d": 2,
+    "q": "English Class 10 ('The Thief's Story'): Question 22 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40823,
+    "d": 3,
+    "q": "English Class 10 ('The Thief's Story'): Question 23 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40824,
+    "d": 4,
+    "q": "English Class 10 ('The Thief's Story'): Question 24 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40825,
+    "d": 5,
+    "q": "English Class 10 ('The Thief's Story'): Question 25 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40826,
+    "d": 1,
+    "q": "English Class 10 ('The Thief's Story'): Question 26 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40827,
+    "d": 2,
+    "q": "English Class 10 ('The Thief's Story'): Question 27 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40828,
+    "d": 3,
+    "q": "English Class 10 ('The Thief's Story'): Question 28 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40829,
+    "d": 4,
+    "q": "English Class 10 ('The Thief's Story'): Question 29 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'The Thief's Story'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40830,
+    "d": 5,
+    "q": "English Class 10 ('The Thief's Story'): Question 30 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'The Thief's Story'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   }
 ]

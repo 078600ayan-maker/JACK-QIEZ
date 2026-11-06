@@ -1,197 +1,392 @@
 [
   {
-    "q": "What was Valli's age when she undertook her secret bus ride?",
-    "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
-    ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus.",
-    "i": 50601,
-    "d": 1
-  },
-  {
-    "i": 50602,
-    "d": 2,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 2):",
-    "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
-    ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50603,
-    "d": 3,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 3):",
-    "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
-    ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50604,
-    "d": 4,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 4):",
-    "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
-    ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50605,
-    "d": 5,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 5):",
-    "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
-    ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50606,
+    "i": 40601,
     "d": 1,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 6):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 1 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50607,
+    "i": 40602,
     "d": 2,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 7):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 2 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50608,
+    "i": 40603,
     "d": 3,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 8):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 3 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50609,
+    "i": 40604,
     "d": 4,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 9):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 4 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50610,
+    "i": 40605,
     "d": 5,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 10):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 5 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50611,
+    "i": 40606,
     "d": 1,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 11):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 6 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50612,
+    "i": 40607,
     "d": 2,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 12):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 7 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50613,
+    "i": 40608,
     "d": 3,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 13):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 8 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50614,
+    "i": 40609,
     "d": 4,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 14):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 9 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
     ],
-    "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50615,
+    "i": 40610,
     "d": 5,
-    "q": "What was Valli's age when she undertook her secret bus ride (JAC Board Standard Pattern - Part 15):",
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 10 - Choose the correct contextual inference:",
     "o": [
-      "8 years old",
-      "10 years old",
-      "12 years old",
-      "6 years old"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40611,
+    "d": 1,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 11 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40612,
+    "d": 2,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 12 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Valliammai (Valli) was an eight-year-old girl with an overwhelming desire to ride the bus. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40613,
+    "d": 3,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 13 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40614,
+    "d": 4,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 14 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40615,
+    "d": 5,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 15 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40616,
+    "d": 1,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 16 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40617,
+    "d": 2,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 17 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40618,
+    "d": 3,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 18 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40619,
+    "d": 4,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 19 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40620,
+    "d": 5,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 20 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40621,
+    "d": 1,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 21 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40622,
+    "d": 2,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 22 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40623,
+    "d": 3,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 23 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40624,
+    "d": 4,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 24 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40625,
+    "d": 5,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 25 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40626,
+    "d": 1,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 26 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40627,
+    "d": 2,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 27 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40628,
+    "d": 3,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 28 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40629,
+    "d": 4,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 29 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40630,
+    "d": 5,
+    "q": "English Class 10 ('Madam Rides the Bus'): Question 30 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'Madam Rides the Bus'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   }
 ]

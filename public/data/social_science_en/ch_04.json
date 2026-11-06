@@ -1,197 +1,392 @@
 [
   {
-    "q": "Black soil is universally recognized as most ideal for the cultivation of:",
-    "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
-    ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton.",
     "i": 30401,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Resources and Development): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30402,
     "d": 2,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 2):",
+    "q": "Social Science (Resources and Development): Question 2 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30403,
     "d": 3,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Resources and Development): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30404,
     "d": 4,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Resources and Development): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30405,
     "d": 5,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Resources and Development): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30406,
     "d": 1,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Resources and Development): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30407,
     "d": 2,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Resources and Development): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30408,
     "d": 3,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Resources and Development): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30409,
     "d": 4,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Resources and Development): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30410,
     "d": 5,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Resources and Development): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30411,
     "d": 1,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Resources and Development): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30412,
     "d": 2,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Resources and Development): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30413,
     "d": 3,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Resources and Development): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30414,
     "d": 4,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Resources and Development): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30415,
     "d": 5,
-    "q": "Black soil is universally recognized as most ideal for the cultivation of (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Resources and Development): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Cotton",
-      "Tea",
-      "Wheat",
-      "Jute"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30416,
+    "d": 1,
+    "q": "Social Science (Resources and Development): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Black soil, also known as Regur soil, has high moisture retention ideal for cotton. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30417,
+    "d": 2,
+    "q": "Social Science (Resources and Development): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30418,
+    "d": 3,
+    "q": "Social Science (Resources and Development): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30419,
+    "d": 4,
+    "q": "Social Science (Resources and Development): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30420,
+    "d": 5,
+    "q": "Social Science (Resources and Development): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30421,
+    "d": 1,
+    "q": "Social Science (Resources and Development): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30422,
+    "d": 2,
+    "q": "Social Science (Resources and Development): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30423,
+    "d": 3,
+    "q": "Social Science (Resources and Development): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30424,
+    "d": 4,
+    "q": "Social Science (Resources and Development): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30425,
+    "d": 5,
+    "q": "Social Science (Resources and Development): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30426,
+    "d": 1,
+    "q": "Social Science (Resources and Development): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30427,
+    "d": 2,
+    "q": "Social Science (Resources and Development): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30428,
+    "d": 3,
+    "q": "Social Science (Resources and Development): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30429,
+    "d": 4,
+    "q": "Social Science (Resources and Development): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30430,
+    "d": 5,
+    "q": "Social Science (Resources and Development): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Resources and Development.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

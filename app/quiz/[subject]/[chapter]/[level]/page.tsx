@@ -96,9 +96,9 @@ function QuizPageContent() {
         // 3. Filter and slice questions for this level
         const levelQuestions = getQuestionsForLevel(allQuestions, levelNum);
 
-        // 4. Initialize Quiz in store
+        // 4. Initialize Quiz in store with all 30 questions
         startQuiz({
-          questions: levelQuestions.length > 0 ? levelQuestions : allQuestions.slice(0, 10),
+          questions: levelQuestions.length > 0 ? levelQuestions : allQuestions.slice(0, 30),
           level: levelNum,
           chapterId: `${targetSubjId}_ch${chNumStr}`,
           chapterName,

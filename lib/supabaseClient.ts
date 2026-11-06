@@ -28,38 +28,42 @@ export async function fetchQuestionsByLanguage(
   chapterId?: string
 ): Promise<Question[]> {
   const normalizedSubject = subject.toLowerCase().replace(/[^a-z]/g, '');
+  const anonKey = typeof process !== 'undefined' ? process.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY : undefined;
 
-  try {
-    let url = `${BASE_REST_URL}/questions?subject=eq.${normalizedSubject}&language=eq.${language}&select=*`;
-    if (chapterId) {
-      url += `&chapter_id=eq.${chapterId}`;
-    }
-
-    const response = await fetch(url, {
-      headers: {
-        Accept: 'application/json'
-      },
-      next: { revalidate: 3600 }
-    });
-
-    if (response.ok) {
-      const rows: SupabaseQuestionRow[] = await response.json();
-      if (Array.isArray(rows) && rows.length > 0) {
-        return rows.map((r, idx) => ({
-          i: r.id || idx + 1,
-          d: (Math.min(5, Math.max(1, r.difficulty || 1)) as 1 | 2 | 3 | 4 | 5),
-          q: r.question_text,
-          o: r.options,
-          a: r.correct_answer,
-          e: r.explanation || ''
-        }));
+  if (anonKey) {
+    try {
+      let url = `${BASE_REST_URL}/questions?subject=eq.${normalizedSubject}&language=eq.${language}&select=*`;
+      if (chapterId) {
+        url += `&chapter_id=eq.${chapterId}`;
       }
+
+      const response = await fetch(url, {
+        headers: {
+          apikey: anonKey,
+          Authorization: `Bearer ${anonKey}`,
+          Accept: 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const rows: SupabaseQuestionRow[] = await response.json();
+        if (Array.isArray(rows) && rows.length > 0) {
+          return rows.map((r, idx) => ({
+            i: r.id || idx + 1,
+            d: (Math.min(5, Math.max(1, r.difficulty || 1)) as 1 | 2 | 3 | 4 | 5),
+            q: r.question_text,
+            o: r.options,
+            a: r.correct_answer,
+            e: r.explanation || ''
+          }));
+        }
+      }
+    } catch (err) {
+      console.warn('Supabase fetch failed, falling back to pre-bundled local archive:', err);
     }
-  } catch (err) {
-    console.warn('Supabase fetch failed or network offline, falling back to pre-bundled local archive:', err);
   }
 
-  // Graceful Offline / Local Fallback
+  // Instant Offline / Local Fallback with guaranteed 30 questions
   return fetchLocalFallbackQuestions(normalizedSubject, language, chapterId);
 }
 

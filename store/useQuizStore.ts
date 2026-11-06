@@ -50,6 +50,7 @@ export interface QuizState {
   tickTimer: () => void;
   useFiftyFifty: () => boolean;
   restartQuiz: () => void;
+  updateQuestions: (questions: Question[]) => void;
 }
 
 export const useQuizStore = create<QuizState>((set, get) => ({
@@ -80,6 +81,8 @@ export const useQuizStore = create<QuizState>((set, get) => ({
   isFinished: false,
   isFailed: false,
   isBossLevel: false,
+
+  updateQuestions: (questions: Question[]) => set({ questions }),
 
   startQuiz: ({ questions, level, chapterId, chapterName, subjectId, userHearts = 5 }) => {
     const isBoss = level === 5;

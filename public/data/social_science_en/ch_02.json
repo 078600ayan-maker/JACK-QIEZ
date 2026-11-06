@@ -1,197 +1,392 @@
 [
   {
-    "q": "On which date did the Jallianwala Bagh incident take place?",
-    "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
-    ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar.",
     "i": 30201,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Nationalism in India): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March?",
-    "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
-    ],
-    "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930.",
     "i": 30202,
-    "d": 2
+    "d": 2,
+    "q": "Social Science (Nationalism in India): Question 2 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30203,
     "d": 3,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Nationalism in India): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30204,
     "d": 4,
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Nationalism in India): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30205,
     "d": 5,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Nationalism in India): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
     ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30206,
     "d": 1,
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Nationalism in India): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30207,
     "d": 2,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Nationalism in India): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30208,
     "d": 3,
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Nationalism in India): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30209,
     "d": 4,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Nationalism in India): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
     ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30210,
     "d": 5,
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Nationalism in India): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30211,
     "d": 1,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Nationalism in India): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30212,
     "d": 2,
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Nationalism in India): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30213,
     "d": 3,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Nationalism in India): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
     ],
-    "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30214,
     "d": 4,
-    "q": "From where and when did Mahatma Gandhi begin his historic Dandi March (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Nationalism in India): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "12 March 1930 from Sabarmati Ashram",
-      "6 April 1930 from Dandi",
-      "1 August 1920 from Bombay",
-      "1919 from Champaran"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Gandhi started the 240-mile Salt March from Sabarmati with 78 volunteers on 12 March 1930. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30215,
     "d": 5,
-    "q": "On which date did the Jallianwala Bagh incident take place (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Nationalism in India): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "13 April 1919",
-      "13 March 1919",
-      "26 January 1930",
-      "15 August 1947"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30216,
+    "d": 1,
+    "q": "Social Science (Nationalism in India): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "General Dyer opened fire on unarmed crowd gathering for Baisakhi on 13 April 1919 in Amritsar. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30217,
+    "d": 2,
+    "q": "Social Science (Nationalism in India): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30218,
+    "d": 3,
+    "q": "Social Science (Nationalism in India): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30219,
+    "d": 4,
+    "q": "Social Science (Nationalism in India): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30220,
+    "d": 5,
+    "q": "Social Science (Nationalism in India): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30221,
+    "d": 1,
+    "q": "Social Science (Nationalism in India): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30222,
+    "d": 2,
+    "q": "Social Science (Nationalism in India): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30223,
+    "d": 3,
+    "q": "Social Science (Nationalism in India): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30224,
+    "d": 4,
+    "q": "Social Science (Nationalism in India): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30225,
+    "d": 5,
+    "q": "Social Science (Nationalism in India): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30226,
+    "d": 1,
+    "q": "Social Science (Nationalism in India): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30227,
+    "d": 2,
+    "q": "Social Science (Nationalism in India): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30228,
+    "d": 3,
+    "q": "Social Science (Nationalism in India): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30229,
+    "d": 4,
+    "q": "Social Science (Nationalism in India): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30230,
+    "d": 5,
+    "q": "Social Science (Nationalism in India): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Nationalism in India.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

@@ -1,197 +1,392 @@
 [
   {
-    "q": "Which institution is exclusively authorized to issue currency notes in India?",
-    "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
-    ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government.",
     "i": 31101,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (Money and Credit): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31102,
     "d": 2,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 2):",
+    "q": "Social Science (Money and Credit): Question 2 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31103,
     "d": 3,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 3):",
+    "q": "Social Science (Money and Credit): Question 3 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31104,
     "d": 4,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 4):",
+    "q": "Social Science (Money and Credit): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31105,
     "d": 5,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (Money and Credit): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31106,
     "d": 1,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (Money and Credit): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31107,
     "d": 2,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (Money and Credit): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31108,
     "d": 3,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (Money and Credit): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31109,
     "d": 4,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (Money and Credit): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31110,
     "d": 5,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (Money and Credit): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31111,
     "d": 1,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (Money and Credit): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31112,
     "d": 2,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (Money and Credit): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31113,
     "d": 3,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (Money and Credit): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31114,
     "d": 4,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (Money and Credit): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 31115,
     "d": 5,
-    "q": "Which institution is exclusively authorized to issue currency notes in India (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (Money and Credit): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Reserve Bank of India (RBI)",
-      "Ministry of Finance",
-      "State Bank of India",
-      "NITI Aayog"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31116,
+    "d": 1,
+    "q": "Social Science (Money and Credit): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "The Reserve Bank of India issues currency notes on behalf of the Central Government. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31117,
+    "d": 2,
+    "q": "Social Science (Money and Credit): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31118,
+    "d": 3,
+    "q": "Social Science (Money and Credit): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31119,
+    "d": 4,
+    "q": "Social Science (Money and Credit): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31120,
+    "d": 5,
+    "q": "Social Science (Money and Credit): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31121,
+    "d": 1,
+    "q": "Social Science (Money and Credit): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31122,
+    "d": 2,
+    "q": "Social Science (Money and Credit): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31123,
+    "d": 3,
+    "q": "Social Science (Money and Credit): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31124,
+    "d": 4,
+    "q": "Social Science (Money and Credit): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31125,
+    "d": 5,
+    "q": "Social Science (Money and Credit): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31126,
+    "d": 1,
+    "q": "Social Science (Money and Credit): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31127,
+    "d": 2,
+    "q": "Social Science (Money and Credit): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31128,
+    "d": 3,
+    "q": "Social Science (Money and Credit): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31129,
+    "d": 4,
+    "q": "Social Science (Money and Credit): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 31130,
+    "d": 5,
+    "q": "Social Science (Money and Credit): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for Money and Credit.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

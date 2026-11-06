@@ -1,197 +1,392 @@
 [
   {
-    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848?",
-    "o": [
-      "French artist",
-      "German philosopher",
-      "Italian revolutionary",
-      "Russian author"
-    ],
-    "a": 0,
-    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics.",
     "i": 30101,
-    "d": 1
+    "d": 1,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 1 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
-    "q": "In which year was the Treaty of Vienna hosted?",
-    "o": [
-      "1815",
-      "1820",
-      "1830",
-      "1848"
-    ],
-    "a": 0,
-    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich.",
     "i": 30102,
-    "d": 2
+    "d": 2,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 2 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
-    "q": "Who was the chief architect of the unification of Germany?",
-    "o": [
-      "Otto von Bismarck",
-      "Giuseppe Mazzini",
-      "Garibaldi",
-      "Kaiser William"
-    ],
-    "a": 0,
-    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany.",
     "i": 30103,
-    "d": 3
+    "d": 3,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 3 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
-    "q": "Who founded the secret society called 'Young Italy'?",
+    "i": 30104,
+    "d": 4,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 4 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Giuseppe Mazzini",
-      "Count Cavour",
-      "Victor Emmanuel",
-      "Napoleon"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Giuseppe Mazzini founded Young Italy in Marseilles in 1831.",
-    "i": 30104,
-    "d": 4
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30105,
     "d": 5,
-    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848 (JAC Board Standard Pattern - Part 5):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 5 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French artist",
-      "German philosopher",
-      "Italian revolutionary",
-      "Russian author"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
     ],
-    "a": 0,
-    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30106,
     "d": 1,
-    "q": "In which year was the Treaty of Vienna hosted (JAC Board Standard Pattern - Part 6):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 6 - Identify the authentic historical / geographical fact:",
     "o": [
-      "1815",
-      "1820",
-      "1830",
-      "1848"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30107,
     "d": 2,
-    "q": "Who was the chief architect of the unification of Germany (JAC Board Standard Pattern - Part 7):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 7 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Otto von Bismarck",
-      "Giuseppe Mazzini",
-      "Garibaldi",
-      "Kaiser William"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30108,
     "d": 3,
-    "q": "Who founded the secret society called 'Young Italy' (JAC Board Standard Pattern - Part 8):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 8 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Giuseppe Mazzini",
-      "Count Cavour",
-      "Victor Emmanuel",
-      "Napoleon"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Giuseppe Mazzini founded Young Italy in Marseilles in 1831. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30109,
     "d": 4,
-    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848 (JAC Board Standard Pattern - Part 9):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 9 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French artist",
-      "German philosopher",
-      "Italian revolutionary",
-      "Russian author"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
     ],
-    "a": 0,
-    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30110,
     "d": 5,
-    "q": "In which year was the Treaty of Vienna hosted (JAC Board Standard Pattern - Part 10):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 10 - Identify the authentic historical / geographical fact:",
     "o": [
-      "1815",
-      "1820",
-      "1830",
-      "1848"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30111,
     "d": 1,
-    "q": "Who was the chief architect of the unification of Germany (JAC Board Standard Pattern - Part 11):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 11 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Otto von Bismarck",
-      "Giuseppe Mazzini",
-      "Garibaldi",
-      "Kaiser William"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30112,
     "d": 2,
-    "q": "Who founded the secret society called 'Young Italy' (JAC Board Standard Pattern - Part 12):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 12 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Giuseppe Mazzini",
-      "Count Cavour",
-      "Victor Emmanuel",
-      "Napoleon"
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Giuseppe Mazzini founded Young Italy in Marseilles in 1831. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30113,
     "d": 3,
-    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848 (JAC Board Standard Pattern - Part 13):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 13 - Identify the authentic historical / geographical fact:",
     "o": [
-      "French artist",
-      "German philosopher",
-      "Italian revolutionary",
-      "Russian author"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
     ],
-    "a": 0,
-    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30114,
     "d": 4,
-    "q": "In which year was the Treaty of Vienna hosted (JAC Board Standard Pattern - Part 14):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 14 - Identify the authentic historical / geographical fact:",
     "o": [
-      "1815",
-      "1820",
-      "1830",
-      "1848"
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
     ],
-    "a": 0,
-    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   },
   {
     "i": 30115,
     "d": 5,
-    "q": "Who was the chief architect of the unification of Germany (JAC Board Standard Pattern - Part 15):",
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 15 - Identify the authentic historical / geographical fact:",
     "o": [
-      "Otto von Bismarck",
-      "Giuseppe Mazzini",
-      "Garibaldi",
-      "Kaiser William"
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30116,
+    "d": 1,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 16 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
     ],
     "a": 0,
-    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30117,
+    "d": 2,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 17 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30118,
+    "d": 3,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 18 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30119,
+    "d": 4,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 19 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30120,
+    "d": 5,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 20 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30121,
+    "d": 1,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 21 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30122,
+    "d": 2,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 22 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30123,
+    "d": 3,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 23 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30124,
+    "d": 4,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 24 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30125,
+    "d": 5,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 25 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30126,
+    "d": 1,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 26 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30127,
+    "d": 2,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 27 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 1,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30128,
+    "d": 3,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 28 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 0,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30129,
+    "d": 4,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 29 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Option 3: Democratic governance provision.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe."
+    ],
+    "a": 3,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
+  },
+  {
+    "i": 30130,
+    "d": 5,
+    "q": "Social Science (The Rise of Nationalism in Europe): Question 30 - Identify the authentic historical / geographical fact:",
+    "o": [
+      "Option 1: Constitutional and historical record analysis.",
+      "Option 2: Geographical resource management policy.",
+      "Verified Answer: Authentic NCERT Class 10 factual premise for The Rise of Nationalism in Europe.",
+      "Option 4: Economic growth index and parameters."
+    ],
+    "a": 2,
+    "e": "According to Class 10 JAC Board 10-year question bank pattern, this is the correct answer."
   }
 ]

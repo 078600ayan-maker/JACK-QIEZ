@@ -1,7 +1,7 @@
 import { Question } from '@/types/question';
 
-const CACHE_VERSION = 1;
-const CACHE_PREFIX = 'sbr_cache_';
+const CACHE_VERSION = 3;
+const CACHE_PREFIX = 'sbr_cache_v3_';
 
 export async function fetchChapterQuestions(filePath: string): Promise<Question[]> {
   const cacheKey = `${CACHE_PREFIX}${filePath}`;
@@ -12,7 +12,7 @@ export async function fetchChapterQuestions(filePath: string): Promise<Question[
       const cachedStr = localStorage.getItem(cacheKey);
       if (cachedStr) {
         const parsed = JSON.parse(cachedStr);
-        if (parsed.v === CACHE_VERSION && Array.isArray(parsed.data)) {
+        if (parsed.v === CACHE_VERSION && Array.isArray(parsed.data) && parsed.data.length >= 30) {
           return parsed.data;
         }
       }
@@ -21,16 +21,16 @@ export async function fetchChapterQuestions(filePath: string): Promise<Question[
     }
   }
 
-  // 2. Fetch from static JSON
+  // 2. Fetch from static JSON with no-cache for instant refresh
   try {
-    const res = await fetch(filePath, { cache: 'force-cache' });
+    const res = await fetch(filePath);
     if (!res.ok) {
       throw new Error(`Failed to load questions from ${filePath}: ${res.statusText}`);
     }
     const data: Question[] = await res.json();
 
-    // 3. Save to LocalStorage
-    if (typeof window !== 'undefined') {
+    // 3. Save to LocalStorage if full question set
+    if (typeof window !== 'undefined' && Array.isArray(data) && data.length >= 30) {
       try {
         localStorage.setItem(cacheKey, JSON.stringify({ v: CACHE_VERSION, data }));
       } catch {
@@ -63,10 +63,9 @@ export function getQuestionsForLevel(allQuestions: Question[], level: number): Q
 
   const combined = [...primary, ...secondary, ...remaining];
 
-  // Desired question count based on level:
-  // L1: 10, L2: 12, L3: 12, L4: 12, L5: 15
-  const countNeeded = level === 1 ? 10 : level === 5 ? 15 : 12;
+  // Desired question count: provide all 30 questions per chapter
+  const countNeeded = 30;
 
-  // Return up to countNeeded, or all available if fewer
+  // Return full 30 questions
   return combined.slice(0, Math.min(combined.length, countNeeded));
 }

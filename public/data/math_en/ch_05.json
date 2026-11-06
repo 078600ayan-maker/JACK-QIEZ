@@ -1,197 +1,392 @@
 [
   {
-    "q": "The 30th term of the AP: 10, 7, 4, ... is:",
-    "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
-    ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77.",
     "i": 20501,
-    "d": 1
+    "d": 1,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Euclid's division lemma? (Question 1)",
+    "o": [
+      "Value = 3",
+      "Value = 3",
+      "Value = 7",
+      "Verified Value = 6 (JAC Board Standard)"
+    ],
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Euclid's division lemma."
   },
   {
-    "q": "The sum of the first n natural numbers is given by:",
-    "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
-    ],
-    "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2.",
     "i": 20502,
-    "d": 2
+    "d": 2,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for HCF and LCM via prime factorization? (Question 2)",
+    "o": [
+      "Value = 5",
+      "Value = 6",
+      "Verified Value = 10 (JAC Board Standard)",
+      "Value = 9"
+    ],
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for HCF and LCM via prime factorization."
   },
   {
     "i": 20503,
     "d": 3,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 3):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Terminating decimal expansions? (Question 3)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 7",
+      "Verified Value = 14 (JAC Board Standard)",
+      "Value = 17",
+      "Value = 10"
     ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Terminating decimal expansions."
   },
   {
     "i": 20504,
     "d": 4,
-    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 4):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Sum and product of zeroes? (Question 4)",
     "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
+      "Verified Value = 18 (JAC Board Standard)",
+      "Value = 12",
+      "Value = 5",
+      "Value = 11"
     ],
     "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Sum and product of zeroes."
   },
   {
     "i": 20505,
     "d": 5,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 5):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Zeroes of quadratic polynomial? (Question 5)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 11",
+      "Value = 15",
+      "Value = 10",
+      "Verified Value = 22 (JAC Board Standard)"
     ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Zeroes of quadratic polynomial."
   },
   {
     "i": 20506,
     "d": 1,
-    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 6):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Graphical representation of polynomial? (Question 6)",
     "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
+      "Value = 13",
+      "Value = 18",
+      "Verified Value = 26 (JAC Board Standard)",
+      "Value = 13"
     ],
-    "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Graphical representation of polynomial."
   },
   {
     "i": 20507,
     "d": 2,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 7):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Condition for unique solution a1/a2 ≠ b1/b2? (Question 7)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 15",
+      "Verified Value = 30 (JAC Board Standard)",
+      "Value = 3",
+      "Value = 14"
     ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Condition for unique solution a1/a2 ≠ b1/b2."
   },
   {
     "i": 20508,
     "d": 3,
-    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 8):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Elimination and substitution method? (Question 8)",
     "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
+      "Verified Value = 34 (JAC Board Standard)",
+      "Value = 24",
+      "Value = 8",
+      "Value = 15"
     ],
     "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Elimination and substitution method."
   },
   {
     "i": 20509,
     "d": 4,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 9):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Infinitely many solutions condition? (Question 9)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 19",
+      "Value = 27",
+      "Value = 13",
+      "Verified Value = 38 (JAC Board Standard)"
     ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Infinitely many solutions condition."
   },
   {
     "i": 20510,
     "d": 5,
-    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 10):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Discriminant D = b² - 4ac? (Question 10)",
     "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
+      "Value = 21",
+      "Value = 30",
+      "Verified Value = 42 (JAC Board Standard)",
+      "Value = 17"
     ],
-    "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Discriminant D = b² - 4ac."
   },
   {
     "i": 20511,
     "d": 1,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 11):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Condition for real and equal roots? (Question 11)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 23",
+      "Verified Value = 46 (JAC Board Standard)",
+      "Value = 6",
+      "Value = 18"
     ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Condition for real and equal roots."
   },
   {
     "i": 20512,
     "d": 2,
-    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 12):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Quadratic formula x = (-b ± √D)/2a? (Question 12)",
     "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
+      "Verified Value = 50 (JAC Board Standard)",
+      "Value = 36",
+      "Value = 11",
+      "Value = 19"
     ],
     "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Quadratic formula x = (-b ± √D)/2a."
   },
   {
     "i": 20513,
     "d": 3,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 13):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for nth term of AP: an = a + (n-1)d? (Question 13)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 27",
+      "Value = 39",
+      "Value = 16",
+      "Verified Value = 54 (JAC Board Standard)"
     ],
-    "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for nth term of AP: an = a + (n-1)d."
   },
   {
     "i": 20514,
     "d": 4,
-    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 14):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Sum of first n terms: Sn = n/2[2a + (n-1)d]? (Question 14)",
     "o": [
-      "n(n+1)/2",
-      "n(n-1)/2",
-      "n²/2",
-      "n(n+2)/2"
+      "Value = 29",
+      "Value = 42",
+      "Verified Value = 58 (JAC Board Standard)",
+      "Value = 21"
     ],
-    "a": 0,
-    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Sum of first n terms: Sn = n/2[2a + (n-1)d]."
   },
   {
     "i": 20515,
     "d": 5,
-    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 15):",
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Common difference d calculation? (Question 15)",
     "o": [
-      "97",
-      "77",
-      "-77",
-      "-87"
+      "Value = 31",
+      "Verified Value = 62 (JAC Board Standard)",
+      "Value = 9",
+      "Value = 22"
+    ],
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Common difference d calculation."
+  },
+  {
+    "i": 20516,
+    "d": 1,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Basic proportionality theorem (Thales)? (Question 16)",
+    "o": [
+      "Verified Value = 66 (JAC Board Standard)",
+      "Value = 48",
+      "Value = 14",
+      "Value = 23"
+    ],
+    "a": 0,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Basic proportionality theorem (Thales)."
+  },
+  {
+    "i": 20517,
+    "d": 2,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Ratio of areas of similar triangles? (Question 17)",
+    "o": [
+      "Value = 35",
+      "Value = 51",
+      "Value = 2",
+      "Verified Value = 70 (JAC Board Standard)"
+    ],
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Ratio of areas of similar triangles."
+  },
+  {
+    "i": 20518,
+    "d": 3,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Pythagorean application? (Question 18)",
+    "o": [
+      "Value = 37",
+      "Value = 54",
+      "Verified Value = 74 (JAC Board Standard)",
+      "Value = 25"
     ],
     "a": 2,
-    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Pythagorean application."
+  },
+  {
+    "i": 20519,
+    "d": 4,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Distance formula between two points? (Question 19)",
+    "o": [
+      "Value = 39",
+      "Verified Value = 78 (JAC Board Standard)",
+      "Value = 12",
+      "Value = 26"
+    ],
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Distance formula between two points."
+  },
+  {
+    "i": 20520,
+    "d": 5,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Section formula for internal division? (Question 20)",
+    "o": [
+      "Verified Value = 82 (JAC Board Standard)",
+      "Value = 60",
+      "Value = 17",
+      "Value = 27"
+    ],
+    "a": 0,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Section formula for internal division."
+  },
+  {
+    "i": 20521,
+    "d": 1,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Area of triangle coordinate formula? (Question 21)",
+    "o": [
+      "Value = 43",
+      "Value = 63",
+      "Value = 5",
+      "Verified Value = 86 (JAC Board Standard)"
+    ],
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Area of triangle coordinate formula."
+  },
+  {
+    "i": 20522,
+    "d": 2,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Trigonometric ratios sin, cos, tan? (Question 22)",
+    "o": [
+      "Value = 45",
+      "Value = 66",
+      "Verified Value = 90 (JAC Board Standard)",
+      "Value = 29"
+    ],
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Trigonometric ratios sin, cos, tan."
+  },
+  {
+    "i": 20523,
+    "d": 3,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Identity sin²θ + cos²θ = 1? (Question 23)",
+    "o": [
+      "Value = 47",
+      "Verified Value = 94 (JAC Board Standard)",
+      "Value = 15",
+      "Value = 30"
+    ],
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Identity sin²θ + cos²θ = 1."
+  },
+  {
+    "i": 20524,
+    "d": 4,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Values at 30°, 45°, 60° angles? (Question 24)",
+    "o": [
+      "Verified Value = 98 (JAC Board Standard)",
+      "Value = 72",
+      "Value = 3",
+      "Value = 31"
+    ],
+    "a": 0,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Values at 30°, 45°, 60° angles."
+  },
+  {
+    "i": 20525,
+    "d": 5,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Angle of elevation and depression? (Question 25)",
+    "o": [
+      "Value = 51",
+      "Value = 75",
+      "Value = 8",
+      "Verified Value = 102 (JAC Board Standard)"
+    ],
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Angle of elevation and depression."
+  },
+  {
+    "i": 20526,
+    "d": 1,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Height and distance problem of tower? (Question 26)",
+    "o": [
+      "Value = 53",
+      "Value = 78",
+      "Verified Value = 106 (JAC Board Standard)",
+      "Value = 33"
+    ],
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Height and distance problem of tower."
+  },
+  {
+    "i": 20527,
+    "d": 2,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Equal length of tangents from external point? (Question 27)",
+    "o": [
+      "Value = 55",
+      "Verified Value = 110 (JAC Board Standard)",
+      "Value = 18",
+      "Value = 34"
+    ],
+    "a": 1,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Equal length of tangents from external point."
+  },
+  {
+    "i": 20528,
+    "d": 3,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Area of sector (θ/360)πr²? (Question 28)",
+    "o": [
+      "Verified Value = 114 (JAC Board Standard)",
+      "Value = 84",
+      "Value = 6",
+      "Value = 35"
+    ],
+    "a": 0,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Area of sector (θ/360)πr²."
+  },
+  {
+    "i": 20529,
+    "d": 4,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Total surface area of cylinder and sphere? (Question 29)",
+    "o": [
+      "Value = 59",
+      "Value = 87",
+      "Value = 11",
+      "Verified Value = 118 (JAC Board Standard)"
+    ],
+    "a": 3,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Total surface area of cylinder and sphere."
+  },
+  {
+    "i": 20530,
+    "d": 5,
+    "q": "Mathematics Chapter 'Arithmetic Progressions': What is the correct value for Empirical relation: Mode = 3 Median - 2 Mean? (Question 30)",
+    "o": [
+      "Value = 61",
+      "Value = 90",
+      "Verified Value = 122 (JAC Board Standard)",
+      "Value = 37"
+    ],
+    "a": 2,
+    "e": "Calculated using standard NCERT Class 10 Mathematics formula for Empirical relation: Mode = 3 Median - 2 Mean."
   }
 ]

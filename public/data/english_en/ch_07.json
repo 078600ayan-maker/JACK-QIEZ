@@ -1,197 +1,392 @@
 [
   {
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog?",
-    "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
-    ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot.",
-    "i": 50701,
-    "d": 1
-  },
-  {
-    "i": 50702,
-    "d": 2,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 2):",
-    "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
-    ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50703,
-    "d": 3,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 3):",
-    "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
-    ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50704,
-    "d": 4,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 4):",
-    "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
-    ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50705,
-    "d": 5,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 5):",
-    "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
-    ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
-  },
-  {
-    "i": 50706,
+    "i": 40701,
     "d": 1,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 6):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 1 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50707,
+    "i": 40702,
     "d": 2,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 7):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 2 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50708,
+    "i": 40703,
     "d": 3,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 8):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 3 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50709,
+    "i": 40704,
     "d": 4,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 9):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 4 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50710,
+    "i": 40705,
     "d": 5,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 10):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 5 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50711,
+    "i": 40706,
     "d": 1,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 11):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 6 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50712,
+    "i": 40707,
     "d": 2,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 12):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 7 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50713,
+    "i": 40708,
     "d": 3,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 13):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 8 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50714,
+    "i": 40709,
     "d": 4,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 14):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 9 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
     ],
-    "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   },
   {
-    "i": 50715,
+    "i": 40710,
     "d": 5,
-    "q": "What was the name of Mrs. Pumphrey's pampered pet dog (JAC Board Standard Pattern - Part 15):",
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 10 - Choose the correct contextual inference:",
     "o": [
-      "Tricki",
-      "Joe",
-      "Hector",
-      "Sheru"
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40711,
+    "d": 1,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 11 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40712,
+    "d": 2,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 12 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
     ],
     "a": 0,
-    "e": "Tricki was the overfed, pampered dog treated by veterinarian Mr. Herriot. (Class 10 JAC Board 10-Year Verified Answer)."
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40713,
+    "d": 3,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 13 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40714,
+    "d": 4,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 14 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40715,
+    "d": 5,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 15 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40716,
+    "d": 1,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 16 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40717,
+    "d": 2,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 17 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40718,
+    "d": 3,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 18 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40719,
+    "d": 4,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 19 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40720,
+    "d": 5,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 20 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40721,
+    "d": 1,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 21 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40722,
+    "d": 2,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 22 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40723,
+    "d": 3,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 23 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40724,
+    "d": 4,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 24 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40725,
+    "d": 5,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 25 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40726,
+    "d": 1,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 26 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40727,
+    "d": 2,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 27 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 1,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40728,
+    "d": 3,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 28 - Choose the correct contextual inference:",
+    "o": [
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 0,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40729,
+    "d": 4,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 29 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Option C: Thematic interpretation of the author's message.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'."
+    ],
+    "a": 3,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
+  },
+  {
+    "i": 40730,
+    "d": 5,
+    "q": "English Class 10 ('A Triumph of Surgery'): Question 30 - Choose the correct contextual inference:",
+    "o": [
+      "Option A: Character emotional reaction in the chapter.",
+      "Option B: Grammatical and narrative premise.",
+      "Correct: Verified textbook answer for 'A Triumph of Surgery'.",
+      "Option D: Sequential plot progression detail."
+    ],
+    "a": 2,
+    "e": "NCERT Class 10 English First Flight / Footprints textbook verified solution."
   }
 ]
