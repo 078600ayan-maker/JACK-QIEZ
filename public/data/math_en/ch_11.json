@@ -1,0 +1,197 @@
+[
+  {
+    "q": "Area of a sector of angle θ of a circle with radius r is given by:",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr².",
+    "i": 21101,
+    "d": 1
+  },
+  {
+    "i": 21102,
+    "d": 2,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 2):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21103,
+    "d": 3,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21104,
+    "d": 4,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21105,
+    "d": 5,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21106,
+    "d": 1,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21107,
+    "d": 2,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21108,
+    "d": 3,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21109,
+    "d": 4,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21110,
+    "d": 5,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21111,
+    "d": 1,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21112,
+    "d": 2,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21113,
+    "d": 3,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21114,
+    "d": 4,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21115,
+    "d": 5,
+    "q": "Area of a sector of angle θ of a circle with radius r is given by (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "(θ/360) × πr²",
+      "(θ/180) × πr²",
+      "(θ/360) × 2πr",
+      "(θ/180) × 2πr"
+    ],
+    "a": 0,
+    "e": "Sector area formula is (θ / 360) × πr². (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

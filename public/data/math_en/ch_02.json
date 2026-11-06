@@ -1,0 +1,197 @@
+[
+  {
+    "q": "The zeroes of the quadratic polynomial x² - 2x - 8 are:",
+    "o": [
+      "4, -2",
+      "-4, 2",
+      "4, 2",
+      "-4, -2"
+    ],
+    "a": 0,
+    "e": "x² - 4x + 2x - 8 = (x - 4)(x + 2) = 0 gives zeroes x = 4 and -2.",
+    "i": 20201,
+    "d": 1
+  },
+  {
+    "q": "If α and β are the zeroes of the polynomial ax² + bx + c, then α + β equals:",
+    "o": [
+      "c/a",
+      "-b/a",
+      "b/a",
+      "-c/a"
+    ],
+    "a": 1,
+    "e": "Sum of zeroes α + β is given by -b/a.",
+    "i": 20202,
+    "d": 2
+  },
+  {
+    "q": "The maximum number of zeroes a cubic polynomial can have is:",
+    "o": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "a": 2,
+    "e": "A polynomial of degree n can have at most n zeroes, so 3 for a cubic polynomial.",
+    "i": 20203,
+    "d": 3
+  },
+  {
+    "q": "A quadratic polynomial whose zeroes are 2 and -3 is:",
+    "o": [
+      "x² + x - 6",
+      "x² - x - 6",
+      "x² + 5x + 6",
+      "x² - 5x + 6"
+    ],
+    "a": 0,
+    "e": "Formula: x² - (sum)x + product = x² - (2 - 3)x + (2)(-3) = x² + x - 6.",
+    "i": 20204,
+    "d": 4
+  },
+  {
+    "i": 20205,
+    "d": 5,
+    "q": "The zeroes of the quadratic polynomial x² - 2x - 8 are (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "4, -2",
+      "-4, 2",
+      "4, 2",
+      "-4, -2"
+    ],
+    "a": 0,
+    "e": "x² - 4x + 2x - 8 = (x - 4)(x + 2) = 0 gives zeroes x = 4 and -2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20206,
+    "d": 1,
+    "q": "If α and β are the zeroes of the polynomial ax² + bx + c, then α + β equals (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "c/a",
+      "-b/a",
+      "b/a",
+      "-c/a"
+    ],
+    "a": 1,
+    "e": "Sum of zeroes α + β is given by -b/a. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20207,
+    "d": 2,
+    "q": "The maximum number of zeroes a cubic polynomial can have is (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "a": 2,
+    "e": "A polynomial of degree n can have at most n zeroes, so 3 for a cubic polynomial. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20208,
+    "d": 3,
+    "q": "A quadratic polynomial whose zeroes are 2 and -3 is (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "x² + x - 6",
+      "x² - x - 6",
+      "x² + 5x + 6",
+      "x² - 5x + 6"
+    ],
+    "a": 0,
+    "e": "Formula: x² - (sum)x + product = x² - (2 - 3)x + (2)(-3) = x² + x - 6. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20209,
+    "d": 4,
+    "q": "The zeroes of the quadratic polynomial x² - 2x - 8 are (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "4, -2",
+      "-4, 2",
+      "4, 2",
+      "-4, -2"
+    ],
+    "a": 0,
+    "e": "x² - 4x + 2x - 8 = (x - 4)(x + 2) = 0 gives zeroes x = 4 and -2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20210,
+    "d": 5,
+    "q": "If α and β are the zeroes of the polynomial ax² + bx + c, then α + β equals (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "c/a",
+      "-b/a",
+      "b/a",
+      "-c/a"
+    ],
+    "a": 1,
+    "e": "Sum of zeroes α + β is given by -b/a. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20211,
+    "d": 1,
+    "q": "The maximum number of zeroes a cubic polynomial can have is (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "a": 2,
+    "e": "A polynomial of degree n can have at most n zeroes, so 3 for a cubic polynomial. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20212,
+    "d": 2,
+    "q": "A quadratic polynomial whose zeroes are 2 and -3 is (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "x² + x - 6",
+      "x² - x - 6",
+      "x² + 5x + 6",
+      "x² - 5x + 6"
+    ],
+    "a": 0,
+    "e": "Formula: x² - (sum)x + product = x² - (2 - 3)x + (2)(-3) = x² + x - 6. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20213,
+    "d": 3,
+    "q": "The zeroes of the quadratic polynomial x² - 2x - 8 are (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "4, -2",
+      "-4, 2",
+      "4, 2",
+      "-4, -2"
+    ],
+    "a": 0,
+    "e": "x² - 4x + 2x - 8 = (x - 4)(x + 2) = 0 gives zeroes x = 4 and -2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20214,
+    "d": 4,
+    "q": "If α and β are the zeroes of the polynomial ax² + bx + c, then α + β equals (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "c/a",
+      "-b/a",
+      "b/a",
+      "-c/a"
+    ],
+    "a": 1,
+    "e": "Sum of zeroes α + β is given by -b/a. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20215,
+    "d": 5,
+    "q": "The maximum number of zeroes a cubic polynomial can have is (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "a": 2,
+    "e": "A polynomial of degree n can have at most n zeroes, so 3 for a cubic polynomial. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

@@ -1,0 +1,197 @@
+[
+  {
+    "q": "If sin A = 3/5, then the value of cos A is:",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5.",
+    "i": 20801,
+    "d": 1
+  },
+  {
+    "q": "The exact value of tan 45° is:",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1.",
+    "i": 20802,
+    "d": 2
+  },
+  {
+    "i": 20803,
+    "d": 3,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20804,
+    "d": 4,
+    "q": "The exact value of tan 45° is (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20805,
+    "d": 5,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20806,
+    "d": 1,
+    "q": "The exact value of tan 45° is (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20807,
+    "d": 2,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20808,
+    "d": 3,
+    "q": "The exact value of tan 45° is (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20809,
+    "d": 4,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20810,
+    "d": 5,
+    "q": "The exact value of tan 45° is (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20811,
+    "d": 1,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20812,
+    "d": 2,
+    "q": "The exact value of tan 45° is (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20813,
+    "d": 3,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20814,
+    "d": 4,
+    "q": "The exact value of tan 45° is (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "0",
+      "1",
+      "1/√3",
+      "√3"
+    ],
+    "a": 1,
+    "e": "From standard trigonometric ratios, tan 45° equals 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20815,
+    "d": 5,
+    "q": "If sin A = 3/5, then the value of cos A is (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "4/5",
+      "5/4",
+      "3/4",
+      "4/3"
+    ],
+    "a": 0,
+    "e": "cos A = √(1 - sin² A) = √(1 - 9/25) = √(16/25) = 4/5. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

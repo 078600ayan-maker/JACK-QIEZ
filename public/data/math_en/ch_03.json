@@ -1,0 +1,197 @@
+[
+  {
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has:",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution.",
+    "i": 20301,
+    "d": 1
+  },
+  {
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are:",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5.",
+    "i": 20302,
+    "d": 2
+  },
+  {
+    "i": 20303,
+    "d": 3,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20304,
+    "d": 4,
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20305,
+    "d": 5,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20306,
+    "d": 1,
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20307,
+    "d": 2,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20308,
+    "d": 3,
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20309,
+    "d": 4,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20310,
+    "d": 5,
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20311,
+    "d": 1,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20312,
+    "d": 2,
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20313,
+    "d": 3,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20314,
+    "d": 4,
+    "q": "For the equations x + y = 14 and x - y = 4, the values of x and y are (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "x = 9, y = 5",
+      "x = 5, y = 9",
+      "x = 10, y = 4",
+      "x = 8, y = 6"
+    ],
+    "a": 0,
+    "e": "Adding equations: 2x = 18 ⇒ x = 9, then y = 14 - 9 = 5. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20315,
+    "d": 5,
+    "q": "If a₁/a₂ ≠ b₁/b₂, the pair of linear equations has (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "A unique solution",
+      "Infinitely many solutions",
+      "No solution",
+      "Exactly two solutions"
+    ],
+    "a": 0,
+    "e": "When a₁/a₂ ≠ b₁/b₂, lines intersect at a single point yielding a unique solution. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

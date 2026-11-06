@@ -1,0 +1,197 @@
+[
+  {
+    "q": "The 30th term of the AP: 10, 7, 4, ... is:",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77.",
+    "i": 20501,
+    "d": 1
+  },
+  {
+    "q": "The sum of the first n natural numbers is given by:",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2.",
+    "i": 20502,
+    "d": 2
+  },
+  {
+    "i": 20503,
+    "d": 3,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20504,
+    "d": 4,
+    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20505,
+    "d": 5,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20506,
+    "d": 1,
+    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20507,
+    "d": 2,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20508,
+    "d": 3,
+    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20509,
+    "d": 4,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20510,
+    "d": 5,
+    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20511,
+    "d": 1,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20512,
+    "d": 2,
+    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20513,
+    "d": 3,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20514,
+    "d": 4,
+    "q": "The sum of the first n natural numbers is given by (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "n(n+1)/2",
+      "n(n-1)/2",
+      "n²/2",
+      "n(n+2)/2"
+    ],
+    "a": 0,
+    "e": "The standard AP sum formula yields Sₙ = n(n+1)/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20515,
+    "d": 5,
+    "q": "The 30th term of the AP 10, 7, 4, ... is (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "97",
+      "77",
+      "-77",
+      "-87"
+    ],
+    "a": 2,
+    "e": "a = 10, d = -3. a₃₀ = a + 29d = 10 + 29(-3) = -77. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

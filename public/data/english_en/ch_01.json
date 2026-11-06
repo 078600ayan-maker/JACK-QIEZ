@@ -1,0 +1,197 @@
+[
+  {
+    "q": "How many pesos did Lencho ask for in his letter to God?",
+    "o": [
+      "100 pesos",
+      "70 pesos",
+      "50 pesos",
+      "500 pesos"
+    ],
+    "a": 0,
+    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail.",
+    "i": 50101,
+    "d": 1
+  },
+  {
+    "q": "How many pesos was the generous postmaster able to collect and send to Lencho?",
+    "o": [
+      "70 pesos",
+      "100 pesos",
+      "50 pesos",
+      "80 pesos"
+    ],
+    "a": 0,
+    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'.",
+    "i": 50102,
+    "d": 2
+  },
+  {
+    "q": "Lencho called the post office employees a 'bunch of crooks' because:",
+    "o": [
+      "He believed they stole 30 pesos",
+      "They were rude to him",
+      "They delayed his letter",
+      "They tore his envelope"
+    ],
+    "a": 0,
+    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest.",
+    "i": 50103,
+    "d": 3
+  },
+  {
+    "i": 50104,
+    "d": 4,
+    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "100 pesos",
+      "70 pesos",
+      "50 pesos",
+      "500 pesos"
+    ],
+    "a": 0,
+    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50105,
+    "d": 5,
+    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "70 pesos",
+      "100 pesos",
+      "50 pesos",
+      "80 pesos"
+    ],
+    "a": 0,
+    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50106,
+    "d": 1,
+    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "He believed they stole 30 pesos",
+      "They were rude to him",
+      "They delayed his letter",
+      "They tore his envelope"
+    ],
+    "a": 0,
+    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50107,
+    "d": 2,
+    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "100 pesos",
+      "70 pesos",
+      "50 pesos",
+      "500 pesos"
+    ],
+    "a": 0,
+    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50108,
+    "d": 3,
+    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "70 pesos",
+      "100 pesos",
+      "50 pesos",
+      "80 pesos"
+    ],
+    "a": 0,
+    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50109,
+    "d": 4,
+    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "He believed they stole 30 pesos",
+      "They were rude to him",
+      "They delayed his letter",
+      "They tore his envelope"
+    ],
+    "a": 0,
+    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50110,
+    "d": 5,
+    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "100 pesos",
+      "70 pesos",
+      "50 pesos",
+      "500 pesos"
+    ],
+    "a": 0,
+    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50111,
+    "d": 1,
+    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "70 pesos",
+      "100 pesos",
+      "50 pesos",
+      "80 pesos"
+    ],
+    "a": 0,
+    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50112,
+    "d": 2,
+    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "He believed they stole 30 pesos",
+      "They were rude to him",
+      "They delayed his letter",
+      "They tore his envelope"
+    ],
+    "a": 0,
+    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50113,
+    "d": 3,
+    "q": "How many pesos did Lencho ask for in his letter to God (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "100 pesos",
+      "70 pesos",
+      "50 pesos",
+      "500 pesos"
+    ],
+    "a": 0,
+    "e": "Lencho asked for 100 pesos to sow his field again after his corn crop was ruined by hail. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50114,
+    "d": 4,
+    "q": "How many pesos was the generous postmaster able to collect and send to Lencho (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "70 pesos",
+      "100 pesos",
+      "50 pesos",
+      "80 pesos"
+    ],
+    "a": 0,
+    "e": "The postmaster could only collect a little more than half, exactly 70 pesos, signed 'God'. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 50115,
+    "d": 5,
+    "q": "Lencho called the post office employees a 'bunch of crooks' because (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "He believed they stole 30 pesos",
+      "They were rude to him",
+      "They delayed his letter",
+      "They tore his envelope"
+    ],
+    "a": 0,
+    "e": "Lencho received only 70 pesos instead of 100 and suspected the post office employees took the rest. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

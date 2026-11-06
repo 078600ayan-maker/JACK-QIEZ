@@ -1,0 +1,197 @@
+[
+  {
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks:",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels.",
+    "i": 30701,
+    "d": 1
+  },
+  {
+    "i": 30702,
+    "d": 2,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 2):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30703,
+    "d": 3,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30704,
+    "d": 4,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30705,
+    "d": 5,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30706,
+    "d": 1,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30707,
+    "d": 2,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30708,
+    "d": 3,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30709,
+    "d": 4,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30710,
+    "d": 5,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30711,
+    "d": 1,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30712,
+    "d": 2,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30713,
+    "d": 3,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30714,
+    "d": 4,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30715,
+    "d": 5,
+    "q": "In the capital city of Brussels (Belgium), 80% of the population speaks (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "French",
+      "Dutch",
+      "German",
+      "English"
+    ],
+    "a": 0,
+    "e": "80% of people speak French while 20% speak Dutch in Brussels. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

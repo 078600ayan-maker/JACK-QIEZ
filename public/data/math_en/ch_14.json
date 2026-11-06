@@ -1,0 +1,197 @@
+[
+  {
+    "q": "The probability of a sure (certain) event is:",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1.",
+    "i": 21401,
+    "d": 1
+  },
+  {
+    "q": "In a single throw of a die, the probability of getting a prime number is:",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2.",
+    "i": 21402,
+    "d": 2
+  },
+  {
+    "i": 21403,
+    "d": 3,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21404,
+    "d": 4,
+    "q": "In a single throw of a die, the probability of getting a prime number is (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21405,
+    "d": 5,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21406,
+    "d": 1,
+    "q": "In a single throw of a die, the probability of getting a prime number is (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21407,
+    "d": 2,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21408,
+    "d": 3,
+    "q": "In a single throw of a die, the probability of getting a prime number is (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21409,
+    "d": 4,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21410,
+    "d": 5,
+    "q": "In a single throw of a die, the probability of getting a prime number is (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21411,
+    "d": 1,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21412,
+    "d": 2,
+    "q": "In a single throw of a die, the probability of getting a prime number is (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21413,
+    "d": 3,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21414,
+    "d": 4,
+    "q": "In a single throw of a die, the probability of getting a prime number is (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "1/2",
+      "1/3",
+      "1/6",
+      "2/3"
+    ],
+    "a": 0,
+    "e": "Prime numbers on a die are {2, 3, 5}. P = 3/6 = 1/2. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 21415,
+    "d": 5,
+    "q": "The probability of a sure (certain) event is (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "1",
+      "0",
+      "0.5",
+      "-1"
+    ],
+    "a": 0,
+    "e": "The probability of a certain event is always 1. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

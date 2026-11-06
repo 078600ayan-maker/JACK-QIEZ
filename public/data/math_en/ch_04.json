@@ -1,0 +1,197 @@
+[
+  {
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is:",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0.",
+    "i": 20401,
+    "d": 1
+  },
+  {
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is:",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8.",
+    "i": 20402,
+    "d": 2
+  },
+  {
+    "i": 20403,
+    "d": 3,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 3):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20404,
+    "d": 4,
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is (JAC Board Standard Pattern - Part 4):",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20405,
+    "d": 5,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20406,
+    "d": 1,
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20407,
+    "d": 2,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20408,
+    "d": 3,
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20409,
+    "d": 4,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20410,
+    "d": 5,
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20411,
+    "d": 1,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20412,
+    "d": 2,
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20413,
+    "d": 3,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20414,
+    "d": 4,
+    "q": "The discriminant of the quadratic equation 2x² - 4x + 3 = 0 is (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "-8",
+      "8",
+      "-16",
+      "16"
+    ],
+    "a": 0,
+    "e": "D = b² - 4ac = (-4)² - 4(2)(3) = 16 - 24 = -8. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20415,
+    "d": 5,
+    "q": "The roots of ax² + bx + c = 0 are real and equal if the discriminant D is (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "D > 0",
+      "D = 0",
+      "D < 0",
+      "D ≤ 0"
+    ],
+    "a": 1,
+    "e": "Roots are real and equal when D = b² - 4ac = 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

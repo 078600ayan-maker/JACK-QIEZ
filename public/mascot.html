@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Main Character — 3D Pixel Study Buddy AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&amp;family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --emerald: #58CC02;
+    --lime: #80FF44;
+    --neon: #B8FF50;
+    --deep-green: #1E6B07;
+    --glass-bg: rgba(7, 20, 14, 0.72);
+    --glass-border: rgba(128, 255, 110, 0.28);
+    --gold: #FFC800;
+    --bounce: cubic-bezier(.34, 1.56, .64, 1);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 44%, #0b2618 0%, #041009 52%, #020604 100%);
+    font-family: "Nunito", system-ui, -apple-system, sans-serif;
+    color: #EAFFF0;
+  }
+
+  .pixel-font {
+    font-family: "Press Start 2P", monospace;
+  }
+
+  /* ===== 3D WebGL Fullscreen Stage (Clean Focus on Main Character) ===== */
+  #canvas-container {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    cursor: grab;
+    touch-action: none;
+  }
+  #canvas-container:active {
+    cursor: grabbing;
+  }
+
+  body.embedded .bottom-dock,
+  body.embedded .save-fab,
+  body.embedded .study-sheet,
+  body.embedded .speech-wrap {
+    display: none !important;
+  }
+
+  /* ===== Minimalist Top-Right Save Emoji Button ===== */
+  .save-fab {
+    position: fixed;
+    top: 12px;
+    right: 14px;
+    z-index: 40;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    background: rgba(10, 28, 18, 0.76);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1.5px solid rgba(140, 255, 120, 0.38);
+    box-shadow: 0 4px 0 #07170E, 0 10px 26px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+    cursor: pointer;
+    transition: transform 0.12s var(--bounce), border-color 0.2s ease, box-shadow 0.12s ease;
+  }
+  .save-fab:hover {
+    transform: translateY(-2px) scale(1.06);
+    border-color: #B8FF50;
+    box-shadow: 0 6px 0 #07170E, 0 0 20px rgba(88, 204, 2, 0.5);
+  }
+  .save-fab:active {
+    transform: translateY(2px) scale(0.96);
+    box-shadow: 0 1px 0 #07170E;
+  }
+
+  /* ===== Floating Speech & Study HUD Bubble ===== */
+  .speech-wrap {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    width: min(84vw, 560px);
+  }
+
+  .speech-bubble {
+    pointer-events: auto;
+    background: rgba(246, 255, 248, 0.95);
+    backdrop-filter: blur(12px);
+    color: #092112;
+    font-weight: 900;
+    font-size: clamp(13px, 3.4vw, 16.5px);
+    line-height: 1.28;
+    text-align: center;
+    padding: 9px 16px;
+    border-radius: 16px;
+    border: 3px solid var(--emerald);
+    box-shadow: 0 5px 0 var(--deep-green), 0 12px 28px rgba(0, 0, 0, 0.45);
+    position: relative;
+    max-width: 100%;
+    transition: transform 0.2s var(--bounce);
+  }
+  .speech-bubble::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    width: 14px;
+    height: 14px;
+    background: rgba(246, 255, 248, 0.95);
+    border-right: 3px solid var(--emerald);
+    border-bottom: 3px solid var(--emerald);
+    transform: translateX(-50%) rotate(45deg);
+  }
+  .speech-bubble.pop {
+    animation: bubblePop 0.36s var(--bounce);
+  }
+  @keyframes bubblePop {
+    0% { transform: scale(0.6) translateY(8px); opacity: 0; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .status-pills {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    pointer-events: auto;
+  }
+  .status-pill {
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(7, 24, 15, 0.82);
+    border: 1px solid rgba(140, 255, 110, 0.35);
+    color: #B8FF50;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    cursor: pointer;
+  }
+  .status-pill.hidden-pill {
+    display: none;
+  }
+
+  /* ===== Floating 3D Hit / Study Label Popups ===== */
+  .hit-toast {
+    position: fixed;
+    z-index: 30;
+    pointer-events: none;
+    font-weight: 900;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 10px;
+    background: rgba(12, 36, 22, 0.9);
+    border: 1.5px solid #B8FF50;
+    color: #FFFFFF;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+    animation: floatUpFade 1.1s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  @keyframes floatUpFade {
+    0% { transform: translate(-50%, 0) scale(0.7); opacity: 0; }
+    20% { transform: translate(-50%, -12px) scale(1.05); opacity: 1; }
+    100% { transform: translate(-50%, -46px) scale(0.9); opacity: 0; }
+  }
+
+  /* ===== Bottom Glassmorphism Functional Dock ===== */
+  .bottom-dock {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 8px;
+    width: min(96vw, 940px);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 10px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 22px;
+    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  }
+
+  .dock-row {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 3px 4px;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+    align-items: center;
+  }
+  .dock-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip-btn {
+    font: 900 12.5px/1 "Nunito", sans-serif;
+    color: #EAFFF0;
+    background: rgba(16, 40, 26, 0.88);
+    border: 2px solid rgba(110, 235, 60, 0.32);
+    border-radius: 12px;
+    padding: 8px 11px;
+    cursor: pointer;
+    flex: none;
+    scroll-snap-align: center;
+    box-shadow: 0 3px 0 #07150C;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease, border-color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  .chip-btn:hover {
+    border-color: var(--neon);
+  }
+  .chip-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #07150C;
+  }
+  .chip-btn[aria-pressed="true"] {
+    background: linear-gradient(180deg, #88FF36 0%, #58CC02 100%);
+    color: #04200B;
+    border-color: #FFFFFF;
+    box-shadow: 0 3px 0 var(--deep-green), 0 0 14px rgba(88, 204, 2, 0.45);
+  }
+
+  .chip-btn.act {
+    background: linear-gradient(180deg, #FFE359 0%, #FFC800 100%);
+    color: #382400;
+    border-color: #FFF5B8;
+    box-shadow: 0 3px 0 #B58300;
+  }
+  .chip-btn.act:active {
+    box-shadow: 0 1px 0 #B58300;
+  }
+
+  .chip-btn.study-item {
+    background: rgba(18, 46, 34, 0.9);
+    border-color: rgba(128, 255, 219, 0.32);
+  }
+  .chip-btn.study-item[aria-pressed="true"] {
+    background: linear-gradient(180deg, #80FFDB 0%, #2EC4B6 100%);
+    color: #03201C;
+    border-color: #FFFFFF;
+    box-shadow: 0 3px 0 #0F6B61, 0 0 14px rgba(128, 255, 219, 0.45);
+  }
+
+  .chip-btn.closet-trigger {
+    background: linear-gradient(180deg, #B983FF 0%, #8A4FFF 100%);
+    color: #FFFFFF;
+    border-color: #E8D4FF;
+    box-shadow: 0 3px 0 #5120B5;
+  }
+
+  /* ===== Expandable 20-Item Study Lab Drawer (Bottom Sheet) ===== */
+  .study-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0 auto;
+    max-width: 680px;
+    z-index: 50;
+    background: rgba(8, 23, 16, 0.94);
+    backdrop-filter: blur(26px) saturate(190%);
+    -webkit-backdrop-filter: blur(26px) saturate(190%);
+    border: 2px solid rgba(140, 255, 110, 0.4);
+    border-bottom: 0;
+    border-radius: 26px 26px 0 0;
+    padding: 14px 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transform: translateY(108%);
+    transition: transform 0.42s var(--bounce);
+    max-height: min(82dvh, 680px);
+    overflow-y: auto;
+    box-shadow: 0 -18px 50px rgba(0, 0, 0, 0.75);
+  }
+  .study-sheet.open {
+    transform: translateY(0);
+  }
+
+  .grid-20 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+    gap: 7px;
+  }
+
+  @media (max-width: 640px) {
+    .bottom-dock {
+      bottom: 5px;
+      padding: 7px 8px;
+      gap: 5px;
+    }
+    .chip-btn {
+      font-size: 11.5px;
+      padding: 7px 9.5px;
+    }
+    .save-fab {
+      top: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+  }
+</style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.flex{display:flex}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.border-b{border-bottom-width:1px}.border-emerald-500\/30{border-color:rgb(16 185 129 / 0.3)}.pb-2{padding-bottom:0.5rem}.text-base{font-size:1rem;line-height:1.5rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.text-emerald-200\/80{color:rgb(167 243 208 / 0.8)}.text-lime-300{--tw-text-opacity:1;color:rgb(190 242 100 / var(--tw-text-opacity, 1))}@media (min-width: 640px){.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}}</style></head>
+<body>
+
+<!-- 1. Top Minimalist Single Save Emoji Button (Exports Full Single-File HTML + Saves Upgrade State) -->
+<button type="button" class="save-fab" id="saveHtmlBtn" title="Save &amp; Export Standalone Single-File HTML">
+  💾
+</button>
+
+<!-- 2. Top Center Study Buddy Speech Bubble & Interactive Pomodoro / Streak Pills -->
+<div class="speech-wrap">
+  <div class="speech-bubble pop" id="sayBubble" role="status">
+    नमस्ते! मैं तुम्हारा 3D Pixel **Main Character** Study Buddy हूँ! चलो पढ़ाई शुरू करें! 🚀
+  </div>
+  <div class="status-pills">
+    <div class="status-pill" id="pomoPill" title="Click to Pause/Resume Pomodoro Study Timer">
+      <span>⏱️</span><span id="pomoText">24:58</span>
+    </div>
+    <div class="status-pill" id="streakPill" title="Click to Boost Study Streak!">
+      <span>🔥</span><span id="streakText">Streak: 14 Days</span>
+    </div>
+    <div class="status-pill" id="activeCountPill" title="Click to Open All 20 Study Upgrades">
+      <span>✨</span><span id="activeCountText">16/20 Study Gear</span>
+    </div>
+    <div class="status-pill" id="sfxPill" title="Toggle 8-Bit Voice &amp; Chiptune Sound">
+      <span id="sfxIcon">🔊</span><span>Voice</span>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Fullscreen 3D WebGL Turntable Stage (Main Character Centerpiece) -->
+<div id="canvas-container" aria-label="Interactive 3D Pixelated Main Character on Round Turntable"></div>
+
+<!-- 4. Bottom Glassmorphism Functional Control Dock -->
+<nav class="bottom-dock" aria-label="Main Character Controls &amp; 20 Study Buddy Features">
+  <!-- Row 1: 9 Expressive Pixel Moods (Silent Idle vs Active Mouth) -->
+  <div class="dock-row" id="moodRow">
+    <button type="button" class="chip-btn" data-mood="happy" aria-pressed="true">😊 Calm (Silent)</button>
+    <button type="button" class="chip-btn" data-mood="laugh" aria-pressed="false">😆 Laugh (&gt; &lt;)</button>
+    <button type="button" class="chip-btn" data-mood="wink" aria-pressed="false">😉 Wink</button>
+    <button type="button" class="chip-btn" data-mood="wow" aria-pressed="false">🤩 Wow (O)</button>
+    <button type="button" class="chip-btn" data-mood="love" aria-pressed="false">😍 Love</button>
+    <button type="button" class="chip-btn" data-mood="shock" aria-pressed="false">😱 Exam Shock</button>
+    <button type="button" class="chip-btn" data-mood="cool" aria-pressed="false">😎 Topper Cool</button>
+    <button type="button" class="chip-btn" data-mood="sleepy" aria-pressed="false">😴 Power Nap</button>
+    <button type="button" class="chip-btn" data-mood="sad" aria-pressed="false">😢 Tough Topic</button>
+  </div>
+
+  <!-- Row 2: 3D Actions, 4-Leg Walk, Back Tail Wag, Turntable Spin & Study Lab -->
+  <div class="dock-row" id="actRow">
+    <button type="button" class="chip-btn closet-trigger" id="openLabBtn">🎒 20 Study Upgrades</button>
+    <button type="button" class="chip-btn act" data-act="wave">👋 Wave Arm</button>
+    <button type="button" class="chip-btn act" data-act="both">🙌 Both Arms</button>
+    <button type="button" class="chip-btn act" data-act="walk">🐾 4-Leg March</button>
+    <button type="button" class="chip-btn act" data-act="tail">🐕 Wag Tail</button>
+    <button type="button" class="chip-btn act" data-act="ears">🐰 Bunny Ears</button>
+    <button type="button" class="chip-btn act" data-act="dance">💃 Study Dance</button>
+    <button type="button" class="chip-btn act" data-act="spin">🌀 360° Table</button>
+    <button type="button" class="chip-btn act" data-act="cheer">🎉 Level Up</button>
+    <button type="button" class="chip-btn act" data-act="jump">🚀 Super Jump</button>
+    <button type="button" class="chip-btn act" data-act="quiz">🧠 AI Study Tip</button>
+  </div>
+
+  <!-- Row 3: Quick-Scroll Bar for All 20 3D Study Buddy Upgrades on Main Character -->
+  <div class="dock-row" id="quickStudyRow"><button type="button" class="chip-btn study-item" data-upgrade-id="gradCap" aria-pressed="true"><span>1. 🎓</span><span>Grad Mortarboard</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="headphones" aria-pressed="true"><span>2. 🎧</span><span>Lo-Fi Headphones</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="nerdGlasses" aria-pressed="true"><span>3. 🤓</span><span>Scholar Glasses</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="holoVisor" aria-pressed="false"><span>4. 🕶️</span><span>AR Study Visor</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="goldCrown" aria-pressed="false"><span>5. 👑</span><span>Exam Topper Crown</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="backpack" aria-pressed="true"><span>6. 🎒</span><span>3D Study Backpack</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="openBook" aria-pressed="true"><span>7. 📘</span><span>Floating Textbook</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="giantPencil" aria-pressed="true"><span>8. ✏️</span><span>Pixel Pencil</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="holoLaptop" aria-pressed="true"><span>9. 💻</span><span>Holo-Code Laptop</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="coffeeMug" aria-pressed="true"><span>10. ☕</span><span>Hot Matcha Mug</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="pomoCube" aria-pressed="true"><span>11. ⏱️</span><span>Pomodoro 3D Cube</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="streakFlame" aria-pressed="true"><span>12. 🔥</span><span>3D Streak Flame</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="ideaBulb" aria-pressed="true"><span>13. 💡</span><span>Eureka Lightbulb</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="brainHalo" aria-pressed="true"><span>14. 🧠</span><span>Focus Halo Ring</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="focusShield" aria-pressed="false"><span>15. 🛡️</span><span>No-Distract Shield</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="chemFlask" aria-pressed="true"><span>16. 🧪</span><span>Science Lab Flask</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="mathOrbit" aria-pressed="true"><span>17. 📐</span><span>Math Pi Orbit</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="goldTrophy" aria-pressed="true"><span>18. 🏆</span><span>A+ Rank Trophy</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="hoverboard" aria-pressed="false"><span>19. 🛹</span><span>Cyber Hoverboard</span></button><button type="button" class="chip-btn study-item" data-upgrade-id="auraMatrix" aria-pressed="true"><span>20. ✨</span><span>A+ Aura Particles</span></button></div>
+</nav>
+
+<!-- 5. Full 20-Upgrade Study Buddy Closet & Turntable Customizer Sheet -->
+<section class="study-sheet" id="studySheet" aria-hidden="true">
+  <div class="flex items-center justify-between border-b border-emerald-500/30 pb-2">
+    <div>
+      <h2 class="text-base sm:text-lg font-black text-lime-300">🎓 Main Character — 20 Study Buddy 3D Upgrades</h2>
+      <p class="text-xs text-emerald-200/80">Tap any item to equip/unequip in real-time 3D on the Main Character &amp; Round Table!</p>
+    </div>
+    <button type="button" class="chip-btn" id="closeLabBtn" style="background:#58CC02;color:#04200B;border-color:#fff">✅ Done</button>
+  </div>
+
+  <div class="flex flex-wrap gap-2 justify-center">
+    <button type="button" class="chip-btn act" id="equipAll20Btn">🌟 Equip All 20 Study Things!</button>
+    <button type="button" class="chip-btn" id="equipStarterBtn">📘 Starter Scholar Pack</button>
+    <button type="button" class="chip-btn" id="randomPackBtn">🎲 Surprise Study Loadout</button>
+    <button type="button" class="chip-btn" id="clearAll20Btn">🧹 Clean Classic Character</button>
+    <button type="button" class="chip-btn" id="autoRotateBtn" aria-pressed="false">🔄 Auto-Rotate Table</button>
+  </div>
+
+  <div class="grid-20" id="grid20Container"><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="gradCap" aria-pressed="true"><span>#1 🎓</span><span class="truncate">Grad Mortarboard</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="headphones" aria-pressed="true"><span>#2 🎧</span><span class="truncate">Lo-Fi Headphones</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="nerdGlasses" aria-pressed="true"><span>#3 🤓</span><span class="truncate">Scholar Glasses</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="holoVisor" aria-pressed="false"><span>#4 🕶️</span><span class="truncate">AR Study Visor</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="goldCrown" aria-pressed="false"><span>#5 👑</span><span class="truncate">Exam Topper Crown</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="backpack" aria-pressed="true"><span>#6 🎒</span><span class="truncate">3D Study Backpack</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="openBook" aria-pressed="true"><span>#7 📘</span><span class="truncate">Floating Textbook</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="giantPencil" aria-pressed="true"><span>#8 ✏️</span><span class="truncate">Pixel Pencil</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="holoLaptop" aria-pressed="true"><span>#9 💻</span><span class="truncate">Holo-Code Laptop</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="coffeeMug" aria-pressed="true"><span>#10 ☕</span><span class="truncate">Hot Matcha Mug</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="pomoCube" aria-pressed="true"><span>#11 ⏱️</span><span class="truncate">Pomodoro 3D Cube</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="streakFlame" aria-pressed="true"><span>#12 🔥</span><span class="truncate">3D Streak Flame</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="ideaBulb" aria-pressed="true"><span>#13 💡</span><span class="truncate">Eureka Lightbulb</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="brainHalo" aria-pressed="true"><span>#14 🧠</span><span class="truncate">Focus Halo Ring</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="focusShield" aria-pressed="false"><span>#15 🛡️</span><span class="truncate">No-Distract Shield</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="chemFlask" aria-pressed="true"><span>#16 🧪</span><span class="truncate">Science Lab Flask</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="mathOrbit" aria-pressed="true"><span>#17 📐</span><span class="truncate">Math Pi Orbit</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="goldTrophy" aria-pressed="true"><span>#18 🏆</span><span class="truncate">A+ Rank Trophy</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="hoverboard" aria-pressed="false"><span>#19 🛹</span><span class="truncate">Cyber Hoverboard</span></button><button type="button" class="chip-btn study-item justify-start" data-upgrade-id="auraMatrix" aria-pressed="true"><span>#20 ✨</span><span class="truncate">A+ Aura Particles</span></button></div>
+</section>
+
+<script>
+(() => {
+  // ============================================================================
+  // 1. 20 DISTINCT 3D STUDY BUDDY UPGRADES DEFINITION
+  // ============================================================================
+  const STUDY_UPGRADES = [
+    { id: 'gradCap',     num: 1,  icon: '🎓', name: 'Grad Mortarboard',   msg: 'ग्रेजुएशन कैप पहन ली! अब हम टॉपर बनेंगे! 🎓' },
+    { id: 'headphones',  num: 2,  icon: '🎧', name: 'Lo-Fi Headphones',   msg: 'Lo-Fi Study Beats ऑन! ज़ीरो डिस्ट्रैक्शन! 🎧' },
+    { id: 'nerdGlasses', num: 3,  icon: '🤓', name: 'Scholar Glasses',    msg: 'पिक्सल स्कॉलर चश्मा! IQ +100 बूस्ट! 🤓' },
+    { id: 'holoVisor',   num: 4,  icon: '🕶️', name: 'AR Study Visor',     msg: 'AR होलो-वाइज़र में सारे फॉर्मूले दिख रहे हैं! 🕶️' },
+    { id: 'goldCrown',   num: 5,  icon: '👑', name: 'Exam Topper Crown',  msg: 'एग्जाम टॉपर गोल्ड क्राउन! 👑' },
+    { id: 'backpack',    num: 6,  icon: '🎒', name: '3D Study Backpack',  msg: 'पीठ पर 3D स्टडी बैगपैक तैयार है! 🎒' },
+    { id: 'openBook',    num: 7,  icon: '📘', name: 'Floating Textbook',  msg: '3D फ्लोटिंग किताब के पन्ने खुल गए! 📘' },
+    { id: 'giantPencil', num: 8,  icon: '✏️', name: 'Pixel Pencil',       msg: 'मेगा पिक्सल पेंसिल से नोट्स लिखो! ✏️' },
+    { id: 'holoLaptop',  num: 9,  icon: '💻', name: 'Holo-Code Laptop',   msg: '3D लैपटॉप पर कोडिंग और AI प्रैक्टिस! 💻' },
+    { id: 'coffeeMug',   num: 10, icon: '☕', name: 'Hot Matcha Mug',     msg: 'गरमा-गरम माचा कॉफी! लेट नाइट स्टडी एनर्जी! ☕' },
+    { id: 'pomoCube',    num: 11, icon: '⏱️', name: 'Pomodoro 3D Cube',   msg: '25 मिनट का फोकस पोमोडोरो क्यूब एक्टिव! ⏱️' },
+    { id: 'streakFlame', num: 12, icon: '🔥', name: '3D Streak Flame',    msg: 'पढ़ाई की स्ट्रीक बुझने मत देना! 🔥' },
+    { id: 'ideaBulb',    num: 13, icon: '💡', name: 'Eureka Lightbulb',   msg: 'यूरेका! दिमाग की बत्ती जल गई! 💡' },
+    { id: 'brainHalo',   num: 14, icon: '🧠', name: 'Focus Halo Ring',    msg: 'ब्रेन-बूस्ट नियॉन हेलो रिंग एक्टिव! 🧠' },
+    { id: 'focusShield', num: 15, icon: '🛡️', name: 'No-Distract Shield', msg: 'डिस्ट्रैक्शन ब्लॉकर एनर्जी शील्ड ऑन! 🛡️' },
+    { id: 'chemFlask',   num: 16, icon: '🧪', name: 'Science Lab Flask',  msg: 'केमिस्ट्री और साइंस एक्सपेरिमेंट रेडी! 🧪' },
+    { id: 'mathOrbit',   num: 17, icon: '📐', name: 'Math Pi Orbit',      msg: 'मैथ्स और ज्योमेट्री ऑर्बिट घूम रहा है! 📐' },
+    { id: 'goldTrophy',  num: 18, icon: '🏆', name: 'A+ Rank Trophy',     msg: '100% मार्क्स की गोल्डन ट्रॉफी! 🏆' },
+    { id: 'hoverboard',  num: 19, icon: '🛹', name: 'Cyber Hoverboard',   msg: 'चारों पैरों के नीचे 3D साइबर होवरबोर्ड! 🛹' },
+    { id: 'auraMatrix',  num: 20, icon: '✨', name: 'A+ Aura Particles',  msg: 'सुपर स्टडी ऑरा और A+ स्टार्स चमक रहे हैं! ✨' }
+  ];
+
+  const STUDY_TIPS = [
+    '💡 AI Tip: 25 मिनट पूरे ध्यान से पढ़ो, फिर 5 मिनट मेरे साथ डांस ब्रेक लो!',
+    '🧠 Feynman Trick: जो टॉपिक पढ़ा है, उसे बोलकर मुझे समझाओ—तुरंत याद हो जाएगा!',
+    '📘 Active Recall: किताब बंद करके 3 मुख्य पॉइंट्स याद करने की कोशिश करो!',
+    '💧 Hydration Check: एक घूंट पानी पियो! हाइड्रेटेड दिमाग 20% तेज़ चलता है!',
+    '🔥 Topper Secret: रोज़ थोड़ा-थोड़ा पढ़ना एक रात पहले रटने से 10 गुना बेहतर है!',
+    '✨ शाबाश! तुम आज अपने कल के वर्ज़न से ज़्यादा स्मार्ट बन रहे हो!'
+  ];
+
+  // Default state: Equip a rich set of study items so the character immediately looks like an awesome 3D Study Buddy, or load saved state
+  const DEFAULT_ACTIVE = [
+    'gradCap', 'headphones', 'nerdGlasses', 'backpack', 'openBook',
+    'giantPencil', 'holoLaptop', 'coffeeMug', 'pomoCube', 'streakFlame',
+    'ideaBulb', 'brainHalo', 'chemFlask', 'mathOrbit', 'goldTrophy', 'auraMatrix'
+  ];
+
+  let activeUpgrades = new Set(DEFAULT_ACTIVE);
+  try {
+    const saved = localStorage.getItem('mainChar3D_upgrades_v1');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) activeUpgrades = new Set(parsed);
+    }
+  } catch (e) {}
+
+  // ============================================================================
+  // 2. WEB AUDIO 8-BIT CHIPTUNE & TALKING MOUTH VOICE SYNTHESIZER
+  // ============================================================================
+  let audioCtx = null;
+  let soundEnabled = true;
+  let mouthTalkTimer = null;
+  let isTalking = false;
+  let currentMood = 'happy';
+  let currentAction = 'idle';
+  let actionTimer = null;
+
+  const ensureAudio = () => {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+  };
+
+  const playTone = (freq = 520, dur = 0.065, type = 'square', vol = 0.06, slideTo = null) => {
+    if (!soundEnabled) return;
+    try {
+      ensureAudio();
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, now + dur);
+      gain.gain.setValueAtTime(vol, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + dur);
+    } catch (e) {}
+  };
+
+  const sfx = {
+    talkBlip: (mood = 'happy') => {
+      const base = { happy: 540, laugh: 690, wink: 610, wow: 640, love: 590, shock: 780, cool: 440, sleepy: 320, sad: 290 }[mood] || 540;
+      [0, 65, 130, 195, 260, 325].forEach((d, i) => {
+        setTimeout(() => playTone(base + (i % 2 ? 95 : -45) + (Math.random() * 60 - 30), 0.05, 'square', 0.055), d);
+      });
+    },
+    jump: () => {
+      playTone(260, 0.15, 'square', 0.08, 760);
+      setTimeout(() => playTone(760, 0.12, 'triangle', 0.07, 980), 85);
+    },
+    cheer: () => {
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
+        setTimeout(() => playTone(f, i === 3 ? 0.22 : 0.085, 'square', 0.075), i * 75)
+      );
+    },
+    equip: () => {
+      [440, 660, 880].forEach((f, i) =>
+        setTimeout(() => playTone(f, 0.06, 'triangle', 0.07), i * 50)
+      );
+    },
+    pop: () => playTone(620, 0.06, 'sine', 0.08, 880)
+  };
+
+  // Trigger animated mouth opening while speaking/acting, then return to silent mouth in calm idle
+  const triggerTalkingMouth = (durationMs = 1900) => {
+    isTalking = true;
+    clearTimeout(mouthTalkTimer);
+    mouthTalkTimer = setTimeout(() => {
+      isTalking = false;
+      updateFaceTexture();
+    }, durationMs);
+  };
+
+  const speakBubble = (text, mood = currentMood, withVoice = true) => {
+    const bubble = document.getElementById('sayBubble');
+    bubble.textContent = text;
+    bubble.classList.remove('pop');
+    void bubble.offsetWidth;
+    bubble.classList.add('pop');
+
+    triggerTalkingMouth(2100);
+    if (withVoice) {
+      sfx.talkBlip(mood);
+      if (soundEnabled && 'speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text.replace(/[^\p{L}\p{N}\s!?.]/gu, ''));
+          u.lang = 'hi-IN';
+          u.pitch = mood === 'sad' || mood === 'sleepy' ? 1.05 : 1.55;
+          u.rate = 1.12;
+          u.volume = 0.55;
+          window.speechSynthesis.speak(u);
+        } catch (e) {}
+      }
+    }
+  };
+
+  // ============================================================================
+  // 3. THREE.JS 3D VOXEL ENGINE SETUP (PIXEL-CRISP TEXTURES & GLASS TURNTABLE)
+  // ============================================================================
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+
+  const camera = new THREE.PerspectiveCamera(38, window.innerWidth / window.innerHeight, 0.1, 120);
+  camera.position.set(0, 2.2, 13.8);
+  camera.lookAt(0, 0.45, 0);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  container.appendChild(renderer.domElement);
+
+  // Studio Lighting for 3D Voxel Depth & Glassmorphism Highlights
+  const ambientLight = new THREE.AmbientLight(0xd8ffe4, 0.78);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 0.92);
+  keyLight.position.set(6, 12, 9);
+  keyLight.castShadow = true;
+  keyLight.shadow.mapSize.width = 1024;
+  keyLight.shadow.mapSize.height = 1024;
+  keyLight.shadow.bias = -0.001;
+  scene.add(keyLight);
+
+  const rimLightLeft = new THREE.DirectionalLight(0x80ffdb, 0.55);
+  rimLightLeft.position.set(-8, 5, -6);
+  scene.add(rimLightLeft);
+
+  const rimLightRight = new THREE.PointLight(0x58cc02, 0.8, 18);
+  rimLightRight.position.set(5, 3, 4);
+  scene.add(rimLightRight);
+
+  // Root Turntable Group (Rotates 360° smoothly via drag or auto-spin)
+  const worldGroup = new THREE.Group();
+  worldGroup.position.y = -0.55;
+  scene.add(worldGroup);
+
+  // Helper to create crisp pixel-art canvas textures (NearestFilter)
+  function makePixelTexture(drawFn, size = 64) {
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    const ctx = c.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    drawFn(ctx, size);
+    const tex = new THREE.CanvasTexture(c);
+    tex.magFilter = THREE.NearestFilter;
+    tex.minFilter = THREE.NearestFilter;
+    tex.needsUpdate = true;
+    return { tex, canvas: c, ctx };
+  }
+
+  // Pixelated Voxel Skin Texture (Hybrid of Blub.png soft voxel gradient + Picsart Green Character palette)
+  const bodySideSkin = makePixelTexture((ctx, s) => {
+    const g = 8; // 8x8 pixel grid
+    const step = s / g;
+    const palette = [
+      ['#9BFF38','#8CF82B','#7CE828','#7CE828','#7CE828','#7CE828','#8CF82B','#9BFF38'],
+      ['#8CF82B','#66D814','#58CC02','#58CC02','#58CC02','#58CC02','#66D814','#7CE828'],
+      ['#7CE828','#58CC02','#46B002','#46B002','#46B002','#46B002','#58CC02','#66D814'],
+      ['#66D814','#46B002','#3E9E02','#3E9E02','#3E9E02','#3E9E02','#46B002','#58CC02'],
+      ['#58CC02','#46B002','#3E9E02','#368D02','#368D02','#3E9E02','#46B002','#58CC02'],
+      ['#58CC02','#3E9E02','#368D02','#2E7C02','#2E7C02','#368D02','#3E9E02','#46B002'],
+      ['#46B002','#368D02','#2E7C02','#266B02','#266B02','#2E7C02','#368D02','#3E9E02'],
+      ['#368D02','#266B02','#1E5802','#1E5802','#1E5802','#1E5802','#266B02','#2E7C02']
+    ];
+    for (let y = 0; y < g; y++) {
+      for (let x = 0; x < g; x++) {
+        ctx.fillStyle = palette[y][x];
+        ctx.fillRect(x * step, y * step, step, step);
+      }
+    }
+    // Bright neon border highlight like Picsart green character
+    ctx.strokeStyle = '#A8FF48';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(1, 1, s - 2, s - 2);
+  }, 64);
+
+  // ============================================================================
+  // 4. DYNAMIC PIXEL FACE & SILENT/OPEN MOUTH CANVAS TEXTURE
+  // ============================================================================
+  const faceCanvasObj = makePixelTexture(() => {}, 128);
+
+  function updateFaceTexture(talkFrame = 0) {
+    const ctx = faceCanvasObj.ctx;
+    const s = 128;
+    ctx.clearRect(0, 0, s, s);
+
+    // Outer bright green pixel frame (Matches Picsart green square border)
+    ctx.fillStyle = '#52C402';
+    ctx.fillRect(0, 0, s, s);
+
+    // Subtle voxel corner pixels (Blub.png style)
+    ctx.fillStyle = '#88FA2E';
+    ctx.fillRect(0, 0, s, 8);
+    ctx.fillRect(0, 0, 8, s);
+    ctx.fillStyle = '#2B7A04';
+    ctx.fillRect(0, s - 8, s, 8);
+    ctx.fillRect(s - 8, 0, 8, s);
+
+    // Inner darker green inset screen (Exact match to Picsart_26-11-05_11-53-57-100.jpg)
+    ctx.fillStyle = '#1E8E04';
+    ctx.fillRect(16, 16, 96, 96);
+
+    // Top-left glassmorphism pixel shine inside screen
+    ctx.fillStyle = 'rgba(184, 255, 80, 0.18)';
+    ctx.fillRect(20, 20, 28, 6);
+    ctx.fillRect(20, 26, 12, 6);
+
+    const mood = currentMood;
+
+    // ---- EYES RENDERING (Exact Square Black Pixel Eyes by default + 9 Moods) ----
+    if (mood === 'happy' || mood === 'wink') {
+      // Left Square Black Pixel Eye (Exact Picsart proportion)
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(26, 36, 26, 26);
+      // Subtle optional upper-left pixel glint
+      ctx.fillStyle = '#E8FFF0';
+      ctx.fillRect(30, 40, 6, 6);
+
+      if (mood === 'happy') {
+        // Right Square Black Pixel Eye
+        ctx.fillStyle = '#040B06';
+        ctx.fillRect(76, 36, 26, 26);
+        ctx.fillStyle = '#E8FFF0';
+        ctx.fillRect(80, 40, 6, 6);
+      } else {
+        // Wink Right Eye '<'
+        ctx.fillStyle = '#040B06';
+        ctx.fillRect(92, 38, 8, 6);
+        ctx.fillRect(84, 43, 8, 6);
+        ctx.fillRect(76, 48, 8, 6);
+        ctx.fillRect(84, 53, 8, 6);
+        ctx.fillRect(92, 58, 8, 6);
+      }
+    } else if (mood === 'laugh') {
+      // '> <' Squinting Pixel Eyes
+      ctx.fillStyle = '#040B06';
+      // Left '>'
+      ctx.fillRect(26, 38, 8, 6);
+      ctx.fillRect(34, 43, 8, 6);
+      ctx.fillRect(42, 48, 8, 6);
+      ctx.fillRect(34, 53, 8, 6);
+      ctx.fillRect(26, 58, 8, 6);
+      // Right '<'
+      ctx.fillRect(94, 38, 8, 6);
+      ctx.fillRect(86, 43, 8, 6);
+      ctx.fillRect(78, 48, 8, 6);
+      ctx.fillRect(86, 53, 8, 6);
+      ctx.fillRect(94, 58, 8, 6);
+    } else if (mood === 'wow') {
+      // Big Starry Pixel Eyes
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(24, 34, 30, 30);
+      ctx.fillRect(74, 34, 30, 30);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(28, 38, 10, 10);
+      ctx.fillRect(78, 38, 10, 10);
+      ctx.fillStyle = '#80FFDB';
+      ctx.fillRect(42, 52, 6, 6);
+      ctx.fillRect(92, 52, 6, 6);
+    } else if (mood === 'love') {
+      // 8-Bit Pixel Hearts
+      ctx.fillStyle = '#FF2A6D';
+      const drawHeart = (ox, oy) => {
+        ctx.fillRect(ox + 4, oy, 8, 6);
+        ctx.fillRect(ox + 16, oy, 8, 6);
+        ctx.fillRect(ox, oy + 6, 28, 10);
+        ctx.fillRect(ox + 4, oy + 16, 20, 6);
+        ctx.fillRect(ox + 10, oy + 22, 8, 6);
+      };
+      drawHeart(25, 36);
+      drawHeart(75, 36);
+    } else if (mood === 'shock') {
+      // Wide White Pixel Eyes with Tiny Pupils
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(24, 34, 28, 28);
+      ctx.fillRect(76, 34, 28, 28);
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(34, 44, 8, 8);
+      ctx.fillRect(86, 44, 8, 8);
+    } else if (mood === 'cool') {
+      // Pixel Sunglasses
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(16, 40, 96, 6);
+      ctx.fillRect(24, 40, 34, 22);
+      ctx.fillRect(70, 40, 34, 22);
+      ctx.fillStyle = '#80FFDB';
+      ctx.fillRect(28, 44, 8, 6);
+      ctx.fillRect(34, 50, 8, 6);
+      ctx.fillRect(74, 44, 8, 6);
+      ctx.fillRect(80, 50, 8, 6);
+    } else if (mood === 'sleepy') {
+      // '^ ^' Closed Pixel Arch Eyes
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(26, 52, 6, 6);
+      ctx.fillRect(32, 46, 14, 6);
+      ctx.fillRect(46, 52, 6, 6);
+
+      ctx.fillRect(76, 52, 6, 6);
+      ctx.fillRect(82, 46, 14, 6);
+      ctx.fillRect(96, 52, 6, 6);
+    } else if (mood === 'sad') {
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(26, 40, 26, 22);
+      ctx.fillRect(76, 40, 26, 22);
+      // Pixel tear streams
+      ctx.fillStyle = '#4DD8FF';
+      ctx.fillRect(34, 62, 8, 16);
+      ctx.fillRect(84, 62, 8, 16);
+    }
+
+    // ---- MOUTH RENDERING: SILENT BY DEFAULT IN IDLE, OPENS WHEN TALKING OR IN ACTIVE EMOTION ----
+    // Requirement: "the mouth has a silent when animation and animation in the action will appear when the mouth will open and shows"
+    const showActiveMouth = isTalking || currentAction !== 'idle' || ['laugh', 'wow', 'shock', 'sad'].includes(mood);
+
+    if (showActiveMouth) {
+      // Cute pixel blush cheeks when active/talking
+      ctx.fillStyle = 'rgba(255, 105, 155, 0.55)';
+      ctx.fillRect(20, 68, 12, 6);
+      ctx.fillRect(96, 68, 12, 6);
+
+      if (mood === 'wow') {
+        // Pixel 'O' Mouth
+        ctx.fillStyle = '#040B06';
+        ctx.fillRect(56, 74, 16, 20);
+        ctx.fillStyle = '#FF5C8A';
+        ctx.fillRect(60, 82, 8, 8);
+      } else if (mood === 'shock') {
+        // Zig-zag / Wide Shock Mouth
+        ctx.fillStyle = '#040B06';
+        ctx.fillRect(48, 76, 32, 14);
+        ctx.fillStyle = '#FF5C8A';
+        ctx.fillRect(54, 82, 20, 6);
+      } else if (mood === 'sad') {
+        // Pixel Frown
+        ctx.fillStyle = '#040B06';
+        ctx.fillRect(52, 78, 24, 6);
+        ctx.fillRect(46, 84, 6, 6);
+        ctx.fillRect(76, 84, 6, 6);
+      } else {
+        // Animated Talking / Laughing Open Pixel Mouth
+        const openH = (talkFrame % 2 === 0) ? 16 : 10;
+        ctx.fillStyle = '#040B06';
+        ctx.fillRect(48, 74, 32, openH);
+        // White pixel teeth bar on top
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(52, 74, 24, 4);
+        // Pink pixel tongue at bottom
+        if (openH > 12) {
+          ctx.fillStyle = '#FF5C8A';
+          ctx.fillRect(54, 82, 20, 6);
+        }
+      }
+    }
+    // When silent & calm idle: No mouth drawn, matching the clean silent green reference character!
+
+    faceCanvasObj.tex.needsUpdate = true;
+  }
+  updateFaceTexture(0);
+
+  // ============================================================================
+  // 5. BUILD THE 3D ROUND GLASSMORPHIC TURNTABLE PLATFORM
+  // ============================================================================
+  const turntableGroup = new THREE.Group();
+  worldGroup.add(turntableGroup);
+
+  // Base metallic obsidian disc
+  const baseDiscGeo = new THREE.CylinderGeometry(4.3, 4.6, 0.45, 48);
+  const baseDiscMat = new THREE.MeshStandardMaterial({
+    color: 0x091e14,
+    roughness: 0.25,
+    metalness: 0.65
+  });
+  const baseDisc = new THREE.Mesh(baseDiscGeo, baseDiscMat);
+  baseDisc.position.y = -2.15;
+  baseDisc.receiveShadow = true;
+  turntableGroup.add(baseDisc);
+
+  // Top translucent glassmorphic study pad
+  const glassTopGeo = new THREE.CylinderGeometry(4.1, 4.1, 0.12, 48);
+  const glassTopMat = new THREE.MeshPhysicalMaterial({
+    color: 0x58cc02,
+    transparent: true,
+    opacity: 0.28,
+    roughness: 0.1,
+    metalness: 0.1,
+    clearcoat: 1.0
+  });
+  const glassTop = new THREE.Mesh(glassTopGeo, glassTopMat);
+  glassTop.position.y = -1.88;
+  glassTop.receiveShadow = true;
+  turntableGroup.add(glassTop);
+
+  // Glowing Neon Emerald Outer Ring on Turntable
+  const ringGeo = new THREE.TorusGeometry(4.22, 0.07, 16, 64);
+  const ringMat = new THREE.MeshBasicMaterial({ color: 0x9bff38 });
+  const neonRing = new THREE.Mesh(ringGeo, ringMat);
+  neonRing.rotation.x = Math.PI / 2;
+  neonRing.position.y = -1.92;
+  turntableGroup.add(neonRing);
+
+  // Inner Pixel Grid Ring
+  const innerRingGeo = new THREE.TorusGeometry(2.85, 0.035, 12, 48);
+  const innerRingMat = new THREE.MeshBasicMaterial({ color: 0x80ffdb });
+  const innerRing = new THREE.Mesh(innerRingGeo, innerRingMat);
+  innerRing.rotation.x = Math.PI / 2;
+  innerRing.position.y = -1.81;
+  turntableGroup.add(innerRing);
+
+  // ============================================================================
+  // 6. BUILD THE 3D PIXELATED MAIN CHARACTER (4 LEGS + BLUB EARS + SIDE FINS + BACK TAIL)
+  // ============================================================================
+  const characterGroup = new THREE.Group();
+  worldGroup.add(characterGroup);
+
+  const touchableParts = [];
+  const registerPart = (mesh, partName, hiMsg) => {
+    mesh.userData.partName = partName;
+    mesh.userData.hiMsg = hiMsg;
+    touchableParts.push(mesh);
+  };
+
+  // Materials
+  const skinMat = new THREE.MeshStandardMaterial({
+    map: bodySideSkin.tex,
+    roughness: 0.32,
+    metalness: 0.08
+  });
+  const faceMat = new THREE.MeshStandardMaterial({
+    map: faceCanvasObj.tex,
+    roughness: 0.25,
+    metalness: 0.05
+  });
+  const limeHighlightMat = new THREE.MeshStandardMaterial({ color: 0xb8ff3b, roughness: 0.3 });
+  const midGreenMat = new THREE.MeshStandardMaterial({ color: 0x58cc02, roughness: 0.35 });
+  const darkGreenMat = new THREE.MeshStandardMaterial({ color: 0x2b8a04, roughness: 0.4 });
+  const pinkAccentMat = new THREE.MeshStandardMaterial({ color: 0xff5ca8, roughness: 0.3 });
+  const whiteBootMat = new THREE.MeshStandardMaterial({ color: 0xf8fff9, roughness: 0.25 });
+
+  // ---- 6A. MAIN CUBIC VOXEL TORSO/HEAD (With Front Face Texture) ----
+  const bodyMaterials = [
+    skinMat, // Right
+    skinMat, // Left
+    skinMat, // Top
+    skinMat, // Bottom
+    faceMat, // Front (Interactive Face & Silent/Open Mouth)
+    skinMat  // Back
+  ];
+  const torsoGeo = new THREE.BoxGeometry(2.9, 2.5, 2.3);
+  const torsoMesh = new THREE.Mesh(torsoGeo, bodyMaterials);
+  torsoMesh.position.set(0, 0.35, 0);
+  torsoMesh.castShadow = true;
+  torsoMesh.receiveShadow = true;
+  characterGroup.add(torsoMesh);
+  registerPart(torsoMesh, 'Face & Body', 'हा हा! तुमने मेरे पिक्सल फेस को टच किया! चलो एक साथ फोकस करें! 😊');
+
+  // Subtle 3D Glassmorphism Shell around Torso (Gives high-end glossy voxel bevel look)
+  const glassShellGeo = new THREE.BoxGeometry(2.98, 2.58, 2.38);
+  const glassShellMat = new THREE.MeshPhysicalMaterial({
+    color: 0xb8ff50,
+    transparent: true,
+    opacity: 0.09,
+    roughness: 0.08,
+    clearcoat: 1.0
+  });
+  const glassShell = new THREE.Mesh(glassShellGeo, glassShellMat);
+  torsoMesh.add(glassShell);
+
+  // ---- 6B. TALL 3D BUNNY-STYLE PIXEL EARS (Modeled after Blub.png + Picsart Green/Pink/Lime accents) ----
+  function createVoxelEar(isLeft) {
+    const earGroup = new THREE.Group();
+    const xPos = isLeft ? -0.82 : 0.82;
+    earGroup.position.set(xPos, 1.6, 0.05);
+
+    // Lower Wide Ear Base
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.42, 0.54), midGreenMat);
+    base.position.y = 0.21;
+    base.castShadow = true;
+    earGroup.add(base);
+
+    // Mid Tall Voxel Ear Shaft (Like Blub.png tall ears)
+    const mid = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.72, 0.48), midGreenMat);
+    mid.position.y = 0.78;
+    mid.castShadow = true;
+    earGroup.add(mid);
+
+    // Inner Pink Pixel Accent Block (From Picsart Green Character)
+    const innerPink = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.36, 0.52), pinkAccentMat);
+    innerPink.position.set(0, 0.72, 0.02);
+    earGroup.add(innerPink);
+
+    // Top Bright Neon Lime Pixel Tip (From Picsart Green Character + Blub stair-step)
+    const tip = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.32, 0.42), limeHighlightMat);
+    tip.position.y = 1.30;
+    tip.castShadow = true;
+    earGroup.add(tip);
+
+    registerPart(mid, isLeft ? 'Left Bunny Ear' : 'Right Bunny Ear', 'मेरे 3D पिक्सल कान हर स्टडी टिप को ध्यान से सुन रहे हैं! 🐰');
+    registerPart(tip, isLeft ? 'Left Ear Tip' : 'Right Ear Tip', 'नियॉन ईयर टिप एक्टिव! एंटीना सिग्नल 100%! 📡');
+    return earGroup;
+  }
+
+  const earLeft = createVoxelEar(true);
+  const earRight = createVoxelEar(false);
+  characterGroup.add(earLeft, earRight);
+
+  // ---- 6C. PIXEL SIDE ARMS / FINS (From Picsart Green Character with Neon Top Cap) ----
+  function createSideArm(isLeft) {
+    const armGroup = new THREE.Group();
+    const dir = isLeft ? -1 : 1;
+    armGroup.position.set(dir * 1.48, 0.25, 0);
+
+    // Main green pixel arm block
+    const armBlock = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.92, 0.68), midGreenMat);
+    armBlock.position.set(dir * 0.22, -0.1, 0);
+    armBlock.castShadow = true;
+    armGroup.add(armBlock);
+
+    // Bright neon lime top pixel cap (Matches Picsart green character)
+    const topCap = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.24, 0.70), limeHighlightMat);
+    topCap.position.set(dir * 0.22, 0.46, 0);
+    armGroup.add(topCap);
+
+    // Darker green bottom pixel trim
+    const botTrim = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.18, 0.70), darkGreenMat);
+    botTrim.position.set(dir * 0.22, -0.62, 0);
+    armGroup.add(botTrim);
+
+    registerPart(armBlock, isLeft ? 'Left Pixel Arm' : 'Right Pixel Arm', 'हाई-फाइव दोस्त! चलो अगला चैप्टर खत्म करें! 👋');
+    return armGroup;
+  }
+
+  const armLeft = createSideArm(true);
+  const armRight = createSideArm(false);
+  characterGroup.add(armLeft, armRight);
+
+  // ---- 6D. 4 STURDY 3D VOXEL LEGS (Quadruped Stance like Blub.png + Picsart White/Green Pixel Boots) ----
+  function createQuadLeg(x, z, label) {
+    const legGroup = new THREE.Group();
+    legGroup.position.set(x, -0.9, z);
+
+    // Top light-green transition cuff
+    const cuff = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.22, 0.68), limeHighlightMat);
+    cuff.position.y = -0.08;
+    legGroup.add(cuff);
+
+    // Main crisp white pixel boot (From Picsart green character legs)
+    const whiteLeg = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.74, 0.66), whiteBootMat);
+    whiteLeg.position.y = -0.54;
+    whiteLeg.castShadow = true;
+    whiteLeg.receiveShadow = true;
+    legGroup.add(whiteLeg);
+
+    // Signature green horizontal pixel stripe on front & sides of each boot
+    const greenStripe = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.13, 0.70), midGreenMat);
+    greenStripe.position.y = -0.36;
+    legGroup.add(greenStripe);
+
+    registerPart(whiteLeg, label, `मेरे 4 पिक्सल पैर (${label}) मज़बूती से टेबल पर टिके हैं! चलो आगे बढ़ें! 🐾`);
+    return legGroup;
+  }
+
+  const legFL = createQuadLeg(-0.82,  0.58, 'Front-Left Leg');
+  const legFR = createQuadLeg( 0.82,  0.58, 'Front-Right Leg');
+  const legBL = createQuadLeg(-0.82, -0.58, 'Back-Left Leg');
+  const legBR = createQuadLeg( 0.82, -0.58, 'Back-Right Leg');
+  const allLegs = [legFL, legFR, legBL, legBR];
+  characterGroup.add(legFL, legFR, legBL, legBR);
+
+  // ---- 6E. CUTE 3D PIXELATED BACK TAIL (Wags on Back of Main Character) ----
+  const tailGroup = new THREE.Group();
+  tailGroup.position.set(0, -0.32, -1.16);
+  characterGroup.add(tailGroup);
+
+  const tailSeg1 = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.42, 0.48), midGreenMat);
+  tailSeg1.position.set(0, 0.05, -0.22);
+  tailSeg1.castShadow = true;
+  tailGroup.add(tailSeg1);
+
+  const tailSeg2 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.38, 0.46), midGreenMat);
+  tailSeg2.position.set(0, 0.26, -0.54);
+  tailSeg2.castShadow = true;
+  tailGroup.add(tailSeg2);
+
+  const tailTip = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.34), limeHighlightMat);
+  tailTip.position.set(0, 0.48, -0.78);
+  tailGroup.add(tailTip);
+
+  registerPart(tailSeg1, '3D Pixel Tail', 'पूँछ हिल रही है! मैं पढ़ाई के लिए सुपर एक्साइटेड हूँ! 🐕');
+  registerPart(tailTip,  '3D Pixel Tail', 'नियॉन पिक्सल टेल वैग! 100% हैप्पी स्टडी बडी! ✨');
+
+  // ============================================================================
+  // 7. BUILD ALL 20 3D STUDY BUDDY UPGRADES & PROPS IN THE SCENE
+  // ============================================================================
+  const upgradeMeshes = {};
+
+  // #1. 🎓 3D Graduation Mortarboard Cap
+  const gradCapGroup = new THREE.Group();
+  gradCapGroup.position.set(0, 1.66, 0);
+  const capSkull = new THREE.Mesh(new THREE.BoxGeometry(1.15, 0.28, 1.15), new THREE.MeshStandardMaterial({ color: 0x121824 }));
+  const capBoard = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.10, 1.95), new THREE.MeshStandardMaterial({ color: 0x0b101b }));
+  capBoard.position.y = 0.18;
+  const capButton = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.08, 0.2), new THREE.MeshStandardMaterial({ color: 0xffc800 }));
+  capButton.position.y = 0.25;
+  const tasselCord = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.55, 0.08), new THREE.MeshStandardMaterial({ color: 0xffc800 }));
+  tasselCord.position.set(0.92, -0.04, 0.5);
+  gradCapGroup.add(capSkull, capBoard, capButton, tasselCord);
+  characterGroup.add(gradCapGroup);
+  upgradeMeshes.gradCap = gradCapGroup;
+
+  // #2. 🎧 3D Cyber Noise-Canceling Study Headphones
+  const headphonesGroup = new THREE.Group();
+  const hpBand = new THREE.Mesh(new THREE.BoxGeometry(3.26, 0.18, 0.42), new THREE.MeshStandardMaterial({ color: 0x16324f }));
+  hpBand.position.set(0, 1.72, 0);
+  const hpSideL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 1.15, 0.42), new THREE.MeshStandardMaterial({ color: 0x16324f }));
+  hpSideL.position.set(-1.58, 1.18, 0);
+  const hpSideR = hpSideL.clone();
+  hpSideR.position.x = 1.58;
+  const earCupMat = new THREE.MeshStandardMaterial({ color: 0x0b192c });
+  const earGlowMat = new THREE.MeshBasicMaterial({ color: 0x00f5d4 });
+  const cupL = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.85, 0.85), earCupMat);
+  cupL.position.set(-1.58, 0.68, 0);
+  const cupGlowL = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.55, 0.55), earGlowMat);
+  cupGlowL.position.set(-1.61, 0.68, 0);
+  const cupR = cupL.clone();
+  cupR.position.x = 1.58;
+  const cupGlowR = cupGlowL.clone();
+  cupGlowR.position.x = 1.61;
+  headphonesGroup.add(hpBand, hpSideL, hpSideR, cupL, cupGlowL, cupR, cupGlowR);
+  characterGroup.add(headphonesGroup);
+  upgradeMeshes.headphones = headphonesGroup;
+
+  // #3. 🤓 3D Pixel Scholar Glasses
+  const nerdGlassesGroup = new THREE.Group();
+  nerdGlassesGroup.position.set(0, 0.52, 1.19);
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x11161d });
+  const buildFrame = (ox) => {
+    const g = new THREE.Group();
+    const topB = new THREE.Mesh(new THREE.BoxGeometry(0.88, 0.12, 0.12), frameMat);
+    topB.position.set(ox, 0.36, 0);
+    const botB = topB.clone();
+    botB.position.y = -0.36;
+    const leftB = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.84, 0.12), frameMat);
+    leftB.position.set(ox - 0.38, 0, 0);
+    const rightB = leftB.clone();
+    rightB.position.x = ox + 0.38;
+    g.add(topB, botB, leftB, rightB);
+    return g;
+  };
+  const bridge = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.12, 0.12), frameMat);
+  bridge.position.set(0, 0.12, 0);
+  nerdGlassesGroup.add(buildFrame(-0.56), buildFrame(0.56), bridge);
+  characterGroup.add(nerdGlassesGroup);
+  upgradeMeshes.nerdGlasses = nerdGlassesGroup;
+
+  // #4. 🕶️ 3D Holo-Visor AR Shades
+  const holoVisorGroup = new THREE.Group();
+  holoVisorGroup.position.set(0, 0.54, 1.24);
+  const visorGlass = new THREE.Mesh(
+    new THREE.BoxGeometry(2.55, 0.68, 0.14),
+    new THREE.MeshPhysicalMaterial({ color: 0x00f5d4, transparent: true, opacity: 0.55, roughness: 0.05 })
+  );
+  const visorTopBar = new THREE.Mesh(new THREE.BoxGeometry(2.62, 0.10, 0.18), new THREE.MeshBasicMaterial({ color: 0x80ffdb }));
+  visorTopBar.position.y = 0.36;
+  holoVisorGroup.add(visorGlass, visorTopBar);
+  characterGroup.add(holoVisorGroup);
+  upgradeMeshes.holoVisor = holoVisorGroup;
+
+  // #5. 👑 3D Topper Gold Crown
+  const goldCrownGroup = new THREE.Group();
+  goldCrownGroup.position.set(0, 1.72, 0.52);
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xffc800, metalness: 0.5, roughness: 0.25 });
+  const crownBase = new THREE.Mesh(new THREE.BoxGeometry(1.12, 0.28, 0.82), goldMat);
+  const spike1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.28, 0.22), goldMat);
+  spike1.position.set(-0.38, 0.26, 0.25);
+  const spike2 = spike1.clone();
+  spike2.position.set(0, 0.34, 0.25);
+  const spike3 = spike1.clone();
+  spike3.position.set(0.38, 0.26, 0.25);
+  const rubyGem = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.18, 0.1), new THREE.MeshBasicMaterial({ color: 0xff2a6d }));
+  rubyGem.position.set(0, 0.02, 0.42);
+  goldCrownGroup.add(crownBase, spike1, spike2, spike3, rubyGem);
+  characterGroup.add(goldCrownGroup);
+  upgradeMeshes.goldCrown = goldCrownGroup;
+
+  // #6. 🎒 3D Back Study Backpack (Mounted on Back Above Tail)
+  const backpackGroup = new THREE.Group();
+  backpackGroup.position.set(0, 0.42, -1.36);
+  const packBody = new THREE.Mesh(new THREE.BoxGeometry(1.75, 1.55, 0.56), new THREE.MeshStandardMaterial({ color: 0xe63946, roughness: 0.4 }));
+  const packPocket = new THREE.Mesh(new THREE.BoxGeometry(1.25, 0.68, 0.26), new THREE.MeshStandardMaterial({ color: 0xffb703 }));
+  packPocket.position.set(0, -0.25, -0.32);
+  const packFlap = new THREE.Mesh(new THREE.BoxGeometry(1.78, 0.28, 0.60), new THREE.MeshStandardMaterial({ color: 0x1d3557 }));
+  packFlap.position.set(0, 0.68, 0);
+  backpackGroup.add(packBody, packPocket, packFlap);
+  characterGroup.add(backpackGroup);
+  upgradeMeshes.backpack = backpackGroup;
+
+  // #7. 📘 3D Floating Open NCERT/Study Textbook
+  const openBookGroup = new THREE.Group();
+  openBookGroup.position.set(-2.55, 0.2, 1.15);
+  openBookGroup.rotation.set(0.35, 0.5, -0.15);
+  const coverL = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.08, 1.05), new THREE.MeshStandardMaterial({ color: 0x1cb0f6 }));
+  coverL.position.x = -0.36;
+  coverL.rotation.z = 0.22;
+  const coverR = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.08, 1.05), new THREE.MeshStandardMaterial({ color: 0x1cb0f6 }));
+  coverR.position.x = 0.36;
+  coverR.rotation.z = -0.22;
+  const pageL = new THREE.Mesh(new THREE.BoxGeometry(0.68, 0.10, 0.96), whiteBootMat);
+  pageL.position.set(-0.34, 0.06, 0);
+  pageL.rotation.z = 0.22;
+  const pageR = pageL.clone();
+  pageR.position.x = 0.34;
+  pageR.rotation.z = -0.22;
+  openBookGroup.add(coverL, coverR, pageL, pageR);
+  worldGroup.add(openBookGroup);
+  upgradeMeshes.openBook = openBookGroup;
+
+  // #8. ✏️ 3D Giant Pixel Pencil & Eraser
+  const pencilGroup = new THREE.Group();
+  pencilGroup.position.set(2.38, 0.35, 0.75);
+  pencilGroup.rotation.z = 0.28;
+  const pencilShaft = new THREE.Mesh(new THREE.BoxGeometry(0.28, 1.65, 0.28), new THREE.MeshStandardMaterial({ color: 0xffc800 }));
+  const pencilEraser = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.32, 0.28), pinkAccentMat);
+  pencilEraser.position.y = 0.98;
+  const pencilWood = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.28, 0.22), new THREE.MeshStandardMaterial({ color: 0xf4d58d }));
+  pencilWood.position.y = -0.96;
+  const pencilLead = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.18, 0.12), new THREE.MeshStandardMaterial({ color: 0x111111 }));
+  pencilLead.position.y = -1.16;
+  pencilGroup.add(pencilShaft, pencilEraser, pencilWood, pencilLead);
+  worldGroup.add(pencilGroup);
+  upgradeMeshes.giantPencil = pencilGroup;
+
+  // #9. 💻 3D Mini Hologram Laptop on Front Turntable
+  const laptopGroup = new THREE.Group();
+  laptopGroup.position.set(0, -1.75, 2.55);
+  const lapBase = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.09, 0.95), new THREE.MeshStandardMaterial({ color: 0x8d99ae, metalness: 0.6 }));
+  const lapScreen = new THREE.Mesh(new THREE.BoxGeometry(1.35, 0.88, 0.08), new THREE.MeshStandardMaterial({ color: 0x2b2d42 }));
+  lapScreen.position.set(0, 0.42, -0.45);
+  lapScreen.rotation.x = 0.25;
+  const holoCodeProjection = new THREE.Mesh(
+    new THREE.BoxGeometry(1.18, 0.72, 0.04),
+    new THREE.MeshBasicMaterial({ color: 0x80ffdb, transparent: true, opacity: 0.78 })
+  );
+  holoCodeProjection.position.set(0, 0.44, -0.40);
+  holoCodeProjection.rotation.x = 0.25;
+  laptopGroup.add(lapBase, lapScreen, holoCodeProjection);
+  worldGroup.add(laptopGroup);
+  upgradeMeshes.holoLaptop = laptopGroup;
+
+  // #10. ☕ 3D Steaming Matcha / Coffee Mug
+  const mugGroup = new THREE.Group();
+  mugGroup.position.set(1.95, -1.55, 2.05);
+  const mugBody = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.62, 0.56), whiteBootMat);
+  const mugLiquid = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.08, 0.46), midGreenMat);
+  mugLiquid.position.y = 0.29;
+  const steam1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.12), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 }));
+  steam1.position.set(-0.08, 0.55, 0);
+  const steam2 = steam1.clone();
+  steam2.position.set(0.1, 0.78, 0);
+  mugGroup.add(mugBody, mugLiquid, steam1, steam2);
+  worldGroup.add(mugGroup);
+  upgradeMeshes.coffeeMug = mugGroup;
+
+  // #11. ⏱️ 3D Floating Pomodoro Study Timer Cube
+  const pomoCubeGroup = new THREE.Group();
+  pomoCubeGroup.position.set(-2.65, 1.85, 0.2);
+  const pomoBox = new THREE.Mesh(new THREE.BoxGeometry(0.78, 0.78, 0.78), new THREE.MeshStandardMaterial({ color: 0xff4d6d, roughness: 0.25 }));
+  const pomoCap = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.14, 0.42), limeHighlightMat);
+  pomoCap.position.y = 0.46;
+  pomoCubeGroup.add(pomoBox, pomoCap);
+  worldGroup.add(pomoCubeGroup);
+  upgradeMeshes.pomoCube = pomoCubeGroup;
+
+  // #12. 🔥 3D Daily Study Streak Flame
+  const flameGroup = new THREE.Group();
+  flameGroup.position.set(2.65, 1.85, 0.2);
+  const flameOuter = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.78, 0.42), new THREE.MeshBasicMaterial({ color: 0xff6b00 }));
+  const flameInner = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.46, 0.48), new THREE.MeshBasicMaterial({ color: 0xffdd00 }));
+  flameInner.position.y = -0.08;
+  const flameTip = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.28, 0.28), new THREE.MeshBasicMaterial({ color: 0xff9e00 }));
+  flameTip.position.y = 0.52;
+  flameGroup.add(flameOuter, flameInner, flameTip);
+  worldGroup.add(flameGroup);
+  upgradeMeshes.streakFlame = flameGroup;
+
+  // #13. 💡 3D Eureka Idea Lightbulb (Above Head)
+  const bulbGroup = new THREE.Group();
+  bulbGroup.position.set(0, 3.48, 0.1);
+  const bulbGlass = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.62, 0.56), new THREE.MeshBasicMaterial({ color: 0xffee32 }));
+  const bulbBase = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.24, 0.34), new THREE.MeshStandardMaterial({ color: 0xadb5bd, metalness: 0.8 }));
+  bulbBase.position.y = -0.42;
+  bulbGroup.add(bulbGlass, bulbBase);
+  characterGroup.add(bulbGroup);
+  upgradeMeshes.ideaBulb = bulbGroup;
+
+  // #14. 🧠 3D Brain Boost Halo Ring
+  const haloRing = new THREE.Mesh(
+    new THREE.TorusGeometry(1.45, 0.065, 12, 48),
+    new THREE.MeshBasicMaterial({ color: 0x80ffdb })
+  );
+  haloRing.rotation.x = Math.PI / 2;
+  haloRing.position.set(0, 3.08, 0);
+  characterGroup.add(haloRing);
+  upgradeMeshes.brainHalo = haloRing;
+
+  // #15. 🛡️ 3D Distraction-Blocker Energy Shield Dome
+  const shieldDome = new THREE.Mesh(
+    new THREE.IcosahedronGeometry(3.55, 1),
+    new THREE.MeshBasicMaterial({ color: 0x58cc02, wireframe: true, transparent: true, opacity: 0.22 })
+  );
+  shieldDome.position.set(0, 0.4, 0);
+  worldGroup.add(shieldDome);
+  upgradeMeshes.focusShield = shieldDome;
+
+  // #16. 🧪 3D Science Lab Flask (On Left Turntable)
+  const flaskGroup = new THREE.Group();
+  flaskGroup.position.set(-2.05, -1.52, 2.0);
+  const flaskBody = new THREE.Mesh(
+    new THREE.BoxGeometry(0.64, 0.58, 0.64),
+    new THREE.MeshPhysicalMaterial({ color: 0x80ffdb, transparent: true, opacity: 0.55 })
+  );
+  const flaskPotion = new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.36, 0.54), new THREE.MeshBasicMaterial({ color: 0x80ff44 }));
+  flaskPotion.position.y = -0.08;
+  const flaskNeck = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.38, 0.26), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.6 }));
+  flaskNeck.position.y = 0.46;
+  flaskGroup.add(flaskBody, flaskPotion, flaskNeck);
+  worldGroup.add(flaskGroup);
+  upgradeMeshes.chemFlask = flaskGroup;
+
+  // #17. 📐 3D Math Geometry Orbit (Rotating Voxel Pi & Prism)
+  const mathOrbitGroup = new THREE.Group();
+  mathOrbitGroup.position.set(0, 0.8, 0);
+  const piLeg1 = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.45, 0.12), new THREE.MeshBasicMaterial({ color: 0xffc800 }));
+  piLeg1.position.set(-0.14, 0, 0);
+  const piLeg2 = piLeg1.clone();
+  piLeg2.position.set(0.14, 0, 0);
+  const piTop = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.12, 0.12), new THREE.MeshBasicMaterial({ color: 0xffc800 }));
+  piTop.position.set(0, 0.22, 0);
+  const piSymbol = new THREE.Group();
+  piSymbol.add(piLeg1, piLeg2, piTop);
+  piSymbol.position.set(3.1, 0.5, 0);
+
+  const geoOcta = new THREE.Mesh(new THREE.OctahedronGeometry(0.34, 0), new THREE.MeshStandardMaterial({ color: 0x00f5d4, flatShading: true }));
+  geoOcta.position.set(-3.1, -0.2, 0);
+  mathOrbitGroup.add(piSymbol, geoOcta);
+  worldGroup.add(mathOrbitGroup);
+  upgradeMeshes.mathOrbit = mathOrbitGroup;
+
+  // #18. 🏆 3D Golden Exam Trophy
+  const trophyGroup = new THREE.Group();
+  trophyGroup.position.set(2.55, -1.48, 0.25);
+  const trPedestal = new THREE.Mesh(new THREE.BoxGeometry(0.56, 0.26, 0.56), new THREE.MeshStandardMaterial({ color: 0x222222 }));
+  trPedestal.position.y = -0.22;
+  const trStem = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.34, 0.18), goldMat);
+  trStem.position.y = 0.05;
+  const trCup = new THREE.Mesh(new THREE.BoxGeometry(0.58, 0.52, 0.58), goldMat);
+  trCup.position.y = 0.44;
+  trophyGroup.add(trPedestal, trStem, trCup);
+  worldGroup.add(trophyGroup);
+  upgradeMeshes.goldTrophy = trophyGroup;
+
+  // #19. 🛹 3D Cyber Voxel Hoverboard (Under the 4 Legs)
+  const hoverboardGroup = new THREE.Group();
+  hoverboardGroup.position.set(0, -1.78, 0);
+  const boardDeck = new THREE.Mesh(new THREE.BoxGeometry(2.75, 0.14, 1.85), new THREE.MeshStandardMaterial({ color: 0x3a0ca3, roughness: 0.2 }));
+  const boardStripe = new THREE.Mesh(new THREE.BoxGeometry(2.78, 0.06, 0.45), new THREE.MeshBasicMaterial({ color: 0x80ffdb }));
+  const thrusterL = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.12, 1.55), new THREE.MeshBasicMaterial({ color: 0x7209b7 }));
+  thrusterL.position.set(-1.1, -0.1, 0);
+  const thrusterR = thrusterL.clone();
+  thrusterR.position.x = 1.1;
+  hoverboardGroup.add(boardDeck, boardStripe, thrusterL, thrusterR);
+  characterGroup.add(hoverboardGroup);
+  upgradeMeshes.hoverboard = hoverboardGroup;
+
+  // #20. ✨ 3D Aura Particle Matrix (Floating Neon Pixel Cubes around Main Character)
+  const auraGroup = new THREE.Group();
+  const auraCubes = [];
+  const auraColors = [0x80ff44, 0x80ffdb, 0xffc800, 0xff5ca8, 0xffffff];
+  for (let i = 0; i < 28; i++) {
+    const sz = 0.1 + (i % 3) * 0.05;
+    const m = new THREE.Mesh(
+      new THREE.BoxGeometry(sz, sz, sz),
+      new THREE.MeshBasicMaterial({ color: auraColors[i % auraColors.length] })
+    );
+    const angle = (i / 28) * Math.PI * 2;
+    const rad = 2.4 + (i % 4) * 0.45;
+    m.userData = { angle, rad, yBase: -1.2 + (i % 7) * 0.65, speed: 0.6 + (i % 5) * 0.2 };
+    m.position.set(Math.cos(angle) * rad, m.userData.yBase, Math.sin(angle) * rad);
+    auraGroup.add(m);
+    auraCubes.push(m);
+  }
+  worldGroup.add(auraGroup);
+  upgradeMeshes.auraMatrix = auraGroup;
+
+  // Sync 3D visibility with activeUpgrades Set
+  function syncUpgradesVisibility() {
+    STUDY_UPGRADES.forEach(u => {
+      const mesh = upgradeMeshes[u.id];
+      if (mesh) mesh.visible = activeUpgrades.has(u.id);
+    });
+    document.getElementById('activeCountText').textContent = `${activeUpgrades.size}/20 Study Gear`;
+
+    // Sync UI buttons
+    document.querySelectorAll('[data-upgrade-id]').forEach(btn => {
+      const id = btn.getAttribute('data-upgrade-id');
+      btn.setAttribute('aria-pressed', activeUpgrades.has(id));
+    });
+
+    try {
+      localStorage.setItem('mainChar3D_upgrades_v1', JSON.stringify([...activeUpgrades]));
+    } catch (e) {}
+  }
+
+  // ============================================================================
+  // 8. POPULATE BOTTOM QUICK-BAR & 20-ITEM STUDY DRAWER
+  // ============================================================================
+  const quickStudyRow = document.getElementById('quickStudyRow');
+  const grid20Container = document.getElementById('grid20Container');
+
+  const toggleUpgrade = (id) => {
+    const item = STUDY_UPGRADES.find(x => x.id === id);
+    if (!item) return;
+    if (activeUpgrades.has(id)) {
+      activeUpgrades.delete(id);
+      sfx.pop();
+      speakBubble(`${item.icon} ${item.name} हटाया गया!`, currentMood, false);
+    } else {
+      activeUpgrades.add(id);
+      sfx.equip();
+      triggerJumpImpulse(0.45);
+      speakBubble(item.msg, 'happy', true);
+    }
+    syncUpgradesVisibility();
+  };
+
+  STUDY_UPGRADES.forEach(item => {
+    // Quick row chip button
+    const qBtn = document.createElement('button');
+    qBtn.type = 'button';
+    qBtn.className = 'chip-btn study-item';
+    qBtn.setAttribute('data-upgrade-id', item.id);
+    qBtn.setAttribute('aria-pressed', activeUpgrades.has(item.id));
+    qBtn.innerHTML = `<span>${item.num}. ${item.icon}</span><span>${item.name}</span>`;
+    qBtn.addEventListener('click', () => toggleUpgrade(item.id));
+    quickStudyRow.appendChild(qBtn);
+
+    // Drawer grid card button
+    const gBtn = document.createElement('button');
+    gBtn.type = 'button';
+    gBtn.className = 'chip-btn study-item justify-start';
+    gBtn.setAttribute('data-upgrade-id', item.id);
+    gBtn.setAttribute('aria-pressed', activeUpgrades.has(item.id));
+    gBtn.innerHTML = `<span>#${item.num} ${item.icon}</span><span class="truncate">${item.name}</span>`;
+    gBtn.addEventListener('click', () => toggleUpgrade(item.id));
+    grid20Container.appendChild(gBtn);
+  });
+
+  syncUpgradesVisibility();
+
+  // ============================================================================
+  // 9. INTERACTIVE 360° TURNTABLE DRAG & RAYCASTING TOUCH ON ALL BODY PARTS
+  // ============================================================================
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let movedDistance = 0;
+  let targetTurntableRotY = 0.28;
+  let targetTurntableTiltX = 0.06;
+  let autoRotateTable = false;
+
+  const spawnHitToast = (x, y, text) => {
+    const toast = document.createElement('div');
+    toast.className = 'hit-toast';
+    toast.style.left = `${x}px`;
+    toast.style.top = `${y}px`;
+    toast.textContent = text;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1100);
+  };
+
+  container.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    movedDistance = 0;
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    movedDistance += Math.abs(dx) + Math.abs(dy);
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+
+    targetTurntableRotY += dx * 0.011;
+    targetTurntableTiltX = Math.max(-0.28, Math.min(0.35, targetTurntableTiltX + dy * 0.004));
+  });
+
+  window.addEventListener('pointerup', (e) => {
+    if (!isDragging) return;
+    isDragging = false;
+
+    // If tap without drag -> Raycast touchable 3D parts of Main Character!
+    if (movedDistance < 10) {
+      const rect = renderer.domElement.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+
+      const hits = raycaster.intersectObjects(touchableParts, true);
+      if (hits.length > 0) {
+        let obj = hits[0].object;
+        while (obj && !obj.userData.partName && obj.parent) obj = obj.parent;
+        const partName = (obj && obj.userData.partName) || 'Main Character';
+        const hiMsg = (obj && obj.userData.hiMsg) || 'हा हा! गुदगुदी हो रही है! चलो पढ़ाई करें!';
+
+        spawnHitToast(e.clientX, e.clientY, `✨ Touched: ${partName}`);
+        triggerJumpImpulse(0.65);
+
+        if (partName.includes('Tail')) {
+          triggerAction('tail');
+        } else if (partName.includes('Ear')) {
+          triggerAction('ears');
+        } else if (partName.includes('Leg')) {
+          triggerAction('walk');
+        } else if (partName.includes('Arm')) {
+          triggerAction('wave');
+        } else {
+          speakBubble(hiMsg, 'laugh', true);
+        }
+      }
+    }
+  });
+
+  // ============================================================================
+  // 10. MOODS, ACTIONS, POMODORO TIMER & ANIMATION LOOP
+  // ============================================================================
+  let jumpVelocity = 0;
+  let jumpOffset = 0;
+  let spin360Boost = 0;
+
+  function triggerJumpImpulse(strength = 0.7) {
+    jumpVelocity = strength;
+    sfx.jump();
+  }
+
+  const MOOD_LINES = {
+    happy:  '😊 शांत और फोकस्ड! (Silent Focus Mode On)',
+    laugh:  '😆 हा हा हा! > < तुम्हारे साथ पढ़ाई में बहुत मज़ा आता है!',
+    wink:   '😉 यह चैप्टर तो हम चुटकियों में खत्म कर देंगे!',
+    wow:    '🤩 अरे वाह! तुम्हारा कॉन्सेप्ट एकदम क्लियर है!',
+    love:   '😍 मुझे अपने स्टडी बडी से पिक्सल-प्यार है! 💚',
+    shock:  '😱 अरे बाप रे! कल टेस्ट है क्या?! चलो रिवाइज करें!',
+    cool:   '😎 टॉपर स्वैग ऑन! 100% फोकस मोड!',
+    sleepy: '😴 Zzz... 5 मिनट का पावर नैप, फिर फुल एनर्जी!',
+    sad:    '😢 कोई बात नहीं अगर सवाल कठिन है, हम फिर से कोशिश करेंगे!'
+  };
+
+  function setMood(mood, customText = null, speakVoiceFlag = true) {
+    currentMood = mood;
+    document.querySelectorAll('#moodRow button').forEach(b => {
+      b.setAttribute('aria-pressed', b.dataset.mood === mood);
+    });
+    // In 'happy' calm state, keep mouth silent after brief greeting or immediately silent if requested
+    if (mood === 'happy' && !customText) {
+      isTalking = false;
+      updateFaceTexture(0);
+      const bubble = document.getElementById('sayBubble');
+      bubble.textContent = MOOD_LINES.happy;
+      sfx.pop();
+      return;
+    }
+    speakBubble(customText || MOOD_LINES[mood], mood, speakVoiceFlag);
+    updateFaceTexture(0);
+  }
+
+  function triggerAction(act) {
+    currentAction = act;
+    clearTimeout(actionTimer);
+
+    if (act === 'wave') {
+      speakBubble('👋 हैलो स्टडी पार्टनर! हाई-फाइव!', 'happy', true);
+    } else if (act === 'both') {
+      speakBubble('🙌 दोनों हाथ ऊपर! आज का स्टडी गोल पूरा करेंगे!', 'laugh', true);
+    } else if (act === 'walk') {
+      speakBubble('🐾 देखो मेरे 4 पिक्सल पैरों का मार्च! आगे बढ़ते रहो!', 'happy', true);
+    } else if (act === 'tail') {
+      // Rotate turntable slightly so user can admire the wagging back tail too!
+      speakBubble('🐕 देखो मेरी 3D पिक्सल पूँछ कैसे खुशी से हिल रही है!', 'laugh', true);
+    } else if (act === 'ears') {
+      speakBubble('🐰 मेरे लंबे 3D पिक्सल कान हर फॉर्मूला याद रख रहे हैं!', 'wink', true);
+    } else if (act === 'dance') {
+      sfx.cheer();
+      speakBubble('💃 स्टडी ब्रेक पिक्सल डांस! 4 लेग्स + टेल बूगी!', 'laugh', true);
+    } else if (act === 'spin') {
+      spin360Boost = Math.PI * 2;
+      sfx.equip();
+      speakBubble('🌀 360° राउंड टेबल स्पिन! आगे, पीछे और पूँछ सब देखो!', 'wow', true);
+    } else if (act === 'think' || act === 'scratch_head') {
+      armRight.rotation.z = 1.25;
+      earRight.rotation.z = -0.3;
+      speakBubble('🤔 सोचने दो... इस सवाल का सही कॉन्सेप्ट क्या है?', 'cool', true);
+    } else if (act === 'cry' || act === 'sad') {
+      setMood('sad', '😢 अरे कोई बात नहीं! अगली बार सही करेंगे, मैं तुम्हारे साथ हूँ!');
+    } else if (act === 'yawn') {
+      setMood('sleepy', '🥱 उबासी... एक गहरी सांस लो और फिर से फोकस करो!');
+    } else if (act === 'cake') {
+      sfx.cheer();
+      triggerJumpImpulse(0.7);
+      speakBubble('🍰 यम्मी! स्ट्रीक सेलिब्रेशन केक! थोड़ी एनर्जी और बढ़ गई!', 'laugh', true);
+    } else if (act === 'lift_weights') {
+      sfx.equip();
+      triggerJumpImpulse(0.5);
+      speakBubble('🏋️‍♂️ नॉलेज इज़ मसल! हर रोज़ 10 सवाल, सुपर स्ट्रॉन्ग ब्रेन!', 'wow', true);
+    } else if (act === 'cheer') {
+      triggerJumpImpulse(0.85);
+      sfx.cheer();
+      speakBubble('🎉 शाबाश! लेवल अप! तुमने कमाल कर दिया!', 'wow', true);
+    } else if (act === 'jump') {
+      triggerJumpImpulse(0.95);
+      speakBubble('🚀 सुपर 3D पिक्सल जंप! हुर्रे!', 'laugh', true);
+    } else if (act === 'quiz') {
+      const tip = STUDY_TIPS[Math.floor(Math.random() * STUDY_TIPS.length)];
+      triggerJumpImpulse(0.5);
+      speakBubble(tip, 'cool', true);
+    }
+
+    actionTimer = setTimeout(() => {
+      currentAction = 'idle';
+      updateFaceTexture(0);
+    }, 3200);
+  }
+
+  // Bind Mood & Action Buttons
+  document.querySelectorAll('#moodRow button').forEach(btn => {
+    btn.addEventListener('click', () => setMood(btn.dataset.mood));
+  });
+  document.querySelectorAll('#actRow [data-act]').forEach(btn => {
+    btn.addEventListener('click', () => triggerAction(btn.dataset.act));
+  });
+
+  // Pomodoro Timer Logic
+  let pomoSeconds = 25 * 60;
+  let pomoRunning = true;
+  setInterval(() => {
+    if (!pomoRunning) return;
+    pomoSeconds = pomoSeconds > 0 ? pomoSeconds - 1 : 25 * 60;
+    const m = String(Math.floor(pomoSeconds / 60)).padStart(2, '0');
+    const s = String(pomoSeconds % 60).padStart(2, '0');
+    document.getElementById('pomoText').textContent = `${m}:${s}`;
+  }, 1000);
+
+  document.getElementById('pomoPill').addEventListener('click', () => {
+    pomoRunning = !pomoRunning;
+    sfx.pop();
+    speakBubble(pomoRunning ? '⏱️ पोमोडोरो टाइमर चालू! फुल फोकस!' : '⏸️ पोमोडोरो टाइमर पॉज़ किया गया!', 'happy', false);
+  });
+
+  let streakCount = 14;
+  document.getElementById('streakPill').addEventListener('click', () => {
+    streakCount++;
+    document.getElementById('streakText').textContent = `Streak: ${streakCount} Days`;
+    sfx.cheer();
+    triggerJumpImpulse(0.6);
+    speakBubble(`🔥 स्टडी स्ट्रीक बढ़कर ${streakCount} दिन हो गई! सुपर कंसिस्टेंसी!`, 'wow', true);
+  });
+
+  // Drawer & Utility Controls
+  const studySheet = document.getElementById('studySheet');
+  const openDrawer = (open) => {
+    studySheet.classList.toggle('open', open);
+    studySheet.setAttribute('aria-hidden', !open);
+  };
+  document.getElementById('openLabBtn').addEventListener('click', () => { sfx.pop(); openDrawer(true); });
+  document.getElementById('activeCountPill').addEventListener('click', () => { sfx.pop(); openDrawer(true); });
+  document.getElementById('closeLabBtn').addEventListener('click', () => { sfx.pop(); openDrawer(false); });
+
+  document.getElementById('equipAll20Btn').addEventListener('click', () => {
+    STUDY_UPGRADES.forEach(u => activeUpgrades.add(u.id));
+    syncUpgradesVisibility();
+    sfx.cheer();
+    triggerJumpImpulse(0.75);
+    speakBubble('🌟 सभी 20 स्टडी बडी अपग्रेड्स एक साथ एक्टिव हो गए! अल्टीमेट स्कॉलर मोड!', 'wow', true);
+  });
+
+  document.getElementById('equipStarterBtn').addEventListener('click', () => {
+    activeUpgrades = new Set(['gradCap', 'nerdGlasses', 'backpack', 'openBook', 'giantPencil', 'coffeeMug', 'auraMatrix']);
+    syncUpgradesVisibility();
+    sfx.equip();
+    speakBubble('📘 क्लासिक स्कॉलर पैक तैयार है!', 'happy', true);
+  });
+
+  document.getElementById('randomPackBtn').addEventListener('click', () => {
+    activeUpgrades.clear();
+    STUDY_UPGRADES.forEach(u => {
+      if (Math.random() > 0.42) activeUpgrades.add(u.id);
+    });
+    syncUpgradesVisibility();
+    sfx.cheer();
+    triggerJumpImpulse(0.65);
+    speakBubble('🎲 सरप्राइज़ स्टडी लोडआउट तैयार है!', 'laugh', true);
+  });
+
+  document.getElementById('clearAll20Btn').addEventListener('click', () => {
+    activeUpgrades.clear();
+    syncUpgradesVisibility();
+    sfx.pop();
+    speakBubble('🧹 क्लीन क्लासिक 3D Main Character लुक (4 Legs + Bunny Ears + Tail)!', 'happy', false);
+  });
+
+  const autoRotateBtn = document.getElementById('autoRotateBtn');
+  autoRotateBtn.addEventListener('click', () => {
+    autoRotateTable = !autoRotateTable;
+    autoRotateBtn.setAttribute('aria-pressed', autoRotateTable);
+    sfx.pop();
+  });
+
+  document.getElementById('sfxPill').addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    document.getElementById('sfxIcon').textContent = soundEnabled ? '🔊' : '🔇';
+    if (soundEnabled) sfx.pop();
+  });
+
+  // ============================================================================
+  // 11. TOP-RIGHT 💾 ONE-CLICK STANDALONE HTML FILE SAVER & EXPORTER
+  // ============================================================================
+  document.getElementById('saveHtmlBtn').addEventListener('click', () => {
+    try {
+      localStorage.setItem('mainChar3D_upgrades_v1', JSON.stringify([...activeUpgrades]));
+    } catch (e) {}
+
+    // Clone current DOM and bake current active upgrades into the exported single-file HTML
+    const clone = document.documentElement.cloneNode(true);
+    const canvasWrap = clone.querySelector('#canvas-container');
+    if (canvasWrap) canvasWrap.innerHTML = '';
+    clone.querySelectorAll('.hit-toast').forEach(el => el.remove());
+    const sheetEl = clone.querySelector('#studySheet');
+    if (sheetEl) sheetEl.classList.remove('open');
+
+    const htmlString = '<!DOCTYPE html>\n' + clone.outerHTML;
+    const blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Main_Character_3D_Study_Buddy.html';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+    sfx.cheer();
+    triggerJumpImpulse(0.65);
+    speakBubble('💾 पूरा 3D Study Buddy ऐप 1-फाइल HTML में सेव हो गया!', 'wow', true);
+  });
+
+  // ============================================================================
+  // 12. 60FPS HARDWARE-ACCELERATED 3D ANIMATION LOOP
+  // ============================================================================
+  const clock = new THREE.Clock();
+  let lastTalkTick = 0;
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const t = clock.getElapsedTime();
+
+    // Update animated mouth frames while speaking or in active action
+    if (isTalking || currentAction !== 'idle') {
+      const tick = Math.floor(t * 9);
+      if (tick !== lastTalkTick) {
+        lastTalkTick = tick;
+        updateFaceTexture(tick);
+      }
+    }
+
+    // Smooth turntable rotation (360 spin boost + drag + optional auto-rotate)
+    if (spin360Boost > 0.01) {
+      targetTurntableRotY += spin360Boost * 0.08;
+      spin360Boost *= 0.92;
+    } else if (autoRotateTable && !isDragging) {
+      targetTurntableRotY += 0.007;
+    }
+    worldGroup.rotation.y += (targetTurntableRotY - worldGroup.rotation.y) * 0.12;
+    worldGroup.rotation.x += (targetTurntableTiltX - worldGroup.rotation.x) * 0.12;
+
+    // Jump physics & breathing bounce
+    if (jumpOffset > 0 || jumpVelocity !== 0) {
+      jumpOffset += jumpVelocity;
+      jumpVelocity -= 0.042; // gravity
+      if (jumpOffset <= 0) {
+        jumpOffset = 0;
+        jumpVelocity = 0;
+      }
+    }
+
+    const idleBreath = Math.sin(t * 2.8) * 0.06;
+    const danceBounce = currentAction === 'dance' ? Math.abs(Math.sin(t * 9)) * 0.28 : 0;
+    characterGroup.position.y = idleBreath + jumpOffset + danceBounce;
+    characterGroup.rotation.z = currentAction === 'dance' ? Math.sin(t * 4.5) * 0.12 : 0;
+
+    // 4-Legged Quadruped Walk / March Animation
+    const walkSpeed = (currentAction === 'walk' || currentAction === 'dance') ? 11 : 2.6;
+    const walkAmp = (currentAction === 'walk' || currentAction === 'dance') ? 0.38 : 0.06;
+    legFL.rotation.x =  Math.sin(t * walkSpeed) * walkAmp;
+    legBR.rotation.x =  Math.sin(t * walkSpeed) * walkAmp;
+    legFR.rotation.x = -Math.sin(t * walkSpeed) * walkAmp;
+    legBL.rotation.x = -Math.sin(t * walkSpeed) * walkAmp;
+
+    // Tall Bunny Ears Wiggle (Blub.png style)
+    const earSpeed = currentAction === 'ears' ? 12 : 2.4;
+    const earAmp = currentAction === 'ears' ? 0.28 : 0.06;
+    earLeft.rotation.z  =  Math.sin(t * earSpeed) * earAmp;
+    earRight.rotation.z = -Math.sin(t * earSpeed) * earAmp;
+
+    // Side Pixel Arms Wave
+    if (currentAction === 'wave') {
+      armRight.rotation.z = 0.65 + Math.sin(t * 14) * 0.35;
+      armLeft.rotation.z = 0;
+    } else if (currentAction === 'both' || currentAction === 'cheer' || currentAction === 'dance') {
+      armRight.rotation.z =  0.65 + Math.sin(t * 12) * 0.3;
+      armLeft.rotation.z  = -0.65 - Math.sin(t * 12) * 0.3;
+    } else {
+      armRight.rotation.z = Math.sin(t * 2.2) * 0.07;
+      armLeft.rotation.z  = -Math.sin(t * 2.2) * 0.07;
+    }
+
+    // Back 3D Pixel Tail Wag
+    const tailSpeed = (currentAction === 'tail' || currentAction === 'dance' || currentAction === 'cheer') ? 15 : 4.2;
+    const tailAmp = (currentAction === 'tail' || currentAction === 'dance' || currentAction === 'cheer') ? 0.52 : 0.18;
+    tailGroup.rotation.y = Math.sin(t * tailSpeed) * tailAmp;
+    tailGroup.rotation.x = Math.cos(t * tailSpeed * 0.5) * 0.08;
+
+    // Animate 20 Study Buddy 3D Props
+    if (openBookGroup.visible) {
+      openBookGroup.position.y = 0.2 + Math.sin(t * 3.2) * 0.14;
+    }
+    if (pencilGroup.visible) {
+      pencilGroup.position.y = 0.35 + Math.cos(t * 3.5) * 0.15;
+      pencilGroup.rotation.y = t * 0.8;
+    }
+    if (pomoCubeGroup.visible) {
+      pomoCubeGroup.rotation.y = t * 1.1;
+      pomoCubeGroup.rotation.x = Math.sin(t * 2) * 0.25;
+      pomoCubeGroup.position.y = 1.85 + Math.sin(t * 2.6) * 0.14;
+    }
+    if (flameGroup.visible) {
+      flameGroup.position.y = 1.85 + Math.cos(t * 3.2) * 0.14;
+      flameGroup.scale.y = 1 + Math.sin(t * 10) * 0.12;
+    }
+    if (bulbGroup.visible) {
+      bulbGroup.position.y = 3.48 + Math.sin(t * 4) * 0.09;
+      bulbGroup.rotation.y = t * 1.5;
+    }
+    if (haloRing.visible) {
+      haloRing.rotation.z = t * 2;
+    }
+    if (shieldDome.visible) {
+      shieldDome.rotation.y = t * 0.25;
+    }
+    if (mathOrbitGroup.visible) {
+      mathOrbitGroup.rotation.y = t * 0.95;
+    }
+    if (auraGroup.visible) {
+      auraCubes.forEach((c, idx) => {
+        const a = c.userData.angle + t * c.userData.speed * 0.5;
+        c.position.x = Math.cos(a) * c.userData.rad;
+        c.position.z = Math.sin(a) * c.userData.rad;
+        c.position.y = c.userData.yBase + Math.sin(t * 2 + idx) * 0.25;
+        c.rotation.x = t * 1.5;
+        c.rotation.y = t * 1.2;
+      });
+    }
+
+    renderer.render(scene, camera);
+  }
+
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+
+  // -------------------------------------------------------------
+  // PostMessage & Embed Mode Controller for Jack Quiz Next.js App
+  // -------------------------------------------------------------
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const isEmbed = params.get('embed') === '1' || params.get('embed') === 'true' || window.self !== window.top;
+    const isTransparent = params.get('transparent') === '1' || params.get('bg') === 'transparent' || isEmbed;
+
+    if (isTransparent) {
+      document.documentElement.style.background = 'transparent';
+      document.body.style.background = 'transparent';
+    }
+
+    if (isEmbed) {
+      document.body.classList.add('embedded');
+      const fab = document.querySelector('.save-fab');
+      if (fab) fab.style.display = 'none';
+      const sheet = document.getElementById('studySheet');
+      if (sheet) sheet.style.display = 'none';
+      const dock = document.querySelector('.bottom-dock');
+      if (dock) dock.style.display = 'none';
+      const openBtn = document.getElementById('openLabBtn');
+      if (openBtn) openBtn.style.display = 'none';
+      const activePill = document.getElementById('activeCountPill');
+      if (activePill) activePill.style.display = 'none';
+      const sp = document.querySelector('.speech-wrap');
+      if (sp) sp.style.display = 'none';
+    }
+
+    window.addEventListener('message', (ev) => {
+      if (!ev.data || typeof ev.data !== 'object') return;
+      const { action, mood, text, upgrades, speak } = ev.data;
+      if (action) triggerAction(action);
+      if (mood) setMood(mood, text || null, speak !== false);
+      if (upgrades && Array.isArray(upgrades)) {
+        activeUpgrades = new Set(upgrades);
+        syncUpgradesVisibility();
+      }
+    });
+  } catch (e) {
+    console.warn('Embed controller initialization error:', e);
+  }
+
+  window.onload = () => {
+    animate();
+  };
+})();
+</script>
+
+</body></html>

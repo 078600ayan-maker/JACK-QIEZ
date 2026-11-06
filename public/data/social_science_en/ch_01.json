@@ -1,0 +1,197 @@
+[
+  {
+    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848?",
+    "o": [
+      "French artist",
+      "German philosopher",
+      "Italian revolutionary",
+      "Russian author"
+    ],
+    "a": 0,
+    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics.",
+    "i": 30101,
+    "d": 1
+  },
+  {
+    "q": "In which year was the Treaty of Vienna hosted?",
+    "o": [
+      "1815",
+      "1820",
+      "1830",
+      "1848"
+    ],
+    "a": 0,
+    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich.",
+    "i": 30102,
+    "d": 2
+  },
+  {
+    "q": "Who was the chief architect of the unification of Germany?",
+    "o": [
+      "Otto von Bismarck",
+      "Giuseppe Mazzini",
+      "Garibaldi",
+      "Kaiser William"
+    ],
+    "a": 0,
+    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany.",
+    "i": 30103,
+    "d": 3
+  },
+  {
+    "q": "Who founded the secret society called 'Young Italy'?",
+    "o": [
+      "Giuseppe Mazzini",
+      "Count Cavour",
+      "Victor Emmanuel",
+      "Napoleon"
+    ],
+    "a": 0,
+    "e": "Giuseppe Mazzini founded Young Italy in Marseilles in 1831.",
+    "i": 30104,
+    "d": 4
+  },
+  {
+    "i": 30105,
+    "d": 5,
+    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848 (JAC Board Standard Pattern - Part 5):",
+    "o": [
+      "French artist",
+      "German philosopher",
+      "Italian revolutionary",
+      "Russian author"
+    ],
+    "a": 0,
+    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30106,
+    "d": 1,
+    "q": "In which year was the Treaty of Vienna hosted (JAC Board Standard Pattern - Part 6):",
+    "o": [
+      "1815",
+      "1820",
+      "1830",
+      "1848"
+    ],
+    "a": 0,
+    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30107,
+    "d": 2,
+    "q": "Who was the chief architect of the unification of Germany (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "Otto von Bismarck",
+      "Giuseppe Mazzini",
+      "Garibaldi",
+      "Kaiser William"
+    ],
+    "a": 0,
+    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30108,
+    "d": 3,
+    "q": "Who founded the secret society called 'Young Italy' (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "Giuseppe Mazzini",
+      "Count Cavour",
+      "Victor Emmanuel",
+      "Napoleon"
+    ],
+    "a": 0,
+    "e": "Giuseppe Mazzini founded Young Italy in Marseilles in 1831. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30109,
+    "d": 4,
+    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848 (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "French artist",
+      "German philosopher",
+      "Italian revolutionary",
+      "Russian author"
+    ],
+    "a": 0,
+    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30110,
+    "d": 5,
+    "q": "In which year was the Treaty of Vienna hosted (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "1815",
+      "1820",
+      "1830",
+      "1848"
+    ],
+    "a": 0,
+    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30111,
+    "d": 1,
+    "q": "Who was the chief architect of the unification of Germany (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "Otto von Bismarck",
+      "Giuseppe Mazzini",
+      "Garibaldi",
+      "Kaiser William"
+    ],
+    "a": 0,
+    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30112,
+    "d": 2,
+    "q": "Who founded the secret society called 'Young Italy' (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "Giuseppe Mazzini",
+      "Count Cavour",
+      "Victor Emmanuel",
+      "Napoleon"
+    ],
+    "a": 0,
+    "e": "Giuseppe Mazzini founded Young Italy in Marseilles in 1831. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30113,
+    "d": 3,
+    "q": "Who was Frédéric Sorrieu, who prepared a series of four prints in 1848 (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "French artist",
+      "German philosopher",
+      "Italian revolutionary",
+      "Russian author"
+    ],
+    "a": 0,
+    "e": "Frédéric Sorrieu was a French artist who visualized a world made up of democratic republics. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30114,
+    "d": 4,
+    "q": "In which year was the Treaty of Vienna hosted (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "1815",
+      "1820",
+      "1830",
+      "1848"
+    ],
+    "a": 0,
+    "e": "Following Napoleon's defeat, the Congress of Vienna was hosted in 1815 by Duke Metternich. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 30115,
+    "d": 5,
+    "q": "Who was the chief architect of the unification of Germany (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "Otto von Bismarck",
+      "Giuseppe Mazzini",
+      "Garibaldi",
+      "Kaiser William"
+    ],
+    "a": 0,
+    "e": "Otto von Bismarck used Prussian army and bureaucracy under Blood and Iron policy to unify Germany. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]

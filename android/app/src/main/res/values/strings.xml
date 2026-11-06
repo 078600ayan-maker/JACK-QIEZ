@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">JAC Quiz</string>
+    <string name="title_activity_main">JAC Quiz</string>
+    <string name="package_name">com.jackquiz.royal</string>
+    <string name="custom_url_scheme">com.jackquiz.royal</string>
+</resources>

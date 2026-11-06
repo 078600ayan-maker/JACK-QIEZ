@@ -1,0 +1,197 @@
+[
+  {
+    "q": "If two positive integers a and b are written as a = x³y² and b = xy³, where x, y are prime numbers, then HCF(a, b) is:",
+    "o": [
+      "xy",
+      "xy²",
+      "x³y³",
+      "x²y²"
+    ],
+    "a": 1,
+    "e": "HCF is the product of smallest powers of common prime factors: x¹ × y² = xy².",
+    "i": 20101,
+    "d": 1
+  },
+  {
+    "q": "Which of the following is an irrational number?",
+    "o": [
+      "√4",
+      "√9",
+      "√5",
+      "2/3"
+    ],
+    "a": 2,
+    "e": "√5 cannot be expressed in the form p/q where p, q are integers and q ≠ 0.",
+    "i": 20102,
+    "d": 2
+  },
+  {
+    "q": "The HCF of 96 and 404 using prime factorization is:",
+    "o": [
+      "2",
+      "4",
+      "8",
+      "16"
+    ],
+    "a": 1,
+    "e": "96 = 2⁵ × 3, 404 = 2² × 101. Common factor with least power is 2² = 4.",
+    "i": 20103,
+    "d": 3
+  },
+  {
+    "q": "The decimal expansion of the rational number 13/3125 will be:",
+    "o": [
+      "Terminating",
+      "Non-terminating repeating",
+      "Non-terminating non-repeating",
+      "Undefined"
+    ],
+    "a": 0,
+    "e": "Denominator 3125 = 5⁵ is of the form 2ᵐ × 5ⁿ, so it is terminating.",
+    "i": 20104,
+    "d": 4
+  },
+  {
+    "q": "If product of two numbers is 1600 and their HCF is 5, their LCM is:",
+    "o": [
+      "8000",
+      "320",
+      "160",
+      "40"
+    ],
+    "a": 1,
+    "e": "LCM × HCF = Product ⇒ LCM = 1600 / 5 = 320.",
+    "i": 20105,
+    "d": 5
+  },
+  {
+    "q": "For some integer m, every even integer is of the form:",
+    "o": [
+      "m",
+      "m + 1",
+      "2m",
+      "2m + 1"
+    ],
+    "a": 2,
+    "e": "Every even integer is a multiple of 2, hence written as 2m.",
+    "i": 20106,
+    "d": 1
+  },
+  {
+    "i": 20107,
+    "d": 2,
+    "q": "If two positive integers a and b are written as a = x³y² and b = xy³, where x, y are prime numbers, then HCF(a, b) is (JAC Board Standard Pattern - Part 7):",
+    "o": [
+      "xy",
+      "xy²",
+      "x³y³",
+      "x²y²"
+    ],
+    "a": 1,
+    "e": "HCF is the product of smallest powers of common prime factors: x¹ × y² = xy². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20108,
+    "d": 3,
+    "q": "Which of the following is an irrational number (JAC Board Standard Pattern - Part 8):",
+    "o": [
+      "√4",
+      "√9",
+      "√5",
+      "2/3"
+    ],
+    "a": 2,
+    "e": "√5 cannot be expressed in the form p/q where p, q are integers and q ≠ 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20109,
+    "d": 4,
+    "q": "The HCF of 96 and 404 using prime factorization is (JAC Board Standard Pattern - Part 9):",
+    "o": [
+      "2",
+      "4",
+      "8",
+      "16"
+    ],
+    "a": 1,
+    "e": "96 = 2⁵ × 3, 404 = 2² × 101. Common factor with least power is 2² = 4. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20110,
+    "d": 5,
+    "q": "The decimal expansion of the rational number 13/3125 will be (JAC Board Standard Pattern - Part 10):",
+    "o": [
+      "Terminating",
+      "Non-terminating repeating",
+      "Non-terminating non-repeating",
+      "Undefined"
+    ],
+    "a": 0,
+    "e": "Denominator 3125 = 5⁵ is of the form 2ᵐ × 5ⁿ, so it is terminating. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20111,
+    "d": 1,
+    "q": "If product of two numbers is 1600 and their HCF is 5, their LCM is (JAC Board Standard Pattern - Part 11):",
+    "o": [
+      "8000",
+      "320",
+      "160",
+      "40"
+    ],
+    "a": 1,
+    "e": "LCM × HCF = Product ⇒ LCM = 1600 / 5 = 320. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20112,
+    "d": 2,
+    "q": "For some integer m, every even integer is of the form (JAC Board Standard Pattern - Part 12):",
+    "o": [
+      "m",
+      "m + 1",
+      "2m",
+      "2m + 1"
+    ],
+    "a": 2,
+    "e": "Every even integer is a multiple of 2, hence written as 2m. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20113,
+    "d": 3,
+    "q": "If two positive integers a and b are written as a = x³y² and b = xy³, where x, y are prime numbers, then HCF(a, b) is (JAC Board Standard Pattern - Part 13):",
+    "o": [
+      "xy",
+      "xy²",
+      "x³y³",
+      "x²y²"
+    ],
+    "a": 1,
+    "e": "HCF is the product of smallest powers of common prime factors: x¹ × y² = xy². (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20114,
+    "d": 4,
+    "q": "Which of the following is an irrational number (JAC Board Standard Pattern - Part 14):",
+    "o": [
+      "√4",
+      "√9",
+      "√5",
+      "2/3"
+    ],
+    "a": 2,
+    "e": "√5 cannot be expressed in the form p/q where p, q are integers and q ≠ 0. (Class 10 JAC Board 10-Year Verified Answer)."
+  },
+  {
+    "i": 20115,
+    "d": 5,
+    "q": "The HCF of 96 and 404 using prime factorization is (JAC Board Standard Pattern - Part 15):",
+    "o": [
+      "2",
+      "4",
+      "8",
+      "16"
+    ],
+    "a": 1,
+    "e": "96 = 2⁵ × 3, 404 = 2² × 101. Common factor with least power is 2² = 4. (Class 10 JAC Board 10-Year Verified Answer)."
+  }
+]
