@@ -28,25 +28,69 @@ function QuizPageContent() {
       try {
         setLoading(true);
 
-        // 1. Load Manifest to resolve chapter file and name
-        const res = await fetch('/data/manifest.json');
-        if (!res.ok) throw new Error('Manifest not found');
-        const manifest: Manifest = await res.json();
+        // 1. Normalize Subject & Chapter IDs
+        const normSubj = (raw: string) => {
+          const s = raw.toLowerCase().replace(/[^a-z]/g, '');
+          if (s.startsWith('math')) return 'math';
+          if (s.startsWith('sci')) return 'sci';
+          if (s.startsWith('sst') || s.includes('social')) return 'sst';
+          if (s.startsWith('hin')) return 'hin';
+          if (s.startsWith('eng')) return 'eng';
+          return s;
+        };
 
-        const subjectMeta = manifest.subjects.find(s => s.id === subjectId);
-        if (!subjectMeta) throw new Error(`Subject ${subjectId} not found`);
+        const targetSubjId = normSubj(subjectId);
+        const chNumMatch = chapterId.match(/\d+/);
+        const chNum = chNumMatch ? parseInt(chNumMatch[0], 10) : 1;
+        const chNumStr = String(chNum).padStart(2, '0');
 
-        const chapterMeta = subjectMeta.chapters.find(c => c.chId === chapterId);
-        if (!chapterMeta) throw new Error(`Chapter ${chapterId} not found`);
+        // Load Manifest to resolve chapter file and name
+        let subjectTitle = subjectId;
+        let chapterName = `Chapter ${chNum}`;
+        let chapterFile = `/data/${targetSubjId === 'sci' ? 'science' : targetSubjId === 'sst' ? 'social_science' : targetSubjId}/ch_${chNumStr}.json`;
 
-        // 2. Bilingual Fetch: Query Supabase filtered by 'language' ('hi' or 'en') with offline fallback
-        let allQuestions = await fetchQuestionsByLanguage(subjectMeta.id, userLang, chapterMeta.chId);
+        try {
+          const res = await fetch('/data/manifest.json');
+          if (res.ok) {
+            const manifest: Manifest = await res.json();
+            const subjectMeta = manifest.subjects.find(
+              s => s.id === targetSubjId || s.id === subjectId || normSubj(s.id) === targetSubjId
+            );
+            if (subjectMeta) {
+              subjectTitle = subjectMeta.title;
+              const chMeta = subjectMeta.chapters.find(
+                c => c.chId === chapterId ||
+                     c.num === chNum ||
+                     c.chId.endsWith(`ch${chNumStr}`) ||
+                     c.file.includes(`ch_${chNumStr}.json`)
+              );
+              if (chMeta) {
+                chapterName = chMeta.name;
+                chapterFile = chMeta.file;
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Manifest load error, continuing with fallback:', e);
+        }
+
+        // 2. Bilingual Fetch: Query Supabase or local offline files
+        let allQuestions = await fetchQuestionsByLanguage(targetSubjId, userLang, `ch_${chNumStr}`);
         if (!allQuestions || allQuestions.length === 0) {
-          allQuestions = await fetchChapterQuestions(chapterMeta.file);
+          allQuestions = await fetchChapterQuestions(chapterFile);
         }
 
         if (!allQuestions || allQuestions.length === 0) {
-          throw new Error('No questions found for this chapter');
+          // Additional fallback directly to public data
+          const folder = targetSubjId === 'sci' ? 'science' : targetSubjId === 'sst' ? 'social_science' : targetSubjId;
+          const fallbackRes = await fetch(`/data/${folder}/ch_${chNumStr}.json`);
+          if (fallbackRes.ok) {
+            allQuestions = await fallbackRes.json();
+          }
+        }
+
+        if (!allQuestions || allQuestions.length === 0) {
+          throw new Error(`No questions found for ${subjectTitle} Chapter ${chNum}`);
         }
 
         // 3. Filter and slice questions for this level
@@ -54,11 +98,11 @@ function QuizPageContent() {
 
         // 4. Initialize Quiz in store
         startQuiz({
-          questions: levelQuestions,
+          questions: levelQuestions.length > 0 ? levelQuestions : allQuestions.slice(0, 10),
           level: levelNum,
-          chapterId: chapterMeta.chId,
-          chapterName: chapterMeta.name,
-          subjectId: subjectMeta.id,
+          chapterId: `${targetSubjId}_ch${chNumStr}`,
+          chapterName,
+          subjectId: targetSubjId,
           userHearts
         });
 
