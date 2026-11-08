@@ -57,7 +57,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     hindiTitle: 'गणित',
     classTag: 'Class 10 NCERT',
     totalChapters: 14,
-    bookSvg: '/images/subjects/math.jpg',
+    bookSvg: '/images/subjects/math_ncert.jpg',
     themeColor: '#3B82F6',
     parts: [
       {
@@ -114,7 +114,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     hindiTitle: 'विज्ञान',
     classTag: 'Class 10 NCERT',
     totalChapters: 13,
-    bookSvg: '/images/subjects/science.jpg',
+    bookSvg: '/images/subjects/science_ncert.jpg',
     themeColor: '#10B981',
     parts: [
       {
@@ -179,7 +179,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'मुख्य पाठ्यपुस्तक',
         totalChapters: 6,
         completedChapters: 4,
-        iconPath: '/images/subjects/english.jpg',
+        iconPath: '/images/subjects/english_first_flight.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'A Letter to God', hindiTitle: 'भगवान के नाम पत्र' },
           { num: 2, id: 'ch_02', title: 'Nelson Mandela: Long Walk to Freedom', hindiTitle: 'नेल्सन मंडेला: आज़ादी की लंबी यात्रा' },
@@ -195,7 +195,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'पूरक पाठ्यपुस्तक',
         totalChapters: 5,
         completedChapters: 3,
-        iconPath: '/images/subjects/english.jpg',
+        iconPath: '/images/subjects/english_footprints.jpg',
         chapters: [
           { num: 7, id: 'ch_07', title: 'A Triumph of Surgery', hindiTitle: 'शल्य चिकित्सा की जीत' },
           { num: 8, id: 'ch_08', title: 'The Thief\'s Story', hindiTitle: 'चोर की कहानी' },
@@ -223,7 +223,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'इतिहास (भारत और समकालीन विश्व II)',
         totalChapters: 3,
         completedChapters: 2,
-        iconPath: '/images/subjects/sst.jpg',
+        iconPath: '/images/subjects/sst_history.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'The Rise of Nationalism in Europe', hindiTitle: 'यूरोप में राष्ट्रवाद का उदय' },
           { num: 2, id: 'ch_02', title: 'Nationalism in India', hindiTitle: 'भारत में राष्ट्रवाद' },
@@ -236,7 +236,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'भूगोल (समकालीन भारत II)',
         totalChapters: 3,
         completedChapters: 3,
-        iconPath: '/images/subjects/sst.jpg',
+        iconPath: '/images/subjects/sst_geography.jpg',
         chapters: [
           { num: 4, id: 'ch_04', title: 'Resources and Development', hindiTitle: 'संसाधन एवं विकास' },
           { num: 5, id: 'ch_05', title: 'Forest and Wildlife Resources', hindiTitle: 'वन एवं वन्य जीव संसाधन' },
@@ -249,7 +249,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'नागरिक शास्त्र (लोकतांत्रिक राजनीति II)',
         totalChapters: 3,
         completedChapters: 2,
-        iconPath: '/images/subjects/sst.jpg',
+        iconPath: '/images/subjects/sst_politics.jpg',
         chapters: [
           { num: 7, id: 'ch_07', title: 'Power Sharing', hindiTitle: 'सत्ता की साझेदारी' },
           { num: 8, id: 'ch_08', title: 'Federalism', hindiTitle: 'संघवाद' },
@@ -287,7 +287,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'क्षितिज भाग 2',
         totalChapters: 5,
         completedChapters: 4,
-        iconPath: '/images/subjects/hindi.jpg',
+        iconPath: '/images/subjects/hindi_kshitij.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Surdas - Pad', hindiTitle: 'सूरदास - पद' },
           { num: 2, id: 'ch_02', title: 'Ram-Lakshman-Parshuram Samvad', hindiTitle: 'राम-लक्ष्मण-परशुराम संवाद' },
@@ -302,7 +302,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'कृतिका भाग 2',
         totalChapters: 3,
         completedChapters: 2,
-        iconPath: '/images/subjects/hindi.jpg',
+        iconPath: '/images/subjects/hindi_kritika.jpg',
         chapters: [
           { num: 6, id: 'ch_06', title: 'Mata Ka Anchal', hindiTitle: 'माता का अँचल' },
           { num: 7, id: 'ch_07', title: 'George Pancham Ki Naak', hindiTitle: 'जॉर्ज पंचम की नाक' },

@@ -570,3 +570,53 @@ Execute the complete V2.0 upgrade following the technical specifications below:
 - Run `npm run build` to verify 0 TypeScript/Turbopack errors.
 - Ensure all 3,420 questions remain loaded and bilingual toggle ([🇮🇳 HINDI] / [🇬🇧 ENGLISH]) switches instantly in real-time.
 ```
+
+
+---
+
+## 19. OFFICIAL MINECRAFT AVATAR CREATOR & BUNDLE SYSTEM (PHASES 1-10 DEEP SPECIFICATION)
+*(Engineered directly from student design prompt & reference assets)*
+
+```
++---------------------------------------------------------------------------------------------------+
+|  [ BUNDLES ]                  MINECRAFT 3D AVATAR STUDIO               [ WALLET: 1,450 XP ]       |
++--------------------------+-------------------------------------+----------------------------------+
+| CATEGORIES (5 Groups):   |       [ 3D MINECRAFT RIG ]          | BUNDLE SELECTION:                |
+|  [ 1. Hair            ]  |       (Classic Block Proportions)   |  [ BOYS (20) ]  [ GIRLS (20) ]   |
+|  [ 2. Face Accessories]  |                                     |                                  |
+|  [ 3. Top Outfits     ]  |           +---------+               | Section 1: Anime Heroes (5)      |
+|  [ 4. Bottom Pants    ]  |           |  HEAD   | (8x8x8)       | Section 2: Mystic Ninjas (5)     |
+|  [ 5. Shoes/Boots     ]  |           +---------+               | Section 3: High School Cool (5)  |
+|                          |        +---------------+            | Section 4: Royal Champions (5)   |
+| Equip State:             |        | L | TORSO | R | (8x12x4)   |                                  |
+| Kai (Base Voxel)         |        | A |       | A | (4x12x4)   | [Equip Bundle Now (Instant)]     |
+| Purple Mask Outfit       |        +---------------+            | [Set as Profile Avatar]          |
+| High-Tops Equipped       |           | L |   | R |            |                                  |
+|                          |           | L |   | L | (4x12x4)   | > 5 Cards Per Row on Desktop     |
+| [360 Rotate Touch]       |           +---+   +---+            | > Dynamic Touch Swiper on Mobile |
++--------------------------+-------------------------------------+----------------------------------+
+```
+
+### Phase 1: Classic Minecraft 3D Body Creator
+- Modeled strictly on original Minecraft voxel proportions: Head 8x8x8, Torso 8x12x4, Arms 4x12x4, Legs 4x12x4, zero neck gap, crisp pixel textures.
+
+### Phase 2: Five Customization Groups
+1. HAIR, 2. FACE ACCESSORIES, 3. TOP, 4. BOTTOM, 5. SHOES.
+
+### Phase 3 & 4: 40 Preloaded Bundle Collections (Boy & Girl)
+- 20 Boy Bundles across 4 sections (Shonen Legends, Dark & Mystic, Street & Cyber, Classic Voxel).
+- 20 Girl Bundles across 4 sections (Heroines & Guardians, Anime Cool & Kawaii, Adventure & Legends, Psychological & Classic).
+
+### Phase 5: Ten Canonical Characters
+- Male: Kai, Jax, Otis, Zane, Ayo.
+- Female: Elis, Nova, Fay, Zara, Mia.
+
+### Phase 6: Character Profile System & Public Sharing
+- 1-Click "Set Selected Character as Profile Avatar" button.
+- Profile cards dynamically display the student's equipped 3D Voxel character.
+
+---
+
+## 20. CUSTOM DP ENGINE & NCERT OFFICIAL BOOK COVERS ARCHITECTURE
+- Student DP Customization with uploaded reference image (`1794157388371.png`), circular golden glass ring, zoom/pan sliders, and Firestore sync.
+- Official NCERT Book Covers for English (First Flight, Footprints), Hindi (Kshitij, Kritika), Science, SST (History, Geography, Politics, Economics), and Maths.

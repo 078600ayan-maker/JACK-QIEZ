@@ -17,6 +17,7 @@ interface UserState {
   setActiveSubjectId: (subId: string) => void;
   setLanguagePreference: (lang: 'hi' | 'en') => Promise<void>;
   updateCustomAvatar: (avatar: AvatarCustomization) => void;
+  updateProfilePhoto: (photoURL: string) => void;
   recordLevelCompletion: (data: {
     chId: string;
     level: number;
@@ -81,6 +82,14 @@ export const useUserStore = create<UserState>((set, get) => ({
     const { profile } = get();
     if (!profile) return;
     const updated: UserProfile = { ...profile, customAvatar: avatar, avatarId: avatar.preset };
+    saveLocalUserProfile(updated);
+    set({ profile: updated });
+  },
+
+  updateProfilePhoto: (photoURL: string) => {
+    const { profile } = get();
+    if (!profile) return;
+    const updated: UserProfile = { ...profile, photoURL };
     saveLocalUserProfile(updated);
     set({ profile: updated });
   },

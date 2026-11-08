@@ -2,12 +2,13 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Flame, Trophy, Award, Heart, ExternalLink, Calendar, Users, LogOut, Sparkles, Palette } from 'lucide-react';
+import { Flame, Trophy, Award, Heart, ExternalLink, Calendar, Users, LogOut, Sparkles, Palette, Camera } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { CrownBadge } from '@/components/ui/CrownBadge';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { MinecraftAvatar3D } from '@/components/avatar/MinecraftAvatar3D';
 import { AvatarCustomizerModal } from '@/components/avatar/AvatarCustomizerModal';
+import { ProfilePhotoModal } from '@/components/profile/ProfilePhotoModal';
 import { CHARACTER_PRESETS, AvatarCustomization } from '@/types/avatar';
 import { getUserCurrentOreTier } from '@/types/ranking';
 import { playClickSound, playAvatarCheer } from '@/lib/audioEngine';
@@ -15,11 +16,13 @@ import Image from 'next/image';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { profile, refillHearts, updateCustomAvatar } = useUserStore();
+  const { profile, refillHearts, updateCustomAvatar, updateProfilePhoto } = useUserStore();
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [dpModalOpen, setDpModalOpen] = useState(false);
 
   const name = profile?.name || 'Royal Scholar';
   const email = profile?.email || 'scholar@studybuddy.royal';
+  const photoURL = profile?.photoURL || '/images/profile/custom_reference.png';
   const xp = profile?.xp || 280;
   const streak = profile?.streak || 7;
   const hearts = profile?.hearts ?? 5;
@@ -91,20 +94,44 @@ export default function ProfilePage() {
         </div>
 
         <div className="flex items-center justify-between my-2">
+          {/* Custom DP with Rotating Golden Ring Frame */}
+          <div className="relative shrink-0 mr-3">
+            <div
+              onClick={() => {
+                playClickSound();
+                setDpModalOpen(true);
+              }}
+              className="relative w-16 h-16 rounded-full p-[2px] bg-gradient-to-tr from-amber-500 via-yellow-300 to-amber-600 shadow-[0_0_20px_rgba(245,158,11,0.5)] cursor-pointer group active:scale-95 transition-all"
+              title="Click to Change DP"
+            >
+              <div className="w-full h-full rounded-full overflow-hidden bg-slate-900 relative">
+                <Image
+                  src={photoURL}
+                  alt={name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform"
+                />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow-md">
+                <Camera className="w-3.5 h-3.5" />
+              </div>
+            </div>
+          </div>
+
           <div className="flex-1 min-w-0 pr-2">
-            <h2 className="text-xl font-black text-white tracking-tight truncate">
+            <h2 className="text-lg font-black text-white tracking-tight truncate">
               {name}
             </h2>
-            <p className="text-xs text-slate-400 truncate mt-0.5">
+            <p className="text-[11px] text-slate-400 truncate mt-0.5">
               {email}
             </p>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300">
+            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+              <span className="flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300">
                 <Image
                   src={currentOre.iconSvg}
                   alt={currentOre.name}
-                  width={14}
-                  height={14}
+                  width={12}
+                  height={12}
                   className="object-contain"
                 />
                 <span>{currentOre.name} Tier</span>
@@ -114,10 +141,10 @@ export default function ProfilePage() {
                   playClickSound();
                   setAvatarModalOpen(true);
                 }}
-                className="flex items-center gap-1 text-[10px] font-black px-2.5 py-0.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white cursor-pointer active:scale-95 transition-all"
+                className="flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white cursor-pointer active:scale-95 transition-all"
               >
-                <Palette className="w-3 h-3 text-amber-400" />
-                <span>Customize (50+)</span>
+                <Palette className="w-2.5 h-2.5 text-amber-400" />
+                <span>Avatar Studio</span>
               </button>
             </div>
           </div>
@@ -130,16 +157,16 @@ export default function ProfilePage() {
             }}
             className="shrink-0 flex flex-col items-center cursor-pointer group"
           >
-            <div className="w-24 h-24 rounded-2xl bg-black/40 border-2 border-amber-400/30 overflow-hidden flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.3)] group-hover:scale-105 transition-transform">
+            <div className="w-20 h-20 rounded-2xl bg-black/40 border-2 border-amber-400/30 overflow-hidden flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.3)] group-hover:scale-105 transition-transform">
               <MinecraftAvatar3D
                 customization={activeAvatarCustom}
                 animation="idle"
-                size={96}
+                size={80}
                 showPedestal={false}
                 interactive={false}
               />
             </div>
-            <span className="text-[9px] font-black text-amber-300 mt-1 tracking-wider uppercase text-center max-w-[90px] truncate">
+            <span className="text-[9px] font-black text-amber-300 mt-1 tracking-wider uppercase text-center max-w-[80px] truncate">
               {activeAvatarCustom.name}
             </span>
           </div>
@@ -307,6 +334,16 @@ export default function ProfilePage() {
           playAvatarCheer();
         }}
         onClose={() => setAvatarModalOpen(false)}
+      />
+
+      {/* Student Custom DP Uploader & Crop Modal */}
+      <ProfilePhotoModal
+        isOpen={dpModalOpen}
+        currentPhoto={photoURL}
+        onSave={(newPhoto) => {
+          updateProfilePhoto(newPhoto);
+        }}
+        onClose={() => setDpModalOpen(false)}
       />
     </div>
   );

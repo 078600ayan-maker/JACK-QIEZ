@@ -681,6 +681,33 @@ export const MinecraftAvatar3D: React.FC<MinecraftAvatar3DProps> = ({
 
     // --- Paint Head Texture (Face, Eyes, Lips, Hair) ---
     const hctx = p.headCanvasCtx;
+    const tctx = p.torsoCanvasCtx;
+
+    // If activeCustom has a skinPath, paint actual Minecraft skin image onto the canvases!
+    if (activeCustom.skinPath) {
+      if (typeof window !== 'undefined') {
+        const img = new window.Image();
+        img.crossOrigin = 'anonymous';
+        img.src = activeCustom.skinPath;
+        img.onload = () => {
+          try {
+            hctx.clearRect(0, 0, 64, 64);
+            hctx.imageSmoothingEnabled = false;
+            // Draw head front from 64x64 skin (head front is 8,8, 8,8)
+            hctx.drawImage(img, 8, 8, 8, 8, 0, 0, 64, 64);
+
+            tctx.clearRect(0, 0, 64, 64);
+            tctx.imageSmoothingEnabled = false;
+            // Draw torso front (20, 20, 8, 12)
+            tctx.drawImage(img, 20, 20, 8, 12, 0, 0, 64, 64);
+
+            if (p.headTexture) p.headTexture.needsUpdate = true;
+            if (p.torsoTexture) p.torsoTexture.needsUpdate = true;
+          } catch {}
+        };
+      }
+    }
+
     hctx.fillStyle = activeCustom.skinTone;
     hctx.fillRect(0, 0, 64, 64);
 
@@ -715,7 +742,6 @@ export const MinecraftAvatar3D: React.FC<MinecraftAvatar3DProps> = ({
     if (p.headTexture) p.headTexture.needsUpdate = true;
 
     // --- Paint Torso Texture (Shirt, Armor, Details) ---
-    const tctx = p.torsoCanvasCtx;
     const shirtConf = SHIRTS.find(s => s.id === activeCustom.shirt) || SHIRTS[0];
     tctx.fillStyle = shirtConf.color;
     tctx.fillRect(0, 0, 64, 64);
