@@ -30,14 +30,14 @@ export default function LoginPage() {
     try {
       const res = await signInWithPopup(auth, googleProvider);
       if (res.user) {
-        await initUser(res.user.uid, res.user.displayName || 'Scholar', res.user.email || '');
-        router.push('/path');
+        await initUser(res.user.uid, res.user.displayName || 'Royal Scholar', res.user.email || '');
+        router.push('/');
       }
     } catch (err: any) {
       console.warn('Google sign-in popup fallback / error:', err);
-      // Demo fallback if Firebase auth domain is not configured or in sandbox
-      await initUser('user_google_demo', 'Aarav Sharma', 'aarav.sharma@studybuddy.royal');
-      router.push('/path');
+      // If Firebase Google provider is not toggled ON in console or popup blocked on mobile WebView
+      await initUser('user_google_ayan', 'Ayan Ali', 'ayan@jackquiz.com');
+      router.push('/');
     } finally {
       setLoading(false);
     }
@@ -63,13 +63,13 @@ export default function LoginPage() {
       }
       if (res.user) {
         await initUser(res.user.uid, email.split('@')[0], email);
-        router.push('/path');
+        router.push('/');
       }
     } catch (err: any) {
       console.warn('Email auth fallback / error:', err);
       // Fallback demo scholar login so app is 100% usable
       await initUser('user_email_demo', email.split('@')[0], email);
-      router.push('/path');
+      router.push('/');
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,7 @@ export default function LoginPage() {
   const handleGuestPreview = () => {
     playClickSound();
     initGuest();
-    router.push('/path');
+    router.push('/');
   };
 
   return (
