@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "76569627057",
+    "firebase_url": "https://jack-quiz-app-default-rtdb.firebaseio.com",
+    "project_id": "jack-quiz-app",
+    "storage_bucket": "jack-quiz-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76569627057:android:93241deb831be08ec41590",
+        "android_client_info": {
+          "package_name": "com.jackquiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "76569627057-9ngfaitr7vo8o4eqkp41oima2dcpinh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcSqmt9A-J1qqLtAbJ6qzHsb1QZHpLccI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "76569627057-9ngfaitr7vo8o4eqkp41oima2dcpinh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -50,14 +50,14 @@ export interface SubjectData {
 }
 
 export const DEEP_SUBJECTS: SubjectData[] = [
-  // 1. MATHEMATICS (3 parts) - Matches Screenshot 1
+  // 1. MATHEMATICS (3 parts)
   {
     id: 'math',
     title: 'Mathematics',
     hindiTitle: 'गणित',
     classTag: 'Class 10 NCERT',
     totalChapters: 14,
-    bookSvg: '/subjects/math.svg',
+    bookSvg: '/images/subjects/math.jpg',
     themeColor: '#3B82F6',
     parts: [
       {
@@ -66,7 +66,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'संख्या पद्धति व बीजगणित',
         totalChapters: 5,
         completedChapters: 4,
-        iconPath: '/subjects/math.svg',
+        iconPath: '/images/subjects/math.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Real Numbers', hindiTitle: 'वास्तविक संख्याएँ' },
           { num: 2, id: 'ch_02', title: 'Polynomials', hindiTitle: 'बहुपद' },
@@ -81,7 +81,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'ज्यामिति व त्रिकोणमिति',
         totalChapters: 5,
         completedChapters: 3,
-        iconPath: '/subjects/math.svg',
+        iconPath: '/images/subjects/math.jpg',
         chapters: [
           { num: 6, id: 'ch_06', title: 'Triangles', hindiTitle: 'त्रिभुज' },
           { num: 7, id: 'ch_07', title: 'Coordinate Geometry', hindiTitle: 'निर्देशांक ज्यामिति' },
@@ -96,7 +96,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'क्षेत्रमिति व सांख्यिकी',
         totalChapters: 4,
         completedChapters: 3,
-        iconPath: '/subjects/math.svg',
+        iconPath: '/images/subjects/math.jpg',
         chapters: [
           { num: 11, id: 'ch_11', title: 'Areas Related to Circles', hindiTitle: 'वृत्तों से संबंधित क्षेत्रफल' },
           { num: 12, id: 'ch_12', title: 'Surface Areas and Volumes', hindiTitle: 'पृष्ठीय क्षेत्रफल और आयतन' },
@@ -114,7 +114,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     hindiTitle: 'विज्ञान',
     classTag: 'Class 10 NCERT',
     totalChapters: 13,
-    bookSvg: '/subjects/science.svg',
+    bookSvg: '/images/subjects/science.jpg',
     themeColor: '#10B981',
     parts: [
       {
@@ -123,7 +123,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'रसायन विज्ञान',
         totalChapters: 5,
         completedChapters: 5,
-        iconPath: '/subjects/science.svg',
+        iconPath: '/images/subjects/science.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Chemical Reactions and Equations', hindiTitle: 'रासायनिक अभिक्रियाएँ एवं समीकरण' },
           { num: 2, id: 'ch_02', title: 'Acids, Bases and Salts', hindiTitle: 'अम्ल, क्षारक एवं लवण' },
@@ -138,7 +138,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'जीव विज्ञान',
         totalChapters: 4,
         completedChapters: 3,
-        iconPath: '/subjects/science.svg',
+        iconPath: '/images/subjects/science.jpg',
         chapters: [
           { num: 6, id: 'ch_06', title: 'Life Processes', hindiTitle: 'जैव प्रक्रम' },
           { num: 7, id: 'ch_07', title: 'Control and Coordination', hindiTitle: 'नियंत्रण एवं समन्वय' },
@@ -152,7 +152,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'भौतिकी',
         totalChapters: 4,
         completedChapters: 3,
-        iconPath: '/subjects/science.svg',
+        iconPath: '/images/subjects/science.jpg',
         chapters: [
           { num: 10, id: 'ch_10', title: 'Light - Reflection and Refraction', hindiTitle: 'प्रकाश - परावर्तन तथा अपवर्तन' },
           { num: 11, id: 'ch_11', title: 'The Human Eye and Colourful World', hindiTitle: 'मानव नेत्र तथा रंगबिरंगा संसार' },
@@ -170,8 +170,8 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     hindiTitle: 'अंग्रेज़ी',
     classTag: 'Class 10 NCERT',
     totalChapters: 11,
-    bookSvg: '/subjects/english.svg',
-    themeColor: '#F59E0B',
+    bookSvg: '/images/subjects/english.jpg',
+    themeColor: '#06B6D4',
     parts: [
       {
         id: 'eng_first_flight',
@@ -179,7 +179,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'मुख्य पाठ्यपुस्तक',
         totalChapters: 6,
         completedChapters: 4,
-        iconPath: '/subjects/english.svg',
+        iconPath: '/images/subjects/english.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'A Letter to God', hindiTitle: 'भगवान के नाम पत्र' },
           { num: 2, id: 'ch_02', title: 'Nelson Mandela: Long Walk to Freedom', hindiTitle: 'नेल्सन मंडेला: आज़ादी की लंबी यात्रा' },
@@ -195,7 +195,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'पूरक पाठ्यपुस्तक',
         totalChapters: 5,
         completedChapters: 3,
-        iconPath: '/subjects/english.svg',
+        iconPath: '/images/subjects/english.jpg',
         chapters: [
           { num: 7, id: 'ch_07', title: 'A Triumph of Surgery', hindiTitle: 'शल्य चिकित्सा की जीत' },
           { num: 8, id: 'ch_08', title: 'The Thief\'s Story', hindiTitle: 'चोर की कहानी' },
@@ -214,8 +214,8 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     hindiTitle: 'सामाजिक विज्ञान',
     classTag: 'Class 10 NCERT',
     totalChapters: 11,
-    bookSvg: '/subjects/sst.svg',
-    themeColor: '#F43F5E',
+    bookSvg: '/images/subjects/sst.jpg',
+    themeColor: '#F59E0B',
     parts: [
       {
         id: 'sst_history',
@@ -223,7 +223,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'इतिहास (भारत और समकालीन विश्व II)',
         totalChapters: 3,
         completedChapters: 2,
-        iconPath: '/subjects/sst.svg',
+        iconPath: '/images/subjects/sst.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'The Rise of Nationalism in Europe', hindiTitle: 'यूरोप में राष्ट्रवाद का उदय' },
           { num: 2, id: 'ch_02', title: 'Nationalism in India', hindiTitle: 'भारत में राष्ट्रवाद' },
@@ -236,7 +236,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'भूगोल (समकालीन भारत II)',
         totalChapters: 3,
         completedChapters: 3,
-        iconPath: '/subjects/sst.svg',
+        iconPath: '/images/subjects/sst.jpg',
         chapters: [
           { num: 4, id: 'ch_04', title: 'Resources and Development', hindiTitle: 'संसाधन एवं विकास' },
           { num: 5, id: 'ch_05', title: 'Forest and Wildlife Resources', hindiTitle: 'वन एवं वन्य जीव संसाधन' },
@@ -249,7 +249,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'नागरिक शास्त्र (लोकतांत्रिक राजनीति II)',
         totalChapters: 3,
         completedChapters: 2,
-        iconPath: '/subjects/sst.svg',
+        iconPath: '/images/subjects/sst.jpg',
         chapters: [
           { num: 7, id: 'ch_07', title: 'Power Sharing', hindiTitle: 'सत्ता की साझेदारी' },
           { num: 8, id: 'ch_08', title: 'Federalism', hindiTitle: 'संघवाद' },
@@ -262,7 +262,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'अर्थशास्त्र (आर्थिक विकास की समझ)',
         totalChapters: 2,
         completedChapters: 2,
-        iconPath: '/subjects/sst.svg',
+        iconPath: '/images/subjects/sst.jpg',
         chapters: [
           { num: 10, id: 'ch_10', title: 'Development', hindiTitle: 'विकास' },
           { num: 11, id: 'ch_11', title: 'Sectors of the Indian Economy', hindiTitle: 'भारतीय अर्थव्यवस्था के क्षेत्रक' }
@@ -278,8 +278,8 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     hindiTitle: 'हिंदी (कोर्स ए)',
     classTag: 'Class 10 NCERT',
     totalChapters: 8,
-    bookSvg: '/subjects/hindi.svg',
-    themeColor: '#A855F7',
+    bookSvg: '/images/subjects/hindi.jpg',
+    themeColor: '#8B5CF6',
     parts: [
       {
         id: 'hin_kshitij',
@@ -287,7 +287,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'क्षितिज भाग 2',
         totalChapters: 5,
         completedChapters: 4,
-        iconPath: '/subjects/hindi.svg',
+        iconPath: '/images/subjects/hindi.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Surdas - Pad', hindiTitle: 'सूरदास - पद' },
           { num: 2, id: 'ch_02', title: 'Ram-Lakshman-Parshuram Samvad', hindiTitle: 'राम-लक्ष्मण-परशुराम संवाद' },
@@ -302,11 +302,11 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         hindiTitle: 'कृतिका भाग 2',
         totalChapters: 3,
         completedChapters: 2,
-        iconPath: '/subjects/hindi.svg',
+        iconPath: '/images/subjects/hindi.jpg',
         chapters: [
-          { num: 6, id: 'ch_06', title: 'Mata Ka Aanchal', hindiTitle: 'माता का आँचल' },
+          { num: 6, id: 'ch_06', title: 'Mata Ka Anchal', hindiTitle: 'माता का अँचल' },
           { num: 7, id: 'ch_07', title: 'George Pancham Ki Naak', hindiTitle: 'जॉर्ज पंचम की नाक' },
-          { num: 8, id: 'ch_08', title: 'Sana-Sana Hath Jodi', hindiTitle: 'साना-साना हाथ जोड़ि...' }
+          { num: 8, id: 'ch_08', title: 'Sana Sana Hath Jodi', hindiTitle: 'साना-साना हाथ जोड़ि' }
         ]
       }
     ]
@@ -408,16 +408,16 @@ export default function SubjectsPage() {
               return (
                 <div
                   key={part.id}
-                  className="rounded-3xl p-4 bg-gradient-to-b from-[#181310] via-[#120D0A] to-[#0A0706] border border-[#78350F]/60 shadow-[0_8px_24px_rgba(0,0,0,0.6)]"
+                  className="rounded-3xl p-4 bg-[rgba(15,23,42,0.85)] backdrop-blur-2xl border border-white/10 hover:border-amber-400/40 shadow-[0_8px_30px_rgba(0,0,0,0.6)] transition-all"
                 >
                   <div className="flex items-start gap-3.5">
                     {/* 3D Geometry / Book Icon Widget */}
-                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden shrink-0 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)] bg-black/60">
+                    <div className="relative w-16 h-20 rounded-2xl overflow-hidden shrink-0 border border-white/15 shadow-[0_4px_16px_rgba(0,0,0,0.5)] bg-black/60">
                       <Image
                         src={part.iconPath}
                         alt={part.title}
                         fill
-                        className="object-contain p-1"
+                        className="object-cover"
                       />
                     </div>
 
@@ -426,31 +426,31 @@ export default function SubjectsPage() {
                       <h3 className="text-sm font-black text-white leading-snug">
                         {part.title}
                       </h3>
-                      <p className="text-xs font-semibold text-amber-200/80 mt-0.5">
+                      <p className="text-xs font-semibold text-amber-300/90 mt-0.5">
                         ({part.hindiTitle})
                       </p>
-                      <div className="mt-1 text-[11px] font-bold text-[#F97316]">
+                      <div className="mt-1 text-[11px] font-bold text-emerald-400">
                         {part.completedChapters}/{part.totalChapters} chapters done
                       </div>
                     </div>
                   </div>
 
-                  {/* Download Offline Toggle Switch Row (Exact replica of Screenshot 1) */}
-                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-amber-900/30">
+                  {/* Download Offline Toggle Switch Row */}
+                  <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/10">
                     <div>
                       <div className="text-xs font-black text-white">
                         Download offline
                       </div>
-                      <div className="text-[10px] text-amber-600/90 font-medium">
+                      <div className="text-[10px] text-slate-400 font-medium">
                         Download data offline (pre-bundled)
                       </div>
                     </div>
 
-                    {/* Neon Orange Toggle Switch */}
+                    {/* Neon Emerald Toggle Switch */}
                     <button
                       onClick={() => handleToggleOffline(part.id)}
                       className={`relative w-12 h-6 rounded-full transition-colors duration-200 ease-in-out cursor-pointer p-0.5 ${
-                        isOffline ? 'bg-[#EA580C]' : 'bg-slate-700'
+                        isOffline ? 'bg-[#10B981]' : 'bg-slate-700'
                       }`}
                     >
                       <div
@@ -477,13 +477,14 @@ export default function SubjectsPage() {
                       )}
                     </button>
 
-                    {/* Expanded Chapter List */}
+                    {/* Expanded Chapter List (Entire Row is Clickable) */}
                     {isExpanded && (
                       <div className="mt-2 space-y-2 pt-1">
                         {part.chapters.map(ch => (
                           <div
                             key={ch.id}
-                            className="flex items-center justify-between p-2.5 rounded-xl bg-black/40 border border-white/5 hover:border-amber-500/30 transition-all"
+                            onClick={() => handleStartChapterQuiz(selectedSubject.id, ch.id)}
+                            className="flex items-center justify-between p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/40 transition-all cursor-pointer active:scale-[0.99]"
                           >
                             <div className="min-w-0 pr-2">
                               <span className="text-[10px] font-mono font-bold text-amber-400 block">
@@ -498,8 +499,11 @@ export default function SubjectsPage() {
                             </div>
 
                             <button
-                              onClick={() => handleStartChapterQuiz(selectedSubject.id, ch.id)}
-                              className="py-1 px-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-black text-[11px] font-black shrink-0 active:scale-95 transition-all cursor-pointer shadow-[0_2px_8px_rgba(245,158,11,0.4)]"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleStartChapterQuiz(selectedSubject.id, ch.id);
+                              }}
+                              className="py-1.5 px-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 hover:brightness-110 text-black text-[11px] font-black shrink-0 active:scale-95 transition-all cursor-pointer shadow-[0_2px_8px_rgba(245,158,11,0.4)]"
                             >
                               Start Quiz →
                             </button>
@@ -549,21 +553,25 @@ export default function SubjectsPage() {
             </div>
           </div>
 
-          {/* 5 Core Subject Cards (Exact replica of Screenshot 2) */}
+          {/* 5 Core Subject Cards (Royal Titanium Glassmorphic & Full-Card Clickable) */}
           <div className="space-y-3">
             {DEEP_SUBJECTS.map(sub => (
               <div
                 key={sub.id}
-                className="relative rounded-3xl p-4 bg-gradient-to-b from-[#181310] via-[#120D0A] to-[#0A0706] border border-[#78350F]/60 shadow-[0_8px_24px_rgba(0,0,0,0.5)] flex items-center justify-between gap-3 hover:border-amber-500/50 transition-all"
+                onClick={() => {
+                  playBookFlip();
+                  setSelectedSubject(sub);
+                }}
+                className="relative rounded-3xl p-4 bg-[rgba(15,23,42,0.85)] backdrop-blur-2xl border border-white/10 hover:border-amber-400/50 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex items-center justify-between gap-3.5 transition-all cursor-pointer active:scale-[0.98]"
               >
-                {/* 3D Book Icon + Subject Info */}
+                {/* Authentic NCERT Book Cover Badge + Subject Info */}
                 <div className="flex items-center gap-3.5 min-w-0">
-                  <div className="relative w-14 h-14 rounded-2xl overflow-hidden shrink-0 border border-white/10 shadow-[0_0_12px_rgba(0,0,0,0.4)] bg-black/60">
+                  <div className="relative w-16 h-20 rounded-2xl overflow-hidden shrink-0 border border-white/15 shadow-[0_4px_16px_rgba(0,0,0,0.5)] bg-black/60">
                     <Image
                       src={sub.bookSvg}
                       alt={sub.title}
                       fill
-                      className="object-contain p-1"
+                      className="object-cover"
                     />
                   </div>
 
@@ -571,23 +579,20 @@ export default function SubjectsPage() {
                     <h3 className="text-base font-black text-white leading-tight truncate">
                       {sub.title}
                     </h3>
-                    <p className="text-[11px] font-semibold text-amber-600/90 mt-0.5">
+                    <p className="text-xs font-semibold text-amber-300/90 mt-0.5">
+                      {sub.hindiTitle}
+                    </p>
+                    <p className="text-[11px] font-medium text-slate-400 mt-1">
                       {sub.totalChapters} Chapters • {sub.classTag}
                     </p>
                   </div>
                 </div>
 
-                {/* Orange "Start learning ->" Pill Button (From Screenshot 2) */}
-                <button
-                  onClick={() => {
-                    playBookFlip();
-                    setSelectedSubject(sub);
-                  }}
-                  className="flex items-center gap-1.5 py-2.5 px-4 rounded-2xl bg-[#EA580C] hover:bg-[#F97316] text-white font-black text-xs shadow-[0_4px_0_#9A3412,0_0_15px_rgba(234,88,12,0.4)] active:translate-y-1 active:shadow-[0_1px_0_#9A3412] transition-all cursor-pointer shrink-0"
-                >
+                {/* Royal "Start learning ->" Pill Button */}
+                <div className="flex items-center gap-1.5 py-2.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-xs shadow-[0_4px_0_#B45309,0_0_15px_rgba(245,158,11,0.4)] transition-all shrink-0">
                   <span>Start learning</span>
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </div>
               </div>
             ))}
           </div>

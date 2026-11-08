@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.jackquiz.royal',
+  appId: 'com.jackquiz',
   appName: 'JAC Quiz',
   webDir: 'public',
   server: {

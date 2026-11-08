@@ -1,0 +1,343 @@
+PROJECT: STUDY BUDDY
+MODULE: MINECRAFT AVATAR CREATOR AND BUNDLE SYSTEM
+
+IMPORTANT:
+Build the Avatar System directly inside my existing
+Study Buddy application.
+
+The provided Minecraft reference images and PDF/ZIP
+files are the primary visual and functional references.
+
+First inspect all uploaded reference assets and existing
+application files.
+
+Do not create a separate demo application.
+
+==================================================
+PHASE 1: MINECRAFT BODY CREATOR
+==================================================
+
+Completely replace the existing primitive Avatar Engine.
+
+Use a proper Minecraft-compatible 3D character model.
+
+BODY REQUIREMENTS:
+
+- Original Minecraft-style block proportions.
+- Square block head.
+- Rectangular torso.
+- Separate block arms.
+- Separate block legs.
+- Correct classic Minecraft proportions.
+- Proper pixelated skin textures.
+- Correct texture mapping.
+- No visible separate neck.
+- No elongated human anatomy.
+- No rounded human body structure.
+
+Maintain the same Minecraft-style 3D body structure
+for all ten main characters.
+
+==================================================
+PHASE 2: BODY CUSTOMIZATION
+==================================================
+
+Create ONLY FIVE MAIN CUSTOMIZATION GROUPS.
+
+1. HAIR
+2. FACE ACCESSORIES
+3. TOP
+4. BOTTOM
+5. SHOES
+
+FACE ACCESSORIES:
+- Glasses
+- Masks
+- Face accessories
+
+TOP:
+- T-Shirts
+- Shirts
+- Hoodies
+- Jackets
+
+BOTTOM:
+- Jeans
+- Pants
+- Shorts
+- Trousers
+
+SHOES:
+- Sneakers
+- Boots
+- Other compatible footwear.
+
+Every item must have:
+- Actual thumbnail.
+- Correct item name.
+- Minecraft-style pixel texture.
+- Compatible 3D clothing asset.
+
+Clicking an item must immediately equip it.
+
+Changing one category must not reset other categories.
+
+Preserve the original character identity.
+
+==================================================
+PHASE 3: BUNDLE SYSTEM
+==================================================
+
+IMPORTANT UI CHANGE:
+
+Replace the existing STYLE section with:
+
+BUNDLE
+
+Add a MORE BUNDLES option.
+
+Clicking MORE BUNDLES opens the complete
+Bundle Collection.
+
+Do not create an additional Skin Upload button.
+
+All provided character outfits, textures and
+bundle images must be preloaded application assets.
+
+==================================================
+PHASE 4: BUNDLE COLLECTION
+==================================================
+
+Create two independent collections:
+
+BOYS BUNDLES
+GIRLS BUNDLES
+
+Use the provided reference assets to organize
+all male and female outfit collections.
+
+Each collection must contain FOUR SEPARATE
+BUNDLE SECTIONS.
+
+Each section must display five bundle cards
+per row on desktop where screen space permits.
+
+Mobile layouts must adapt responsively.
+
+Every bundle card must contain:
+
+1. Actual outfit preview image.
+2. Bundle name.
+3. Character appearance preview.
+4. Ownership status.
+5. Apply Bundle action.
+
+When clicking a bundle:
+
+- Apply its complete outfit.
+- Update the 3D character immediately.
+- Preserve the character's face.
+- Preserve original hairstyle unless the bundle
+  explicitly includes a hairstyle.
+- Update the equipped bundle information.
+- Save the selected outfit.
+
+The thumbnail must accurately represent
+the actual 3D outfit.
+
+Never use unrelated placeholder images.
+
+==================================================
+PHASE 5: CHARACTER IDENTITY
+==================================================
+
+MAIN CHARACTERS:
+
+MALE:
+Kai
+Jax
+Otis
+Zane
+Ayo
+
+FEMALE:
+Elis
+Nova
+Fay
+Zara
+Mia
+
+Preserve every character's:
+
+- Original face.
+- Skin tone.
+- Hair identity.
+- Eye appearance.
+- Facial details.
+- Original visual identity.
+
+Never randomly replace characters.
+
+Do not generate generic replacement faces.
+
+Use provided character photographs and reference
+images as the source of character identity.
+
+==================================================
+PHASE 6: CHARACTER PROFILE SYSTEM
+==================================================
+
+Create an additional Character Profile feature.
+
+Users must be able to:
+
+1. Choose their preferred main character.
+2. Choose their preferred bundle.
+3. Set the selected character as Profile Avatar.
+4. Save the equipped outfit.
+5. Display their selected avatar on their profile.
+
+The public profile preview must match
+the actual selected 3D character and outfit.
+
+Other Study Buddy users should be able to
+view the profile avatar.
+
+Never allow one user's selection to overwrite
+another user's profile.
+
+Store profile avatar and outfit selections
+separately for each account.
+
+==================================================
+PHASE 7: ASSET MANAGEMENT
+==================================================
+
+Inspect all provided PDF and ZIP references.
+
+Organize the assets into:
+
+ASSETS/
+  CHARACTERS/
+    BOYS/
+    GIRLS/
+
+  BODY/
+    HAIR/
+    FACE_ACCESSORIES/
+    TOP/
+    BOTTOM/
+    SHOES/
+
+  BUNDLES/
+    BOYS/
+      SECTION_1/
+      SECTION_2/
+      SECTION_3/
+      SECTION_4/
+
+    GIRLS/
+      SECTION_1/
+      SECTION_2/
+      SECTION_3/
+      SECTION_4/
+
+  PREVIEWS/
+  TEXTURES/
+  PROFILE_AVATARS/
+
+Preserve original image quality.
+
+Do not rename or overwrite original assets
+without maintaining their mapping.
+
+Do not mix male and female source collections.
+
+Allow shared clothing only when compatible.
+
+==================================================
+PHASE 8: WALLET AND SAVING
+==================================================
+
+Preserve existing Study Buddy Wallet.
+
+Maintain:
+- Study Coins.
+- Scholar Credits.
+- Owned Bundles.
+- Purchased Items.
+- Equipped Items.
+
+Never reset existing balances.
+
+Prevent duplicate purchases and duplicate deductions.
+
+Save all character and outfit selections persistently.
+
+Use the existing database where available.
+
+==================================================
+PHASE 9: VISUAL DESIGN
+==================================================
+
+Follow the provided Minecraft reference images.
+
+LEFT SIDE:
+Customization categories and item collection.
+
+CENTER:
+Large Minecraft 3D character preview.
+
+RIGHT SIDE:
+Bundle and outfit collection where appropriate.
+
+Use:
+- Premium Minecraft-inspired interface.
+- Pixelated textures.
+- Dark gaming aesthetic.
+- Smooth transitions.
+- Proper 3D lighting.
+- Mobile-responsive design.
+
+Keep the interface simple.
+
+Do not add unnecessary buttons.
+
+==================================================
+PHASE 10: TESTING
+==================================================
+
+Test all ten characters.
+
+Verify:
+
+- Correct Minecraft body proportions.
+- No unwanted neck geometry.
+- All five customization groups work.
+- Bundle collections load correctly.
+- Four bundle sections work.
+- Five cards per desktop row.
+- Correct outfit previews.
+- Correct outfit application.
+- Original faces remain consistent.
+- Profile avatar saving works.
+- Other users can view public profiles.
+- Wallet data remains intact.
+- Saved outfits persist after restart.
+
+Do not claim completion without testing.
+
+FINAL RULE:
+
+The Minecraft body structure must remain
+consistent with the supplied Minecraft references.
+
+The Body section and Bundle section are the
+two primary Avatar customization areas.
+
+Character Profile is an additional feature.
+
+Do not implement a custom skin uploader.
+
+All supplied assets must be inspected and
+integrated into the application.

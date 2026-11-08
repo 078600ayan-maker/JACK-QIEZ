@@ -347,26 +347,24 @@ export const QuizTheater: React.FC = () => {
 
       {/* 2. QUESTION & OPTIONS THEATER (ZERO SCROLL) */}
       <main className="flex-1 flex flex-col justify-center px-3 sm:px-4 py-1 z-20 overflow-hidden relative">
-        {/* Floating 3D Duolingo Octopus Bot Companion (Three.js 60FPS, Reacts Dynamically) */}
+        {/* Floating 3D Duolingo Octopus Bot Companion (Zero Box, 100% Transparent Alpha) */}
         {!zenMode && (
-          <div className="absolute top-0 right-2 sm:right-4 z-30 pointer-events-auto">
-            <div className="w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl bg-[rgba(20,27,45,0.85)] backdrop-blur-md border border-emerald-400/40 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(16,185,129,0.2)] overflow-hidden flex flex-col items-center justify-center p-0.5">
-              <DuolingoOctopus3D
-                emotion={
-                  !quiz.isAnswerSubmitted
-                    ? 'thinking'
-                    : quiz.isCorrect
-                    ? quiz.comboStreak >= 3
-                      ? 'streak'
-                      : 'happy'
-                    : 'sad'
-                }
-                streakCount={quiz.comboStreak}
-                size={75}
-                showBubble={false}
-                interactive={false}
-              />
-            </div>
+          <div className="absolute top-0 right-1 sm:right-3 z-30 pointer-events-none select-none">
+            <DuolingoOctopus3D
+              emotion={
+                !quiz.isAnswerSubmitted
+                  ? 'thinking'
+                  : quiz.isCorrect
+                  ? quiz.comboStreak >= 3
+                    ? 'streak'
+                    : 'happy'
+                  : 'sad'
+              }
+              streakCount={quiz.comboStreak}
+              size={85}
+              showBubble={false}
+              interactive={false}
+            />
           </div>
         )}
 
