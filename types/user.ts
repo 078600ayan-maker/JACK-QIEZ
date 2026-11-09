@@ -45,10 +45,24 @@ export interface UserProfile {
   streakShieldActive?: boolean;
   lastActive: string; // YYYY-MM-DD
   hearts: number; // 0 to 5
+  isRealUser?: boolean;
   progress: Record<string, number>; // e.g., { "sci_ch01": 5, "sci_ch02": 2 }
   levelScores?: Record<string, number>; // e.g., { "sci_ch01_lvl1": 90 }
   mistakes: number[]; // legacy ID array
   detailedMistakes?: SpacedMistakeItem[]; // Upgraded Spaced Repetition items
   drillHistory?: SpeedDrillRecord[]; // Firebase synced drills
   offlineCachedSubjects?: string[];
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  age?: number;
+  onboardingComplete?: boolean;
+  studyGoals?: {
+    targetScore: string;
+    dailyGoal: string;
+    focusSubject: string;
+  };
+  isOnline?: boolean;
+  joinedAt?: string;
+  weeklyXp?: number;
 }

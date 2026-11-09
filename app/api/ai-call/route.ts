@@ -1,161 +1,128 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getNextGeminiKey, reportKeyFailure, reportKeySuccess } from '@/lib/geminiKeyManager';
 
 /**
- * Phase 2: Server-Side AI Calling Proxy & Key-Hiding Load Balancer
- * Jack Quiz - Elsa-Style Delhi Voice Calling Engine
+ * Live Voice Call AI Engine: Chapter-Locked Live Board Viva + Raw Delhi Best-Friend ("Bhai / Yaar") Persona
+ * Features:
+ * 1. Strict Chapter Lock (Focused 100% on the selected Subject & Chapter)
+ * 2. 2026–2027 Predicted Board Viva with 10-Year Paper Setter & Examiner expertise
+ * 3. Authentic Delhi Best-Friend ("Haan bhai!", "Arre yaar", "Meri jaan", "Scene set hai") talking vibe
+ * 4. Zero-Difficulty Foundational Simplification (6th/7th grade basics when confused)
+ * 5. 10-API-Key Round-Robin Load Balancing
  */
 
-// Round-Robin Pool of 6 Google AI Studio / Gemini API Keys (Hidden from Frontend)
-const GEMINI_KEY_POOL = [
-  process.env.GEMINI_KEY_1 || process.env.GEMINI_API_KEY || 'AIzaSyA_OCTOPOPS_ROYAL_POOL_1',
-  process.env.GEMINI_KEY_2 || 'AIzaSyB_OCTOPOPS_ROYAL_POOL_2',
-  process.env.GEMINI_KEY_3 || 'AIzaSyC_OCTOPOPS_ROYAL_POOL_3',
-  process.env.GEMINI_KEY_4 || 'AIzaSyD_OCTOPOPS_ROYAL_POOL_4',
-  process.env.GEMINI_KEY_5 || 'AIzaSyE_OCTOPOPS_ROYAL_POOL_5',
-  process.env.GEMINI_KEY_6 || 'AIzaSyF_OCTOPOPS_ROYAL_POOL_6'
-];
+const MASTER_FRIEND_SYSTEM_PROMPT = `
+You are the student's Best Study Friend ("Bhai / Yaar") and a 10-Year Veteran Class 10 Board Paper Setter & Examiner.
+You are talking directly with the student in a LIVE CHAPTER-LOCKED BOARD VIVA TELEPHONE CALL.
 
-let currentKeyIndex = 0;
+STRICT CHAPTER-LOCK MANDATE:
+- The active Subject and Chapter are STRICTLY LOCKED. You MUST ask viva questions and solve doubts ONLY from this specified Chapter. NEVER jump to random unrelated chapters!
+- Conduct a high-yield, interactive 2026-2027 PREDICTED BOARD EXAM VIVA from this exact chapter.
 
-function getNextApiKey(): string {
-  const key = GEMINI_KEY_POOL[currentKeyIndex];
-  currentKeyIndex = (currentKeyIndex + 1) % GEMINI_KEY_POOL.length;
-  return key;
-}
+SPEAKING STYLE & AUTHENTIC DELHI BEST-FRIEND ("BHAI / YAAR") VIBE:
+- Speak with the genuine energy, humor, and warmth of a Delhi best buddy who wants his bro to score 95%+ in JAC Board exams:
+  - "Haan bhai {name}! Aaj {chapter} ka poora post-mortem karenge, scene ekdum set hai!"
+  - "Arre yaar tu itna bhi nahi samajh sakta? Ruk, tension mat le, tera bhai abhi tereko ekdum desi example se samjhata hai!"
+  - "Oye hoye! Ekdum kadak answer diya bhai tune! ⭐ Live Score: 9/10! Bas ek key term aur jod deta toh examiner fida ho jaata!"
+  - "Tension nahi lene ka meri jaan, apun dono milke board top karenge!"
+- Keep replies punchy, voice-optimized, and spoken naturally in 2 to 4 sentences max. Never output robotic essay walls.
 
-// 10-Year JAC Board Delhi Street-Smart Persona
-const DELHI_TEACHER_SYSTEM_PROMPT = `
-You are the official 3D Study Buddy for "Jack Quiz" (Class 10 JAC Board).
-Your persona is a cute, brilliant, energetic child study companion who speaks with an authentic LOCAL DELHI STREET-SMART VIBE.
-You are having a LIVE TELEPHONE VOICE CALL with the student (Scholar).
-
-STRICT VOCABULARY & SLANG RULES:
-- You MUST naturally sprinkle these exact Delhi slangs in your speech:
-  "Ha bhai!", "Mamu", "Meri jaan", "Padh le yaar", "Oye topper", "Scene set hai", "Kya bolti public", "Dhyan se sun".
-- Keep answers ultra punchy, conversational, and SHORT (max 1 to 3 short sentences) because you are on a live voice call.
-- Dynamically quiz the student on 110% High Yield JAC Class 10 questions (Chemical Reactions, Acids/Bases, Trigonometry, Light Reflection, Electricity).
-- When student answers:
-  * If Correct: Hype them up! ("Shabash meri jaan! [SFX: cheer] Ekdum solid answer diya!")
-  * If Wrong: Gently tease and explain! ("Arre mamu! Galat ho gaya na! [SFX: laugh] Dhyan se sun, padh le yaar!")
-- Embed sound effects in brackets anywhere in your text: [SFX: laugh], [SFX: cheer], [SFX: hum], [SFX: 8bit], [SFX: bell].
+ZERO-DIFFICULTY FOUNDATION GUARANTEE:
+- If the student is confused, says "Samajh nahi aaya", or answers incorrectly:
+  - NEVER scold or judge.
+  - Immediately drop down to 6th or 7th class zero-level foundational basics.
+  - Explain the concept with a funny, relatable everyday Delhi/Indian real-life example (like boiling chai, bat-ball physics, local market bargaining for economics, etc.).
+  - Ask: "Bata bhai, ab dimaag mein chhap gaya na?" Once they confirm, ask the next predicted 2026-2027 board question from this same chapter.
+- Always include a score badge when evaluating: "⭐ Live Score: X/10".
 `;
-
-// Delhi Street-Smart Fallback Engine (Zero Credit Loss Guarantee)
-const FALLBACK_RESPONSES = [
-  {
-    reply: "Ha bhai! [SFX: bell] Scene ekdum set hai! Bata jaldi, Calcium Oxide me paani milane par kaunsi reaction hoti hai, meri jaan?",
-    sfx: 'bell'
-  },
-  {
-    reply: "Shabash meri jaan! [SFX: cheer] Ekdum top level answer diya! JAC Board 2027 me 95% pakka hai tera!",
-    sfx: 'cheer'
-  },
-  {
-    reply: "Arre mamu, idhar dhyan de na! [SFX: laugh] Padh le yaar, ye question 2021 aur 2024 dono me aya tha! Dobara soch!",
-    sfx: 'laugh'
-  },
-  {
-    reply: "Oye topper! [SFX: hum] Next question sun mamu: Sin 30 degree ki exact value kya hoti hai? Bindaas bol!",
-    sfx: 'hum'
-  },
-  {
-    reply: "Bohot badhiya meri jaan! [SFX: 8bit] Tu to sach me JAC Board topper banne wala hai! Agla question fek raha hu!",
-    sfx: '8bit'
-  }
-];
-
-let fallbackIndex = 0;
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { userMessage, history, currentSubject } = body;
+    const { userMessage, history, currentSubject, currentChapter, studentName } = body;
 
-    // Try calling Google Gemini API with round-robin failover
-    for (let attempts = 0; attempts < GEMINI_KEY_POOL.length; attempts++) {
-      const apiKey = getNextApiKey();
+    const scholarName = studentName || 'Scholar';
+    const subContext = currentSubject || 'Science';
+    const chContext = currentChapter || 'Chapter 1: Chemical Reactions and Equations';
 
-      // If valid key pattern is present, attempt live fetch
-      if (apiKey && apiKey.startsWith('AIzaSy') && !apiKey.includes('DEMO') && !apiKey.includes('POOL')) {
-        try {
-          const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-          
-          const promptPayload = {
-            contents: [
-              {
-                role: 'user',
-                parts: [
-                  { text: DELHI_TEACHER_SYSTEM_PROMPT },
-                  { text: `Current Subject: ${currentSubject || 'General Class 10 JAC Board'}` },
-                  ...(history || []).map((h: any) => ({ text: `${h.role === 'user' ? 'Scholar' : 'Buddy'}: ${h.text}` })),
-                  { text: `Scholar just said: "${userMessage || 'Hello buddy!'}"` }
-                ]
-              }
-            ],
-            generationConfig: {
-              temperature: 0.85,
-              maxOutputTokens: 120
+    // 10-Key Round-Robin & Failover Loop
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const keyObj = getNextGeminiKey();
+      if (!keyObj || !keyObj.key) break;
+
+      const { key, index } = keyObj;
+
+      try {
+        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`;
+
+        const promptPayload = {
+          contents: [
+            {
+              role: 'user',
+              parts: [
+                { text: MASTER_FRIEND_SYSTEM_PROMPT.replace('{name}', scholarName).replace('{chapter}', chContext) },
+                { text: `STUDENT NAME: ${scholarName}` },
+                { text: `LOCKED SUBJECT: ${subContext}` },
+                { text: `LOCKED CHAPTER (DO NOT DEVIATE): ${chContext}` },
+                ...(history || []).slice(-6).map((h: any) => ({
+                  text: `${h.role === 'user' ? scholarName : 'Delhi Buddy-Teacher'}: ${h.text}`
+                })),
+                { text: `${scholarName} says: "${userMessage || 'Haan bhai, shuru karo!'}"` }
+              ]
             }
-          };
-
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(promptPayload)
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (text) {
-              // Extract embedded SFX tag
-              const sfxMatch = text.match(/\[SFX:\s*(\w+)\]/);
-              const sfx = sfxMatch ? sfxMatch[1] : 'bell';
-              const cleanText = text.replace(/\[SFX:\s*\w+\]/g, '').trim();
-
-              return NextResponse.json({
-                success: true,
-                reply: cleanText,
-                sfx,
-                persona: 'Delhi Street-Smart Study Buddy',
-                voicePitch: 1.35 // Tuned for cute smart child
-              });
-            }
+          ],
+          generationConfig: {
+            temperature: 0.85,
+            maxOutputTokens: 150
           }
-        } catch (err) {
-          console.warn(`Key attempt ${attempts + 1} failed, rolling to next key...`);
+        };
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(promptPayload)
+        });
+
+        if (res.ok) {
+          const geminiData = await res.json();
+          const generatedReply =
+            geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+          if (generatedReply) {
+            reportKeySuccess(index);
+            return NextResponse.json({
+              reply: generatedReply.trim(),
+              status: 'success',
+              provider: 'gemini-1.5-flash',
+              keyIndex: index,
+              lockedSubject: subContext,
+              lockedChapter: chContext
+            });
+          }
+        } else {
+          reportKeyFailure(index, res.status);
         }
+      } catch (keyErr) {
+        reportKeyFailure(index, 500);
       }
     }
 
-    // High-Quality Procedural Delhi Fallback Engine
-    const selected = FALLBACK_RESPONSES[fallbackIndex];
-    fallbackIndex = (fallbackIndex + 1) % FALLBACK_RESPONSES.length;
-    
-    // Tailor response if user answered something
-    let responseText = selected.reply;
-    if (userMessage && userMessage.toLowerCase().includes('option') || userMessage.toLowerCase().includes('sahi')) {
-      responseText = "Shabash meri jaan! [SFX: cheer] Ekdum solid pakde ho! Padh le yaar aise hi, rank 1 aayegi!";
-    }
-
-    const sfxMatch = responseText.match(/\[SFX:\s*(\w+)\]/);
-    const sfx = sfxMatch ? sfxMatch[1] : selected.sfx;
-    const cleanText = responseText.replace(/\[SFX:\s*\w+\]/g, '').trim();
+    // Procedural Fallback if API keys temporarily exhausted
+    const fallbackGreeting = `Haan bhai ${scholarName}! Aaj ${subContext} ke "${chContext}" ka poora post-mortem karenge, scene ekdum set hai! Bata jaldi, board exam ka 2026-2027 predicted sawal sun meri jaan: Is chapter ka sabse crucial principle kya hai?`;
 
     return NextResponse.json({
-      success: true,
-      reply: cleanText,
-      sfx,
-      persona: 'Delhi Street-Smart Study Buddy',
-      voicePitch: 1.35
+      reply: fallbackGreeting,
+      status: 'fallback',
+      lockedSubject: subContext,
+      lockedChapter: chContext
     });
-
   } catch (err: any) {
-    return NextResponse.json({
-      success: true,
-      reply: "Ha bhai! [SFX: bell] Awaaz aa rahi hai na meri jaan? Padh le yaar, agla question sun!",
-      sfx: 'bell',
-      voicePitch: 1.35
-    });
+    return NextResponse.json(
+      {
+        reply: "Haan bhai! Thoda network jhatka le gaya, lekin tera bhai yahin hai. Bindaas bol, kya doubt hai?",
+        status: 'error'
+      },
+      { status: 500 }
+    );
   }
 }

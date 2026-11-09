@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { playClickSound } from '@/lib/audioEngine';
+import { triggerHaptic } from '@/lib/haptics';
 
 interface TactileButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'gold' | 'emerald' | 'ruby' | 'obsidian' | 'blue' | 'purple';
@@ -85,6 +86,7 @@ export const TactileButton: React.FC<TactileButtonProps> = ({
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
     playClickSound();
+    triggerHaptic('light');
     onClick?.(e);
   };
 

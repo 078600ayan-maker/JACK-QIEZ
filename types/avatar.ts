@@ -47,7 +47,127 @@ export interface PresetConfig {
   role: string;
   icon: string;
   headSvg: string;
+  photoURL?: string;
   defaultCustomization: AvatarCustomization;
+}
+
+export interface ClassicProfilePhoto {
+  id: string;
+  name: string;
+  character: string;
+  gender: 'boy' | 'girl';
+  role: string;
+  src: string;
+}
+
+export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
+  {
+    id: 'dp_jax',
+    name: 'Jax',
+    character: 'Tactical Speedster',
+    gender: 'boy',
+    role: 'Mathematics & Speed Solver',
+    src: '/assets/profile_photos/IMG_20261109_001527.png'
+  },
+  {
+    id: 'dp_otis',
+    name: 'Otis',
+    character: 'Scholar Sage',
+    gender: 'boy',
+    role: 'SST & History Chronicler',
+    src: '/assets/profile_photos/IMG_20261109_001512.png'
+  },
+  {
+    id: 'dp_zane',
+    name: 'Zane',
+    character: 'Varsity Champion',
+    gender: 'boy',
+    role: 'Logic & Speed Drills',
+    src: '/assets/profile_photos/IMG_20261109_001555.png'
+  },
+  {
+    id: 'dp_kai',
+    name: 'Kai',
+    character: 'Cosmic Voyager',
+    gender: 'boy',
+    role: 'Science & Physics Vanguard',
+    src: '/assets/profile_photos/IMG_20261109_001625.png'
+  },
+  {
+    id: 'dp_leo',
+    name: 'Leo',
+    character: 'Grand Champion',
+    gender: 'boy',
+    role: 'All-Rounder JAC Rank 1',
+    src: '/assets/profile_photos/IMG_20261109_001652.png'
+  },
+  {
+    id: 'dp_fay',
+    name: 'Fay',
+    character: 'Solar Guardian',
+    gender: 'girl',
+    role: 'Biology & Natural Sciences',
+    src: '/assets/profile_photos/IMG_20261109_001715.png'
+  },
+  {
+    id: 'dp_noor',
+    name: 'Noor',
+    character: 'Nature Sentinel',
+    gender: 'girl',
+    role: 'Geography & Ecology',
+    src: '/assets/profile_photos/IMG_20261109_001805.png'
+  },
+  {
+    id: 'dp_nova',
+    name: 'Nova',
+    character: 'Starlight Mage',
+    gender: 'girl',
+    role: 'English & Literature Visionary',
+    src: '/assets/profile_photos/IMG_20261109_001739.png'
+  },
+  {
+    id: 'dp_aria',
+    name: 'Aria',
+    character: 'Speed Runner',
+    gender: 'girl',
+    role: 'Algebra & Physics Accelerator',
+    src: '/assets/profile_photos/IMG_20261109_001833.png'
+  },
+  {
+    id: 'dp_zuri',
+    name: 'Zuri',
+    character: 'Creative Artisan',
+    gender: 'girl',
+    role: 'Hindi & Creative Expression',
+    src: '/assets/profile_photos/IMG_20261109_001853.png'
+  }
+];
+
+export async function extractSkinFace(skinUrl: string): Promise<string> {
+  if (typeof window === 'undefined') return skinUrl;
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = skinUrl;
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 128;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return resolve(skinUrl);
+        ctx.imageSmoothingEnabled = false;
+        // Base layer: Head front at (8, 8, 8, 8)
+        ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 128, 128);
+        // Outer layer: Hat/Hair front at (40, 8, 8, 8)
+        ctx.drawImage(img, 40, 8, 8, 8, 0, 0, 128, 128);
+        resolve(canvas.toDataURL('image/png'));
+      } catch (err) {
+        resolve(skinUrl);
+      }
+    };
+    img.onerror = () => resolve(skinUrl);
+  });
 }
 
 export interface BundleItem {
@@ -73,6 +193,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Science & Physics Vanguard',
     icon: '🔥',
     headSvg: '/avatars/steve.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
     defaultCustomization: {
       preset: 'kai',
       name: 'Kai',
@@ -98,6 +219,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Mathematics & Speed Solver',
     icon: '⚡',
     headSvg: '/avatars/steve.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
     defaultCustomization: {
       preset: 'jax',
       name: 'Jax',
@@ -123,6 +245,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'SST & History Chronicler',
     icon: '📜',
     headSvg: '/avatars/steve.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
     defaultCustomization: {
       preset: 'otis',
       name: 'Otis',
@@ -148,6 +271,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Speed Drills & Logic Master',
     icon: '🥷',
     headSvg: '/avatars/steve.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
     defaultCustomization: {
       preset: 'zane',
       name: 'Zane',
@@ -173,6 +297,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'All-Rounder JAC Rank 1',
     icon: '👑',
     headSvg: '/avatars/steve.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
     defaultCustomization: {
       preset: 'ayo',
       name: 'Ayo',
@@ -200,6 +325,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Biology & Natural Chemistry',
     icon: '🌸',
     headSvg: '/avatars/alex.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
     defaultCustomization: {
       preset: 'elis',
       name: 'Elis',
@@ -225,6 +351,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'English & Literature Visionary',
     icon: '✨',
     headSvg: '/avatars/alex.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
     defaultCustomization: {
       preset: 'nova',
       name: 'Nova',
@@ -250,6 +377,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Geography & Environmental Biology',
     icon: '🍃',
     headSvg: '/avatars/alex.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
     defaultCustomization: {
       preset: 'fay',
       name: 'Fay',
@@ -275,6 +403,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Algebra & Physics Accelerator',
     icon: '⚡',
     headSvg: '/avatars/alex.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
     defaultCustomization: {
       preset: 'zara',
       name: 'Zara',
@@ -300,6 +429,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Hindi & Creative Expression',
     icon: '🎨',
     headSvg: '/avatars/alex.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
     defaultCustomization: {
       preset: 'mia',
       name: 'Mia',
@@ -327,6 +457,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Diamond Miner & Royal Crafter',
     icon: '⛏️',
     headSvg: '/avatars/steve.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
     defaultCustomization: {
       preset: 'steve',
       name: 'Steve',
@@ -352,6 +483,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Survivalist & Geometry Master',
     icon: '🏹',
     headSvg: '/avatars/alex.svg',
+    photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
     defaultCustomization: {
       preset: 'alex',
       name: 'Alex',
@@ -371,15 +503,129 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
   }
 ];
 
-// 40 Preloaded Bundles (20 Boys + 20 Girls)
+// 40 Preloaded Bundles (20 Boys + 20 Girls) matching Avatar Studio V3.0
 export const BOY_BUNDLES: Record<string, BundleItem[]> = {
-  'Section 1: Shonen Legends': [
+  'TERROR KNIGHT': [
+    {
+      id: 'boy_skullwar',
+      name: 'Cyber Skullwar Knight',
+      character: 'Skullwar',
+      gender: 'boy',
+      section: 'TERROR KNIGHT',
+      skinPath: '/skins/boy/skullwar.png',
+      previewImage: '/skins/boy/skullwar.png',
+      description: 'Cyan neon armored skull cybernetic knight.',
+      owned: true
+    },
+    {
+      id: 'boy_galactic_mask',
+      name: 'Galactic Mask Knight',
+      character: 'Galactic',
+      gender: 'boy',
+      section: 'TERROR KNIGHT',
+      skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+      previewImage: '/skins/boy/anime-purple-mask-boy-galactic.png',
+      description: 'Purple obsidian cosmic mask warrior.',
+      owned: true
+    },
+    {
+      id: 'boy_madara',
+      name: 'Madara Warlord',
+      character: 'Madara',
+      gender: 'boy',
+      section: 'TERROR KNIGHT',
+      skinPath: '/skins/boy/madara-uchiha.png',
+      previewImage: '/skins/boy/madara-uchiha.png',
+      description: 'Crimson battle armor legendary shinobi.',
+      owned: true
+    },
+    {
+      id: 'boy_levi',
+      name: 'Levi Titan Vanguard',
+      character: 'Levi',
+      gender: 'boy',
+      section: 'TERROR KNIGHT',
+      skinPath: '/skins/boy/levi-ackerman-attack-on-titan-hero-survey-corps-humanitys-strongest-soldier-captain-assassin-cute-boy-anime.png',
+      previewImage: '/skins/boy/levi-ackerman-attack-on-titan-hero-survey-corps-humanitys-strongest-soldier-captain-assassin-cute-boy-anime.png',
+      description: 'Survey Corps humanity strongest assassin.',
+      owned: true
+    },
+    {
+      id: 'boy_cudey',
+      name: 'Dark Obsidian Paladin',
+      character: 'Paladin',
+      gender: 'boy',
+      section: 'TERROR KNIGHT',
+      skinPath: '/skins/boy/cudey.png',
+      previewImage: '/skins/boy/cudey.png',
+      description: 'Dark steel heavy armor royal knight.',
+      owned: true
+    }
+  ],
+  'ENDLESS FEAR': [
+    {
+      id: 'boy_sasuke',
+      name: 'Crimson Shadow Sasuke',
+      character: 'Sasuke',
+      gender: 'boy',
+      section: 'ENDLESS FEAR',
+      skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
+      previewImage: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
+      description: 'Sharingan rouge ninja with dark purple chakra.',
+      owned: true
+    },
+    {
+      id: 'boy_light',
+      name: 'Death God Kira',
+      character: 'Light',
+      gender: 'boy',
+      section: 'ENDLESS FEAR',
+      skinPath: '/skins/boy/light-yagamikira-death-note-villain-killer-god-raito-yagami-khaki-blazer-boy-cute-anime.png',
+      previewImage: '/skins/boy/light-yagamikira-death-note-villain-killer-god-raito-yagami-khaki-blazer-boy-cute-anime.png',
+      description: 'Genius scholar with mysterious dark authority.',
+      owned: true
+    },
+    {
+      id: 'boy_baki',
+      name: 'Baki Demon Fighter',
+      character: 'Baki',
+      gender: 'boy',
+      section: 'ENDLESS FEAR',
+      skinPath: '/skins/boy/baki.png',
+      previewImage: '/skins/boy/baki.png',
+      description: 'Indomitable willpower martial arts champion.',
+      owned: true
+    },
+    {
+      id: 'boy_ben10',
+      name: 'Omniverse Hunter',
+      character: 'Ben',
+      gender: 'boy',
+      section: 'ENDLESS FEAR',
+      skinPath: '/skins/boy/ben10-omniverse.png',
+      previewImage: '/skins/boy/ben10-omniverse.png',
+      description: 'Cosmic watch hero in intergalactic jacket.',
+      owned: true
+    },
+    {
+      id: 'boy_steve_classic',
+      name: 'Void Miner Classic',
+      character: 'Steve',
+      gender: 'boy',
+      section: 'ENDLESS FEAR',
+      skinPath: '/skins/boy/minecraft-skins.png',
+      previewImage: '/skins/boy/minecraft-skins.png',
+      description: 'Endless depth subterranean explorer.',
+      owned: true
+    }
+  ],
+  'SHONEN LEGENDS': [
     {
       id: 'boy_goku',
       name: 'Goku Ultra Instinct',
       character: 'Goku',
       gender: 'boy',
-      section: 'Shonen Legends',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
       previewImage: '/skins/boy/goku-ultra-instinto-perfecto.png',
       description: 'Silver hair godly ki warrior skin with aura.',
@@ -390,7 +636,7 @@ export const BOY_BUNDLES: Record<string, BundleItem[]> = {
       name: 'Monkey D. Luffy',
       character: 'Luffy',
       gender: 'boy',
-      section: 'Shonen Legends',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/monkey-d-luffy-one-piece-hero-boy-straw-hat-rubber-man-pirate-captain-the-fifth-emperor-worst-generation-anime.png',
       previewImage: '/skins/boy/monkey-d-luffy-one-piece-hero-boy-straw-hat-rubber-man-pirate-captain-the-fifth-emperor-worst-generation-anime.png',
       description: 'Straw Hat pirate captain fifth emperor outfit.',
@@ -401,7 +647,7 @@ export const BOY_BUNDLES: Record<string, BundleItem[]> = {
       name: 'Naruto Uzumaki',
       character: 'Naruto',
       gender: 'boy',
-      section: 'Shonen Legends',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/naruto-uzumaki-naruto-shippuden-ninja-hero-orange-hokage-boy-anime.png',
       previewImage: '/skins/boy/naruto-uzumaki-naruto-shippuden-ninja-hero-orange-hokage-boy-anime.png',
       description: 'Orange Hokage ninja hero outfit.',
@@ -412,67 +658,10 @@ export const BOY_BUNDLES: Record<string, BundleItem[]> = {
       name: 'Tanjiro Kamado',
       character: 'Tanjiro',
       gender: 'boy',
-      section: 'Shonen Legends',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/tanjiro-kamado-demon-slayer-kimetsu-no-yaiba-anime.png',
       previewImage: '/skins/boy/tanjiro-kamado-demon-slayer-kimetsu-no-yaiba-anime.png',
       description: 'Green checkered haori demon slayer uniform.',
-      owned: true
-    },
-    {
-      id: 'boy_zenitsu',
-      name: 'Zenitsu Thunder',
-      character: 'Zenitsu',
-      gender: 'boy',
-      section: 'Shonen Legends',
-      skinPath: '/skins/boy/zenitsu-agastuma-demon-slayer-kimetsu-no-yaiba-anime.png',
-      previewImage: '/skins/boy/zenitsu-agastuma-demon-slayer-kimetsu-no-yaiba-anime.png',
-      description: 'Yellow triangle thunder haori lightning blade.',
-      owned: true
-    }
-  ],
-  'Section 2: Dark & Mystic': [
-    {
-      id: 'boy_levi',
-      name: 'Levi Ackerman',
-      character: 'Levi',
-      gender: 'boy',
-      section: 'Dark & Mystic',
-      skinPath: '/skins/boy/levi-ackerman-attack-on-titan-hero-survey-corps-humanitys-strongest-soldier-captain-assassin-cute-boy-anime.png',
-      previewImage: '/skins/boy/levi-ackerman-attack-on-titan-hero-survey-corps-humanitys-strongest-soldier-captain-assassin-cute-boy-anime.png',
-      description: 'Survey Corps Captain humanity strongest soldier.',
-      owned: true
-    },
-    {
-      id: 'boy_light',
-      name: 'Light Yagami',
-      character: 'Light',
-      gender: 'boy',
-      section: 'Dark & Mystic',
-      skinPath: '/skins/boy/light-yagamikira-death-note-villain-killer-god-raito-yagami-khaki-blazer-boy-cute-anime.png',
-      previewImage: '/skins/boy/light-yagamikira-death-note-villain-killer-god-raito-yagami-khaki-blazer-boy-cute-anime.png',
-      description: 'Khaki school blazer genius scholar.',
-      owned: true
-    },
-    {
-      id: 'boy_madara',
-      name: 'Madara Uchiha',
-      character: 'Madara',
-      gender: 'boy',
-      section: 'Dark & Mystic',
-      skinPath: '/skins/boy/madara-uchiha.png',
-      previewImage: '/skins/boy/madara-uchiha.png',
-      description: 'Crimson battle armor legendary shinobi.',
-      owned: true
-    },
-    {
-      id: 'boy_sasuke',
-      name: 'Sasuke Uchiha',
-      character: 'Sasuke',
-      gender: 'boy',
-      section: 'Dark & Mystic',
-      skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
-      previewImage: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
-      description: 'Rogue ninja purple rope sharingan warrior.',
       owned: true
     },
     {
@@ -480,34 +669,21 @@ export const BOY_BUNDLES: Record<string, BundleItem[]> = {
       name: 'Roronoa Zoro',
       character: 'Zoro',
       gender: 'boy',
-      section: 'Dark & Mystic',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/roronoa-zoro-one-piece-pirate-hunter-swordsman-swords-man-zolo-green-hair-boy-anime.png',
       previewImage: '/skins/boy/roronoa-zoro-one-piece-pirate-hunter-swordsman-swords-man-zolo-green-hair-boy-anime.png',
-      description: 'Three-sword style green hair pirate hunter.',
-      owned: true
-    }
-  ],
-  'Section 3: Street & Cyber': [
-    {
-      id: 'boy_purple_mask',
-      name: 'Galactic Mask Boy',
-      character: 'Kai',
-      gender: 'boy',
-      section: 'Street & Cyber',
-      skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-      previewImage: '/skins/boy/anime-purple-mask-boy-galactic.png',
-      description: 'Purple holographic mask cyberpunk streetwear.',
+      description: 'Three sword style master green bandana rogue.',
       owned: true
     },
     {
-      id: 'boy_ben10',
-      name: 'Ben 10 Omniverse',
-      character: 'Ben',
+      id: 'boy_zenitsu',
+      name: 'Zenitsu Thunder',
+      character: 'Zenitsu',
       gender: 'boy',
-      section: 'Street & Cyber',
-      skinPath: '/skins/boy/ben10-omniverse.png',
-      previewImage: '/skins/boy/ben10-omniverse.png',
-      description: 'Green stripe jacket Omnitrix wielder.',
+      section: 'SHONEN LEGENDS',
+      skinPath: '/skins/boy/zenitsu-agastuma-demon-slayer-kimetsu-no-yaiba-anime.png',
+      previewImage: '/skins/boy/zenitsu-agastuma-demon-slayer-kimetsu-no-yaiba-anime.png',
+      description: 'Yellow triangle thunder haori lightning blade.',
       owned: true
     },
     {
@@ -515,67 +691,10 @@ export const BOY_BUNDLES: Record<string, BundleItem[]> = {
       name: 'Kid Kakashi',
       character: 'Kakashi',
       gender: 'boy',
-      section: 'Street & Cyber',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
       previewImage: '/skins/boy/kid-kakashi-minecraft-skin.png',
-      description: 'White fang junior shinobi with face mask.',
-      owned: true
-    },
-    {
-      id: 'boy_baki',
-      name: 'Baki Fighter',
-      character: 'Baki',
-      gender: 'boy',
-      section: 'Street & Cyber',
-      skinPath: '/skins/boy/baki.png',
-      previewImage: '/skins/boy/baki.png',
-      description: 'Underground champion battle-scarred fighter.',
-      owned: true
-    },
-    {
-      id: 'boy_skullwar',
-      name: 'Skullwar Cyber',
-      character: 'Skullwar',
-      gender: 'boy',
-      section: 'Street & Cyber',
-      skinPath: '/skins/boy/skullwar.png',
-      previewImage: '/skins/boy/skullwar.png',
-      description: 'Obsidian tactical skull armor.',
-      owned: true
-    }
-  ],
-  'Section 4: Classic Voxel': [
-    {
-      id: 'boy_cute_1',
-      name: 'Cute Anime Boy',
-      character: 'Jax',
-      gender: 'boy',
-      section: 'Classic Voxel',
-      skinPath: '/skins/boy/cute-anime-boy.png',
-      previewImage: '/skins/boy/cute-anime-boy.png',
-      description: 'Casual modern school boy jacket.',
-      owned: true
-    },
-    {
-      id: 'boy_cute_2',
-      name: 'Cyber Hoodie Boy',
-      character: 'Zane',
-      gender: 'boy',
-      section: 'Classic Voxel',
-      skinPath: '/skins/boy/cute-anime-boy-2.png',
-      previewImage: '/skins/boy/cute-anime-boy-2.png',
-      description: 'Oversized cozy gamer hoodie.',
-      owned: true
-    },
-    {
-      id: 'boy_cudey',
-      name: 'Cudey Casual',
-      character: 'Otis',
-      gender: 'boy',
-      section: 'Classic Voxel',
-      skinPath: '/skins/boy/cudey.png',
-      previewImage: '/skins/boy/cudey.png',
-      description: 'Pastel comfortable study outfit.',
+      description: 'Silver hair prodigy shinobi with White Light blade.',
       owned: true
     },
     {
@@ -583,256 +702,428 @@ export const BOY_BUNDLES: Record<string, BundleItem[]> = {
       name: 'Gojo Satoru',
       character: 'Gojo',
       gender: 'boy',
-      section: 'Classic Voxel',
+      section: 'SHONEN LEGENDS',
       skinPath: '/skins/boy/gojo.png',
       previewImage: '/skins/boy/gojo.png',
       description: 'Blindfold jujutsu high sorcerer black uniform.',
       owned: true
     },
     {
-      id: 'boy_steve_classic',
-      name: 'Steve Classic Miner',
-      character: 'Steve',
+      id: 'boy_cute_2',
+      name: 'Cyberpunk Boy Pro',
+      character: 'Kai',
       gender: 'boy',
-      section: 'Classic Voxel',
-      skinPath: '/skins/boy/minecraft-skins.png',
-      previewImage: '/skins/boy/minecraft-skins.png',
-      description: 'Iconic classic Minecraft pioneer miner skin.',
+      section: 'SHONEN LEGENDS',
+      skinPath: '/skins/boy/cute-anime-boy-2.png',
+      previewImage: '/skins/boy/cute-anime-boy-2.png',
+      description: 'High-tech headset modern stylish scholar.',
+      owned: true
+    },
+    {
+      id: 'boy_cute_1',
+      name: 'Casual Anime Scholar',
+      character: 'Leo',
+      gender: 'boy',
+      section: 'SHONEN LEGENDS',
+      skinPath: '/skins/boy/cute-anime-boy.png',
+      previewImage: '/skins/boy/cute-anime-boy.png',
+      description: 'Comfortable hoodie jacket everyday learner.',
       owned: true
     }
   ]
 };
 
 export const GIRL_BUNDLES: Record<string, BundleItem[]> = {
-  'Section 1: Heroines & Guardians': [
+  'CELESTIAL GODDESS': [
     {
       id: 'girl_albedo',
-      name: 'Albedo Guardian',
+      name: 'Albedo Celestial Guardian',
       character: 'Albedo',
       gender: 'girl',
-      section: 'Heroines & Guardians',
+      section: 'CELESTIAL GODDESS',
       skinPath: '/skins/girl/albedo-overlord-succubus-demon-guardian-overseer-white-dress-cute-pretty-girl-anime.png',
       previewImage: '/skins/girl/albedo-overlord-succubus-demon-guardian-overseer-white-dress-cute-pretty-girl-anime.png',
       description: 'Great Tomb overseer elegant pure white gown.',
       owned: true
     },
     {
-      id: 'girl_hinata',
-      name: 'Hinata Hyuga',
-      character: 'Hinata',
+      id: 'girl_konan',
+      name: 'Konan Origami Angel',
+      character: 'Konan',
       gender: 'girl',
-      section: 'Heroines & Guardians',
-      skinPath: '/skins/girl/hinata-hyuga-naruto-shippuden-ninja-cute-girl-dandere-anime.png',
-      previewImage: '/skins/girl/hinata-hyuga-naruto-shippuden-ninja-cute-girl-dandere-anime.png',
-      description: 'Byakugan heiress lavender ninja jacket.',
+      section: 'CELESTIAL GODDESS',
+      skinPath: '/skins/girl/konan-naruto-shippuden-villain-ninja-akatsuki-angel-purple-light-blue-hair-cute-pretty-girl-anime.png',
+      previewImage: '/skins/girl/konan-naruto-shippuden-villain-ninja-akatsuki-angel-purple-light-blue-hair-cute-pretty-girl-anime.png',
+      description: 'Origami angel Akatsuki cloak and paper blossom.',
       owned: true
     },
     {
-      id: 'girl_nezuko',
-      name: 'Nezuko Chan',
-      character: 'Nezuko',
+      id: 'girl_rei',
+      name: 'Rei Ayanami Pilot',
+      character: 'Rei',
       gender: 'girl',
-      section: 'Heroines & Guardians',
-      skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
-      previewImage: '/skins/girl/anime-girl-nezuko-chan.png',
-      description: 'Pink geometric kimono with bamboo mouthpiece.',
+      section: 'CELESTIAL GODDESS',
+      skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
+      previewImage: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
+      description: 'Plugsuit pilot white pale blue hair heroine.',
+      owned: true
+    },
+    {
+      id: 'girl_mori',
+      name: 'Mori Calliope Empress',
+      character: 'Mori',
+      gender: 'girl',
+      section: 'CELESTIAL GODDESS',
+      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+      previewImage: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+      description: 'Pink hair reaper royalty stylish gold jewelry.',
+      owned: true
+    },
+    {
+      id: 'girl_cat_hd',
+      name: 'Anime Cat Queen HD',
+      character: 'Mia',
+      gender: 'girl',
+      section: 'CELESTIAL GODDESS',
+      skinPath: '/skins/girl/anime-cat-girl-hd-not-mine-copy.png',
+      previewImage: '/skins/girl/anime-cat-girl-hd-not-mine-copy.png',
+      description: 'Detailed high-resolution feline royal armor.',
+      owned: true
+    }
+  ],
+  'NATURE WARRIORS': [
+    {
+      id: 'girl_green_hd',
+      name: 'Emerald Nature Warden',
+      character: 'Fay',
+      gender: 'girl',
+      section: 'NATURE WARRIORS',
+      skinPath: '/skins/girl/anime-hd-girl-green.png',
+      previewImage: '/skins/girl/anime-hd-girl-green.png',
+      description: 'Vibrant green floral elemental guardian.',
+      owned: true
+    },
+    {
+      id: 'girl_nami',
+      name: 'Nami Sea Navigator',
+      character: 'Nami',
+      gender: 'girl',
+      section: 'NATURE WARRIORS',
+      skinPath: '/skins/girl/nami-one-piece.png',
+      previewImage: '/skins/girl/nami-one-piece.png',
+      description: 'Cat burglar sea navigator weather baton wielder.',
+      owned: true
+    },
+    {
+      id: 'girl_robin',
+      name: 'Nico Robin Archaeologist',
+      character: 'Robin',
+      gender: 'girl',
+      section: 'NATURE WARRIORS',
+      skinPath: '/skins/girl/nico-robinrobiland-one-piece-devil-child-pirate-assassin-pretty-cute-girl-anime.png',
+      previewImage: '/skins/girl/nico-robinrobiland-one-piece-devil-child-pirate-assassin-pretty-cute-girl-anime.png',
+      description: 'Poneglyph scholar thousand fleur floral power.',
       owned: true
     },
     {
       id: 'girl_sakura',
-      name: 'Sakura Haruno',
+      name: 'Sakura Cherry Ninja',
       character: 'Sakura',
       gender: 'girl',
-      section: 'Heroines & Guardians',
+      section: 'NATURE WARRIORS',
       skinPath: '/skins/girl/sakura-haruno-naruto-shippuden-medical-ninja-pink-girl-pretty-cute-anime.png',
       previewImage: '/skins/girl/sakura-haruno-naruto-shippuden-medical-ninja-pink-girl-pretty-cute-anime.png',
       description: 'Medical ninja red top pink hair warrior.',
       owned: true
     },
     {
-      id: 'girl_konan',
-      name: 'Konan Angel',
-      character: 'Konan',
+      id: 'girl_panda',
+      name: 'Sweet Forest Panda',
+      character: 'Noor',
       gender: 'girl',
-      section: 'Heroines & Guardians',
-      skinPath: '/skins/girl/konan-naruto-shippuden-villain-ninja-akatsuki-angel-purple-light-blue-hair-cute-pretty-girl-anime.png',
-      previewImage: '/skins/girl/konan-naruto-shippuden-villain-ninja-akatsuki-angel-purple-light-blue-hair-cute-pretty-girl-anime.png',
-      description: 'Origami angel Akatsuki cloak and paper blossom.',
-      owned: true
-    }
-  ],
-  'Section 2: Anime Cool & Kawaii': [
-    {
-      id: 'girl_cat_hd',
-      name: 'Anime Cat Girl HD',
-      character: 'Mia',
-      gender: 'girl',
-      section: 'Anime Cool & Kawaii',
-      skinPath: '/skins/girl/anime-cat-girl-hd-not-mine-copy.png',
-      previewImage: '/skins/girl/anime-cat-girl-hd-not-mine-copy.png',
-      description: 'High definition feline ears and stylish aesthetic.',
-      owned: true
-    },
-    {
-      id: 'girl_cat_kawaii',
-      name: 'Kawaii Cat Girl',
-      character: 'Nova',
-      gender: 'girl',
-      section: 'Anime Cool & Kawaii',
-      skinPath: '/skins/girl/kawaii-anime-cat-girl.png',
-      previewImage: '/skins/girl/kawaii-anime-cat-girl.png',
-      description: 'Sweet pastel cat ears gamer outfit.',
-      owned: true
-    },
-    {
-      id: 'girl_cute_anime',
-      name: 'Cute Anime Girl',
-      character: 'Elis',
-      gender: 'girl',
-      section: 'Anime Cool & Kawaii',
-      skinPath: '/skins/girl/anime-cute-girl.png',
-      previewImage: '/skins/girl/anime-cute-girl.png',
-      description: 'Modern Japanese streetwear and cute bows.',
-      owned: true
-    },
-    {
-      id: 'girl_pastel_sailor',
-      name: 'Pastel Sailor Girl',
-      character: 'Zara',
-      gender: 'girl',
-      section: 'Anime Cool & Kawaii',
-      skinPath: '/skins/girl/cute-anime-girl.png',
-      previewImage: '/skins/girl/cute-anime-girl.png',
-      description: 'Classic high school pleated skirt sailor uniform.',
-      owned: true
-    },
-    {
-      id: 'girl_emerald_green',
-      name: 'Emerald Anime Girl',
-      character: 'Fay',
-      gender: 'girl',
-      section: 'Anime Cool & Kawaii',
-      skinPath: '/skins/girl/anime-hd-girl-green.png',
-      previewImage: '/skins/girl/anime-hd-girl-green.png',
-      description: 'Forest emerald green tones and clover accents.',
-      owned: true
-    }
-  ],
-  'Section 3: Adventure & Legends': [
-    {
-      id: 'girl_rockypanda',
-      name: 'Sweet Panda Girl',
-      character: 'Nova',
-      gender: 'girl',
-      section: 'Adventure & Legends',
+      section: 'NATURE WARRIORS',
       skinPath: '/skins/girl/xrockypanda-sweet-anime-girl.png',
       previewImage: '/skins/girl/xrockypanda-sweet-anime-girl.png',
-      description: 'Panda ears cozy hoodie sweet traveler.',
+      description: 'Bamboo forest sweet bear companion dress.',
+      owned: true
+    }
+  ],
+  'ANIME MAIDENS': [
+    {
+      id: 'girl_nezuko',
+      name: 'Nezuko Bamboo Maiden',
+      character: 'Nezuko',
+      gender: 'girl',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
+      previewImage: '/skins/girl/anime-girl-nezuko-chan.png',
+      description: 'Pink geometric kimono with bamboo mouthpiece.',
       owned: true
     },
     {
-      id: 'girl_nami',
-      name: 'Nami Navigator',
-      character: 'Nami',
+      id: 'girl_hinata',
+      name: 'Hinata Hyuga Shinobi',
+      character: 'Hinata',
       gender: 'girl',
-      section: 'Adventure & Legends',
-      skinPath: '/skins/girl/nami-one-piece.png',
-      previewImage: '/skins/girl/nami-one-piece.png',
-      description: 'Cat burglar navigator orange hair explorer.',
-      owned: true
-    },
-    {
-      id: 'girl_robin',
-      name: 'Nico Robin',
-      character: 'Robin',
-      gender: 'girl',
-      section: 'Adventure & Legends',
-      skinPath: '/skins/girl/nico-robinrobiland-one-piece-devil-child-pirate-assassin-pretty-cute-girl-anime.png',
-      previewImage: '/skins/girl/nico-robinrobiland-one-piece-devil-child-pirate-assassin-pretty-cute-girl-anime.png',
-      description: 'Archaeologist scholar elegant sunglasses look.',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/hinata-hyuga-naruto-shippuden-ninja-cute-girl-dandere-anime.png',
+      previewImage: '/skins/girl/hinata-hyuga-naruto-shippuden-ninja-cute-girl-dandere-anime.png',
+      description: 'Byakugan heiress lavender ninja jacket.',
       owned: true
     },
     {
       id: 'girl_himiko',
-      name: 'Himiko Toga',
-      character: 'Toga',
+      name: 'Himiko Toga Vanguard',
+      character: 'Himiko',
       gender: 'girl',
-      section: 'Adventure & Legends',
+      section: 'ANIME MAIDENS',
       skinPath: '/skins/girl/himiko-toga-my-hero-academia-boku-no-hero-yandere-psycho-cute-girl-school-uniform-anime.png',
       previewImage: '/skins/girl/himiko-toga-my-hero-academia-boku-no-hero-yandere-psycho-cute-girl-school-uniform-anime.png',
-      description: 'Beige cardigan messy buns school uniform.',
-      owned: true
-    },
-    {
-      id: 'girl_sugar',
-      name: 'Sugar Pirate',
-      character: 'Sugar',
-      gender: 'girl',
-      section: 'Adventure & Legends',
-      skinPath: '/skins/girl/sugar-one-piece-pirate-special-officer-queen-of-toys-loli-aquamarine-hair-red-cute-pretty-girl-anime.png',
-      previewImage: '/skins/girl/sugar-one-piece-pirate-special-officer-queen-of-toys-loli-aquamarine-hair-red-cute-pretty-girl-anime.png',
-      description: 'Red hooded cape royal toy master.',
-      owned: true
-    }
-  ],
-  'Section 4: Psychological & Classic': [
-    {
-      id: 'girl_mori',
-      name: 'Mori Calliope',
-      character: 'Mori',
-      gender: 'girl',
-      section: 'Psychological & Classic',
-      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-      previewImage: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-      description: 'Underworld reaper pink hair stylish rapper.',
+      description: 'Cardigan uniform blonde twin buns rogue.',
       owned: true
     },
     {
       id: 'girl_ayano',
-      name: 'Ayano Aishi',
+      name: 'Ayano High Scholar',
       character: 'Ayano',
       gender: 'girl',
-      section: 'Psychological & Classic',
+      section: 'ANIME MAIDENS',
       skinPath: '/skins/girl/ayano-aishi-yandere-simulator-game-school-anime-cute-girl.png',
       previewImage: '/skins/girl/ayano-aishi-yandere-simulator-game-school-anime-cute-girl.png',
-      description: 'Akademi High navy blue school uniform.',
-      owned: true
-    },
-    {
-      id: 'girl_monika',
-      name: 'Monika Club Leader',
-      character: 'Monika',
-      gender: 'girl',
-      section: 'Psychological & Classic',
-      skinPath: '/skins/girl/monika-doki-doki-literature-club-villain-yandere-girl-cute-video-game-high-school-uniform-anime.png',
-      previewImage: '/skins/girl/monika-doki-doki-literature-club-villain-yandere-girl-cute-video-game-high-school-uniform-anime.png',
-      description: 'Literature Club President white hair ribbon.',
-      owned: true
-    },
-    {
-      id: 'girl_rei',
-      name: 'Rei Ayanami',
-      character: 'Rei',
-      gender: 'girl',
-      section: 'Psychological & Classic',
-      skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
-      previewImage: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
-      description: 'Unit-00 pilot white plugsuit and pale blue hair.',
+      description: 'Classic navy sailor suit diligent pupil.',
       owned: true
     },
     {
       id: 'girl_yuno',
-      name: 'Yuno Gasai',
+      name: 'Yuno Gasai Starlight',
       character: 'Yuno',
       gender: 'girl',
-      section: 'Psychological & Classic',
+      section: 'ANIME MAIDENS',
       skinPath: '/skins/girl/yuno-gasai-mirai-nikkifuture-diary-yandere-girl-middle-school-student-pink-cute-pretty-anime.png',
       previewImage: '/skins/girl/yuno-gasai-mirai-nikkifuture-diary-yandere-girl-middle-school-student-pink-cute-pretty-anime.png',
-      description: 'Pink pigtails future diary holder.',
+      description: 'Pink twintails future diary wielder.',
+      owned: true
+    },
+    {
+      id: 'girl_monika',
+      name: 'Monika Literature Club',
+      character: 'Monika',
+      gender: 'girl',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/monika-doki-doki-literature-club-villain-yandere-girl-cute-video-game-high-school-uniform-anime.png',
+      previewImage: '/skins/girl/monika-doki-doki-literature-club-villain-yandere-girl-cute-video-game-high-school-uniform-anime.png',
+      description: 'Literature Club President coral blazer.',
+      owned: true
+    },
+    {
+      id: 'girl_sugar',
+      name: 'Sugar Toy Princess',
+      character: 'Sugar',
+      gender: 'girl',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/sugar-one-piece-pirate-special-officer-queen-of-toys-loli-aquamarine-hair-red-cute-pretty-girl-anime.png',
+      previewImage: '/skins/girl/sugar-one-piece-pirate-special-officer-queen-of-toys-loli-aquamarine-hair-red-cute-pretty-girl-anime.png',
+      description: 'Red hooded cloak aquamarine hair princess.',
+      owned: true
+    },
+    {
+      id: 'girl_kawaii_cat',
+      name: 'Kawaii Neko Maiden',
+      character: 'Fay',
+      gender: 'girl',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/kawaii-anime-cat-girl.png',
+      previewImage: '/skins/girl/kawaii-anime-cat-girl.png',
+      description: 'Charming pastel cat ears cute dress.',
+      owned: true
+    },
+    {
+      id: 'girl_cute_1',
+      name: 'Casual Anime Girl',
+      character: 'Nova',
+      gender: 'girl',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/anime-cute-girl.png',
+      previewImage: '/skins/girl/anime-cute-girl.png',
+      description: 'Modern trendy pastel streetwear.',
+      owned: true
+    },
+    {
+      id: 'girl_cute_2',
+      name: 'Sweet Violet Student',
+      character: 'Zuri',
+      gender: 'girl',
+      section: 'ANIME MAIDENS',
+      skinPath: '/skins/girl/cute-anime-girl.png',
+      previewImage: '/skins/girl/cute-anime-girl.png',
+      description: 'Violet accents stylish study uniform.',
       owned: true
     }
   ]
 };
+
+export interface VaultItem {
+  id: string;
+  name: string;
+  category: 'wings' | 'armor' | 'aura' | 'weapon';
+  rarity: 'mythic' | 'legendary' | 'royal';
+  icon: string;
+  previewColor: string;
+  description: string;
+  unlocked: boolean;
+  modelProp?: {
+    elytra?: string;
+    accessory?: string;
+  };
+}
+
+export const VAULT_ITEMS: VaultItem[] = [
+  // 1. WINGS & CAPES
+  {
+    id: 'vault_netherite_wings',
+    name: 'Netherite Dragon Wings',
+    category: 'wings',
+    rarity: 'mythic',
+    icon: '🪽',
+    previewColor: '#7C3AED',
+    description: 'Forged in the Nether core, pulses with dark void flames.',
+    unlocked: true,
+    modelProp: { elytra: 'obsidian_wings' }
+  },
+  {
+    id: 'vault_celestial_gold',
+    name: 'Celestial Gold Cape',
+    category: 'wings',
+    rarity: 'legendary',
+    icon: '✨',
+    previewColor: '#F59E0B',
+    description: 'Pure radiant gold woven by JAC Olympiad Champions.',
+    unlocked: true,
+    modelProp: { elytra: 'celestial_gold' }
+  },
+  {
+    id: 'vault_elytra_phantom',
+    name: 'Phantom Elytra Glider',
+    category: 'wings',
+    rarity: 'legendary',
+    icon: '🦅',
+    previewColor: '#06B6D4',
+    description: 'Translucent phantom membrane with zero wind resistance.',
+    unlocked: true,
+    modelProp: { elytra: 'obsidian_wings' }
+  },
+  {
+    id: 'vault_phoenix_cape',
+    name: 'Phoenix Feather Cape',
+    category: 'wings',
+    rarity: 'mythic',
+    icon: '🔥',
+    previewColor: '#EF4444',
+    description: 'Reborn from ashes of 100 consecutive study streak flames.',
+    unlocked: true,
+    modelProp: { elytra: 'celestial_gold' }
+  },
+
+  // 2. ARMOR & CROWNS
+  {
+    id: 'vault_royal_crown',
+    name: 'Royal JAC Scholar Crown',
+    category: 'armor',
+    rarity: 'royal',
+    icon: '👑',
+    previewColor: '#FBBF24',
+    description: 'The supreme crown of Grade 10 Diamond Rank 1.',
+    unlocked: true,
+    modelProp: { accessory: 'golden_crown' }
+  },
+  {
+    id: 'vault_diamond_helm',
+    name: 'Valkyrie Diamond Helm',
+    category: 'armor',
+    rarity: 'mythic',
+    icon: '💎',
+    previewColor: '#38BDF8',
+    description: 'Unbreakable diamond headgear imbued with infinite focus.',
+    unlocked: true,
+    modelProp: { accessory: 'nerd_glasses' }
+  },
+  {
+    id: 'vault_netherite_plate',
+    name: 'Netherite Battle Pauldrons',
+    category: 'armor',
+    rarity: 'mythic',
+    icon: '🛡️',
+    previewColor: '#64748B',
+    description: 'Heavy enchanted chestguard providing 100% exam shield.',
+    unlocked: true,
+    modelProp: { accessory: 'none' }
+  },
+  {
+    id: 'vault_emerald_robes',
+    name: 'Imperial Emerald Shrouds',
+    category: 'armor',
+    rarity: 'legendary',
+    icon: '🌿',
+    previewColor: '#10B981',
+    description: 'Ancient robes symbolizing nature and botanical wisdom.',
+    unlocked: true,
+    modelProp: { accessory: 'none' }
+  },
+
+  // 3. PARTICLE AURAS
+  {
+    id: 'vault_stardust_aura',
+    name: 'Golden Stardust Drift',
+    category: 'aura',
+    rarity: 'royal',
+    icon: '⭐',
+    previewColor: '#FACC15',
+    description: 'Sparks of golden starlight trailing every motion.',
+    unlocked: true
+  },
+  {
+    id: 'vault_soul_fire',
+    name: 'Soul Fire Sparks',
+    category: 'aura',
+    rarity: 'legendary',
+    icon: '💠',
+    previewColor: '#06B6D4',
+    description: 'Mystic turquoise flames dancing around your scholar.',
+    unlocked: true
+  },
+  {
+    id: 'vault_sakura_petals',
+    name: 'Cherry Blossom Petals',
+    category: 'aura',
+    rarity: 'legendary',
+    icon: '🌸',
+    previewColor: '#F472B6',
+    description: 'Gentle pink blossom spiral for tranquil study zen.',
+    unlocked: true
+  },
+
+  // 4. WEAPONS & RELICS
+  {
+    id: 'vault_diamond_sword',
+    name: 'Diamond Exam Buster',
+    category: 'weapon',
+    rarity: 'legendary',
+    icon: '⚔️',
+    previewColor: '#38BDF8',
+    description: 'Sharp diamond blade slicing through tricky MCQs.',
+    unlocked: true
+  },
+  {
+    id: 'vault_netherite_katana',
+    name: 'Shadow Netherite Katana',
+    category: 'weapon',
+    rarity: 'mythic',
+    icon: '🗡️',
+    previewColor: '#818CF8',
+    description: 'Swift single-stroke answer decider forged in midnight ore.',
+    unlocked: true
+  }
+];
 
 // Color & Item Palettes for 50+ Customization Options
 export const SKIN_TONES = [

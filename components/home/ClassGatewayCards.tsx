@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Sparkles, BookOpen, Compass, Award, CheckCircle, ChevronRight, Zap } from 'lucide-react';
+import { Lock, Sparkles, BookOpen, Compass, Award, CheckCircle, ChevronRight, Zap, FileText, PenTool } from 'lucide-react';
 import { SubjectMeta } from '@/types/manifest';
 import { SubjectChapterDrawer } from './SubjectChapterDrawer';
+import { StudyResourceModal } from '@/components/content/StudyResourceModal';
 import { playClickSound } from '@/lib/audioEngine';
 import { useUserStore } from '@/store/useUserStore';
 
@@ -15,6 +16,8 @@ interface ClassGatewayCardsProps {
 export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }) => {
   const [selectedSubject, setSelectedSubject] = useState<SubjectMeta | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [resourceModalOpen, setResourceModalOpen] = useState(false);
+  const [resourceMode, setResourceMode] = useState<'notes' | 'practice'>('notes');
   const { profile } = useUserStore();
 
   const handleOpenSubject = (sub: SubjectMeta) => {
@@ -139,6 +142,55 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
       </div>
 
       {/* =========================================================================
+          EQUAL 50/50 DUAL ACTION BUTTONS: [📄 NOTES] & [✍️ PRACTICE QUESTIONS]
+          ========================================================================= */}
+      <div className="grid grid-cols-2 gap-3 py-1">
+        {/* Left: Notes Button */}
+        <button
+          onClick={() => {
+            playClickSound();
+            setResourceMode('notes');
+            setResourceModalOpen(true);
+          }}
+          className="group relative flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl bg-gradient-to-b from-[#1C253D] via-[#141B2D] to-[#0E1424] border-2 border-amber-400/40 hover:border-amber-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(245,158,11,0.15)] active:scale-[0.98] transition-all cursor-pointer"
+        >
+          <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+            <FileText className="w-4 h-4 text-amber-400" />
+          </div>
+          <div className="text-left min-w-0">
+            <span className="text-xs sm:text-sm font-black text-white leading-tight block truncate">
+              📄 Notes
+            </span>
+            <span className="text-[9px] font-bold text-amber-300 block truncate">
+              Chapter-wise PDFs
+            </span>
+          </div>
+        </button>
+
+        {/* Right: Practice Questions Button */}
+        <button
+          onClick={() => {
+            playClickSound();
+            setResourceMode('practice');
+            setResourceModalOpen(true);
+          }}
+          className="group relative flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl bg-gradient-to-b from-[#1C253D] via-[#141B2D] to-[#0E1424] border-2 border-blue-400/40 hover:border-blue-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(59,130,246,0.15)] active:scale-[0.98] transition-all cursor-pointer"
+        >
+          <div className="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-300 border border-blue-400/30 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+            <PenTool className="w-4 h-4 text-blue-400" />
+          </div>
+          <div className="text-left min-w-0">
+            <span className="text-xs sm:text-sm font-black text-white leading-tight block truncate">
+              ✍️ Practice
+            </span>
+            <span className="text-[9px] font-bold text-blue-300 block truncate">
+              Question Bank
+            </span>
+          </div>
+        </button>
+      </div>
+
+      {/* =========================================================================
           BENTO CARD 2: CLASS 9 (LOCKED • COMING SOON)
           ========================================================================= */}
       <div className="relative rounded-3xl p-4 bg-[rgba(16,21,34,0.6)] backdrop-blur-md border border-white/5 opacity-70 hover:opacity-85 transition-opacity shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
@@ -193,6 +245,13 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
         subject={selectedSubject}
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+      />
+
+      {/* Chapter-wise Study Notes & Practice Questions Modal */}
+      <StudyResourceModal
+        isOpen={resourceModalOpen}
+        mode={resourceMode}
+        onClose={() => setResourceModalOpen(false)}
       />
     </div>
   );

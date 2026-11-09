@@ -9,11 +9,9 @@ interface UserState {
   profile: UserProfile | null;
   activeSubjectId: string;
   isLoading: boolean;
-  isGuest: boolean;
 
   // Actions
   initUser: (uid: string, name?: string, email?: string) => Promise<void>;
-  initGuest: () => void;
   setActiveSubjectId: (subId: string) => void;
   setLanguagePreference: (lang: 'hi' | 'en') => Promise<void>;
   updateCustomAvatar: (avatar: AvatarCustomization) => void;
@@ -35,34 +33,11 @@ export const useUserStore = create<UserState>((set, get) => ({
   profile: null,
   activeSubjectId: 'sci', // default Science
   isLoading: true,
-  isGuest: false,
 
   initUser: async (uid: string, name?: string, email?: string) => {
     set({ isLoading: true });
     const profile = await fetchUserProfile(uid, name, email);
-    set({ profile, isLoading: false, isGuest: false });
-  },
-
-  initGuest: () => {
-    const existing = getLocalUserProfile();
-    if (existing) {
-      set({ profile: existing, isLoading: false, isGuest: true });
-    } else {
-      const guestProfile: UserProfile = {
-        uid: 'guest_' + Math.random().toString(36).substring(2, 9),
-        name: 'Guest Scholar',
-        email: 'guest@studybuddy.royal',
-        xp: 120,
-        streak: 1,
-        lastActive: new Date().toISOString().split('T')[0],
-        hearts: 5,
-        progress: { sci_ch01: 0 },
-        levelScores: {},
-        mistakes: []
-      };
-      saveLocalUserProfile(guestProfile);
-      set({ profile: guestProfile, isLoading: false, isGuest: true });
-    }
+    set({ profile, isLoading: false });
   },
 
   setActiveSubjectId: (subId: string) => {

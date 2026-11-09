@@ -22,9 +22,11 @@ import {
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { Manifest, SubjectMeta } from '@/types/manifest';
-import { DuolingoOctopus3D, DuolingoEmotionState } from '@/components/mascot/DuolingoOctopus3D';
 import { MinecraftAvatar3D } from '@/components/avatar/MinecraftAvatar3D';
+import { MinecraftVoxelCharacter } from '@/components/avatar/MinecraftVoxelCharacter';
+import { autoHealAppCache } from '@/lib/cacheSanitizer';
 import { AvatarCustomizerModal } from '@/components/avatar/AvatarCustomizerModal';
+import { ProfilePhotoModal } from '@/components/profile/ProfilePhotoModal';
 import { AvatarAnimationState, AvatarCustomization, CHARACTER_PRESETS } from '@/types/avatar';
 import { ClassGatewayCards } from '@/components/home/ClassGatewayCards';
 import { SpeedDrillModal } from '@/components/home/SpeedDrillModal';
@@ -33,6 +35,11 @@ import { ProgressReportModal } from '@/components/report/ProgressReportModal';
 import { LiveCallModal } from '@/components/ai-calling/LiveCallModal';
 import { BilingualLanguageToggle } from '@/components/ui/BilingualLanguageToggle';
 import { LiveMultiplayerComparison } from '@/components/multiplayer/LiveMultiplayerComparison';
+import { HardestWordsModule } from '@/components/modules/HardestWordsModule';
+import { HardestWordsLevel3Module } from '@/components/modules/HardestWordsLevel3Module';
+import { HardestWordsLevel4BossModule } from '@/components/modules/HardestWordsLevel4BossModule';
+import { HardestWordsLevel5EliteModule } from '@/components/modules/HardestWordsLevel5EliteModule';
+import { HardestWordsLevel6FinalBossModule } from '@/components/modules/HardestWordsLevel6FinalBossModule';
 import {
   playClickSound,
   toggleLofiAmbient,
@@ -43,20 +50,20 @@ import {
 import { getUserCurrentOreTier } from '@/types/ranking';
 
 export default function HomeLobbyPage() {
-  const { profile, updateCustomAvatar } = useUserStore();
+  const { profile, updateCustomAvatar, updateProfilePhoto } = useUserStore();
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [drillOpen, setDrillOpen] = useState(false);
   const [callModalOpen, setCallModalOpen] = useState(false);
   const [streakModalOpen, setStreakModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+  const [dpModalOpen, setDpModalOpen] = useState(false);
   const [isLofiPlaying, setIsLofiPlaying] = useState(false);
   const [offlineCached, setOfflineCached] = useState(false);
   const [cachingProgress, setCachingProgress] = useState(false);
   const [loading, setLoading] = useState(true);
   const [avatarAnim, setAvatarAnim] = useState<AvatarAnimationState>('idle');
-  const [mascotMode, setMascotMode] = useState<'octopus' | 'minecraft'>('octopus');
-  const [octopusEmotion, setOctopusEmotion] = useState<DuolingoEmotionState>('idle');
+  const [activeHardWordLevel, setActiveHardWordLevel] = useState<number | null>(null);
 
   const userName = profile?.name ? profile.name.split(' ')[0] : 'Scholar';
   const userXp = profile?.xp ?? 280;
@@ -90,6 +97,7 @@ export default function HomeLobbyPage() {
   }, [userName]);
 
   useEffect(() => {
+    autoHealAppCache();
     async function loadData() {
       try {
         const res = await fetch('/data/manifest.json');
@@ -153,29 +161,29 @@ export default function HomeLobbyPage() {
   };
 
   return (
-    <div className="w-full max-w-[480px] mx-auto px-4 pt-3 pb-28 select-none space-y-4">
+    <div className="w-full max-w-[480px] mx-auto px-4 pt-3 pb-44 select-none space-y-4">
       {/* =========================================================================
           1. TOP HUD: DYNAMIC "WELCOME BACK, [USER NAME]" & GLOWING 60S SPEED DRILL
           ========================================================================= */}
       <header className="sticky top-2 z-30 w-full rounded-2xl bg-[rgba(20,27,45,0.85)] backdrop-blur-[20px] backdrop-saturate-[180%] border-t border-white/25 border-x border-b border-white/10 p-3 shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
         <div className="flex items-center justify-between gap-2">
-          {/* Left: Dynamic Greeting with Minecraft Avatar Head */}
+          {/* Left: Dynamic Greeting with Active Profile Photo */}
           <div className="flex items-center gap-2.5 min-w-0">
             <div
               onClick={() => {
                 playClickSound();
-                setAvatarModalOpen(true);
+                setDpModalOpen(true);
               }}
-              className="relative w-10 h-10 rounded-xl overflow-hidden shadow-[0_0_12px_rgba(245,158,11,0.4)] shrink-0 border border-amber-400/50 bg-black/50 p-0.5 cursor-pointer hover:scale-105 active:scale-95 transition-all"
-              title="Click to customize avatar"
+              className="relative w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0 border-2 border-amber-400 bg-slate-900 p-0.5 cursor-pointer hover:scale-105 active:scale-95 transition-all"
+              title="Click to change profile DP"
             >
-              <Image
-                src={`/avatars/${activeAvatarCustom.preset}.svg`}
-                alt="Minecraft Avatar Head"
-                width={36}
-                height={36}
-                className="object-contain"
-                priority
+              <img
+                src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                alt="Scholar DP"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                }}
+                className="w-full h-full object-cover rounded-xl"
               />
             </div>
             <div className="min-w-0">
@@ -282,7 +290,7 @@ export default function HomeLobbyPage() {
       </header>
 
       {/* =========================================================================
-          CREATOR ATTRIBUTION & OFFLINE PRE-CACHE BANNER
+          CREATOR ATTRIBUTION & LIVE ONLINE STATUS BANNER
           ========================================================================= */}
       <div className="flex items-center justify-between p-2.5 rounded-2xl bg-[rgba(26,34,53,0.7)] backdrop-blur-md border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
         <div className="flex items-center gap-2">
@@ -293,19 +301,11 @@ export default function HomeLobbyPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 1-Click Offline Pre-Caching Button */}
-          <button
-            onClick={handlePreCacheOffline}
-            disabled={cachingProgress}
-            className={`flex items-center gap-1 py-1 px-2.5 rounded-xl text-[10px] font-bold border transition-all cursor-pointer ${
-              offlineCached
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                : 'bg-white/10 hover:bg-white/15 text-slate-300 border-white/15'
-            }`}
-          >
-            <Download className="w-3 h-3" />
-            <span>{cachingProgress ? 'Caching...' : offlineCached ? 'Offline Ready ✓' : 'Cache Offline'}</span>
-          </button>
+          {/* Live Online Server Pill */}
+          <div className="flex items-center gap-1.5 py-1 px-2.5 rounded-xl text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.25)]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>ONLINE SERVER</span>
+          </div>
 
           {/* Official YouTube Channel */}
           <a
@@ -333,137 +333,55 @@ export default function HomeLobbyPage() {
 
         {/* Top Control Bar on Avatar Card */}
         <div className="w-full flex items-center justify-between mb-2 z-10">
-          {/* Dual Rig Toggle: Octopus Bot vs Minecraft Avatar */}
-          <div className="inline-flex p-1 rounded-2xl bg-black/50 border border-white/10 text-[10px] font-black">
-            <button
-              onClick={() => {
-                playClickSound();
-                setMascotMode('octopus');
-              }}
-              className={`px-3 py-1 rounded-xl transition-all cursor-pointer ${
-                mascotMode === 'octopus'
-                  ? 'bg-emerald-500 text-black shadow-[0_0_10px_rgba(16,185,129,0.5)]'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              🤖 3D Octopus Bot
-            </button>
-            <button
-              onClick={() => {
-                playClickSound();
-                setMascotMode('minecraft');
-              }}
-              className={`px-3 py-1 rounded-xl transition-all cursor-pointer ${
-                mascotMode === 'minecraft'
-                  ? 'bg-amber-500 text-black shadow-[0_0_10px_rgba(245,158,11,0.5)]'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              ⛏️ Minecraft 3D
-            </button>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-[10px] font-black">
+            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <span>3D Scholar Avatar</span>
           </div>
 
-          {mascotMode === 'minecraft' && (
-            <button
-              onClick={() => {
-                playClickSound();
-                setAvatarModalOpen(true);
-              }}
-              className="flex items-center gap-1.5 py-1 px-3 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-black text-[10px] font-black shadow-[0_2px_8px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
-            >
-              <Palette className="w-3 h-3 text-black" />
-              <span>Customize Rig</span>
-            </button>
-          )}
-
-          {mascotMode === 'octopus' && (
-            <div className="flex items-center gap-1 text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-              <Sparkles className="w-3 h-3" />
-              <span>Duolingo 60FPS</span>
-            </div>
-          )}
+          <button
+            onClick={() => {
+              playClickSound();
+              setAvatarModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 py-1 px-3 rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 text-black text-[10px] font-black shadow-[0_2px_8px_rgba(245,158,11,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
+            <Palette className="w-3 h-3 text-black" />
+            <span>AI Avatar</span><span className="px-1.5 py-0.2 rounded bg-black/20 text-[8px] font-mono font-black">v1.1</span>
+          </button>
         </div>
 
-        {/* Dynamic 3D Mascot Canvas */}
-        {mascotMode === 'octopus' ? (
-          <DuolingoOctopus3D
-            emotion={octopusEmotion}
-            streakCount={userStreak}
-            size={280}
-            showBubble={true}
-            interactive={true}
-            speechText={`Superb ${userName}! Aaj konsa subject crack karenge? 🚀`}
-            onTap={() => {
-              playClickSound();
-              setOctopusEmotion('happy');
-              setTimeout(() => setOctopusEmotion('idle'), 2500);
-            }}
-          />
-        ) : (
-          <MinecraftAvatar3D
-            customization={activeAvatarCustom}
-            animation={avatarAnim}
-            size={270}
-            showPedestal={true}
-            interactive={true}
-            speechText="⛏️ तैयार हो? आज JAC बोर्ड टॉप करेंगे!"
-            onClickAvatar={() => {
-              playAvatarCheer();
-              setAvatarAnim('cheer');
-              setTimeout(() => setAvatarAnim('idle'), 2200);
-            }}
-          />
-        )}
+        {/* Dynamic 3D Minecraft Avatar */}
+        <MinecraftVoxelCharacter
+          skinPath={activeAvatarCustom.skinPath || '/skins/boy/skullwar.png'}
+          mode="hero"
+          size={250}
+          animation={avatarAnim as any}
+          showPedestal={true}
+          pedestalType="diamond"
+          showSecondLayer={true}
+          interactive={true}
+          onClick={() => {
+            playAvatarCheer();
+            setAvatarAnim('cheer');
+            setTimeout(() => setAvatarAnim('idle'), 2200);
+          }}
+        />
 
         {/* Interactive Avatar Mood / Poke Bar */}
         <div className="w-full flex items-center justify-center gap-2 mt-2 z-10">
-          {mascotMode === 'octopus' ? (
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setOctopusEmotion('happy');
-                  setTimeout(() => setOctopusEmotion('idle'), 2500);
-                }}
-                className="py-1 px-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-[10px] font-bold text-emerald-300 cursor-pointer transition-all"
-              >
-                🎉 Cheer
-              </button>
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setOctopusEmotion('thinking');
-                  setTimeout(() => setOctopusEmotion('idle'), 3000);
-                }}
-                className="py-1 px-2.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-[10px] font-bold text-blue-300 cursor-pointer transition-all"
-              >
-                🤔 Think
-              </button>
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setOctopusEmotion('streak');
-                  setTimeout(() => setOctopusEmotion('idle'), 3000);
-                }}
-                className="py-1 px-2.5 rounded-xl bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/30 text-[10px] font-bold text-orange-300 cursor-pointer transition-all"
-              >
-                🔥 On Fire!
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => {
-                playAvatarJump();
-                setAvatarAnim('cheer');
-                setTimeout(() => setAvatarAnim('idle'), 2000);
-              }}
-              className="py-1 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-[10px] font-bold text-slate-300 hover:text-white transition-all cursor-pointer"
-            >
-              👋 Tap to Wave
-            </button>
-          )}
+          <button
+            onClick={() => {
+              playAvatarJump();
+              setAvatarAnim('cheer');
+              setTimeout(() => setAvatarAnim('idle'), 2000);
+            }}
+            className="py-1 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-[10px] font-bold text-slate-300 hover:text-white transition-all cursor-pointer"
+          >
+            👋 Tap to Wave
+          </button>
+
           <span className="text-[9px] font-mono text-slate-400">
-            • Drag 360° •
+            • Drag to Spin 360° •
           </span>
         </div>
       </section>
@@ -476,7 +394,58 @@ export default function HomeLobbyPage() {
       </section>
 
       {/* =========================================================================
-          3. DEEP SUBJECTS DIRECT SHORTCUT (5 CORE SUBJECTS)
+          3. HARDEST WORDS VOCABULARY ARENA (PARTS 1 TO 6)
+          ========================================================================= */}
+      <section className="space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-1.5">
+            <span className="text-amber-400 font-black text-xs">⚡</span>
+            <h3 className="text-xs font-black uppercase tracking-wider text-white">
+              Hardest Words Series (Parts 1-6)
+            </h3>
+          </div>
+          <span className="text-[10px] font-black text-[#B6FF40] px-2 py-0.5 rounded-full bg-[#B6FF40]/10 border border-[#B6FF40]/30 animate-pulse">
+            NEW MASTER ARENA
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+          {[
+            { level: 2, name: 'Part 2', title: 'Hard', xp: '+20 XP', color: '#10B981' },
+            { level: 3, name: 'Part 3', title: 'Extreme', xp: '+25 XP', color: '#EF4444' },
+            { level: 4, name: 'Part 4', title: 'Boss Phase', xp: '+50 XP', color: '#F59E0B' },
+            { level: 5, name: 'Part 5', title: 'Elite Mastery', xp: '+100 XP', color: '#8B5CF6' },
+            { level: 6, name: 'Part 6', title: 'Ultimate Boss', xp: '+200 XP', color: '#B6FF40' }
+          ].map((item) => (
+            <button
+              key={item.level}
+              onClick={() => {
+                playClickSound();
+                setActiveHardWordLevel(item.level);
+              }}
+              className="p-3 rounded-2xl bg-gradient-to-b from-white/10 to-white/5 hover:from-white/15 hover:to-white/10 border border-white/15 hover:border-[#B6FF40]/60 transition-all text-left group cursor-pointer shadow-lg active:scale-95 flex flex-col justify-between"
+            >
+              <div>
+                <span className="text-[9px] font-mono font-black text-slate-400 block uppercase">
+                  {item.name}
+                </span>
+                <span className="text-xs font-black text-white group-hover:text-[#B6FF40] transition-colors block mt-0.5">
+                  {item.title}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-[9px] font-black text-amber-400">
+                  {item.xp}
+                </span>
+                <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-[#B6FF40] transition-transform group-hover:translate-x-0.5" />
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* =========================================================================
+          4. DEEP SUBJECTS DIRECT SHORTCUT (5 CORE SUBJECTS)
           ========================================================================= */}
       <section className="space-y-2">
         <div className="flex items-center justify-between px-1">
@@ -550,6 +519,17 @@ export default function HomeLobbyPage() {
       {/* =========================================================================
           MODALS & DASHBOARDS
           ========================================================================= */}
+      {/* Student Profile DP Modal (10 Canonical Characters, Underline on Select, Save) */}
+      <ProfilePhotoModal
+        isOpen={dpModalOpen}
+        currentPhoto={profile?.photoURL}
+        onSave={(photo) => {
+          updateProfilePhoto(photo);
+          setDpModalOpen(false);
+        }}
+        onClose={() => setDpModalOpen(false)}
+      />
+
       {/* Minecraft 3D Avatar Customizer Modal */}
       <AvatarCustomizerModal
         isOpen={avatarModalOpen}
@@ -583,6 +563,35 @@ export default function HomeLobbyPage() {
         isOpen={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
       />
+
+      {/* Hardest Words Interactive Vocabulary Modals (Parts 1 to 6) */}
+      {activeHardWordLevel && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 select-none">
+          <div className="relative w-full max-w-lg">
+            <button
+              onClick={() => setActiveHardWordLevel(null)}
+              className="absolute -top-10 right-0 text-white/80 hover:text-white text-xs font-black px-3.5 py-1 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 transition-all cursor-pointer shadow-md"
+            >
+              ✕ Close Arena
+            </button>
+            {activeHardWordLevel === 2 && (
+              <HardestWordsModule onClose={() => setActiveHardWordLevel(null)} />
+            )}
+            {activeHardWordLevel === 3 && (
+              <HardestWordsLevel3Module onClose={() => setActiveHardWordLevel(null)} />
+            )}
+            {activeHardWordLevel === 4 && (
+              <HardestWordsLevel4BossModule onClose={() => setActiveHardWordLevel(null)} />
+            )}
+            {activeHardWordLevel === 5 && (
+              <HardestWordsLevel5EliteModule onClose={() => setActiveHardWordLevel(null)} />
+            )}
+            {activeHardWordLevel === 6 && (
+              <HardestWordsLevel6FinalBossModule onClose={() => setActiveHardWordLevel(null)} />
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

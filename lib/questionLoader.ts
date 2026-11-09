@@ -46,26 +46,43 @@ export async function fetchChapterQuestions(filePath: string): Promise<Question[
 }
 
 /**
- * Filter and prepare questions for a given level (1 to 5)
+ * Filter and prepare unique, non-repeating questions for a given level (1 to 5).
+ * Each chapter has 30 questions total divided cleanly into 5 levels (6 unique questions per level).
  */
 export function getQuestionsForLevel(allQuestions: Question[], level: number): Question[] {
   if (!allQuestions || allQuestions.length === 0) return [];
 
-  // Match target difficulty, then fall back to surrounding if needed
-  const targetDiff = Math.min(Math.max(level, 1), 5);
-  
-  // Primary pool: exact difficulty match
-  const primary = allQuestions.filter(q => q.d === targetDiff);
-  
-  // Secondary pool: adjacent difficulties
-  const secondary = allQuestions.filter(q => Math.abs(q.d - targetDiff) === 1);
-  const remaining = allQuestions.filter(q => q.d !== targetDiff && Math.abs(q.d - targetDiff) > 1);
+  const targetLevel = Math.min(Math.max(level, 1), 5);
+  const QUESTIONS_PER_LEVEL = 6;
 
-  const combined = [...primary, ...secondary, ...remaining];
+  // 1. Try to slice 6 distinct, sequential questions for each level (Zero repetition)
+  const startIndex = (targetLevel - 1) * QUESTIONS_PER_LEVEL;
+  const endIndex = startIndex + QUESTIONS_PER_LEVEL;
 
-  // Desired question count: provide all 30 questions per chapter
-  const countNeeded = 30;
+  // If chapter has at least 30 questions, assign exactly 6 unique questions per level
+  if (allQuestions.length >= 30) {
+    const levelSlice = allQuestions.slice(startIndex, endIndex);
+    if (levelSlice.length > 0) {
+      return levelSlice;
+    }
+  }
 
-  // Return full 30 questions
-  return combined.slice(0, Math.min(combined.length, countNeeded));
+  // 2. Fallback: match difficulty, avoiding cross-level duplicate overlaps
+  const targetDiff = targetLevel;
+  const exactDiff = allQuestions.filter(q => q.d === targetDiff);
+  if (exactDiff.length >= QUESTIONS_PER_LEVEL) {
+    return exactDiff.slice(0, QUESTIONS_PER_LEVEL);
+  }
+
+  // 3. Fallback: even distribution across the entire question pool
+  const poolSize = allQuestions.length;
+  const step = Math.max(1, Math.floor(poolSize / 5));
+  const dynamicStart = (targetLevel - 1) * step;
+  const dynamicSlice = allQuestions.slice(dynamicStart, dynamicStart + QUESTIONS_PER_LEVEL);
+
+  if (dynamicSlice.length > 0) {
+    return dynamicSlice;
+  }
+
+  return allQuestions.slice(0, Math.min(allQuestions.length, QUESTIONS_PER_LEVEL));
 }

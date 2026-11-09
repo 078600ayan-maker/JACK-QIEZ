@@ -132,32 +132,70 @@ export function playWelcomeRoutine(userName: string = 'Scholar') {
       }, idx * 70);
     });
   }
+}
 
-  // 2. Clear, Expressive Voice Line
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    try {
-      // Cancel previous pending speech
-      window.speechSynthesis.cancel();
+// ============================================================================
+// STUDIO-GRADE NATURAL TTS ENGINE (ANDROID & PC OPTIMIZED)
+// ============================================================================
+let cachedVoices: SpeechSynthesisVoice[] = [];
 
-      setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(`Welcome back, ${userName}! Ready for Jack Quiz?`);
-        utterance.rate = 1.05;
-        utterance.pitch = 1.15;
-        utterance.volume = 0.85;
-
-        // Try to pick an English voice
-        const voices = window.speechSynthesis.getVoices();
-        const preferredVoice = voices.find(
-          v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Female'))
-        );
-        if (preferredVoice) utterance.voice = preferredVoice;
-
-        window.speechSynthesis.speak(utterance);
-      }, 350);
-    } catch {
-      // Voice synthesis fallback
-    }
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  const loadVoices = () => {
+    cachedVoices = window.speechSynthesis.getVoices();
+  };
+  loadVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
   }
+}
+
+export function speakNaturalVoice(text: string, lang: 'hi' | 'en' = 'en') {
+  if (isMuted || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+  try {
+    window.speechSynthesis.cancel();
+
+    // Small delay ensures previous speech buffer is completely clear
+    setTimeout(() => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.96;  // Clear, articulate pacing
+      utterance.pitch = 1.08; // Pleasant, high-clarity pitch
+      utterance.volume = 1.0; // Full volume
+
+      const voices = cachedVoices.length > 0 ? cachedVoices : window.speechSynthesis.getVoices();
+
+      // Priority 1: Indian Natural Female Voice
+      let targetVoice = voices.find(
+        v => (v.lang.startsWith('hi') || v.lang.startsWith('en-IN')) &&
+             (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Female'))
+      );
+
+      // Priority 2: Any English / Hindi Natural or Google Female Voice
+      if (!targetVoice) {
+        targetVoice = voices.find(
+          v => (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Online')) &&
+               !v.name.includes('Male')
+        );
+      }
+
+      // Priority 3: Fallback by language
+      if (!targetVoice) {
+        targetVoice = voices.find(v => v.lang.startsWith(lang));
+      }
+
+      if (targetVoice) {
+        utterance.voice = targetVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }, 60);
+  } catch (err) {
+    console.warn('TTS speech error:', err);
+  }
+}
+
+export function playWelcomeScholarsSpeech(userName: string) {
+  speakNaturalVoice(`Welcome back, ${userName}! Ready for Jack Quiz?`, 'en');
 }
 
 // ============================================================================

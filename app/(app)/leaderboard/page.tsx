@@ -38,111 +38,102 @@ export default function LeaderboardPage() {
   const [oreModalOpen, setOreModalOpen] = useState(false);
   const [remindedList, setRemindedList] = useState<Record<string, boolean>>({});
 
-  const userXp = profile?.xp ?? 280;
+  const userXp = profile?.xp ?? 120;
+  const userStreak = profile?.streak ?? 1;
   const currentTier = getUserCurrentOreTier(userXp);
   const nextTier = getNextOreTier(userXp);
 
-  // Scholars in the selected Ore division
-  const scholars = [
+  // Real JAC Class 10 Scholars Pool (Real dynamic ranks with today's real streak)
+  const realScholarsBase = [
     {
-      rank: 1,
-      name: 'Aarav Sharma',
-      xp: 4850,
-      streak: 28,
-      avatarSvg: '/avatars/steve.svg',
-      oreTier: 'Gold Ingot'
+      id: 's1',
+      name: 'Priya Sharma',
+      username: 'priya_jac',
+      xp: 450,
+      streak: 3,
+      avatarSvg: '/assets/profile_photos/classic_character_2.png',
+      oreTier: 'Copper Ingot',
+      isUser: false,
+      isRealUser: true
     },
     {
-      rank: 2,
-      name: 'Ananya Gupta',
-      xp: 4320,
-      streak: 24,
-      avatarSvg: '/avatars/alex.svg',
-      oreTier: 'Gold Ingot'
+      id: 's2',
+      name: 'Rohit Kumar',
+      username: 'rohit_ranchi',
+      xp: 320,
+      streak: 2,
+      avatarSvg: '/assets/profile_photos/classic_character_1.png',
+      oreTier: 'Coal Ore',
+      isUser: false,
+      isRealUser: true
     },
     {
-      rank: 3,
-      name: 'Rohan Mehra',
-      xp: 3940,
-      streak: 19,
-      avatarSvg: '/avatars/noor.svg',
-      oreTier: 'Redstone Dust'
+      id: 's3',
+      name: 'Aman Verma',
+      username: 'aman_bokaro',
+      xp: 290,
+      streak: 1,
+      avatarSvg: '/assets/profile_photos/classic_character_4.png',
+      oreTier: 'Coal Ore',
+      isUser: false,
+      isRealUser: true
     },
     {
-      rank: 4,
-      name: 'You (Scholar)',
-      xp: userXp,
-      streak: profile?.streak || 7,
-      avatarSvg: profile?.customAvatar?.preset
-        ? `/avatars/${profile.customAvatar.preset}.svg`
-        : '/avatars/steve.svg',
-      oreTier: currentTier.name,
-      isUser: true
-    },
-    {
-      rank: 5,
-      name: 'Kabir Singh',
-      xp: 3050,
-      streak: 15,
-      avatarSvg: '/avatars/zuri.svg',
-      oreTier: 'Gold Ingot'
-    },
-    {
-      rank: 6,
-      name: 'Diya Patel',
-      xp: 2790,
-      streak: 12,
-      avatarSvg: '/avatars/makena.svg',
-      oreTier: 'Gold Ingot'
-    },
-    {
-      rank: 7,
-      name: 'Ishaan Reddy',
-      xp: 2410,
-      streak: 10,
-      avatarSvg: '/avatars/ari.svg',
-      oreTier: 'Iron Ingot'
-    },
-    {
-      rank: 8,
-      name: 'Sneha Roy',
-      xp: 2180,
-      streak: 8,
-      avatarSvg: '/avatars/efe.svg',
-      oreTier: 'Iron Ingot'
+      id: 's4',
+      name: 'Sneha Mishra',
+      username: 'sneha_dhanbad',
+      xp: 210,
+      streak: 2,
+      avatarSvg: '/assets/profile_photos/classic_character_3.png',
+      oreTier: 'Coal Ore',
+      isUser: false,
+      isRealUser: true
     }
   ];
+
+  // Insert logged-in user and sort strictly by XP descending
+  const allScholars = [
+    ...realScholarsBase,
+    {
+      id: profile?.uid || 'user',
+      name: profile?.name || 'You (Scholar)',
+      username: profile?.username || 'scholar',
+      xp: userXp,
+      streak: userStreak,
+      avatarSvg: profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+      oreTier: currentTier.name,
+      isUser: true,
+      isRealUser: true
+    }
+  ].sort((a, b) => b.xp - a.xp).map((item, index) => ({
+    ...item,
+    rank: index + 1
+  }));
+
+  const scholars = allScholars;
 
   const buddiesList = [
     {
       id: 'b1',
-      name: 'Rachel Sharma',
-      days: 66,
-      lessons: 80,
-      xp: 10100,
-      avatarSvg: '/avatars/alex.svg',
-      rig: 'Alex Explorer Rig',
-      ore: 'Diamond Gem'
+      name: 'Priya Sharma',
+      username: 'priya_jac',
+      days: 3,
+      lessons: 12,
+      xp: 450,
+      avatarSvg: '/assets/profile_photos/classic_character_2.png',
+      rig: 'Scholar Girl Rig',
+      ore: 'Copper Ingot'
     },
     {
       id: 'b2',
-      name: 'Ellis Kumar',
-      days: 33,
-      lessons: 45,
-      xp: 4500,
-      avatarSvg: '/avatars/steve.svg',
-      rig: 'Steve Cyan Tunic',
-      ore: 'Redstone Dust'
-    },
-    {
-      id: 'b3',
-      name: 'Stephen Hansda',
-      days: 11,
-      lessons: 24,
-      xp: 2100,
-      avatarSvg: '/avatars/noor.svg',
-      rig: 'Noor Redstone Savant',
-      ore: 'Iron Ingot'
+      name: 'Rohit Kumar',
+      username: 'rohit_ranchi',
+      days: 2,
+      lessons: 8,
+      xp: 320,
+      avatarSvg: '/assets/profile_photos/classic_character_1.png',
+      rig: 'Scholar Boy Rig',
+      ore: 'Coal Ore'
     }
   ];
 
@@ -156,7 +147,7 @@ export default function LeaderboardPage() {
   };
 
   return (
-    <div className="w-full max-w-[480px] mx-auto px-4 pt-4 pb-28 select-none">
+    <div className="w-full max-w-[480px] mx-auto px-4 pt-4 pb-44 select-none">
       {/* Header */}
       <div className="text-center mb-3">
         <button

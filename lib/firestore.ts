@@ -8,7 +8,13 @@ export function getLocalUserProfile(): UserProfile | null {
   if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    const profile = JSON.parse(raw);
+    if (!profile.photoURL || profile.photoURL.includes('avatars/') || profile.photoURL.includes('custom_reference')) {
+      profile.photoURL = '/assets/profile_photos/IMG_20261109_001652.png';
+      saveLocalUserProfile(profile);
+    }
+    return profile;
   } catch {
     return null;
   }
@@ -28,7 +34,8 @@ export function createDefaultProfile(uid: string, name?: string, email?: string)
     uid,
     name: name || 'Royal Scholar',
     email: email || 'scholar@royal.edu',
-    avatarId: 'steve',
+    photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+    avatarId: 'kai',
     xp: 120,
     streak: 1,
     streakShieldActive: true,

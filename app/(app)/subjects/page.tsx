@@ -25,7 +25,6 @@ import {
   playOfflineCacheSuccess
 } from '@/lib/audioEngine';
 import { BilingualLanguageToggle } from '@/components/ui/BilingualLanguageToggle';
-import { FloatingStudyCompanion } from '@/components/mascot/FloatingStudyCompanion';
 
 // Subject Definition with Deep Sub-Categories
 export interface SubCategory {
@@ -50,12 +49,12 @@ export interface SubjectData {
 }
 
 export const DEEP_SUBJECTS: SubjectData[] = [
-  // 1. MATHEMATICS (3 parts)
+  // 1. MATHEMATICS (14 Chapters)
   {
     id: 'math',
     title: 'Mathematics',
     hindiTitle: 'गणित',
-    classTag: 'Class 10 NCERT',
+    classTag: 'Class 10 NCERT • 14 Chapters',
     totalChapters: 14,
     bookSvg: '/images/subjects/math_ncert.jpg',
     themeColor: '#3B82F6',
@@ -65,12 +64,12 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         title: 'Number Systems & Algebra',
         hindiTitle: 'संख्या पद्धति व बीजगणित',
         totalChapters: 5,
-        completedChapters: 4,
+        completedChapters: 5,
         iconPath: '/images/subjects/math.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Real Numbers', hindiTitle: 'वास्तविक संख्याएँ' },
           { num: 2, id: 'ch_02', title: 'Polynomials', hindiTitle: 'बहुपद' },
-          { num: 3, id: 'ch_03', title: 'Linear Equations in Two Variables', hindiTitle: 'दो चर वाले रैखिक समीकरण युग्म' },
+          { num: 3, id: 'ch_03', title: 'Pair of Linear Equations in Two Variables', hindiTitle: 'दो चरों वाले रैखिक समीकरण युग्म' },
           { num: 4, id: 'ch_04', title: 'Quadratic Equations', hindiTitle: 'द्विघात समीकरण' },
           { num: 5, id: 'ch_05', title: 'Arithmetic Progressions', hindiTitle: 'समांतर श्रेढ़ियाँ' }
         ]
@@ -80,22 +79,22 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         title: 'Geometry & Trigonometry',
         hindiTitle: 'ज्यामिति व त्रिकोणमिति',
         totalChapters: 5,
-        completedChapters: 3,
+        completedChapters: 4,
         iconPath: '/images/subjects/math.jpg',
         chapters: [
           { num: 6, id: 'ch_06', title: 'Triangles', hindiTitle: 'त्रिभुज' },
-          { num: 7, id: 'ch_07', title: 'Coordinate Geometry', hindiTitle: 'निर्देशांक ज्यामिति' },
+          { num: 7, id: 'ch_07', title: 'Coordinate Geometry', hindiTitle: 'निर्देशांक ज्यामिती' },
           { num: 8, id: 'ch_08', title: 'Introduction to Trigonometry', hindiTitle: 'त्रिकोणमिति का परिचय' },
-          { num: 9, id: 'ch_09', title: 'Applications of Trigonometry', hindiTitle: 'त्रिकोणमिति के कुछ अनुप्रयोग' },
+          { num: 9, id: 'ch_09', title: 'Some Applications of Trigonometry', hindiTitle: 'त्रिकोणमिति के कुछ अनुप्रयोग' },
           { num: 10, id: 'ch_10', title: 'Circles', hindiTitle: 'वृत्त' }
         ]
       },
       {
         id: 'math_mensuration',
         title: 'Mensuration, Statistics & Probability',
-        hindiTitle: 'क्षेत्रमिति व सांख्यिकी',
+        hindiTitle: 'क्षेत्रमिति, सांख्यिकी व प्रायिकता',
         totalChapters: 4,
-        completedChapters: 3,
+        completedChapters: 4,
         iconPath: '/images/subjects/math.jpg',
         chapters: [
           { num: 11, id: 'ch_11', title: 'Areas Related to Circles', hindiTitle: 'वृत्तों से संबंधित क्षेत्रफल' },
@@ -107,12 +106,12 @@ export const DEEP_SUBJECTS: SubjectData[] = [
     ]
   },
 
-  // 2. SCIENCE (3 parts: Physics, Chemistry, Biology)
+  // 2. SCIENCE (13 Chapters)
   {
     id: 'science',
     title: 'Science',
     hindiTitle: 'विज्ञान',
-    classTag: 'Class 10 NCERT',
+    classTag: 'Class 10 NCERT • 13 Chapters',
     totalChapters: 13,
     bookSvg: '/images/subjects/science_ncert.jpg',
     themeColor: '#10B981',
@@ -121,29 +120,29 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         id: 'sci_chem',
         title: 'Chemistry',
         hindiTitle: 'रसायन विज्ञान',
-        totalChapters: 5,
-        completedChapters: 5,
+        totalChapters: 4,
+        completedChapters: 4,
         iconPath: '/images/subjects/science.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Chemical Reactions and Equations', hindiTitle: 'रासायनिक अभिक्रियाएँ एवं समीकरण' },
           { num: 2, id: 'ch_02', title: 'Acids, Bases and Salts', hindiTitle: 'अम्ल, क्षारक एवं लवण' },
           { num: 3, id: 'ch_03', title: 'Metals and Non-metals', hindiTitle: 'धातु एवं अधातु' },
-          { num: 4, id: 'ch_04', title: 'Carbon and its Compounds', hindiTitle: 'कार्बन एवं उसके यौगिक' },
-          { num: 5, id: 'ch_05', title: 'Periodic Classification of Elements', hindiTitle: 'तत्वों का आवर्त वर्गीकरण' }
+          { num: 4, id: 'ch_04', title: 'Carbon and its Compounds', hindiTitle: 'कार्बन एवं उसके यौगिक' }
         ]
       },
       {
         id: 'sci_bio',
-        title: 'Biology',
-        hindiTitle: 'जीव विज्ञान',
-        totalChapters: 4,
-        completedChapters: 3,
+        title: 'Biology & Ecology',
+        hindiTitle: 'जीव विज्ञान व पर्यावरण',
+        totalChapters: 5,
+        completedChapters: 5,
         iconPath: '/images/subjects/science.jpg',
         chapters: [
-          { num: 6, id: 'ch_06', title: 'Life Processes', hindiTitle: 'जैव प्रक्रम' },
-          { num: 7, id: 'ch_07', title: 'Control and Coordination', hindiTitle: 'नियंत्रण एवं समन्वय' },
-          { num: 8, id: 'ch_08', title: 'How do Organisms Reproduce?', hindiTitle: 'जीव जनन कैसे करते हैं?' },
-          { num: 9, id: 'ch_09', title: 'Heredity and Evolution', hindiTitle: 'आनुवंशिकता एवं जैव विकास' }
+          { num: 5, id: 'ch_05', title: 'Life Processes', hindiTitle: 'जैव प्रक्रम' },
+          { num: 6, id: 'ch_06', title: 'Control and Coordination', hindiTitle: 'नियंत्रण एवं समन्वय' },
+          { num: 7, id: 'ch_07', title: 'How do Organisms Reproduce?', hindiTitle: 'जीव जनन कैसे करते हैं?' },
+          { num: 8, id: 'ch_08', title: 'Heredity', hindiTitle: 'आनुवंशिकता' },
+          { num: 13, id: 'ch_13', title: 'Our Environment', hindiTitle: 'हमारा पर्यावरण' }
         ]
       },
       {
@@ -151,25 +150,25 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         title: 'Physics',
         hindiTitle: 'भौतिकी',
         totalChapters: 4,
-        completedChapters: 3,
+        completedChapters: 4,
         iconPath: '/images/subjects/science.jpg',
         chapters: [
-          { num: 10, id: 'ch_10', title: 'Light - Reflection and Refraction', hindiTitle: 'प्रकाश - परावर्तन तथा अपवर्तन' },
-          { num: 11, id: 'ch_11', title: 'The Human Eye and Colourful World', hindiTitle: 'मानव नेत्र तथा रंगबिरंगा संसार' },
-          { num: 12, id: 'ch_12', title: 'Electricity', hindiTitle: 'विद्युत' },
-          { num: 13, id: 'ch_13', title: 'Magnetic Effects of Electric Current', hindiTitle: 'विद्युत धारा के चुंबकीय प्रभाव' }
+          { num: 9, id: 'ch_09', title: 'Light – Reflection and Refraction', hindiTitle: 'प्रकाश – परावर्तन तथा अपवर्तन' },
+          { num: 10, id: 'ch_10', title: 'The Human Eye and Colourful World', hindiTitle: 'मानव नेत्र तथा रंगबिरंगा संसार' },
+          { num: 11, id: 'ch_11', title: 'Electricity', hindiTitle: 'विद्युत' },
+          { num: 12, id: 'ch_12', title: 'Magnetic Effects of Electric Current', hindiTitle: 'विद्युत धारा के चुंबकीय प्रभाव' }
         ]
       }
     ]
   },
 
-  // 3. ENGLISH (2 parts: First Flight, Footprints Without Feet)
+  // 3. ENGLISH (14 Chapters: First Flight & Footprints Without Feet)
   {
     id: 'english',
     title: 'English',
     hindiTitle: 'अंग्रेज़ी',
-    classTag: 'Class 10 NCERT',
-    totalChapters: 11,
+    classTag: 'Class 10 NCERT • 14 Units',
+    totalChapters: 14,
     bookSvg: '/images/subjects/english.jpg',
     themeColor: '#06B6D4',
     parts: [
@@ -177,16 +176,19 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         id: 'eng_first_flight',
         title: 'First Flight',
         hindiTitle: 'मुख्य पाठ्यपुस्तक',
-        totalChapters: 6,
-        completedChapters: 4,
+        totalChapters: 9,
+        completedChapters: 7,
         iconPath: '/images/subjects/english_first_flight.jpg',
         chapters: [
-          { num: 1, id: 'ch_01', title: 'A Letter to God', hindiTitle: 'भगवान के नाम पत्र' },
-          { num: 2, id: 'ch_02', title: 'Nelson Mandela: Long Walk to Freedom', hindiTitle: 'नेल्सन मंडेला: आज़ादी की लंबी यात्रा' },
-          { num: 3, id: 'ch_03', title: 'Two Stories about Flying', hindiTitle: 'उड़ान की दो कहानियाँ' },
+          { num: 1, id: 'ch_01', title: 'A Letter to God (Dust of Snow & Fire and Ice)', hindiTitle: 'भगवान के नाम पत्र' },
+          { num: 2, id: 'ch_02', title: 'Nelson Mandela: Long Walk to Freedom', hindiTitle: 'नेल्सन मंडेला: आज़ादी की लंबी यात्रा' },
+          { num: 3, id: 'ch_03', title: 'Two Stories about Flying (His First Flight & Black Aeroplane)', hindiTitle: 'उड़ान की दो कहानियाँ' },
           { num: 4, id: 'ch_04', title: 'From the Diary of Anne Frank', hindiTitle: 'ऐनी फ्रैंक की डायरी से' },
-          { num: 5, id: 'ch_05', title: 'Glimpses of India', hindiTitle: 'भारत की झलकियाँ' },
-          { num: 6, id: 'ch_06', title: 'Madam Rides the Bus', hindiTitle: 'मैडम ने की बस की सवारी' }
+          { num: 5, id: 'ch_05', title: 'Glimpses of India (Baker from Goa, Coorg, Tea from Assam)', hindiTitle: 'भारत की झलकियाँ' },
+          { num: 6, id: 'ch_06', title: 'Mijbil the Otter', hindiTitle: 'मिजबिल ऊदबिलाव' },
+          { num: 7, id: 'ch_07', title: 'Madam Rides the Bus', hindiTitle: 'मैडम ने की बस की सवारी' },
+          { num: 8, id: 'ch_08', title: 'The Sermon at Benares', hindiTitle: 'बनारस में बुद्ध का उपदेश' },
+          { num: 9, id: 'ch_09', title: 'The Proposal', hindiTitle: 'विवाह का प्रस्ताव (एकांकी)' }
         ]
       },
       {
@@ -194,26 +196,26 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         title: 'Footprints Without Feet',
         hindiTitle: 'पूरक पाठ्यपुस्तक',
         totalChapters: 5,
-        completedChapters: 3,
+        completedChapters: 4,
         iconPath: '/images/subjects/english_footprints.jpg',
         chapters: [
-          { num: 7, id: 'ch_07', title: 'A Triumph of Surgery', hindiTitle: 'शल्य चिकित्सा की जीत' },
-          { num: 8, id: 'ch_08', title: 'The Thief\'s Story', hindiTitle: 'चोर की कहानी' },
-          { num: 9, id: 'ch_09', title: 'The Midnight Visitor', hindiTitle: 'आधी रात का आगंतुक' },
-          { num: 10, id: 'ch_10', title: 'A Question of Trust', hindiTitle: 'विश्वास का प्रश्न' },
-          { num: 11, id: 'ch_11', title: 'Footprints Without Feet', hindiTitle: 'पैरों के निशान बिना पैर' }
+          { num: 10, id: 'ch_10', title: 'A Triumph of Surgery & The Thief’s Story', hindiTitle: 'शल्य चिकित्सा की विजय व चोर की कहानी' },
+          { num: 11, id: 'ch_11', title: 'The Midnight Visitor & A Question of Trust', hindiTitle: 'आधी रात का आगंतुक व विश्वास का प्रश्न' },
+          { num: 12, id: 'ch_12', title: 'Footprints Without Feet & The Making of a Scientist', hindiTitle: 'पैरों के निशान बिना पैर व एक वैज्ञानिक का बनना' },
+          { num: 13, id: 'ch_13', title: 'The Necklace & Bholi', hindiTitle: 'हार (नेकलेस) व भोली' },
+          { num: 14, id: 'ch_14', title: 'The Book That Saved the Earth & English Grammar/Writing', hindiTitle: 'वह पुस्तक जिसने पृथ्वी को बचाया व व्याकरण/लेखन' }
         ]
       }
     ]
   },
 
-  // 4. SOCIAL SCIENCE (SST) (4 parts: History, Geography, Civics, Economics)
+  // 4. SOCIAL SCIENCE (SST) (14 Complete Chapters: History, Geography, Civics, Economics)
   {
     id: 'sst',
     title: 'Social Science',
     hindiTitle: 'सामाजिक विज्ञान',
-    classTag: 'Class 10 NCERT',
-    totalChapters: 11,
+    classTag: 'Class 10 NCERT • 14 Chapters',
+    totalChapters: 14,
     bookSvg: '/images/subjects/sst.jpg',
     themeColor: '#F59E0B',
     parts: [
@@ -221,26 +223,28 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         id: 'sst_history',
         title: 'History',
         hindiTitle: 'इतिहास (भारत और समकालीन विश्व II)',
-        totalChapters: 3,
-        completedChapters: 2,
+        totalChapters: 4,
+        completedChapters: 3,
         iconPath: '/images/subjects/sst_history.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'The Rise of Nationalism in Europe', hindiTitle: 'यूरोप में राष्ट्रवाद का उदय' },
           { num: 2, id: 'ch_02', title: 'Nationalism in India', hindiTitle: 'भारत में राष्ट्रवाद' },
-          { num: 3, id: 'ch_03', title: 'The Making of a Global World', hindiTitle: 'भूमंडलीकृत विश्व का बनना' }
+          { num: 3, id: 'ch_03', title: 'The Making of a Global World', hindiTitle: 'भूमंडलीकृत विश्व का बनना' },
+          { num: 4, id: 'ch_04', title: 'Print Culture and the Modern World', hindiTitle: 'मुद्रण संस्कृति और आधुनिक दुनिया' }
         ]
       },
       {
         id: 'sst_geography',
         title: 'Geography',
         hindiTitle: 'भूगोल (समकालीन भारत II)',
-        totalChapters: 3,
-        completedChapters: 3,
+        totalChapters: 4,
+        completedChapters: 4,
         iconPath: '/images/subjects/sst_geography.jpg',
         chapters: [
-          { num: 4, id: 'ch_04', title: 'Resources and Development', hindiTitle: 'संसाधन एवं विकास' },
-          { num: 5, id: 'ch_05', title: 'Forest and Wildlife Resources', hindiTitle: 'वन एवं वन्य जीव संसाधन' },
-          { num: 6, id: 'ch_06', title: 'Water Resources & Agriculture', hindiTitle: 'जल संसाधन एवं कृषि' }
+          { num: 5, id: 'ch_05', title: 'Resources and Development', hindiTitle: 'संसाधन एवं विकास' },
+          { num: 6, id: 'ch_06', title: 'Forest, Wildlife & Water Resources', hindiTitle: 'वन, वन्यजीव एवं जल संसाधन' },
+          { num: 7, id: 'ch_07', title: 'Agriculture', hindiTitle: 'कृषि' },
+          { num: 8, id: 'ch_08', title: 'Minerals, Energy & Manufacturing Industries', hindiTitle: 'खनिज, ऊर्जा एवं विनिर्माण उद्योग' }
         ]
       },
       {
@@ -248,65 +252,72 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         title: 'Civics',
         hindiTitle: 'नागरिक शास्त्र (लोकतांत्रिक राजनीति II)',
         totalChapters: 3,
-        completedChapters: 2,
+        completedChapters: 3,
         iconPath: '/images/subjects/sst_politics.jpg',
         chapters: [
-          { num: 7, id: 'ch_07', title: 'Power Sharing', hindiTitle: 'सत्ता की साझेदारी' },
-          { num: 8, id: 'ch_08', title: 'Federalism', hindiTitle: 'संघवाद' },
-          { num: 9, id: 'ch_09', title: 'Gender, Religion and Caste', hindiTitle: 'जाति, धर्म और लैंगिक मसले' }
+          { num: 9, id: 'ch_09', title: 'Power Sharing & Federalism', hindiTitle: 'सत्ता की साझेदारी एवं संघवाद' },
+          { num: 10, id: 'ch_10', title: 'Gender, Religion and Caste', hindiTitle: 'जाति, धर्म और लैंगिक मसले' },
+          { num: 11, id: 'ch_11', title: 'Political Parties & Outcomes of Democracy', hindiTitle: 'राजनीतिक दल एवं लोकतंत्र के परिणाम' }
         ]
       },
       {
         id: 'sst_economics',
         title: 'Economics',
         hindiTitle: 'अर्थशास्त्र (आर्थिक विकास की समझ)',
-        totalChapters: 2,
-        completedChapters: 2,
-        iconPath: '/images/subjects/sst.jpg',
+        totalChapters: 3,
+        completedChapters: 3,
+        iconPath: '/images/subjects/sst_economics.jpg',
         chapters: [
-          { num: 10, id: 'ch_10', title: 'Development', hindiTitle: 'विकास' },
-          { num: 11, id: 'ch_11', title: 'Sectors of the Indian Economy', hindiTitle: 'भारतीय अर्थव्यवस्था के क्षेत्रक' }
+          { num: 12, id: 'ch_12', title: 'Development & Sectors of the Indian Economy', hindiTitle: 'विकास एवं भारतीय अर्थव्यवस्था के क्षेत्रक' },
+          { num: 13, id: 'ch_13', title: 'Money and Credit', hindiTitle: 'मुद्रा और साख' },
+          { num: 14, id: 'ch_14', title: 'Globalisation and the Indian Economy', hindiTitle: 'वैश्वीकरण और भारतीय अर्थव्यवस्था' }
         ]
       }
     ]
   },
 
-  // 5. HINDI (Course A) (2 parts: Kshitij, Kritika)
+  // 5. HINDI (Course A) (14 Chapters: Kshitij & Kritika)
   {
     id: 'hindi',
     title: 'Hindi (Course A)',
     hindiTitle: 'हिंदी (कोर्स ए)',
-    classTag: 'Class 10 NCERT',
-    totalChapters: 8,
+    classTag: 'Class 10 NCERT • 14 Chapters',
+    totalChapters: 14,
     bookSvg: '/images/subjects/hindi.jpg',
-    themeColor: '#8B5CF6',
+    themeColor: '#EC4899',
     parts: [
       {
-        id: 'hin_kshitij',
-        title: 'Kshitij',
-        hindiTitle: 'क्षितिज भाग 2',
-        totalChapters: 5,
-        completedChapters: 4,
+        id: 'hin_kavya',
+        title: 'Kshitij (Kavya Khand)',
+        hindiTitle: 'क्षितिज (काव्य खंड)',
+        totalChapters: 6,
+        completedChapters: 5,
         iconPath: '/images/subjects/hindi_kshitij.jpg',
         chapters: [
-          { num: 1, id: 'ch_01', title: 'Surdas - Pad', hindiTitle: 'सूरदास - पद' },
-          { num: 2, id: 'ch_02', title: 'Ram-Lakshman-Parshuram Samvad', hindiTitle: 'राम-लक्ष्मण-परशुराम संवाद' },
-          { num: 3, id: 'ch_03', title: 'Utsah & At Nahi Rahi', hindiTitle: 'उत्साह और अट नहीं रही' },
-          { num: 4, id: 'ch_04', title: 'Netaji Ka Chashma', hindiTitle: 'नेताजी का चश्मा' },
-          { num: 5, id: 'ch_05', title: 'Balgobin Bhagat', hindiTitle: 'बालगोबिन भगत' }
+          { num: 1, id: 'ch_01', title: 'सूरदास के पद', hindiTitle: 'सूरदास के पद' },
+          { num: 2, id: 'ch_02', title: 'राम-लक्ष्मण-परशुराम संवाद', hindiTitle: 'राम-लक्ष्मण-परशुराम संवाद (तुलसीदास)' },
+          { num: 3, id: 'ch_03', title: 'आत्मकथ्य', hindiTitle: 'आत्मकथ्य (जयशंकर प्रसाद)' },
+          { num: 4, id: 'ch_04', title: 'उत्साह और अट नहीं रही है', hindiTitle: 'उत्साह और अट नहीं रही है (निराला)' },
+          { num: 5, id: 'ch_05', title: 'यह दंतुरित मुस्कान और फसल', hindiTitle: 'यह दंतुरित मुस्कान और फसल (नागार्जुन)' },
+          { num: 6, id: 'ch_06', title: 'संगतकार', hindiTitle: 'संगतकार (मंगलेश डबराल)' }
         ]
       },
       {
-        id: 'hin_kritika',
-        title: 'Kritika',
-        hindiTitle: 'कृतिका भाग 2',
-        totalChapters: 3,
-        completedChapters: 2,
+        id: 'hin_gadya',
+        title: 'Kshitij & Kritika (Gadya Khand)',
+        hindiTitle: 'क्षितिज व कृतिका (गद्य खंड)',
+        totalChapters: 8,
+        completedChapters: 6,
         iconPath: '/images/subjects/hindi_kritika.jpg',
         chapters: [
-          { num: 6, id: 'ch_06', title: 'Mata Ka Anchal', hindiTitle: 'माता का अँचल' },
-          { num: 7, id: 'ch_07', title: 'George Pancham Ki Naak', hindiTitle: 'जॉर्ज पंचम की नाक' },
-          { num: 8, id: 'ch_08', title: 'Sana Sana Hath Jodi', hindiTitle: 'साना-साना हाथ जोड़ि' }
+          { num: 7, id: 'ch_07', title: 'नेताजी का चश्मा', hindiTitle: 'नेताजी का चश्मा (स्वयं प्रकाश)' },
+          { num: 8, id: 'ch_08', title: 'बालगोबिन भगत', hindiTitle: 'बालगोबिन भगत (रामवृक्ष बेनीपुरी)' },
+          { num: 9, id: 'ch_09', title: 'लखनवी अंदाज़', hindiTitle: 'लखनवी अंदाज़ (यशपाल)' },
+          { num: 10, id: 'ch_10', title: 'एक कहानी यह भी', hindiTitle: 'एक कहानी यह भी (मन्नू भंडारी)' },
+          { num: 11, id: 'ch_11', title: 'नौबतखाने में इबादत', hindiTitle: 'नौबतखाने में इबादत (यतींद्र मिश्र)' },
+          { num: 12, id: 'ch_12', title: 'संस्कृति', hindiTitle: 'संस्कृति (भदंत आनंद कौसल्यायन)' },
+          { num: 13, id: 'ch_13', title: 'माता का अंचल', hindiTitle: 'माता का अंचल (शिवपूजन सहाय)' },
+          { num: 14, id: 'ch_14', title: 'साना-साना हाथ जोड़ि और मैं क्यों लिखता हूँ', hindiTitle: 'साना-साना हाथ जोड़ि व मैं क्यों लिखता हूँ' }
         ]
       }
     ]
@@ -354,7 +365,7 @@ export default function SubjectsPage() {
   };
 
   return (
-    <div className="w-full max-w-[480px] mx-auto px-4 pt-3 pb-28 select-none">
+    <div className="w-full max-w-[480px] mx-auto px-4 pt-3 pb-44 select-none">
       {/* =========================================================================
           VIEW MODE 1: SUB-CATEGORIES DETAIL SCREEN (Matches Screenshot 1)
           ========================================================================= */}
@@ -378,13 +389,13 @@ export default function SubjectsPage() {
               <span className="text-[11px] font-bold text-amber-300">
                 Ready for chapter 4?
               </span>
-              <div className="w-5 h-5 rounded-md overflow-hidden bg-black/40">
+              <div className="relative w-5 h-5 rounded-md overflow-hidden bg-black/40 border border-amber-400/40">
                 <Image
-                  src={`/avatars/${avatarPreset}.svg`}
+                  src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
                   alt="Avatar Head"
-                  width={20}
-                  height={20}
-                  className="object-contain"
+                  fill
+                  unoptimized
+                  className="object-cover"
                 />
               </div>
             </div>
@@ -417,6 +428,7 @@ export default function SubjectsPage() {
                         src={part.iconPath}
                         alt={part.title}
                         fill
+                        unoptimized
                         className="object-cover"
                       />
                     </div>
@@ -435,30 +447,22 @@ export default function SubjectsPage() {
                     </div>
                   </div>
 
-                  {/* Download Offline Toggle Switch Row */}
+                  {/* Online Cloud Sync Status Badge */}
                   <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/10">
                     <div>
-                      <div className="text-xs font-black text-white">
-                        Download offline
+                      <div className="text-xs font-black text-white flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-emerald-300">Online Cloud Sync Active</span>
                       </div>
                       <div className="text-[10px] text-slate-400 font-medium">
-                        Download data offline (pre-bundled)
+                        Live multiplayer & instant cloud save
                       </div>
                     </div>
 
-                    {/* Neon Emerald Toggle Switch */}
-                    <button
-                      onClick={() => handleToggleOffline(part.id)}
-                      className={`relative w-12 h-6 rounded-full transition-colors duration-200 ease-in-out cursor-pointer p-0.5 ${
-                        isOffline ? 'bg-[#10B981]' : 'bg-slate-700'
-                      }`}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-full bg-slate-950 transition-transform duration-200 ease-in-out ${
-                          isOffline ? 'translate-x-6' : 'translate-x-0'
-                        }`}
-                      />
-                    </button>
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-black text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                      <span>ONLINE</span>
+                    </div>
                   </div>
 
                   {/* Chapters Drill-down Accordion Toggle */}
@@ -535,11 +539,11 @@ export default function SubjectsPage() {
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="relative w-8 h-8 rounded-lg overflow-hidden shrink-0 bg-black/40 border border-amber-400/40 p-0.5">
                 <Image
-                  src={`/avatars/${avatarPreset}.svg`}
+                  src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
                   alt="Avatar"
-                  width={28}
-                  height={28}
-                  className="object-contain"
+                  fill
+                  unoptimized
+                  className="object-cover rounded-md"
                 />
               </div>
               <span className="text-xs font-black text-amber-200 truncate">
@@ -571,6 +575,7 @@ export default function SubjectsPage() {
                       src={sub.bookSvg}
                       alt={sub.title}
                       fill
+                      unoptimized
                       className="object-cover"
                     />
                   </div>
@@ -598,15 +603,6 @@ export default function SubjectsPage() {
           </div>
         </div>
       )}
-
-      {/* Floating Interactive Study Companion Robot from Screenshot 1 & 2 */}
-      <FloatingStudyCompanion
-        customMessage={
-          selectedSubject
-            ? `Ready to conquer ${selectedSubject.title}?`
-            : `Choose a subject to keep your ${streakDays}-day streak!`
-        }
-      />
     </div>
   );
 }
