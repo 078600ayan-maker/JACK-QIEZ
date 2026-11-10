@@ -361,10 +361,10 @@ export const MinecraftVoxelCharacter: React.FC<MinecraftVoxelCharacterProps> = (
           </div>
         )}
 
-        {/* Assembled Standing Minecraft Character (Crisp Voxel Sprite) */}
+        {/* Assembled Standing Minecraft Character (Crisp Voxel Sprite - Scaled & Grounded) */}
         <div
-          className={`relative z-10 transition-transform ${animTransformClass}`}
-          style={{ width: '130px', height: '240px' }}
+          className={`relative z-10 transition-transform ${animTransformClass} translate-y-3`}
+          style={{ width: '105px', height: '175px' }}
         >
           {currentTexture ? (
             <img
@@ -380,18 +380,18 @@ export const MinecraftVoxelCharacter: React.FC<MinecraftVoxelCharacterProps> = (
           )}
         </div>
 
-        {/* 3D Voxel Minecraft Block Pedestal (Diamond / Obsidian / Grass) */}
+        {/* 3D Voxel Minecraft Block Pedestal (Diamond / Obsidian / Grass - Positioned directly under feet) */}
         {showPedestal && (
           <div
             style={{
               transformStyle: 'preserve-3d',
-              transform: 'translateY(-16px) rotateX(65deg)'
+              transform: 'translateY(-14px) rotateX(65deg)'
             }}
-            className="relative w-36 h-36 flex items-center justify-center mt-[-10px]"
+            className="relative w-32 h-16 flex items-center justify-center mt-[-8px]"
           >
             {/* Top Surface of Block */}
             <div
-              className={`w-full h-full rounded-2xl border-2 shadow-[0_0_30px_rgba(0,0,0,0.9)] flex items-center justify-center ${
+              className={`w-full h-full rounded-2xl border-2 shadow-[0_0_25px_rgba(0,0,0,0.9)] flex items-center justify-center ${
                 pedestalType === 'diamond'
                   ? 'bg-gradient-to-br from-cyan-600 via-sky-800 to-cyan-950 border-cyan-300 shadow-[0_0_25px_rgba(6,182,212,0.6)]'
                   : pedestalType === 'obsidian'
@@ -401,7 +401,7 @@ export const MinecraftVoxelCharacter: React.FC<MinecraftVoxelCharacterProps> = (
             >
               {/* Inner Glowing Inset Ring */}
               <div className="w-[85%] h-[85%] rounded-xl border border-white/30 flex items-center justify-center">
-                <span className="text-xs font-mono font-black text-white/70">
+                <span className="text-[10px] font-mono font-black text-white/80">
                   {pedestalType === 'diamond' ? '💎 DIAMOND' : '🔮 OBSIDIAN'}
                 </span>
               </div>

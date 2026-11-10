@@ -248,13 +248,23 @@ export default function VaultPage() {
                 </h3>
               </div>
 
-              <button
-                onClick={handleSetAvatarAsDP}
-                className="h-[34px] px-3.5 rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_2px_10px_rgba(245,158,11,0.5)] border border-[#FDE68A] bg-gradient-to-b from-[#FDE68A] via-[#F59E0B] to-[#B45309] text-slate-950 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
-              >
-                <Camera className="w-3.5 h-3.5" />
-                <span>Set as DP</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {lastExtractedFace && (
+                  <div
+                    title="Current Dressed Head Preview"
+                    className="w-8 h-8 rounded-full border-2 border-amber-400/80 overflow-hidden bg-slate-900 shadow-md shrink-0 ring-1 ring-amber-300"
+                  >
+                    <img src={lastExtractedFace} alt="DP Head" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                <button
+                  onClick={handleSetAvatarAsDP}
+                  className="h-[34px] px-3 rounded-xl font-black text-xs uppercase tracking-wider shadow-[0_2px_10px_rgba(245,158,11,0.5)] border border-[#FDE68A] bg-gradient-to-b from-[#FDE68A] via-[#F59E0B] to-[#B45309] text-slate-950 active:scale-95 transition-all cursor-pointer flex items-center gap-1"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  <span>Set as DP</span>
+                </button>
+              </div>
             </div>
 
             {/* 5 Compact Emote Pills (Height: 32px) */}
@@ -287,14 +297,14 @@ export default function VaultPage() {
               ))}
             </div>
 
-            {/* Stage Character Render with Pedestal Block */}
-            <div className="relative flex-1 min-h-[220px] flex flex-col items-center justify-center my-1 rounded-2xl bg-black/40 border border-white/5 overflow-hidden">
+            {/* Stage Character Render with Pedestal Block (Lowered & Aligned to Pedestal) */}
+            <div className="relative flex-1 min-h-[260px] h-[270px] flex flex-col items-center justify-end pb-4 my-1 rounded-2xl bg-black/40 border border-white/5 overflow-hidden">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-500/15 via-transparent to-transparent pointer-events-none" />
 
               <MinecraftVoxelCharacter
                 skinPath={currentCustom.skinPath || '/skins/boy/skullwar.png'}
                 mode="stage"
-                size={220}
+                size={230}
                 animation={testAnim}
                 showPedestal={true}
                 pedestalType={pedestalType}
