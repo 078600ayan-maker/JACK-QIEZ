@@ -26,7 +26,8 @@ import {
   Eye,
   PhoneCall,
   UserCheck,
-  UserPlus
+  UserPlus,
+  Shirt
 } from 'lucide-react';
 import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -41,7 +42,18 @@ import { getUserCurrentOreTier } from '@/types/ranking';
 import { playClickSound, playAvatarCheer, playCorrectDing } from '@/lib/audioEngine';
 import Image from 'next/image';
 
-interface ScholarItem {
+export interface ScholarFollowRef {
+  uid: string;
+  name: string;
+  username: string;
+  photoURL: string;
+  xp: number;
+  role: string;
+  skinPath: string;
+  dressedOutfit: string;
+}
+
+export interface ScholarItem {
   uid: string;
   name: string;
   username: string;
@@ -51,10 +63,14 @@ interface ScholarItem {
   followers?: number;
   following?: number;
   photoURL: string;
+  skinPath?: string;
+  dressedOutfit?: string;
   isRealUser: boolean;
   role?: string;
   bio?: string;
   isCurrentUser?: boolean;
+  followersList?: ScholarFollowRef[];
+  followingList?: ScholarFollowRef[];
 }
 
 function ProfileContent() {
@@ -68,6 +84,7 @@ function ProfileContent() {
 
   // Inspected Scholar Modal state ("अंदर घुसने का ऑप्शन")
   const [inspectedScholar, setInspectedScholar] = useState<ScholarItem | null>(null);
+  const [inspectorTab, setInspectorTab] = useState<'overview' | 'followers' | 'following'>('overview');
 
   // Social Hub state
   const [searchUsername, setSearchUsername] = useState('');
@@ -87,12 +104,19 @@ function ProfileContent() {
   const followingCount = Object.values(followingMap).filter(Boolean).length + 12;
   const followersCount = 148 + Object.values(followingMap).filter(Boolean).length * 2;
 
-  const handleToggleFollow = (userId: string) => {
+  const handleToggleFollow = async (userId: string) => {
     playClickSound();
     setFollowingMap((prev) => {
       const next = { ...prev, [userId]: !prev[userId] };
       if (typeof window !== 'undefined') {
         localStorage.setItem('sbr_following_ids', JSON.stringify(next));
+      }
+      // Cloud sync to Firestore
+      if (profile?.uid) {
+        try {
+          const userRef = doc(db, 'users', profile.uid);
+          setDoc(userRef, { followingMap: next }, { merge: true }).catch(() => {});
+        } catch {}
       }
       return next;
     });
@@ -109,7 +133,7 @@ function ProfileContent() {
   const [editUsername, setEditUsername] = useState(profile?.username || '');
   const [editSaving, setEditSaving] = useState(false);
 
-  // Real Peer Scholars Pool: All 10 Canonical Scholars + JAC Toppers
+  // Real Peer Scholars Pool: All 10 Canonical Scholars with authentic 3D Dressed Skins
   const KNOWN_SCHOLARS: ScholarItem[] = [
     {
       uid: 'kai_vanguard',
@@ -121,9 +145,65 @@ function ProfileContent() {
       followers: 412,
       following: 28,
       photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+      skinPath: '/skins/boy/minecraft-skins.png',
+      dressedOutfit: "Letter 'K' Blue Varsity Jacket & Indigo Jeans",
       isRealUser: true,
       role: 'Science Vanguard',
-      bio: 'Varsity K Blue Jacket. Physics & Science Olympiad JAC Gold Medalist.'
+      bio: 'Varsity K Blue Jacket. Physics & Science Olympiad JAC Gold Medalist.',
+      followersList: [
+        {
+          uid: 'jax_speed',
+          name: 'Jax',
+          username: 'jax_speed',
+          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+          xp: 1720,
+          role: 'Tactical Speedster',
+          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+          dressedOutfit: 'Cyber Cyan Glowing Hoodie'
+        },
+        {
+          uid: 'elis_royal',
+          name: 'Elis',
+          username: 'elis_royal',
+          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+          xp: 1620,
+          role: 'Royal Scholar',
+          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
+          dressedOutfit: 'Yellow Overalls & Blonde Buns'
+        },
+        {
+          uid: 'otis_sage',
+          name: 'Otis',
+          username: 'otis_sage',
+          photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
+          xp: 1690,
+          role: 'Scholar Sage',
+          skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
+          dressedOutfit: 'Tweed Blazer Suit & Bowtie'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'zane_cosmic',
+          name: 'Zane',
+          username: 'zane_cosmic',
+          photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
+          xp: 1940,
+          role: 'Cosmic Sorcerer',
+          skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
+          dressedOutfit: 'Cosmic Purple Galaxy Cloak'
+        },
+        {
+          uid: 'nova_starlight',
+          name: 'Nova',
+          username: 'nova_starlight',
+          photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
+          xp: 1890,
+          role: 'Starlight Mage',
+          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+          dressedOutfit: 'Dark Purple Cosmic Star Robe'
+        }
+      ]
     },
     {
       uid: 'jax_speed',
@@ -135,9 +215,45 @@ function ProfileContent() {
       followers: 380,
       following: 34,
       photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+      skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+      dressedOutfit: 'Cyber Cyan Glowing Hoodie with Tactical Headset',
       isRealUser: true,
       role: 'Tactical Speedster',
-      bio: 'Cyber Cyan Headset Master. 60s Speed Drill Record Holder.'
+      bio: 'Cyber Cyan Headset Master. 60s Speed Drill Record Holder.',
+      followersList: [
+        {
+          uid: 'kai_vanguard',
+          name: 'Kai',
+          username: 'kai_vanguard',
+          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+          xp: 1850,
+          role: 'Science Vanguard',
+          skinPath: '/skins/boy/minecraft-skins.png',
+          dressedOutfit: 'Blue Varsity Jacket'
+        },
+        {
+          uid: 'zara_speed',
+          name: 'Zara',
+          username: 'zara_speed',
+          photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
+          xp: 1710,
+          role: 'Speed Runner',
+          skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
+          dressedOutfit: 'Red Athletic Tracksuit'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'ryo_champion',
+          name: 'Ryo',
+          username: 'ryo_champion',
+          photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
+          xp: 1780,
+          role: 'Tactical Vanguard',
+          skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
+          dressedOutfit: "Green Varsity 'R' & Martial Headband"
+        }
+      ]
     },
     {
       uid: 'otis_sage',
@@ -149,9 +265,35 @@ function ProfileContent() {
       followers: 295,
       following: 19,
       photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
+      skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
+      dressedOutfit: 'Tweed Blazer Suit, Bowtie, Glasses & Ancient Scroll',
       isRealUser: true,
       role: 'Scholar Sage',
-      bio: 'Tweed Blazer & Glasses. Social Studies & History Chronicler.'
+      bio: 'Tweed Blazer & Glasses. Social Studies & History Chronicler.',
+      followersList: [
+        {
+          uid: 'fay_nature',
+          name: 'Fay',
+          username: 'fay_nature',
+          photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
+          xp: 1540,
+          role: 'Nature Guardian',
+          skinPath: '/skins/girl/anime-hd-girl-green.png',
+          dressedOutfit: 'Woodland Green Dress'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'kai_vanguard',
+          name: 'Kai',
+          username: 'kai_vanguard',
+          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+          xp: 1850,
+          role: 'Science Vanguard',
+          skinPath: '/skins/boy/minecraft-skins.png',
+          dressedOutfit: 'Blue Varsity Jacket'
+        }
+      ]
     },
     {
       uid: 'zane_cosmic',
@@ -163,9 +305,45 @@ function ProfileContent() {
       followers: 520,
       following: 42,
       photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
+      skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
+      dressedOutfit: 'Cosmic Purple Galaxy Robe with Golden Trim & Silver Hair',
       isRealUser: true,
       role: 'Cosmic Sorcerer',
-      bio: 'Galaxy Purple Robe with Golden Trim. Logic & Math Duelist.'
+      bio: 'Galaxy Purple Robe with Golden Trim. Logic & Math Duelist.',
+      followersList: [
+        {
+          uid: 'kai_vanguard',
+          name: 'Kai',
+          username: 'kai_vanguard',
+          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+          xp: 1850,
+          role: 'Science Vanguard',
+          skinPath: '/skins/boy/minecraft-skins.png',
+          dressedOutfit: 'Blue Varsity Jacket'
+        },
+        {
+          uid: 'nova_starlight',
+          name: 'Nova',
+          username: 'nova_starlight',
+          photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
+          xp: 1890,
+          role: 'Starlight Mage',
+          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+          dressedOutfit: 'Purple Galaxy Hoodie'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'jax_speed',
+          name: 'Jax',
+          username: 'jax_speed',
+          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+          xp: 1720,
+          role: 'Tactical Speedster',
+          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+          dressedOutfit: 'Cyber Cyan Glowing Hoodie'
+        }
+      ]
     },
     {
       uid: 'ryo_champion',
@@ -177,9 +355,35 @@ function ProfileContent() {
       followers: 365,
       following: 22,
       photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
+      skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
+      dressedOutfit: "Green Varsity 'R' Jacket, Red Headband & Digital Tablet",
       isRealUser: true,
       role: 'Tactical Vanguard',
-      bio: 'Green Varsity R Jacket with Red Headband & Tablet. JAC Rank 1 Contender.'
+      bio: 'Green Varsity R Jacket with Red Headband & Tablet. JAC Rank 1 Contender.',
+      followersList: [
+        {
+          uid: 'zara_speed',
+          name: 'Zara',
+          username: 'zara_speed',
+          photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
+          xp: 1710,
+          role: 'Speed Runner',
+          skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
+          dressedOutfit: 'Red Tracksuit'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'jax_speed',
+          name: 'Jax',
+          username: 'jax_speed',
+          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+          xp: 1720,
+          role: 'Tactical Speedster',
+          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+          dressedOutfit: 'Cyan Cyber Hoodie'
+        }
+      ]
     },
     {
       uid: 'elis_royal',
@@ -191,9 +395,35 @@ function ProfileContent() {
       followers: 340,
       following: 31,
       photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+      skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
+      dressedOutfit: 'Yellow Overalls, Blonde Buns, Open Book & Quill Feather',
       isRealUser: true,
       role: 'Royal Scholar',
-      bio: 'Yellow Overalls & Blonde Buns with Quill. Biology & Life Sciences Topper.'
+      bio: 'Yellow Overalls & Blonde Buns with Quill. Biology & Life Sciences Topper.',
+      followersList: [
+        {
+          uid: 'mia_artisan',
+          name: 'Mia',
+          username: 'mia_artisan',
+          photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
+          xp: 1670,
+          role: 'Creative Artisan',
+          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+          dressedOutfit: 'Pastel Cardigan'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'kai_vanguard',
+          name: 'Kai',
+          username: 'kai_vanguard',
+          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+          xp: 1850,
+          role: 'Science Vanguard',
+          skinPath: '/skins/boy/minecraft-skins.png',
+          dressedOutfit: 'Blue Varsity Jacket'
+        }
+      ]
     },
     {
       uid: 'nova_starlight',
@@ -205,9 +435,35 @@ function ProfileContent() {
       followers: 478,
       following: 39,
       photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
+      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+      dressedOutfit: 'Cosmic Purple Galaxy Hoodie & Magical Star Wand',
       isRealUser: true,
       role: 'Starlight Mage',
-      bio: 'Purple Galaxy Hoodie & Star Wand. English & Literature Visionary.'
+      bio: 'Purple Galaxy Hoodie & Star Wand. English & Literature Visionary.',
+      followersList: [
+        {
+          uid: 'zane_cosmic',
+          name: 'Zane',
+          username: 'zane_cosmic',
+          photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
+          xp: 1940,
+          role: 'Cosmic Sorcerer',
+          skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
+          dressedOutfit: 'Cosmic Robe'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'elis_royal',
+          name: 'Elis',
+          username: 'elis_royal',
+          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+          xp: 1620,
+          role: 'Royal Scholar',
+          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
+          dressedOutfit: 'Yellow Overalls'
+        }
+      ]
     },
     {
       uid: 'fay_nature',
@@ -219,9 +475,35 @@ function ProfileContent() {
       followers: 310,
       following: 25,
       photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
+      skinPath: '/skins/girl/anime-hd-girl-green.png',
+      dressedOutfit: 'Woodland Green Druid Dress with Leaf Embroidery',
       isRealUser: true,
       role: 'Nature Guardian',
-      bio: 'Woodland Green Dress with Leaf Book. Ecology & Geography Specialist.'
+      bio: 'Woodland Green Dress with Leaf Book. Ecology & Geography Specialist.',
+      followersList: [
+        {
+          uid: 'otis_sage',
+          name: 'Otis',
+          username: 'otis_sage',
+          photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
+          xp: 1690,
+          role: 'Scholar Sage',
+          skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
+          dressedOutfit: 'Tweed Blazer Suit'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'elis_royal',
+          name: 'Elis',
+          username: 'elis_royal',
+          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+          xp: 1620,
+          role: 'Royal Scholar',
+          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
+          dressedOutfit: 'Yellow Overalls'
+        }
+      ]
     },
     {
       uid: 'zara_speed',
@@ -233,9 +515,35 @@ function ProfileContent() {
       followers: 395,
       following: 30,
       photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
+      skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
+      dressedOutfit: 'Red Athletic Sports Tracksuit with Gold Stripe & Neck Headphones',
       isRealUser: true,
       role: 'Speed Runner',
-      bio: 'Red Athletic Tracksuit with Neck Headphones. Algebra & Physics Accelerator.'
+      bio: 'Red Athletic Tracksuit with Neck Headphones. Algebra & Physics Accelerator.',
+      followersList: [
+        {
+          uid: 'jax_speed',
+          name: 'Jax',
+          username: 'jax_speed',
+          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+          xp: 1720,
+          role: 'Tactical Speedster',
+          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+          dressedOutfit: 'Cyber Cyan Hoodie'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'ryo_champion',
+          name: 'Ryo',
+          username: 'ryo_champion',
+          photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
+          xp: 1780,
+          role: 'Tactical Vanguard',
+          skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
+          dressedOutfit: 'Varsity R Jacket'
+        }
+      ]
     },
     {
       uid: 'mia_artisan',
@@ -247,37 +555,35 @@ function ProfileContent() {
       followers: 350,
       following: 27,
       photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
+      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+      dressedOutfit: 'Pastel Cardigan, Pink Anime Hair with Art Palette & Pencil',
       isRealUser: true,
       role: 'Creative Artisan',
-      bio: 'Pastel Cardigan & Pink Hair with Color Palette. Hindi & Creative Arts.'
-    },
-    {
-      uid: 'priya_jac',
-      name: 'Priya Sharma',
-      username: 'priya_jac',
-      class: 'Class 10 JAC',
-      xp: 1450,
-      streak: 7,
-      followers: 240,
-      following: 18,
-      photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
-      isRealUser: true,
-      role: 'State Topper',
-      bio: 'Ranchi District Rank 1 JAC 2026.'
-    },
-    {
-      uid: 'rohit_ranchi',
-      name: 'Rohit Kumar',
-      username: 'rohit_ranchi',
-      class: 'Class 10 JAC',
-      xp: 1320,
-      streak: 6,
-      followers: 195,
-      following: 15,
-      photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-      isRealUser: true,
-      role: 'Math Whiz',
-      bio: 'Practicing JAC Class 10 Math & Science Daily.'
+      bio: 'Pastel Cardigan & Pink Hair with Color Palette. Hindi & Creative Arts.',
+      followersList: [
+        {
+          uid: 'elis_royal',
+          name: 'Elis',
+          username: 'elis_royal',
+          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+          xp: 1620,
+          role: 'Royal Scholar',
+          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
+          dressedOutfit: 'Yellow Overalls'
+        }
+      ],
+      followingList: [
+        {
+          uid: 'nova_starlight',
+          name: 'Nova',
+          username: 'nova_starlight',
+          photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
+          xp: 1890,
+          role: 'Starlight Mage',
+          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
+          dressedOutfit: 'Cosmic Purple Robe'
+        }
+      ]
     }
   ];
 
@@ -292,10 +598,44 @@ function ProfileContent() {
     followers: followersCount,
     following: followingCount,
     photoURL: profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+    skinPath: profile?.customAvatar?.skinPath || '/skins/boy/minecraft-skins.png',
+    dressedOutfit: profile?.customAvatar?.name || 'Royal Student Wardrobe',
     isRealUser: true,
     role: 'Active Scholar',
     bio: 'JAC Class 10 Scholar preparing for Board Exams 2026.',
-    isCurrentUser: true
+    isCurrentUser: true,
+    followersList: [
+      {
+        uid: 'kai_vanguard',
+        name: 'Kai',
+        username: 'kai_vanguard',
+        photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+        xp: 1850,
+        role: 'Science Vanguard',
+        skinPath: '/skins/boy/minecraft-skins.png',
+        dressedOutfit: 'Blue Varsity Jacket'
+      },
+      {
+        uid: 'jax_speed',
+        name: 'Jax',
+        username: 'jax_speed',
+        photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+        xp: 1720,
+        role: 'Tactical Speedster',
+        skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
+        dressedOutfit: 'Cyan Cyber Hoodie'
+      }
+    ],
+    followingList: KNOWN_SCHOLARS.slice(0, 3).map((s) => ({
+      uid: s.uid,
+      name: s.name,
+      username: s.username,
+      photoURL: s.photoURL,
+      xp: s.xp,
+      role: s.role || 'Scholar',
+      skinPath: s.skinPath || '/skins/boy/minecraft-skins.png',
+      dressedOutfit: s.dressedOutfit || 'Scholar Wardrobe'
+    }))
   };
 
   const handleRandomDuel = () => {
@@ -398,6 +738,7 @@ function ProfileContent() {
   // Day of week calendar for Duolingo-style streak
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+  const todayDateOfMonth = new Date().getDate(); // e.g. 10 for Nov 10
 
   return (
     <div className="w-full max-w-[480px] mx-auto px-4 pt-3 pb-44 select-none">
@@ -639,7 +980,7 @@ function ProfileContent() {
             </h3>
           </div>
           <span className="text-[10px] font-bold text-amber-300 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/30">
-            Tap to Equip DP
+            Tap to Equip DP &amp; 3D Skin
           </span>
         </div>
 
@@ -654,6 +995,18 @@ function ProfileContent() {
                 onClick={() => {
                   playCorrectDing();
                   updateProfilePhoto(char.src);
+                  // Find matching preset to equip full 3D dressed skin
+                  const matchedPreset = CHARACTER_PRESETS.find(
+                    (p) => p.name.toLowerCase() === char.name.toLowerCase()
+                  );
+                  if (matchedPreset) {
+                    updateCustomAvatar({
+                      ...matchedPreset.defaultCustomization,
+                      name: matchedPreset.name,
+                      skinPath: matchedPreset.defaultCustomization.skinPath,
+                      gender: matchedPreset.gender
+                    });
+                  }
                 }}
                 className={`relative p-2 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center ${
                   isEquipped
@@ -693,17 +1046,17 @@ function ProfileContent() {
       </div>
 
       {/* =========================================================================
-          DUOLINGO-STYLE 7-DAY WEEKLY STREAK & 30-DAY RADAR
+          DUOLINGO-STYLE 7-DAY WEEKLY STREAK & 30-DAY CALENDAR (TODAY GLOWS, PAST MISSED CROSSED)
           ========================================================================= */}
       <div className="p-4 rounded-3xl bg-[rgba(30,41,59,0.65)] backdrop-blur-xl border border-white/10 mb-4 shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2 text-[#F59E0B]">
             <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
             <span className="text-xs font-black uppercase tracking-wider text-white">
-              Daily Streak &bull; {streak} Days On Fire
+              Daily Streak &bull; Day {todayDateOfMonth} On Fire 🔥
             </span>
           </div>
-          <span className="text-xs font-black text-amber-300">Class 10 Live</span>
+          <span className="text-xs font-black text-amber-300">{streak} Days Active</span>
         </div>
 
         {/* 7-Day Week Day Strip (Mon - Sun) */}
@@ -732,28 +1085,32 @@ function ProfileContent() {
           })}
         </div>
 
-        {/* 30-Day Dot Grid */}
+        {/* 30-Day Calendar Dot Grid: Today glows, past missed are crossed out ✕ */}
         <div className="grid grid-cols-10 gap-1.5 pt-1">
           {Array.from({ length: 30 }).map((_, idx) => {
-            const isCompleted = idx < streak;
-            const isToday = idx === streak - 1;
+            const dayNum = idx + 1;
+            const isToday = dayNum === todayDateOfMonth;
+            const isPast = dayNum < todayDateOfMonth;
+            const isCompletedInStreak = isPast && dayNum >= todayDateOfMonth - streak + 1;
 
             return (
               <div
                 key={idx}
                 className={`
-                  aspect-square rounded-lg flex items-center justify-center text-[8px] font-bold transition-all
+                  aspect-square rounded-lg flex items-center justify-center text-[8px] font-black transition-all
                   ${
                     isToday
-                      ? 'bg-[#F59E0B] text-slate-950 shadow-[0_0_8px_#F59E0B] scale-110'
-                      : isCompleted
+                      ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-300 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.9)] scale-110 border border-white animate-pulse'
+                      : isCompletedInStreak
                       ? 'bg-emerald-500/80 text-white'
+                      : isPast
+                      ? 'bg-red-950/40 border border-red-500/20 text-red-400/60 line-through'
                       : 'bg-white/5 border border-white/5 text-slate-600'
                   }
                 `}
-                title={`Day ${idx + 1}`}
+                title={`Day ${dayNum} ${isToday ? '(Today)' : isPast ? (isCompletedInStreak ? '(Streak Active)' : '(Missed)') : '(Upcoming)'}`}
               >
-                {idx + 1}
+                {isToday ? '🔥' : isPast && !isCompletedInStreak ? '✕' : dayNum}
               </div>
             );
           })}
@@ -905,6 +1262,7 @@ function ProfileContent() {
                       onClick={() => {
                         playClickSound();
                         setInspectedScholar(s);
+                        setInspectorTab('overview');
                       }}
                       className="px-2.5 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-[10px] font-black text-blue-300 flex items-center gap-1 transition-all active:scale-95"
                       title="View Full Profile Details"
@@ -1020,59 +1378,224 @@ function ProfileContent() {
 
       {/* =========================================================================
           FULL SCHOLAR PROFILE INSPECTOR MODAL ("अंदर घुसने का ऑप्शन")
+          WITH 3D DRESSED AVATAR, FOLLOWERS LIST & FOLLOWING ACCOUNTS
           ========================================================================= */}
       {inspectedScholar && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl select-none">
-          <div className="relative w-full max-w-[420px] rounded-3xl bg-gradient-to-b from-[#18233C] via-[#0F172A] to-[#0A0D16] border-2 border-amber-400/50 p-5 shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-black/85 backdrop-blur-xl select-none">
+          <div className="relative w-full max-w-[430px] max-h-[90vh] overflow-y-auto rounded-3xl bg-gradient-to-b from-[#18233C] via-[#0F172A] to-[#0A0D16] border-2 border-amber-400/50 p-5 shadow-2xl">
             {/* Close Button */}
             <button
               onClick={() => setInspectedScholar(null)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-all"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-all z-20"
             >
               <X className="w-4 h-4" />
             </button>
 
-            {/* Profile Header */}
-            <div className="flex flex-col items-center text-center pt-2 pb-4">
-              <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-amber-400 bg-slate-900 p-0.5 shadow-[0_0_25px_rgba(245,158,11,0.5)] mb-3">
-                <img
-                  src={inspectedScholar.photoURL}
-                  alt={inspectedScholar.name}
-                  className="w-full h-full object-cover rounded-xl"
-                />
-              </div>
-              <h3 className="text-lg font-black text-white">{inspectedScholar.name}</h3>
-              <p className="text-xs font-bold text-amber-400">@{inspectedScholar.username}</p>
-              <span className="mt-1 px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-[10px] font-bold text-blue-300">
-                {inspectedScholar.role || 'Class 10 JAC Scholar'}
-              </span>
-              <p className="text-xs text-slate-300 mt-2 px-4 leading-relaxed">
-                {inspectedScholar.bio || 'Active Class 10 Scholar preparing for JAC Board Exams 2026.'}
-              </p>
+            {/* Profile Navigation Tabs */}
+            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/5 border border-white/10 mb-4">
+              <button
+                onClick={() => { playClickSound(); setInspectorTab('overview'); }}
+                className={`flex-1 py-1.5 rounded-xl text-[11px] font-black transition-all ${
+                  inspectorTab === 'overview'
+                    ? 'bg-amber-500 text-slate-950 shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                👤 Overview &amp; 3D
+              </button>
+              <button
+                onClick={() => { playClickSound(); setInspectorTab('followers'); }}
+                className={`flex-1 py-1.5 rounded-xl text-[11px] font-black transition-all ${
+                  inspectorTab === 'followers'
+                    ? 'bg-amber-500 text-slate-950 shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                👥 Followers ({inspectedScholar.followersList?.length || 3})
+              </button>
+              <button
+                onClick={() => { playClickSound(); setInspectorTab('following'); }}
+                className={`flex-1 py-1.5 rounded-xl text-[11px] font-black transition-all ${
+                  inspectorTab === 'following'
+                    ? 'bg-amber-500 text-slate-950 shadow-md'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                ⭐ Following ({inspectedScholar.followingList?.length || 2})
+              </button>
             </div>
 
-            {/* Scholar Stats */}
-            <div className="grid grid-cols-4 gap-2 text-center py-3 border-y border-white/10 mb-4">
-              <div className="p-2 rounded-xl bg-white/5">
-                <span className="text-[9px] font-bold text-slate-400 uppercase block">XP</span>
-                <span className="text-sm font-black text-amber-300">{inspectedScholar.xp}</span>
+            {/* TAB 1: OVERVIEW & 3D DRESSED AVATAR */}
+            {inspectorTab === 'overview' && (
+              <div>
+                <div className="flex items-center gap-4 mb-4">
+                  {/* Interactive 3D Dressed Avatar Model */}
+                  <div className="w-24 h-28 shrink-0 rounded-2xl bg-black/50 border-2 border-amber-400/40 p-1 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                    <MinecraftVoxelCharacter
+                      skinPath={inspectedScholar.skinPath || '/skins/boy/minecraft-skins.png'}
+                      mode="thumbnail"
+                      width={80}
+                      height={100}
+                    />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-lg font-black text-white truncate">{inspectedScholar.name}</h3>
+                    <p className="text-xs font-bold text-amber-400">@{inspectedScholar.username}</p>
+                    <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-[10px] font-bold text-blue-300">
+                      {inspectedScholar.role || 'Class 10 JAC Scholar'}
+                    </span>
+                    <div className="mt-2 flex items-center gap-1.5 text-[10px] text-slate-300">
+                      <Shirt className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span className="truncate">{inspectedScholar.dressedOutfit || 'Authentic Outfit'}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-300 p-3 rounded-2xl bg-white/5 border border-white/5 leading-relaxed mb-4">
+                  {inspectedScholar.bio || 'Active Class 10 Scholar preparing for JAC Board Exams 2026.'}
+                </p>
+
+                {/* Scholar Stats */}
+                <div className="grid grid-cols-4 gap-2 text-center py-3 border-y border-white/10 mb-4">
+                  <div className="p-2 rounded-xl bg-white/5">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">XP</span>
+                    <span className="text-sm font-black text-amber-300">{inspectedScholar.xp}</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-white/5">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Streak</span>
+                    <span className="text-sm font-black text-orange-400">{inspectedScholar.streak}d 🔥</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-white/5">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Followers</span>
+                    <span className="text-sm font-black text-white">{inspectedScholar.followers || 300}</span>
+                  </div>
+                  <div className="p-2 rounded-xl bg-white/5">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Following</span>
+                    <span className="text-sm font-black text-white">{inspectedScholar.following || 25}</span>
+                  </div>
+                </div>
               </div>
-              <div className="p-2 rounded-xl bg-white/5">
-                <span className="text-[9px] font-bold text-slate-400 uppercase block">Streak</span>
-                <span className="text-sm font-black text-orange-400">{inspectedScholar.streak}d 🔥</span>
+            )}
+
+            {/* TAB 2: FOLLOWERS LIST (ACCOUNTS FOLLOWING THIS SCHOLAR) */}
+            {inspectorTab === 'followers' && (
+              <div className="space-y-2 mb-4 max-h-[260px] overflow-y-auto pr-1">
+                <p className="text-[11px] text-slate-400 mb-2">
+                  Scholars following @{inspectedScholar.username}:
+                </p>
+                {(inspectedScholar.followersList || []).map((f) => (
+                  <div
+                    key={f.uid}
+                    className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-all"
+                  >
+                    <div
+                      onClick={() => {
+                        playClickSound();
+                        const full = KNOWN_SCHOLARS.find((k) => k.uid === f.uid) || {
+                          uid: f.uid,
+                          name: f.name,
+                          username: f.username,
+                          class: 'Class 10 JAC',
+                          xp: f.xp,
+                          streak: 8,
+                          photoURL: f.photoURL,
+                          skinPath: f.skinPath,
+                          dressedOutfit: f.dressedOutfit,
+                          isRealUser: true,
+                          role: f.role
+                        };
+                        setInspectedScholar(full);
+                        setInspectorTab('overview');
+                      }}
+                      className="flex items-center gap-2.5 cursor-pointer min-w-0"
+                    >
+                      <img
+                        src={f.photoURL}
+                        alt={f.name}
+                        className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <p className="text-xs font-black text-white truncate">{f.name}</p>
+                        <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleToggleFollow(f.username || f.uid)}
+                      className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
+                        followingMap[f.username || f.uid]
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                          : 'bg-emerald-500 text-slate-950'
+                      }`}
+                    >
+                      {followingMap[f.username || f.uid] ? 'Following ✓' : '+ Follow'}
+                    </button>
+                  </div>
+                ))}
               </div>
-              <div className="p-2 rounded-xl bg-white/5">
-                <span className="text-[9px] font-bold text-slate-400 uppercase block">Followers</span>
-                <span className="text-sm font-black text-white">{inspectedScholar.followers || 300}</span>
+            )}
+
+            {/* TAB 3: FOLLOWING LIST (ACCOUNTS THIS SCHOLAR IS FOLLOWING) */}
+            {inspectorTab === 'following' && (
+              <div className="space-y-2 mb-4 max-h-[260px] overflow-y-auto pr-1">
+                <p className="text-[11px] text-slate-400 mb-2">
+                  Scholars followed by @{inspectedScholar.username}:
+                </p>
+                {(inspectedScholar.followingList || []).map((f) => (
+                  <div
+                    key={f.uid}
+                    className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-all"
+                  >
+                    <div
+                      onClick={() => {
+                        playClickSound();
+                        const full = KNOWN_SCHOLARS.find((k) => k.uid === f.uid) || {
+                          uid: f.uid,
+                          name: f.name,
+                          username: f.username,
+                          class: 'Class 10 JAC',
+                          xp: f.xp,
+                          streak: 8,
+                          photoURL: f.photoURL,
+                          skinPath: f.skinPath,
+                          dressedOutfit: f.dressedOutfit,
+                          isRealUser: true,
+                          role: f.role
+                        };
+                        setInspectedScholar(full);
+                        setInspectorTab('overview');
+                      }}
+                      className="flex items-center gap-2.5 cursor-pointer min-w-0"
+                    >
+                      <img
+                        src={f.photoURL}
+                        alt={f.name}
+                        className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <p className="text-xs font-black text-white truncate">{f.name}</p>
+                        <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleToggleFollow(f.username || f.uid)}
+                      className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
+                        followingMap[f.username || f.uid]
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                          : 'bg-emerald-500 text-slate-950'
+                      }`}
+                    >
+                      {followingMap[f.username || f.uid] ? 'Following ✓' : '+ Follow'}
+                    </button>
+                  </div>
+                ))}
               </div>
-              <div className="p-2 rounded-xl bg-white/5">
-                <span className="text-[9px] font-bold text-slate-400 uppercase block">Following</span>
-                <span className="text-sm font-black text-white">{inspectedScholar.following || 25}</span>
-              </div>
-            </div>
+            )}
 
             {/* Modal Actions */}
-            <div className="space-y-2">
+            <div className="space-y-2 pt-2 border-t border-white/10">
               {!inspectedScholar.isCurrentUser && (
                 <>
                   <button
