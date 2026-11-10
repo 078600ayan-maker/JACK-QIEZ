@@ -62,14 +62,19 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
 
   try {
     const userDocRef = doc(db, 'users', uid);
-    const snap = await getDoc(userDocRef);
-    if (snap.exists()) {
+    // 1500ms fast timeout so offline/slow Firebase never blocks the home screen
+    const fetchPromise = getDoc(userDocRef);
+    const timeoutPromise = new Promise<null>((_, reject) =>
+      setTimeout(() => reject(new Error('Firestore timeout')), 1500)
+    );
+    const snap = await Promise.race([fetchPromise, timeoutPromise]) as any;
+    if (snap && snap.exists()) {
       const data = snap.data() as UserProfile;
       saveLocalUserProfile(data);
       return data;
     }
   } catch (err) {
-    console.warn('Firestore read error (offline or unconfigured), using local profile:', err);
+    console.warn('Firestore read error/timeout, using instant local profile:', err);
   }
 
   const newProfile = createDefaultProfile(uid, displayName, email);

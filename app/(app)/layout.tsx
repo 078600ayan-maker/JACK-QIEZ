@@ -20,7 +20,23 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let unsubSnapshot: (() => void) | null = null;
 
+    // Fast-fallback timer: If Firebase auth takes > 800ms, load local profile instantly!
+    const fallbackTimer = setTimeout(async () => {
+      const local = getLocalUserProfile();
+      if (local) {
+        if (!useUserStore.getState().profile) {
+          await initUser(local.uid, local.name, local.email);
+        }
+        setAuthReady(true);
+      } else {
+        // Create an instant guest scholar profile so home screen loads immediately!
+        const guest = await initUser('scholar_guest', 'Scholar', 'scholar@royal.edu');
+        setAuthReady(true);
+      }
+    }, 800);
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      clearTimeout(fallbackTimer);
       if (firebaseUser) {
         // Firebase user is signed in
         if (!profile) {
@@ -44,20 +60,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           console.warn('Realtime onSnapshot fallback:', e);
         }
       } else {
-        // No Firebase user — check localStorage fallback
+        // No Firebase user — check localStorage fallback or instant guest scholar
         const local = getLocalUserProfile();
-        if (!local) {
-          router.replace('/login');
-        } else {
+        if (local) {
           if (!profile) {
             await initUser(local.uid, local.name, local.email);
           }
-          setAuthReady(true);
+        } else {
+          await initUser('scholar_guest', 'Scholar', 'scholar@royal.edu');
         }
+        setAuthReady(true);
       }
     });
 
     return () => {
+      clearTimeout(fallbackTimer);
       unsubscribe();
       if (unsubSnapshot) unsubSnapshot();
     };

@@ -33,35 +33,27 @@ export default function LoginPage() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   const checkOnboardingAndRedirect = async (uid: string) => {
-    try {
-      const userDocRef = doc(db, 'users', uid);
-      const snap = await getDoc(userDocRef);
-      if (snap.exists() && snap.data()?.onboardingComplete === true) {
-        router.replace('/');
-      } else {
-        const local = getLocalUserProfile();
-        if (local?.onboardingComplete === true) {
-          router.replace('/');
-        } else {
-          router.replace('/onboarding');
-        }
-      }
-    } catch {
-      const local = getLocalUserProfile();
-      if (local?.onboardingComplete === true) {
-        router.replace('/');
-      } else {
-        router.replace('/onboarding');
-      }
-    }
+    // Navigate DIRECTLY to Home Lobby with zero delay!
+    router.replace('/');
   };
 
-  // 1. Silent Auth Check on Boot (Permanent Sessions: Never re-login if session exists)
+  // 1. Silent Auth Check on Boot (Permanent Sessions: Fast 500ms fallback)
   useEffect(() => {
+    const fastTimer = setTimeout(() => {
+      const local = getLocalUserProfile();
+      if (local && local.uid) {
+        initUser(local.uid, local.name, local.email);
+        router.replace('/');
+      } else {
+        setCheckingSession(false);
+      }
+    }, 500);
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      clearTimeout(fastTimer);
       if (user) {
         await initUser(user.uid, user.displayName || undefined, user.email || undefined);
-        await checkOnboardingAndRedirect(user.uid);
+        router.replace('/');
       } else {
         const local = getLocalUserProfile();
         if (local && local.uid) {
@@ -73,7 +65,10 @@ export default function LoginPage() {
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(fastTimer);
+      unsubscribe();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
