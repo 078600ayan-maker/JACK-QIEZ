@@ -968,82 +968,7 @@ function ProfileContent() {
         </button>
       </div>
 
-      {/* =========================================================================
-          CANONICAL SCHOLAR CHARACTERS GALLERY (ALL 10 CHARACTERS DIRECTLY VISIBLE)
-          ========================================================================= */}
-      <div className="p-4 rounded-3xl bg-[rgba(26,34,53,0.85)] backdrop-blur-xl border-2 border-amber-500/30 mb-5 shadow-[0_12px_32px_rgba(0,0,0,0.5)] space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-amber-400" />
-            <h3 className="text-xs font-black uppercase tracking-wider text-white">
-              The 10 Canonical Characters (100% Authentic)
-            </h3>
-          </div>
-          <span className="text-[10px] font-bold text-amber-300 px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/30">
-            Tap to Equip DP &amp; 3D Skin
-          </span>
-        </div>
 
-        {/* 10 Characters Grid (5 Boys: Kai, Jax, Otis, Zane, Ryo & 5 Girls: Elis, Nova, Fay, Zara, Mia) */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
-          {CLASSIC_PROFILE_PHOTOS.map((char) => {
-            const isEquipped = profile?.photoURL === char.src;
-
-            return (
-              <div
-                key={char.id}
-                onClick={() => {
-                  playCorrectDing();
-                  updateProfilePhoto(char.src);
-                  // Find matching preset to equip full 3D dressed skin
-                  const matchedPreset = CHARACTER_PRESETS.find(
-                    (p) => p.name.toLowerCase() === char.name.toLowerCase()
-                  );
-                  if (matchedPreset) {
-                    updateCustomAvatar({
-                      ...matchedPreset.defaultCustomization,
-                      name: matchedPreset.name,
-                      skinPath: matchedPreset.defaultCustomization.skinPath,
-                      gender: matchedPreset.gender
-                    });
-                  }
-                }}
-                className={`relative p-2 rounded-2xl border transition-all cursor-pointer flex flex-col items-center text-center ${
-                  isEquipped
-                    ? 'bg-amber-500/25 border-2 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)] scale-[1.03] z-10'
-                    : 'bg-white/5 hover:bg-white/10 border-white/10 hover:border-amber-400/40'
-                }`}
-              >
-                <div className="relative w-14 h-14 rounded-xl overflow-hidden bg-slate-950 border border-white/10 mb-1.5 shadow-md">
-                  <Image
-                    src={char.src}
-                    alt={char.name}
-                    fill
-                    unoptimized
-                    className="object-cover"
-                  />
-                </div>
-                <span className={`text-[11px] font-black truncate max-w-full ${isEquipped ? 'text-amber-300' : 'text-white'}`}>
-                  {char.name}
-                </span>
-                <span className="text-[9px] text-slate-400 truncate max-w-full">
-                  {char.gender === 'boy' ? 'Boy Scholar' : 'Girl Scholar'}
-                </span>
-
-                {/* Golden Underline & Checkmark when Equipped */}
-                {isEquipped && (
-                  <>
-                    <div className="mt-1 h-[2px] w-full rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]" />
-                    <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-tr from-amber-400 to-yellow-300 text-slate-950 flex items-center justify-center shadow-md border border-white">
-                      <Check className="w-3 h-3 stroke-[3]" />
-                    </div>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
 
       {/* =========================================================================
           DUOLINGO-STYLE 7-DAY WEEKLY STREAK & 30-DAY CALENDAR (TODAY GLOWS, PAST MISSED CROSSED)
@@ -1367,12 +1292,6 @@ function ProfileContent() {
         >
           <LogOut className="w-4 h-4" />
           <span>Switch Account or Sign Out</span>
-        </button>
-        <button
-          onClick={handleDeleteAccount}
-          className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-2xl text-[10px] font-bold text-red-400/80 hover:text-red-300 hover:bg-red-950/20 transition-all"
-        >
-          <span>🗑️ Delete My Account &amp; Data</span>
         </button>
       </div>
 

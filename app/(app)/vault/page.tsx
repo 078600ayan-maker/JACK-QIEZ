@@ -545,12 +545,14 @@ export default function VaultPage() {
                             : 'bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/40'
                         }`}
                       >
-                        <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-950/80 border border-white/10 flex items-center justify-center p-1">
-                          <MinecraftVoxelCharacter
-                            skinPath={char.defaultCustomization.skinPath || '/skins/boy/skullwar.png'}
-                            mode="thumbnail"
-                            width={52}
-                            height={90}
+                        <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-slate-950/80 border border-white/10 flex items-center justify-center p-1 shadow-inner">
+                          <img
+                            src={`/assets/canonical_characters/${char.id}.png`}
+                            alt={char.name}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = char.photoURL || '/assets/profile_photos/IMG_20261109_001512.png';
+                            }}
+                            className="w-full h-full object-contain group-hover:scale-105 transition-transform"
                           />
                         </div>
 

@@ -67,80 +67,80 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     name: 'Kai',
     character: 'Science Vanguard',
     gender: 'boy',
-    role: 'Science & Physics Vanguard (Varsity K)',
-    src: '/assets/profile_photos/IMG_20261109_001512.png'
+    role: "Letter 'K' Varsity Blue Jacket & Brown Hair",
+    src: '/assets/canonical_characters/kai.png'
   },
   {
     id: 'dp_jax',
     name: 'Jax',
     character: 'Tactical Speedster',
     gender: 'boy',
-    role: 'Mathematics & Speed Solver (Cyber Cyan)',
-    src: '/assets/profile_photos/IMG_20261109_001527.png'
+    role: 'Cyber Cyan Glowing Lines Hoodie & Headset',
+    src: '/assets/canonical_characters/jax.png'
   },
   {
     id: 'dp_otis',
     name: 'Otis',
     character: 'Scholar Sage',
     gender: 'boy',
-    role: 'SST & History Chronicler (Tweed Suit)',
-    src: '/assets/profile_photos/IMG_20261109_001555.png'
+    role: 'Tweed Blazer Suit, Bowtie, Glasses & Scroll',
+    src: '/assets/canonical_characters/otis.png'
   },
   {
     id: 'dp_zane',
     name: 'Zane',
     character: 'Cosmic Sorcerer',
     gender: 'boy',
-    role: 'Logic & Galaxy Cloak Master',
-    src: '/assets/profile_photos/IMG_20261109_001625.png'
+    role: 'Galaxy Purple Robe, Golden Trim & Silver Hair',
+    src: '/assets/canonical_characters/zane.png'
   },
   {
     id: 'dp_ryo',
     name: 'Ryo',
     character: 'Tactical Vanguard',
     gender: 'boy',
-    role: 'Green Varsity R & Red Headband Scholar',
-    src: '/assets/profile_photos/IMG_20261109_001652.png'
+    role: "Green 'R' Varsity Jacket, Red Headband & Tablet",
+    src: '/assets/canonical_characters/ryo.png'
   },
   {
     id: 'dp_elis',
     name: 'Elis',
     character: 'Royal Scholar',
     gender: 'girl',
-    role: 'Biology & Natural Sciences (Overalls & Quill)',
-    src: '/assets/profile_photos/IMG_20261109_001715.png'
+    role: 'Yellow Overalls, Blonde Buns, Book & Quill',
+    src: '/assets/canonical_characters/elis.png'
   },
   {
     id: 'dp_nova',
     name: 'Nova',
     character: 'Starlight Mage',
     gender: 'girl',
-    role: 'English Visionary (Purple Galaxy & Star Wand)',
-    src: '/assets/profile_photos/IMG_20261109_001739.png'
+    role: 'Purple Cosmic Galaxy Hoodie & Star Wand',
+    src: '/assets/canonical_characters/nova.png'
   },
   {
     id: 'dp_fay',
     name: 'Fay',
     character: 'Nature Guardian',
     gender: 'girl',
-    role: 'Geography & Ecology (Woodland Green Dress)',
-    src: '/assets/profile_photos/IMG_20261109_001805.png'
+    role: 'Woodland Green Dress, Braided Hair & Leaf Book',
+    src: '/assets/canonical_characters/fay.png'
   },
   {
     id: 'dp_zara',
     name: 'Zara',
     character: 'Speed Runner',
     gender: 'girl',
-    role: 'Algebra & Physics (Red Athletic Tracksuit)',
-    src: '/assets/profile_photos/IMG_20261109_001833.png'
+    role: 'Red Athletic Tracksuit Jacket & Neck Headphones',
+    src: '/assets/canonical_characters/zara.png'
   },
   {
     id: 'dp_mia',
     name: 'Mia',
     character: 'Creative Artisan',
     gender: 'girl',
-    role: 'Hindi & Fine Arts (Pastel Pink Hair & Palette)',
-    src: '/assets/profile_photos/IMG_20261109_001853.png'
+    role: 'Pastel Cardigan, Pink Anime Hair & Art Palette',
+    src: '/assets/canonical_characters/mia.png'
   }
 ];
 
@@ -194,7 +194,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Science & Physics Vanguard',
     icon: '🔥',
     headSvg: '/avatars/steve.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+    photoURL: '/assets/canonical_characters/kai.png',
     defaultCustomization: {
       preset: 'kai',
       name: 'Kai',
@@ -220,7 +220,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Mathematics & Speed Solver',
     icon: '⚡',
     headSvg: '/avatars/steve.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+    photoURL: '/assets/canonical_characters/jax.png',
     defaultCustomization: {
       preset: 'jax',
       name: 'Jax',
@@ -246,7 +246,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'SST & History Chronicler',
     icon: '📜',
     headSvg: '/avatars/steve.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
+    photoURL: '/assets/canonical_characters/otis.png',
     defaultCustomization: {
       preset: 'otis',
       name: 'Otis',
@@ -272,7 +272,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Speed Drills & Logic Master',
     icon: '🥷',
     headSvg: '/avatars/steve.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
+    photoURL: '/assets/canonical_characters/zane.png',
     defaultCustomization: {
       preset: 'zane',
       name: 'Zane',
@@ -298,7 +298,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Green Varsity Scholar with Tablet & Martial Headband',
     icon: '🥋',
     headSvg: '/avatars/steve.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
+    photoURL: '/assets/canonical_characters/ryo.png',
     defaultCustomization: {
       preset: 'ryo',
       name: 'Ryo',
@@ -326,7 +326,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Biology & Natural Chemistry',
     icon: '🌸',
     headSvg: '/avatars/alex.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+    photoURL: '/assets/canonical_characters/elis.png',
     defaultCustomization: {
       preset: 'elis',
       name: 'Elis',
@@ -352,7 +352,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'English & Literature Visionary',
     icon: '✨',
     headSvg: '/avatars/alex.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
+    photoURL: '/assets/canonical_characters/nova.png',
     defaultCustomization: {
       preset: 'nova',
       name: 'Nova',
@@ -378,7 +378,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Geography & Environmental Biology',
     icon: '🍃',
     headSvg: '/avatars/alex.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
+    photoURL: '/assets/canonical_characters/fay.png',
     defaultCustomization: {
       preset: 'fay',
       name: 'Fay',
@@ -404,7 +404,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Algebra & Physics Accelerator',
     icon: '⚡',
     headSvg: '/avatars/alex.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
+    photoURL: '/assets/canonical_characters/zara.png',
     defaultCustomization: {
       preset: 'zara',
       name: 'Zara',
@@ -430,7 +430,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     role: 'Hindi & Creative Expression',
     icon: '🎨',
     headSvg: '/avatars/alex.svg',
-    photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
+    photoURL: '/assets/canonical_characters/mia.png',
     defaultCustomization: {
       preset: 'mia',
       name: 'Mia',
