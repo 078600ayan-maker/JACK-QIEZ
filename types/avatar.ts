@@ -158,6 +158,16 @@ export async function extractSkinFace(skinUrl: string): Promise<string> {
         const ctx = canvas.getContext('2d');
         if (!ctx) return resolve(skinUrl);
         ctx.imageSmoothingEnabled = false;
+
+        // If image is already an assembled character sprite (e.g. 195x260 canonical)
+        if (img.width !== 64 || (img.height !== 64 && img.height !== 32) || skinUrl.includes('canonical')) {
+          const sx = Math.floor(img.width * 0.15);
+          const sy = Math.floor(img.height * 0.04);
+          const sSize = Math.floor(img.width * 0.70);
+          ctx.drawImage(img, sx, sy, sSize, sSize, 0, 0, 128, 128);
+          return resolve(canvas.toDataURL('image/png'));
+        }
+
         // Base layer: Head front at (8, 8, 8, 8)
         ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 128, 128);
         // Outer layer: Hat/Hair front at (40, 8, 8, 8)

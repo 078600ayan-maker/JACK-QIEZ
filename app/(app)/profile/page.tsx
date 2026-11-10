@@ -78,7 +78,7 @@ function ProfileContent() {
   const { profile, refillHearts, updateCustomAvatar, updateProfilePhoto } = useUserStore();
 
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
-  const [avatarTab, setAvatarTab] = useState<'bundles' | 'characters'>('bundles');
+  const [avatarTab, setAvatarTab] = useState<'bundles' | 'characters'>('characters');
   const [dpModalOpen, setDpModalOpen] = useState(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState(false);
 

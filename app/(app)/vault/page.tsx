@@ -71,7 +71,7 @@ export default function VaultPage() {
   const { profile, updateCustomAvatar, updateProfilePhoto } = useUserStore();
 
   const [activeMainTab, setActiveMainTab] = useState<'avatar' | 'mistakes' | 'formulas'>('avatar');
-  const [activeSubTab, setActiveSubTab] = useState<'bundles' | 'characters'>('bundles');
+  const [activeSubTab, setActiveSubTab] = useState<'bundles' | 'characters'>('characters');
   const [bundleGender, setBundleGender] = useState<'boy' | 'girl'>(profile?.customAvatar?.gender || 'boy');
   const [characterFilter, setCharacterFilter] = useState<'all' | 'boy' | 'girl'>('all');
   const [formulaFilter, setFormulaFilter] = useState<'All' | 'Math' | 'Science' | 'Hindi & English Tips'>('All');

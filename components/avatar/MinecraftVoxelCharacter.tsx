@@ -77,6 +77,18 @@ export const MinecraftVoxelCharacter: React.FC<MinecraftVoxelCharacterProps> = (
     img.crossOrigin = 'anonymous';
 
     const renderComposite = (withOverlays: boolean): string => {
+      // If image is already an assembled character sprite (not standard 64x64 or 64x32 UV map)
+      if (img.width !== 64 || (img.height !== 64 && img.height !== 32) || img.src.includes('canonical')) {
+        const cvs = document.createElement('canvas');
+        cvs.width = img.width;
+        cvs.height = img.height;
+        const ctx = cvs.getContext('2d');
+        if (!ctx) return img.src;
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(img, 0, 0);
+        return cvs.toDataURL('image/png');
+      }
+
       const cvs = document.createElement('canvas');
       cvs.width = 64;
       cvs.height = 128;
@@ -149,6 +161,15 @@ export const MinecraftVoxelCharacter: React.FC<MinecraftVoxelCharacterProps> = (
       const ctx = cvs.getContext('2d');
       if (!ctx) return '';
       ctx.imageSmoothingEnabled = false;
+
+      // If image is already an assembled character sprite (e.g. 195x260 canonical)
+      if (img.width !== 64 || (img.height !== 64 && img.height !== 32) || img.src.includes('canonical')) {
+        const sx = Math.floor(img.width * 0.15);
+        const sy = Math.floor(img.height * 0.04);
+        const sSize = Math.floor(img.width * 0.70);
+        ctx.drawImage(img, sx, sy, sSize, sSize, 0, 0, 128, 128);
+        return cvs.toDataURL('image/png');
+      }
 
       // Base head face [8,8,8,8] scaled to 128x128
       ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 128, 128);
