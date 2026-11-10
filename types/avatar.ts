@@ -3,6 +3,7 @@ export type CharacterPresetId =
   | 'jax'
   | 'otis'
   | 'zane'
+  | 'ryo'
   | 'ayo'
   | 'elis'
   | 'nova'
@@ -290,17 +291,17 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
     }
   },
   {
-    id: 'ayo',
-    name: 'Ayo',
+    id: 'ryo',
+    name: 'Ryo',
     gender: 'boy',
-    title: 'Grand Champion',
-    role: 'All-Rounder JAC Rank 1',
-    icon: '👑',
+    title: 'Tactical Vanguard',
+    role: 'Green Varsity Scholar with Tablet & Martial Headband',
+    icon: '🥋',
     headSvg: '/avatars/steve.svg',
     photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
     defaultCustomization: {
-      preset: 'ayo',
-      name: 'Ayo',
+      preset: 'ryo',
+      name: 'Ryo',
       gender: 'boy',
       skinTone: '#603B2C',
       eyeColor: '#F59E0B',
