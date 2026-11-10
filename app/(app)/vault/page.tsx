@@ -120,18 +120,25 @@ export default function VaultPage() {
     triggerEquipFlash();
     const found = CHARACTER_PRESETS.find((p) => p.id === presetId);
     if (found) {
-      updateCustomAvatar({
+      const newCustom = {
         ...found.defaultCustomization,
         name: found.name,
         skinPath: found.defaultCustomization.skinPath,
         gender: found.gender
-      });
+      };
+      updateCustomAvatar(newCustom);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user_custom_avatar', JSON.stringify(newCustom));
+      }
       if (found.photoURL) {
         updateProfilePhoto(found.photoURL);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('user_profile_photo', found.photoURL);
+        }
       }
       setTestAnim('cheer');
       setTimeout(() => setTestAnim('idle'), 1800);
-      showToast(`Equipped 100% Skin: ${found.name}!`);
+      showToast(`Equipped 100% Skin & DP: ${found.name}!`);
     }
   };
 

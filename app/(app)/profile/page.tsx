@@ -697,32 +697,6 @@ function ProfileContent() {
     router.push('/login');
   };
 
-  const handleDeleteAccount = async () => {
-    playClickSound();
-    const confirmed = window.confirm(
-      '⚠️ Are you sure you want to delete your Jack Quiz account and all saved study data? This action is permanent and cannot be undone.'
-    );
-    if (!confirmed) return;
-
-    try {
-      if (profile?.uid) {
-        try {
-          const { deleteDoc } = await import('firebase/firestore');
-          const { auth } = await import('@/lib/firebase');
-          await deleteDoc(doc(db, 'users', profile.uid));
-          await auth.signOut();
-        } catch {}
-      }
-      if (typeof window !== 'undefined') {
-        localStorage.clear();
-      }
-      alert('✓ Your account and data have been completely deleted.');
-      router.push('/login');
-    } catch {
-      router.push('/login');
-    }
-  };
-
   // Filtered Scholars List (Includes user themselves and real scholars)
   const term = searchUsername.trim().toLowerCase();
   const allScholarsList = [currentUserScholar, ...KNOWN_SCHOLARS];

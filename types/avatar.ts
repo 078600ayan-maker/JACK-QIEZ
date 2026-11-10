@@ -209,7 +209,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'none',
       shoes: 'grey_sneaker',
       accessory: 'none',
-      skinPath: '/skins/boy/minecraft-skins.png'
+      skinPath: '/assets/canonical_skins/kai_skin.png'
     }
   },
   {
@@ -235,7 +235,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'none',
       shoes: 'netherite_boots',
       accessory: 'nerd_glasses',
-      skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png'
+      skinPath: '/assets/canonical_skins/jax_skin.png'
     }
   },
   {
@@ -261,7 +261,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'none',
       shoes: 'leather_boots',
       accessory: 'none',
-      skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png'
+      skinPath: '/assets/canonical_skins/otis_skin.png'
     }
   },
   {
@@ -287,7 +287,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'obsidian_wings',
       shoes: 'obsidian_runners',
       accessory: 'none',
-      skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png'
+      skinPath: '/assets/canonical_skins/zane_skin.png'
     }
   },
   {
@@ -313,7 +313,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'celestial_gold',
       shoes: 'diamond_boots',
       accessory: 'golden_crown',
-      skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png'
+      skinPath: '/assets/canonical_skins/ryo_skin.png'
     }
   },
 
@@ -341,7 +341,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'phoenix_wings',
       shoes: 'leather_boots',
       accessory: 'none',
-      skinPath: '/skins/girl/anime-girl-nezuko-chan.png'
+      skinPath: '/assets/canonical_skins/elis_skin.png'
     }
   },
   {
@@ -367,7 +367,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'none',
       shoes: 'red_converse',
       accessory: 'none',
-      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png'
+      skinPath: '/assets/canonical_skins/nova_skin.png'
     }
   },
   {
@@ -393,7 +393,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'none',
       shoes: 'leather_boots',
       accessory: 'none',
-      skinPath: '/skins/girl/anime-hd-girl-green.png'
+      skinPath: '/assets/canonical_skins/fay_skin.png'
     }
   },
   {
@@ -419,7 +419,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'obsidian_wings',
       shoes: 'obsidian_runners',
       accessory: 'none',
-      skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png'
+      skinPath: '/assets/canonical_skins/zara_skin.png'
     }
   },
   {
@@ -445,7 +445,7 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'celestial_gold',
       shoes: 'gold_boots',
       accessory: 'golden_crown',
-      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png'
+      skinPath: '/assets/canonical_skins/mia_skin.png'
     }
   },
 ];

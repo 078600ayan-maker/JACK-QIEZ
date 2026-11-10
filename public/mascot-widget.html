@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="hi"><head>
+<html lang="hi">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Main Character — Transparent PNG 3D Widget</title>
+<title>Study Buddy Royal — 3D Green Mascot</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-  /* ===== 100% Transparent PNG-Like Background ===== */
   * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    margin: 0;
+    padding: 0;
   }
 
   html, body {
     width: 100%;
     height: 100%;
-    margin: 0;
-    padding: 0;
     overflow: hidden;
     background: transparent !important;
     background-color: rgba(0, 0, 0, 0) !important;
@@ -38,29 +38,16 @@
     display: block;
     background: transparent !important;
   }
-
-  /* ===== Clickable Character Logo Button - REMOVED PER MASTER DIRECTIVE ===== */
-  .logo-download-btn {
-    display: none !important;
-  }
-  .logo-svg {
-    width: 34px;
-    height: 34px;
-    display: block;
-    border-radius: 10px;
-    flex-shrink: 0;
-  }
 </style>
 </head>
 <body>
 
-<!-- Fullscreen Transparent 3D Character Canvas -->
-<div id="canvas-container" aria-label="Transparent 3D Pixel Main Character"></div>
+<div id="canvas-container" aria-label="Transparent 3D Duolingo Style Green Study Buddy Mascot"></div>
 
 <script>
 (() => {
   // ============================================================================
-  // 1. EXPRESSIVE STATE & WEB AUDIO SYNTH
+  // 1. WEB AUDIO SYNTH (DUOLINGO-STYLE RETRO SFX)
   // ============================================================================
   let audioCtx = null;
   let soundEnabled = true;
@@ -69,6 +56,7 @@
   let currentMood = 'happy';
   let currentAction = 'idle';
   let actionTimer = null;
+  let idleTimer = null;
 
   const ensureAudio = () => {
     if (!audioCtx) {
@@ -103,17 +91,35 @@
       playTone(260, 0.14, 'square', 0.06, 760);
       setTimeout(() => playTone(760, 0.11, 'triangle', 0.05, 980), 80);
     },
-    handshake: () => {
-      [440, 554.37, 659.25, 880].forEach((f, i) =>
-        setTimeout(() => playTone(f, 0.075, 'triangle', 0.06), i * 60)
-      );
-    },
     cheer: () => {
       [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
-        setTimeout(() => playTone(f, i === 3 ? 0.20 : 0.08, 'square', 0.06), i * 70)
+        setTimeout(() => playTone(f, i === 3 ? 0.22 : 0.08, 'square', 0.06), i * 70)
       );
     },
-    pop: () => playTone(620, 0.055, 'sine', 0.06, 880)
+    pop: () => playTone(620, 0.055, 'sine', 0.06, 880),
+    angry: () => {
+      [140, 120, 110, 95].forEach((f, i) =>
+        setTimeout(() => playTone(f, 0.12, 'sawtooth', 0.08, f - 25), i * 65)
+      );
+    },
+    sip: () => {
+      playTone(480, 0.06, 'sine', 0.04, 720);
+      setTimeout(() => playTone(640, 0.08, 'sine', 0.05, 840), 90);
+    },
+    streak: () => {
+      [330, 440, 554, 659, 880].forEach((f, i) =>
+        setTimeout(() => playTone(f, 0.10, 'triangle', 0.06, f * 1.05), i * 55)
+      );
+    },
+    trophy: () => {
+      [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) =>
+        setTimeout(() => playTone(f, i === 4 ? 0.35 : 0.09, 'square', 0.07), i * 65)
+      );
+    },
+    thinking: () => {
+      playTone(400, 0.09, 'sine', 0.05, 520);
+      setTimeout(() => playTone(540, 0.14, 'sine', 0.05, 660), 120);
+    }
   };
 
   const triggerTalkingMouth = (durationMs = 1800) => {
@@ -126,7 +132,7 @@
   };
 
   // ============================================================================
-  // 2. THREE.JS TRANSPARENT PNG-STYLE RENDERER (alpha: true, clearAlpha: 0)
+  // 2. THREE.JS RENDERER & SCENE SETUP
   // ============================================================================
   const container = document.getElementById('canvas-container');
   const scene = new THREE.Scene();
@@ -148,18 +154,18 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  const ambientLight = new THREE.AmbientLight(0xd8ffe4, 0.85);
+  const ambientLight = new THREE.AmbientLight(0xd8ffe4, 0.90);
   scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
   keyLight.position.set(6, 12, 9);
   scene.add(keyLight);
 
-  const rimLightLeft = new THREE.DirectionalLight(0x80ffdb, 0.55);
+  const rimLightLeft = new THREE.DirectionalLight(0x80ffdb, 0.6);
   rimLightLeft.position.set(-8, 5, -6);
   scene.add(rimLightLeft);
 
-  const rimLightRight = new THREE.PointLight(0x58cc02, 0.8, 18);
+  const rimLightRight = new THREE.PointLight(0x58cc02, 0.9, 18);
   rimLightRight.position.set(5, 3, 4);
   scene.add(rimLightRight);
 
@@ -206,7 +212,7 @@
   }, 64);
 
   // ============================================================================
-  // 3. INTACT PIXEL FACE TEXTURE (EYES, NOSE PIXEL, MOUTH & CHEEKS)
+  // 3. PIXEL FACE TEXTURE WITH DUOLINGO EXPRESSIONS (ANGRY, THINKING, STREAK, ETC)
   // ============================================================================
   const faceCanvasObj = makePixelTexture(() => {}, 128);
 
@@ -215,26 +221,64 @@
     const s = 128;
     ctx.clearRect(0, 0, s, s);
 
-    ctx.fillStyle = '#52C402';
+    // Green base
+    ctx.fillStyle = currentMood === 'angry' ? '#E11D48' : '#52C402';
     ctx.fillRect(0, 0, s, s);
 
-    ctx.fillStyle = '#88FA2E';
+    // Border shading
+    ctx.fillStyle = currentMood === 'angry' ? '#FB7185' : '#88FA2E';
     ctx.fillRect(0, 0, s, 8);
     ctx.fillRect(0, 0, 8, s);
-    ctx.fillStyle = '#2B7A04';
+    ctx.fillStyle = currentMood === 'angry' ? '#9F1239' : '#2B7A04';
     ctx.fillRect(0, s - 8, s, 8);
     ctx.fillRect(s - 8, 0, 8, s);
 
-    ctx.fillStyle = '#1E8E04';
+    // Inner shadow
+    ctx.fillStyle = currentMood === 'angry' ? '#BE123C' : '#1E8E04';
     ctx.fillRect(16, 16, 96, 96);
 
-    ctx.fillStyle = 'rgba(184, 255, 80, 0.18)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
     ctx.fillRect(20, 20, 28, 6);
     ctx.fillRect(20, 26, 12, 6);
 
     const mood = currentMood;
 
-    if (mood === 'happy' || mood === 'wink') {
+    if (mood === 'angry') {
+      // Fierce slanting angry eyebrows
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(20, 30, 32, 8);
+      ctx.fillRect(76, 30, 32, 8);
+      // Angular eyes
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(26, 38, 22, 18);
+      ctx.fillRect(80, 38, 22, 18);
+      ctx.fillStyle = '#EF4444';
+      ctx.fillRect(32, 42, 10, 12);
+      ctx.fillRect(86, 42, 10, 12);
+    } else if (mood === 'thinking') {
+      // One eyebrow raised, looking up
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(24, 28, 22, 6);
+      ctx.fillRect(80, 34, 22, 6);
+      // Eyes looking up-right
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(26, 36, 24, 24);
+      ctx.fillRect(78, 36, 24, 24);
+      ctx.fillStyle = '#E8FFF0';
+      ctx.fillRect(36, 38, 8, 8);
+      ctx.fillRect(88, 38, 8, 8);
+    } else if (mood === 'streak') {
+      // Blazing golden fiery eyes
+      ctx.fillStyle = '#F59E0B';
+      ctx.fillRect(24, 34, 28, 28);
+      ctx.fillRect(76, 34, 28, 28);
+      ctx.fillStyle = '#FEF08A';
+      ctx.fillRect(30, 40, 14, 14);
+      ctx.fillRect(82, 40, 14, 14);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(34, 44, 6, 6);
+      ctx.fillRect(86, 44, 6, 6);
+    } else if (mood === 'happy' || mood === 'wink') {
       ctx.fillStyle = '#040B06';
       ctx.fillRect(26, 36, 26, 26);
       ctx.fillStyle = '#E8FFF0';
@@ -276,91 +320,63 @@
       ctx.fillStyle = '#80FFDB';
       ctx.fillRect(42, 52, 6, 6);
       ctx.fillRect(92, 52, 6, 6);
-    } else if (mood === 'love') {
-      ctx.fillStyle = '#FF2A6D';
-      const drawHeart = (ox, oy) => {
-        ctx.fillRect(ox + 4, oy, 8, 6);
-        ctx.fillRect(ox + 16, oy, 8, 6);
-        ctx.fillRect(ox, oy + 6, 28, 10);
-        ctx.fillRect(ox + 4, oy + 16, 20, 6);
-        ctx.fillRect(ox + 10, oy + 22, 8, 6);
-      };
-      drawHeart(25, 36);
-      drawHeart(75, 36);
-    } else if (mood === 'focused') {
-      ctx.fillStyle = '#040B06';
-      ctx.fillRect(26, 40, 26, 22);
-      ctx.fillRect(76, 40, 26, 22);
-      ctx.fillStyle = '#E8FFF0';
-      ctx.fillRect(34, 44, 6, 6);
-      ctx.fillRect(84, 44, 6, 6);
-      ctx.fillStyle = '#040B06';
-      ctx.fillRect(24, 30, 16, 6);
-      ctx.fillRect(36, 34, 18, 6);
-      ctx.fillRect(88, 30, 16, 6);
-      ctx.fillRect(74, 34, 18, 6);
-    } else if (mood === 'shock') {
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(24, 34, 28, 28);
-      ctx.fillRect(76, 34, 28, 28);
-      ctx.fillStyle = '#040B06';
-      ctx.fillRect(34, 44, 8, 8);
-      ctx.fillRect(86, 44, 8, 8);
-    } else if (mood === 'sleepy') {
-      ctx.fillStyle = '#040B06';
-      ctx.fillRect(26, 52, 6, 6);
-      ctx.fillRect(32, 46, 14, 6);
-      ctx.fillRect(46, 52, 6, 6);
-
-      ctx.fillRect(76, 52, 6, 6);
-      ctx.fillRect(82, 46, 14, 6);
-      ctx.fillRect(96, 52, 6, 6);
     } else if (mood === 'sad') {
       ctx.fillStyle = '#040B06';
       ctx.fillRect(26, 40, 26, 22);
       ctx.fillRect(76, 40, 26, 22);
-      ctx.fillStyle = '#4DD8FF';
+      ctx.fillStyle = '#38BDF8';
       ctx.fillRect(34, 62, 8, 16);
       ctx.fillRect(84, 62, 8, 16);
+    } else {
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(26, 36, 26, 26);
+      ctx.fillRect(76, 36, 26, 26);
+      ctx.fillStyle = '#E8FFF0';
+      ctx.fillRect(30, 40, 6, 6);
+      ctx.fillRect(80, 40, 6, 6);
     }
 
     // Center Pixel Nose
-    ctx.fillStyle = '#0D4F02';
+    ctx.fillStyle = currentMood === 'angry' ? '#881337' : '#0D4F02';
     ctx.fillRect(60, 62, 8, 5);
 
-    const showActiveMouth = isTalking || currentAction !== 'idle' || ['laugh', 'wow', 'shock', 'sad'].includes(mood);
-
-    if (showActiveMouth) {
+    // Mouth rendering
+    if (mood === 'angry') {
+      // Gritted teeth
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(44, 76, 40, 12);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(46, 78, 36, 8);
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(54, 78, 2, 8);
+      ctx.fillRect(64, 78, 2, 8);
+      ctx.fillRect(74, 78, 2, 8);
+    } else if (mood === 'thinking') {
+      // Small 'o' mouth or side smirk
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(66, 76, 12, 10);
+      ctx.fillStyle = '#FF5C8A';
+      ctx.fillRect(68, 80, 8, 5);
+    } else if (isTalking || currentAction !== 'idle' || ['laugh', 'wow', 'sad'].includes(mood)) {
       ctx.fillStyle = 'rgba(255, 105, 155, 0.55)';
       ctx.fillRect(20, 68, 12, 6);
       ctx.fillRect(96, 68, 12, 6);
 
-      if (mood === 'wow') {
-        ctx.fillStyle = '#040B06';
-        ctx.fillRect(56, 74, 16, 20);
-        ctx.fillStyle = '#FF5C8A';
-        ctx.fillRect(60, 82, 8, 8);
-      } else if (mood === 'shock') {
-        ctx.fillStyle = '#040B06';
-        ctx.fillRect(48, 76, 32, 14);
+      const openH = (talkFrame % 2 === 0) ? 16 : 10;
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(48, 74, 32, openH);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(52, 74, 24, 4);
+      if (openH > 12) {
         ctx.fillStyle = '#FF5C8A';
         ctx.fillRect(54, 82, 20, 6);
-      } else if (mood === 'sad') {
-        ctx.fillStyle = '#040B06';
-        ctx.fillRect(52, 78, 24, 6);
-        ctx.fillRect(46, 84, 6, 6);
-        ctx.fillRect(76, 84, 6, 6);
-      } else {
-        const openH = (talkFrame % 2 === 0) ? 16 : 10;
-        ctx.fillStyle = '#040B06';
-        ctx.fillRect(48, 74, 32, openH);
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(52, 74, 24, 4);
-        if (openH > 12) {
-          ctx.fillStyle = '#FF5C8A';
-          ctx.fillRect(54, 82, 20, 6);
-        }
       }
+    } else {
+      // Gentle happy smile
+      ctx.fillStyle = '#040B06';
+      ctx.fillRect(52, 78, 24, 6);
+      ctx.fillRect(48, 74, 4, 6);
+      ctx.fillRect(76, 74, 4, 6);
     }
 
     faceCanvasObj.tex.needsUpdate = true;
@@ -368,7 +384,7 @@
   updateFaceTexture(0);
 
   // ============================================================================
-  // 4. PURE MAIN CHARACTER ANATOMY ONLY (NO TURNTABLE / FLOOR / PEDESTAL)
+  // 4. MAIN CHARACTER 3D MESH ANATOMY
   // ============================================================================
   const characterGroup = new THREE.Group();
   worldGroup.add(characterGroup);
@@ -395,7 +411,9 @@
   const darkGreenMat = new THREE.MeshStandardMaterial({ color: 0x2b8a04, roughness: 0.4 });
   const pinkAccentMat = new THREE.MeshStandardMaterial({ color: 0xff5ca8, roughness: 0.3 });
   const whiteFootMat = new THREE.MeshStandardMaterial({ color: 0xf8fff9, roughness: 0.25 });
+  const goldMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.2, metalness: 0.8 });
 
+  // Torso
   const bodyMaterials = [skinMat, skinMat, skinMat, skinMat, faceMat, skinMat];
   const torsoGeo = new THREE.BoxGeometry(2.9, 2.5, 2.3);
   const torsoMesh = new THREE.Mesh(torsoGeo, bodyMaterials);
@@ -403,17 +421,7 @@
   characterGroup.add(torsoMesh);
   registerPart(torsoMesh, 'Torso & Face', 'nod');
 
-  const glassShellGeo = new THREE.BoxGeometry(2.98, 2.58, 2.38);
-  const glassShellMat = new THREE.MeshPhysicalMaterial({
-    color: 0xb8ff50,
-    transparent: true,
-    opacity: 0.08,
-    roughness: 0.08,
-    clearcoat: 1.0
-  });
-  const glassShell = new THREE.Mesh(glassShellGeo, glassShellMat);
-  torsoMesh.add(glassShell);
-
+  // Ears
   function createVoxelEar(isLeft) {
     const earGroup = new THREE.Group();
     const xPos = isLeft ? -0.82 : 0.82;
@@ -445,6 +453,7 @@
   const earRight = createVoxelEar(false);
   characterGroup.add(earLeft, earRight);
 
+  // Arms
   function createSideArm(isLeft) {
     const armGroup = new THREE.Group();
     const dir = isLeft ? -1 : 1;
@@ -463,7 +472,7 @@
     armGroup.add(handTip);
 
     const partLabel = isLeft ? 'Left Arm' : 'Right Arm';
-    const actType = isLeft ? 'wave' : 'handshake';
+    const actType = isLeft ? 'wave' : 'drinking_tea';
     registerPart(armBlock, partLabel, actType);
     registerPart(handTip, partLabel, actType);
     return armGroup;
@@ -473,6 +482,7 @@
   const armRight = createSideArm(false);
   characterGroup.add(armLeft, armRight);
 
+  // Legs
   function createQuadLeg(x, z, label) {
     const legGroup = new THREE.Group();
     legGroup.position.set(x, -0.9, z);
@@ -485,10 +495,6 @@
     lowerLeg.position.y = -0.54;
     legGroup.add(lowerLeg);
 
-    const greenStripe = new THREE.Mesh(new THREE.BoxGeometry(0.44, 0.13, 0.70), midGreenMat);
-    greenStripe.position.y = -0.36;
-    legGroup.add(greenStripe);
-
     registerPart(lowerLeg, label, 'walk');
     return legGroup;
   }
@@ -499,43 +505,129 @@
   const legBR = createQuadLeg( 0.82, -0.58, 'Back-Right Leg');
   characterGroup.add(legFL, legFR, legBL, legBR);
 
+  // Tail
   const tailGroup = new THREE.Group();
   tailGroup.position.set(0, -0.32, -1.16);
   characterGroup.add(tailGroup);
-
-  const tailSeg1 = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.42, 0.48), midGreenMat);
-  tailSeg1.position.set(0, 0.05, -0.22);
-  tailGroup.add(tailSeg1);
-
-  const tailSeg2 = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.38, 0.46), midGreenMat);
-  tailSeg2.position.set(0, 0.26, -0.54);
-  tailGroup.add(tailSeg2);
-
-  const tailTip = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.32, 0.34), limeHighlightMat);
-  tailTip.position.set(0, 0.48, -0.78);
-  tailGroup.add(tailTip);
-
-  registerPart(tailSeg1, 'Tail', 'tail');
-  registerPart(tailTip,  'Tail', 'tail');
+  const tailSeg = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.42, 0.48), midGreenMat);
+  tailSeg.position.set(0, 0.05, -0.22);
+  tailGroup.add(tailSeg);
 
   // ============================================================================
-  // 5. DIRECT BODY PART TOUCH, DRAG ROTATION & LOGO CLICK DIRECT HTML DOWNLOAD
+  // 5. DUOLINGO SPECIAL 3D PROPS (TEA MUG, GOLD TROPHY, QUESTION MARK, STEAM, FLAMES)
   // ============================================================================
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
+  
+  // A. Tea / Coffee Mug Prop
+  const teaMugGroup = new THREE.Group();
+  const mugBody = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.44, 12), new THREE.MeshStandardMaterial({ color: 0xFDFBF7, roughness: 0.2 }));
+  const mugCoffee = new THREE.Mesh(new THREE.CircleGeometry(0.22, 12), new THREE.MeshStandardMaterial({ color: 0x5C381E, roughness: 0.4 }));
+  mugCoffee.rotation.x = -Math.PI / 2;
+  mugCoffee.position.y = 0.21;
+  const mugHandle = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.04, 8, 12, Math.PI), new THREE.MeshStandardMaterial({ color: 0xFDFBF7 }));
+  mugHandle.rotation.z = Math.PI / 2;
+  mugHandle.position.set(0.25, 0, 0);
+  teaMugGroup.add(mugBody, mugCoffee, mugHandle);
+  teaMugGroup.position.set(1.4, 0.1, 1.1);
+  teaMugGroup.visible = false;
+  characterGroup.add(teaMugGroup);
+
+  // B. Golden Duolingo Trophy Cup Prop
+  const trophyGroup = new THREE.Group();
+  const trophyCup = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.25, 0.75, 14), goldMat);
+  const trophyStem = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.4, 10), goldMat);
+  trophyStem.position.y = -0.45;
+  const trophyBase = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.2, 0.65), new THREE.MeshStandardMaterial({ color: 0x1E293B, roughness: 0.3 }));
+  trophyBase.position.y = -0.7;
+  const trophyStar = new THREE.Mesh(new THREE.OctahedronGeometry(0.25), new THREE.MeshStandardMaterial({ color: 0xFFFBEB, emissive: 0xF59E0B }));
+  trophyStar.position.y = 0.55;
+  trophyGroup.add(trophyCup, trophyStem, trophyBase, trophyStar);
+  trophyGroup.position.set(0, 2.5, 0.6);
+  trophyGroup.scale.set(0.8, 0.8, 0.8);
+  trophyGroup.visible = false;
+  characterGroup.add(trophyGroup);
+
+  // C. Thinking Floating Question Mark Prop
+  const questionMarkGroup = new THREE.Group();
+  const qTop = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.07, 8, 12, Math.PI * 1.5), goldMat);
+  qTop.rotation.z = -Math.PI / 4;
+  const qDot = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.12), goldMat);
+  qDot.position.set(0, -0.48, 0);
+  questionMarkGroup.add(qTop, qDot);
+  questionMarkGroup.position.set(1.2, 2.4, 0.4);
+  questionMarkGroup.visible = false;
+  characterGroup.add(questionMarkGroup);
+
+  // D. Particle System: Steam, Confetti & Flame particles
+  const particleCount = 40;
+  const particleGeo = new THREE.BoxGeometry(0.12, 0.12, 0.12);
+  const particles = [];
+  const particleGroup = new THREE.Group();
+  characterGroup.add(particleGroup);
+
+  const colors = [0xFBBF24, 0xEF4444, 0x3B82F6, 0x10B981, 0xEC4899, 0xFFFFFF];
+  for (let i = 0; i < particleCount; i++) {
+    const mat = new THREE.MeshStandardMaterial({
+      color: colors[i % colors.length],
+      roughness: 0.3,
+      transparent: true,
+      opacity: 0.9
+    });
+    const pMesh = new THREE.Mesh(particleGeo, mat);
+    pMesh.visible = false;
+    particleGroup.add(pMesh);
+    particles.push({
+      mesh: pMesh,
+      vx: 0,
+      vy: 0,
+      vz: 0,
+      rotX: 0,
+      rotY: 0,
+      life: 0,
+      maxLife: 1
+    });
+  }
+
+  function spawnParticles(type = 'confetti') {
+    particles.forEach((p, idx) => {
+      p.mesh.visible = true;
+      p.life = 0;
+      p.maxLife = 1.0 + Math.random() * 0.8;
+      if (type === 'steam') {
+        p.mesh.position.set(
+          (Math.random() - 0.5) * 0.2 + (currentAction === 'drinking_tea' ? 1.4 : (idx % 2 === 0 ? -0.8 : 0.8)),
+          currentAction === 'drinking_tea' ? 0.4 : 2.5,
+          currentAction === 'drinking_tea' ? 1.1 : 0.1
+        );
+        p.vx = (Math.random() - 0.5) * 0.03;
+        p.vy = 0.04 + Math.random() * 0.04;
+        p.vz = (Math.random() - 0.5) * 0.03;
+        p.mesh.material.color.setHex(currentMood === 'angry' ? 0xEF4444 : 0xFFFFFF);
+      } else if (type === 'flame') {
+        p.mesh.position.set((Math.random() - 0.5) * 2.2, -0.6 + Math.random() * 0.6, (Math.random() - 0.5) * 1.8);
+        p.vx = (Math.random() - 0.5) * 0.05;
+        p.vy = 0.08 + Math.random() * 0.08;
+        p.vz = (Math.random() - 0.5) * 0.05;
+        p.mesh.material.color.setHex(Math.random() > 0.4 ? 0xF59E0B : 0xEF4444);
+      } else {
+        // Confetti
+        p.mesh.position.set((Math.random() - 0.5) * 1.5, 2.2 + Math.random() * 0.8, (Math.random() - 0.5) * 1.2);
+        p.vx = (Math.random() - 0.5) * 0.09;
+        p.vy = 0.06 + Math.random() * 0.07;
+        p.vz = (Math.random() - 0.5) * 0.09;
+        p.mesh.material.color.setHex(colors[idx % colors.length]);
+      }
+      p.rotX = Math.random() * 0.2;
+      p.rotY = Math.random() * 0.2;
+    });
+  }
+
+  // ============================================================================
+  // 6. DUOLINGO ACTIONS SYSTEM
+  // ============================================================================
   let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let movedDistance = 0;
-
-  let rotY = 0.18;
-  let tiltX = 0.04;
-  let rotVelocityY = 0;
-  let tiltVelocityX = 0;
-
-  let jumpVelocity = 0;
-  let jumpOffset = 0;
-  let squashStretchY = 1;
+  let dragStartX = 0, dragStartY = 0, movedDistance = 0;
+  let rotY = 0.18, tiltX = 0.04, rotVelocityY = 0, tiltVelocityX = 0;
+  let jumpVelocity = 0, jumpOffset = 0, squashStretchY = 1;
 
   function triggerJumpImpulse(strength = 0.70) {
     jumpVelocity = strength;
@@ -551,33 +643,46 @@
   function triggerAction(act) {
     currentAction = act;
     clearTimeout(actionTimer);
-    triggerTalkingMouth(2000);
+    triggerTalkingMouth(2200);
 
-    if (act === 'handshake') {
-      rotVelocityY = (0.12 - (rotY % (Math.PI * 2))) * 0.08;
-      sfx.handshake();
-      triggerJumpImpulse(0.26);
+    // Hide all props by default
+    teaMugGroup.visible = false;
+    trophyGroup.visible = false;
+    questionMarkGroup.visible = false;
+
+    if (act === 'drinking_tea' || act === 'drinking_coffee') {
+      teaMugGroup.visible = true;
       setMood('happy');
-    } else if (act === 'wave') {
-      sfx.pop();
-      setMood('wink');
-    } else if (act === 'both') {
-      triggerJumpImpulse(0.45);
+      sfx.sip();
+      spawnParticles('steam');
+    } else if (act === 'angry') {
+      setMood('angry');
+      sfx.angry();
+      spawnParticles('steam');
+    } else if (act === 'streak_fire' || act === 'streak') {
+      setMood('streak');
+      triggerJumpImpulse(0.55);
+      sfx.streak();
+      spawnParticles('flame');
+    } else if (act === 'trophy_celebrate' || act === 'win') {
+      trophyGroup.visible = true;
+      setMood('wow');
+      triggerJumpImpulse(0.85);
+      sfx.trophy();
+      spawnParticles('confetti');
+    } else if (act === 'thinking') {
+      questionMarkGroup.visible = true;
+      setMood('thinking');
+      sfx.thinking();
+    } else if (act === 'cheer') {
+      triggerJumpImpulse(0.75);
       sfx.cheer();
       setMood('laugh');
-    } else if (act === 'nod') {
-      sfx.pop();
-      setMood('happy');
-    } else if (act === 'walk') {
-      sfx.pop();
-      setMood('happy');
-    } else if (act === 'dash') {
-      sfx.jump();
-      setMood('focused');
-    } else if (act === 'tail') {
-      sfx.pop();
-      setMood('laugh');
-    } else if (act === 'ears') {
+      spawnParticles('confetti');
+    } else if (act === 'sad') {
+      setMood('sad');
+      playTone(180, 0.2, 'sawtooth', 0.05, 120);
+    } else if (act === 'wave') {
       sfx.pop();
       setMood('wink');
     } else if (act === 'dance') {
@@ -586,61 +691,72 @@
     } else if (act === 'jump') {
       triggerJumpImpulse(0.92);
       setMood('wow');
-    } else if (act === 'spin') {
-      rotVelocityY += 0.35;
-      triggerJumpImpulse(0.50);
-      sfx.cheer();
-      setMood('wow');
+    } else if (act === 'nod') {
+      sfx.pop();
+      setMood('happy');
+    } else {
+      setMood('happy');
     }
 
     actionTimer = setTimeout(() => {
       currentAction = 'idle';
       currentMood = 'happy';
+      teaMugGroup.visible = false;
+      trophyGroup.visible = false;
+      questionMarkGroup.visible = false;
+      particles.forEach(p => p.mesh.visible = false);
       updateFaceTexture(0);
-    }, 3200);
+    }, 4000);
   }
 
-  // Clickable Character Logo -> Direct Standalone HTML Download
-  const logoDownloadLink = document.getElementById('logoDownloadLink');
-  logoDownloadLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    const clone = document.documentElement.cloneNode(true);
-    const canvasWrap = clone.querySelector('#canvas-container');
-    if (canvasWrap) canvasWrap.innerHTML = '';
+  // Periodic cute Duolingo ambient behaviors (every 10 seconds if idle)
+  const resetIdleTimer = () => {
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (currentAction === 'idle' && !isDragging) {
+        const r = Math.random();
+        if (r < 0.35) {
+          triggerAction('thinking');
+        } else if (r < 0.65) {
+          triggerAction('drinking_tea');
+        } else if (r < 0.85) {
+          triggerAction('wave');
+        } else {
+          triggerAction('nod');
+        }
+      }
+      resetIdleTimer();
+    }, 11000);
+  };
+  resetIdleTimer();
 
-    const htmlString = '<!DOCTYPE html>\n' + clone.outerHTML;
-    const blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-
-    const tempLink = document.createElement('a');
-    tempLink.href = url;
-    tempLink.download = 'Main_Character_Transparent_PNG_Widget.html';
-    document.body.appendChild(tempLink);
-    tempLink.click();
-    tempLink.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1500);
-
-    sfx.cheer();
-    triggerAction('handshake');
-  });
-
+  // Expose global API
   window.MainCharacter = {
     triggerAction,
     setMood,
+    drinkingTea: () => triggerAction('drinking_tea'),
+    drinkingCoffee: () => triggerAction('drinking_coffee'),
+    angry: () => triggerAction('angry'),
+    streakFire: () => triggerAction('streak_fire'),
+    trophyCelebrate: () => triggerAction('trophy_celebrate'),
+    thinking: () => triggerAction('thinking'),
+    cheer: () => triggerAction('cheer'),
+    sad: () => triggerAction('sad'),
     jump: () => triggerAction('jump'),
-    handshake: () => triggerAction('handshake'),
     wave: () => triggerAction('wave'),
-    walk: () => triggerAction('walk'),
-    dash: () => triggerAction('dash'),
-    dance: () => triggerAction('dance'),
-    spin: () => triggerAction('spin')
+    dance: () => triggerAction('dance')
   };
 
+  // Listen to postMessage from parent iframe
   window.addEventListener('message', (event) => {
     if (!event.data) return;
     if (event.data.action) triggerAction(event.data.action);
     if (event.data.mood) setMood(event.data.mood);
   });
+
+  // Touch and Drag Interactions
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2();
 
   container.addEventListener('pointerdown', (e) => {
     isDragging = true;
@@ -677,18 +793,20 @@
       if (hits.length > 0) {
         let obj = hits[0].object;
         while (obj && !obj.userData.actionTrigger && obj.parent) obj = obj.parent;
-        const actTrigger = (obj && obj.userData.actionTrigger) || 'handshake';
+        const actTrigger = (obj && obj.userData.actionTrigger) || 'cheer';
         triggerAction(actTrigger);
+      } else {
+        triggerAction('cheer');
       }
     }
   });
 
   window.addEventListener('dblclick', () => {
-    triggerAction('dance');
+    triggerAction('trophy_celebrate');
   });
 
   // ============================================================================
-  // 6. 60FPS KINEMATICS, HANDSHAKE ARTICULATION & MOMENTUM PHYSICS LOOP
+  // 7. 60FPS ANIMATION LOOP
   // ============================================================================
   const clock = new THREE.Clock();
   let lastTalkTick = 0;
@@ -715,14 +833,13 @@
     worldGroup.rotation.y += (rotY - worldGroup.rotation.y) * 0.18;
     worldGroup.rotation.x += (tiltX - worldGroup.rotation.x) * 0.18;
 
+    // Jump Physics
     if (jumpOffset > 0 || jumpVelocity !== 0) {
       jumpOffset += jumpVelocity;
       jumpVelocity -= 0.042;
       if (jumpOffset <= 0) {
         jumpOffset = 0;
-        if (Math.abs(jumpVelocity) > 0.08) {
-          squashStretchY = 0.84;
-        }
+        if (Math.abs(jumpVelocity) > 0.08) squashStretchY = 0.84;
         jumpVelocity = 0;
       }
     }
@@ -733,51 +850,59 @@
       1 + (1 - squashStretchY) * 0.45
     );
 
+    // Idle & Action Kinematics
     const idleBreath = Math.sin(t * 2.8) * 0.06;
-    const danceBounce = currentAction === 'dance' ? Math.abs(Math.sin(t * 9)) * 0.28 : 0;
-    const sprintBounce = currentAction === 'dash' ? Math.abs(Math.sin(t * 16)) * 0.16 : 0;
-    characterGroup.position.y = idleBreath + jumpOffset + danceBounce + sprintBounce;
-
-    let targetPitchX = 0;
-    if (currentAction === 'nod') {
-      targetPitchX = Math.abs(Math.sin(t * 5.5)) * 0.34;
-    } else if (currentAction === 'handshake') {
-      targetPitchX = 0.12 + Math.sin(t * 11) * 0.03;
-    } else if (currentAction === 'dash') {
-      targetPitchX = 0.24;
-    } else if (currentMood === 'sad') {
-      targetPitchX = 0.10;
+    const angryShake = currentAction === 'angry' ? Math.sin(t * 36) * 0.08 : 0;
+    const trophyHop = currentAction === 'trophy_celebrate' ? Math.abs(Math.sin(t * 8)) * 0.25 : 0;
+    characterGroup.position.y = idleBreath + jumpOffset + angryShake + trophyHop;
+    if (currentAction === 'angry') {
+      characterGroup.position.x = Math.sin(t * 40) * 0.08;
+    } else {
+      characterGroup.position.x = 0;
     }
-    characterGroup.rotation.x += (targetPitchX - characterGroup.rotation.x) * 0.15;
 
-    let targetRollZ = -rotVelocityY * 1.4;
-    if (currentAction === 'dance') {
-      targetRollZ += Math.sin(t * 4.8) * 0.14;
-    } else if (currentAction === 'walk' || currentAction === 'dash') {
-      targetRollZ += Math.sin(t * (currentAction === 'dash' ? 16 : 8)) * 0.06;
-    }
-    characterGroup.rotation.z += (targetRollZ - characterGroup.rotation.z) * 0.15;
-
+    // Arms behavior
     let targetArmRX = 0, targetArmRZ = Math.sin(t * 2.2) * 0.07, targetArmRY = 0;
     let targetArmLX = 0, targetArmLZ = -Math.sin(t * 2.2) * 0.07, targetArmLY = 0;
 
-    if (currentAction === 'handshake') {
-      targetArmRX = -1.15 + Math.sin(t * 13) * 0.26;
-      targetArmRZ = 0.18;
-      targetArmRY = -0.22;
-      targetArmLX = 0.15;
-      targetArmLZ = -0.18;
+    if (currentAction === 'drinking_tea' || currentAction === 'drinking_coffee') {
+      // Bring right arm and tea mug up to mouth!
+      targetArmRX = -1.55 + Math.sin(t * 4) * 0.15;
+      targetArmRZ = 0.35;
+      targetArmRY = -0.55;
+      teaMugGroup.position.set(0.7, 0.45 + Math.sin(t * 4) * 0.08, 1.3);
+      teaMugGroup.rotation.x = -0.35 + Math.sin(t * 4) * 0.15;
+    } else if (currentAction === 'thinking') {
+      // Right arm to chin
+      targetArmRX = -1.6;
+      targetArmRZ = 0.4;
+      targetArmRY = -0.6;
+      questionMarkGroup.position.y = 2.4 + Math.sin(t * 5) * 0.15;
+      questionMarkGroup.rotation.y = t * 2;
+    } else if (currentAction === 'streak_fire') {
+      // Both fists up in triumph!
+      targetArmRZ = 1.35 + Math.sin(t * 12) * 0.2;
+      targetArmLZ = -1.35 - Math.sin(t * 12) * 0.2;
+      targetArmRX = -0.4;
+      targetArmLX = -0.4;
+    } else if (currentAction === 'trophy_celebrate') {
+      // Double arms cheering high with spinning trophy!
+      targetArmRZ = 1.2 + Math.sin(t * 10) * 0.2;
+      targetArmLZ = -1.2 - Math.sin(t * 10) * 0.2;
+      trophyGroup.rotation.y = t * 3;
+      trophyGroup.position.y = 2.6 + Math.sin(t * 6) * 0.15;
+    } else if (currentAction === 'angry') {
+      // Clenched shaking arms
+      targetArmRZ = 0.35 + Math.sin(t * 30) * 0.15;
+      targetArmLZ = -0.35 - Math.sin(t * 30) * 0.15;
+      targetArmRX = -0.6;
+      targetArmLX = -0.6;
     } else if (currentAction === 'wave') {
       targetArmRZ = 0.72 + Math.sin(t * 14) * 0.36;
       targetArmRX = -0.25;
-    } else if (currentAction === 'both' || currentAction === 'dance') {
-      targetArmRZ =  0.70 + Math.sin(t * 12) * 0.32;
+    } else if (currentAction === 'cheer' || currentAction === 'dance') {
+      targetArmRZ = 0.70 + Math.sin(t * 12) * 0.32;
       targetArmLZ = -0.70 - Math.sin(t * 12) * 0.32;
-    } else if (currentAction === 'dash' || currentAction === 'walk') {
-      const armSwingSpeed = currentAction === 'dash' ? 16 : 8.5;
-      const armSwingAmp = currentAction === 'dash' ? 0.65 : 0.32;
-      targetArmRX =  Math.sin(t * armSwingSpeed) * armSwingAmp;
-      targetArmLX = -Math.sin(t * armSwingSpeed) * armSwingAmp;
     }
 
     armRight.rotation.x += (targetArmRX - armRight.rotation.x) * 0.22;
@@ -788,32 +913,40 @@
     armLeft.rotation.z += (targetArmLZ - armLeft.rotation.z) * 0.22;
     armLeft.rotation.y += (targetArmLY - armLeft.rotation.y) * 0.22;
 
-    let walkSpeed = 2.6;
-    let walkAmp = 0.05;
-    if (currentAction === 'walk' || currentAction === 'dance') {
-      walkSpeed = 10.5;
-      walkAmp = 0.42;
-    } else if (currentAction === 'dash') {
-      walkSpeed = 18.0;
-      walkAmp = 0.68;
+    // Legs: Stomping when angry!
+    let legSpeed = 2.6;
+    let legAmp = 0.05;
+    if (currentAction === 'angry') {
+      legSpeed = 28.0;
+      legAmp = 0.55;
+    } else if (currentAction === 'walk' || currentAction === 'dance') {
+      legSpeed = 10.5;
+      legAmp = 0.42;
     }
-    legFL.rotation.x =  Math.sin(t * walkSpeed) * walkAmp;
-    legBR.rotation.x =  Math.sin(t * walkSpeed) * walkAmp;
-    legFR.rotation.x = -Math.sin(t * walkSpeed) * walkAmp;
-    legBL.rotation.x = -Math.sin(t * walkSpeed) * walkAmp;
+    legFL.rotation.x =  Math.sin(t * legSpeed) * legAmp;
+    legBR.rotation.x =  Math.sin(t * legSpeed) * legAmp;
+    legFR.rotation.x = -Math.sin(t * legSpeed) * legAmp;
+    legBL.rotation.x = -Math.sin(t * legSpeed) * legAmp;
 
-    const earSpeed = (currentAction === 'ears' || currentAction === 'dash') ? 13 : 2.4;
-    const earAmp = (currentAction === 'ears' || currentAction === 'dash') ? 0.28 : 0.06;
-    const earLagPitch = -jumpVelocity * 0.8 - (currentAction === 'dash' ? 0.28 : 0);
+    // Ears twitching
+    const earSpeed = currentAction === 'angry' ? 24 : 2.4;
+    const earAmp = currentAction === 'angry' ? 0.35 : 0.06;
     earLeft.rotation.z  =  Math.sin(t * earSpeed) * earAmp;
     earRight.rotation.z = -Math.sin(t * earSpeed) * earAmp;
-    earLeft.rotation.x  += (earLagPitch - earLeft.rotation.x) * 0.18;
-    earRight.rotation.x += (earLagPitch - earRight.rotation.x) * 0.18;
 
-    const tailSpeed = (currentAction === 'tail' || currentAction === 'dance' || currentAction === 'handshake' || currentAction === 'dash') ? 15 : 4.2;
-    const tailAmp = (currentAction === 'tail' || currentAction === 'dance' || currentAction === 'handshake') ? 0.52 : 0.18;
-    tailGroup.rotation.y = Math.sin(t * tailSpeed) * tailAmp - rotVelocityY * 2.2;
-    tailGroup.rotation.x = Math.cos(t * tailSpeed * 0.5) * 0.09;
+    // Particles animation
+    particles.forEach((p) => {
+      if (!p.mesh.visible) return;
+      p.life += 0.02;
+      p.mesh.position.x += p.vx;
+      p.mesh.position.y += p.vy;
+      p.mesh.position.z += p.vz;
+      p.mesh.rotation.x += p.rotX;
+      p.mesh.rotation.y += p.rotY;
+      if (p.life >= p.maxLife) {
+        p.mesh.visible = false;
+      }
+    });
 
     renderer.render(scene, camera);
   }
@@ -829,7 +962,5 @@
   };
 })();
 </script>
-
-
-
-</body></html>
+</body>
+</html>

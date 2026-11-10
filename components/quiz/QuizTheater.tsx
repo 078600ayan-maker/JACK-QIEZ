@@ -123,7 +123,11 @@ export const QuizTheater: React.FC = () => {
       if (quiz.isCorrect) {
         setAvatarAnim('cheer');
         setAvatarSpeech('🎉 शाबाश! बिल्कुल सही जवाब!');
-        mascotIframeRef.current?.contentWindow?.postMessage({ action: 'cheer', mood: 'laugh' }, '*');
+        if (quiz.comboStreak >= 3) {
+          mascotIframeRef.current?.contentWindow?.postMessage({ action: 'streak_fire', mood: 'streak' }, '*');
+        } else {
+          mascotIframeRef.current?.contentWindow?.postMessage({ action: 'trophy_celebrate', mood: 'wow' }, '*');
+        }
         if (!isMuted) {
           if (quiz.comboStreak >= 3) {
             getJackVoice().cheerMotivational('streak');
@@ -135,7 +139,7 @@ export const QuizTheater: React.FC = () => {
         setAvatarAnim('cry');
         setAvatarSpeech('😢 कोई बात नहीं! Vault में सेव हो गया!');
         setShowExplanationDrawer(true);
-        mascotIframeRef.current?.contentWindow?.postMessage({ action: 'jump', mood: 'sad' }, '*');
+        mascotIframeRef.current?.contentWindow?.postMessage({ action: 'angry', mood: 'angry' }, '*');
 
         // Auto-save into Spaced Repetition engine
         const currentQ = quiz.questions[quiz.currentIndex];
@@ -203,6 +207,13 @@ export const QuizTheater: React.FC = () => {
 
     window.speechSynthesis.speak(utterance);
   };
+
+  // Prompt Duolingo-style Thinking expression on Question change
+  useEffect(() => {
+    if (!quiz.isAnswerSubmitted && !quiz.isFinished) {
+      mascotIframeRef.current?.contentWindow?.postMessage({ action: 'thinking', mood: 'thinking' }, '*');
+    }
+  }, [quiz.currentIndex, quiz.isAnswerSubmitted, quiz.isFinished]);
 
   // Read question aloud strictly in selected language
   useEffect(() => {
@@ -376,6 +387,7 @@ export const QuizTheater: React.FC = () => {
               onClick={() => {
                 playClickSound();
                 quiz.useFiftyFifty();
+                mascotIframeRef.current?.contentWindow?.postMessage({ action: 'drinking_tea', mood: 'happy' }, '*');
               }}
               disabled={quiz.isAnswerSubmitted || quiz.eliminatedOptions.length > 0}
               title="50:50 Lifeline"
