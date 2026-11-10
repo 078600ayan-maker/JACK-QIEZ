@@ -156,38 +156,29 @@ export default function VaultPage() {
         </div>
       )}
 
-      {/* Main Top Header: AI Avatar (v1.1) */}
-      <div className="relative rounded-3xl p-4 bg-gradient-to-r from-[#141B2D] via-[#0E1322] to-[#080B14] border border-white/10 shadow-[0_8px_25px_rgba(0,0,0,0.6)] flex items-center justify-between gap-3 mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 flex items-center justify-center font-black text-lg shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-            ⚡
+      {/* Main Top Header: Compact Mobile-First 3-Tab Navigator (No "AI Avatar", No "v1.1") */}
+      <div className="w-full mb-3 space-y-2">
+        <div className="flex items-center justify-between px-1">
+          <div className="flex items-center gap-2">
+            <span className="text-base">👑</span>
+            <span className="text-sm font-black text-white tracking-tight">Royal Vault &amp; Study Hub</span>
           </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h1 className="text-lg font-black text-white tracking-tight leading-tight">
-                AI Avatar
-              </h1>
-              <span className="px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-[10px] font-black text-amber-300 font-mono">
-                v1.1
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-400 font-medium">
-              Minecraft Voxel Dressing Room & Outfits
-            </p>
-          </div>
+          <span className="text-[10px] font-black text-amber-400 bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 rounded-full">
+            40 Skins &bull; 10 Scholars
+          </span>
         </div>
 
-        {/* Tab Switcher: Wardrobe vs Formula Vault */}
-        <div className="flex items-center gap-1 bg-black/50 p-1 rounded-2xl border border-white/10">
+        {/* 3 Main Visible Tabs: 100% visible on any mobile phone */}
+        <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-[rgba(16,22,38,0.92)] border border-white/10 shadow-lg">
           <button
             onClick={() => {
               playClickSound();
               setActiveMainTab('avatar');
             }}
-            className={`py-1.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
+            className={`py-2 px-1 rounded-xl text-xs font-black transition-all cursor-pointer text-center truncate ${
               activeMainTab === 'avatar'
                 ? 'bg-amber-500 text-slate-950 shadow-md'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
             Wardrobe (40)
@@ -197,26 +188,26 @@ export default function VaultPage() {
               playClickSound();
               setActiveMainTab('mistakes');
             }}
-            className={`py-1.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
+            className={`py-2 px-1 rounded-xl text-xs font-black transition-all cursor-pointer text-center truncate ${
               activeMainTab === 'mistakes'
                 ? 'bg-red-500 text-white shadow-md'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
-            ❌ Leitner Mistakes (Boxes 1-5)
+            Mistakes (1-5)
           </button>
           <button
             onClick={() => {
               playClickSound();
               setActiveMainTab('formulas');
             }}
-            className={`py-1.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer ${
+            className={`py-2 px-1 rounded-xl text-xs font-black transition-all cursor-pointer text-center truncate ${
               activeMainTab === 'formulas'
                 ? 'bg-emerald-500 text-slate-950 shadow-md font-black'
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-300 hover:text-white'
             }`}
           >
-            📚 50+ NCERT Formulas &amp; Tips
+            Formulas
           </button>
         </div>
       </div>
@@ -372,15 +363,15 @@ export default function VaultPage() {
 
           {/* RIGHT COLUMN: BUNDLES (40) & CHARACTERS (10) GRID */}
           <div className="flex-1 flex flex-col min-w-0 bg-[#090C16]/95">
-            {/* Top Sub-Nav Bar */}
-            <div className="p-3 border-b border-white/10 flex items-center justify-between gap-2 shrink-0">
-              <div className="flex items-center gap-1.5 bg-black/60 p-1 rounded-2xl border border-white/10">
+            {/* Top Sub-Nav Bar (Compact Micro-Buttons) */}
+            <div className="p-2 border-b border-white/10 flex flex-wrap items-center justify-between gap-1.5 shrink-0">
+              <div className="flex items-center gap-1 bg-black/60 p-0.5 rounded-xl border border-white/10">
                 <button
                   onClick={() => {
                     playPop();
                     setActiveSubTab('bundles');
                   }}
-                  className={`py-1.5 px-4 rounded-xl font-black text-xs tracking-wider transition-all cursor-pointer ${
+                  className={`py-1 px-2.5 rounded-lg font-black text-[10px] tracking-wide transition-all cursor-pointer ${
                     activeSubTab === 'bundles'
                       ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-md'
                       : 'text-slate-400 hover:text-white'
@@ -393,7 +384,7 @@ export default function VaultPage() {
                     playPop();
                     setActiveSubTab('characters');
                   }}
-                  className={`py-1.5 px-4 rounded-xl font-black text-xs tracking-wider transition-all cursor-pointer ${
+                  className={`py-1 px-2.5 rounded-lg font-black text-[10px] tracking-wide transition-all cursor-pointer ${
                     activeSubTab === 'characters'
                       ? 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 shadow-md'
                       : 'text-slate-400 hover:text-white'
@@ -404,10 +395,10 @@ export default function VaultPage() {
               </div>
 
               {activeSubTab === 'bundles' && (
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1">
                   <button
                     onClick={() => setBundleGender('boy')}
-                    className={`py-1 px-3 rounded-lg text-xs font-bold transition-all ${
+                    className={`py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
                       bundleGender === 'boy'
                         ? 'bg-blue-500 text-white font-black'
                         : 'bg-white/5 text-slate-400'
@@ -417,7 +408,7 @@ export default function VaultPage() {
                   </button>
                   <button
                     onClick={() => setBundleGender('girl')}
-                    className={`py-1 px-3 rounded-lg text-xs font-bold transition-all ${
+                    className={`py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
                       bundleGender === 'girl'
                         ? 'bg-pink-500 text-white font-black'
                         : 'bg-white/5 text-slate-400'

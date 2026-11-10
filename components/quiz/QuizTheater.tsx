@@ -42,6 +42,8 @@ export const QuizTheater: React.FC = () => {
   const [avatarAnim, setAvatarAnim] = useState<AvatarAnimationState>('idle');
   const [avatarSpeech, setAvatarSpeech] = useState<string>('🤔 ध्यान से सोचो...');
   const [showExplanationDrawer, setShowExplanationDrawer] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const mascotIframeRef = React.useRef<HTMLIFrameElement>(null);
 
   // Sound toggle
   const toggleSound = () => {
@@ -121,6 +123,7 @@ export const QuizTheater: React.FC = () => {
       if (quiz.isCorrect) {
         setAvatarAnim('cheer');
         setAvatarSpeech('🎉 शाबाश! बिल्कुल सही जवाब!');
+        mascotIframeRef.current?.contentWindow?.postMessage({ action: 'cheer', mood: 'laugh' }, '*');
         if (!isMuted) {
           if (quiz.comboStreak >= 3) {
             getJackVoice().cheerMotivational('streak');
@@ -132,6 +135,7 @@ export const QuizTheater: React.FC = () => {
         setAvatarAnim('cry');
         setAvatarSpeech('😢 कोई बात नहीं! Vault में सेव हो गया!');
         setShowExplanationDrawer(true);
+        mascotIframeRef.current?.contentWindow?.postMessage({ action: 'jump', mood: 'sad' }, '*');
 
         // Auto-save into Spaced Repetition engine
         const currentQ = quiz.questions[quiz.currentIndex];
@@ -152,6 +156,7 @@ export const QuizTheater: React.FC = () => {
       setAvatarAnim('idle');
       setAvatarSpeech('🤔 ध्यान से सोचो...');
       setShowExplanationDrawer(false);
+      mascotIframeRef.current?.contentWindow?.postMessage({ action: 'idle', mood: 'focused' }, '*');
     }
   }, [quiz.isAnswerSubmitted, quiz.isCorrect, quiz.currentIndex]);
 
@@ -159,6 +164,45 @@ export const QuizTheater: React.FC = () => {
   const progressRatio = quiz.questions.length > 0
     ? (quiz.currentIndex / quiz.questions.length) * 100
     : 0;
+
+  // Speaker TTS: Reads aloud current question and options
+  const handleSpeakQuestion = () => {
+    playClickSound();
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    if (!currentQ) return;
+    window.speechSynthesis.cancel();
+
+    const textToSpeak = `${currentQ.q}. Option A: ${currentQ.o[0]}. Option B: ${currentQ.o[1]}. Option C: ${currentQ.o[2]}. Option D: ${currentQ.o[3]}.`;
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.volume = 1.0;
+    utterance.rate = 0.92;
+    utterance.pitch = 1.05;
+
+    const voices = window.speechSynthesis.getVoices();
+    const isHindi = userLang === 'hi';
+    const preferred = voices.find(v => isHindi ? v.lang.includes('hi') : (v.lang.includes('en-IN') || v.lang.includes('en-US')));
+    if (preferred) utterance.voice = preferred;
+
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      mascotIframeRef.current?.contentWindow?.postMessage({ action: 'handshake', mood: 'focused' }, '*');
+    };
+    utterance.onend = () => {
+      setIsSpeaking(false);
+    };
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
 
   // Read question aloud strictly in selected language
   useEffect(() => {
@@ -293,29 +337,6 @@ export const QuizTheater: React.FC = () => {
             <div className="flex items-center gap-1.5">
               {/* Bilingual Switcher: [HINDI] / [ENGLISH] */}
               <BilingualLanguageToggle size="sm" />
-
-              {/* Live Doubt Call with Delhi Study Buddy */}
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setCallModalOpen(true);
-                }}
-                title="Ask Delhi Study Buddy for Hint"
-                className="flex items-center gap-1 py-1 px-2.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 text-[10px] font-black transition-all cursor-pointer"
-              >
-                <PhoneCall className="w-3 h-3 text-emerald-400 animate-pulse" />
-                <span>Call Buddy</span>
-              </button>
-
-              {/* 50:50 Lifeline */}
-              <button
-                onClick={() => quiz.useFiftyFifty()}
-                disabled={quiz.isAnswerSubmitted || quiz.eliminatedOptions.length > 0}
-                className="flex items-center gap-1 py-1 px-2.5 rounded-full bg-indigo-950/50 hover:bg-indigo-900/60 border border-indigo-400/30 disabled:opacity-40 transition-all active:scale-95 cursor-pointer"
-              >
-                <Sparkles className="w-3 h-3 text-indigo-300" />
-                <span className="text-[10px] font-black text-indigo-200">50:50</span>
-              </button>
             </div>
           </div>
         </header>
@@ -347,28 +368,54 @@ export const QuizTheater: React.FC = () => {
 
       {/* 2. QUESTION & OPTIONS THEATER (ZERO SCROLL) */}
       <main className="flex-1 flex flex-col justify-center px-3 sm:px-4 py-1 z-20 overflow-hidden relative">
-        {/* Floating 3D Duolingo Octopus Bot Companion (Zero Box, 100% Transparent Alpha) */}
+        {/* RIGHT SIDE DOCK FOR LIFELINES (50:50 & CALL BUDDY - SIDE-DOCKED PER USER REQUEST) */}
         {!zenMode && (
-          <div className="absolute top-0 right-1 sm:right-3 z-30 pointer-events-none select-none">
-            <DuolingoOctopus3D
-              emotion={
-                !quiz.isAnswerSubmitted
-                  ? 'thinking'
-                  : quiz.isCorrect
-                  ? quiz.comboStreak >= 3
-                    ? 'streak'
-                    : 'happy'
-                  : 'sad'
-              }
-              streakCount={quiz.comboStreak}
-              size={85}
-              showBubble={false}
-              interactive={false}
-            />
+          <aside className="absolute right-2 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-2">
+            {/* 50:50 Lifeline Button */}
+            <button
+              onClick={() => {
+                playClickSound();
+                quiz.useFiftyFifty();
+              }}
+              disabled={quiz.isAnswerSubmitted || quiz.eliminatedOptions.length > 0}
+              title="50:50 Lifeline"
+              className="w-10 h-10 rounded-2xl bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-400/50 flex flex-col items-center justify-center text-indigo-200 shadow-[0_4px_12px_rgba(99,102,241,0.35)] disabled:opacity-40 transition-all active:scale-95 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-300" />
+              <span className="text-[8.5px] font-black leading-none mt-0.5">50:50</span>
+            </button>
+
+            {/* Live AI Call Lifeline */}
+            <button
+              onClick={() => {
+                playClickSound();
+                setCallModalOpen(true);
+              }}
+              title="Call Delhi Study Buddy"
+              className="w-10 h-10 rounded-2xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-400/50 flex flex-col items-center justify-center text-emerald-200 shadow-[0_4px_12px_rgba(16,185,129,0.35)] transition-all active:scale-95 cursor-pointer"
+            >
+              <PhoneCall className="w-3.5 h-3.5 text-emerald-400 animate-bounce" />
+              <span className="text-[8.5px] font-black leading-none mt-0.5">Call</span>
+            </button>
+          </aside>
+        )}
+
+        {/* Centered Transparent 3D Study Buddy Mascot (Zero Box, Zero Accessories, Bounded Scale) */}
+        {!zenMode && (
+          <div className="relative mx-auto my-0.5 w-full flex justify-center items-center pointer-events-none select-none z-10">
+            <div className="w-[100px] h-[100px] sm:w-[120px] sm:h-[120px] max-h-[120px] flex items-center justify-center relative">
+              <iframe
+                ref={mascotIframeRef}
+                src="/mascot-widget.html"
+                className="w-full h-full border-0 bg-transparent pointer-events-none"
+                style={{ background: 'transparent' }}
+                title="Study Buddy Mascot"
+              />
+            </div>
           </div>
         )}
 
-        {/* Question Glass Card */}
+        {/* Question Glass Card with Text-To-Speech Speaker Button */}
         <motion.div
           key={quiz.currentIndex}
           initial={{ opacity: 0, y: 15 }}
@@ -378,36 +425,55 @@ export const QuizTheater: React.FC = () => {
             x: quiz.isAnswerSubmitted && quiz.isCorrect === false ? [-10, 10, -6, 6, 0] : 0
           }}
           transition={{ duration: 0.25 }}
-          className="relative max-w-xl mx-auto w-full rounded-2xl p-3 sm:p-4 md:p-5 bg-[rgba(30,41,59,0.7)] backdrop-blur-2xl border-t border-white/20 border-x border-b border-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.5)] mb-2 sm:mb-3"
+          className="relative max-w-xl mx-auto w-full rounded-2xl p-3 sm:p-4 bg-[rgba(30,41,59,0.7)] backdrop-blur-2xl border-t border-white/20 border-x border-b border-white/5 shadow-[0_12px_32px_rgba(0,0,0,0.5)] mb-2"
         >
-          {/* Question Meta Header with 10-Year Teacher Predictive Probability */}
+          {/* Question Meta Header with 10-Year Teacher Predictive Probability & Speaker Button */}
           <div className="flex items-center justify-between mb-1.5 sm:mb-2">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="text-[10px] font-black uppercase tracking-wider text-[#F59E0B]">
                 Question {quiz.currentIndex + 1} of {quiz.questions.length}
               </span>
               <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[9px] font-black text-emerald-300">
-                {currentPrediction.recommendationTag} ({currentPrediction.probabilityPercent}% Recurrence)
+                {currentPrediction.recommendationTag}
               </span>
             </div>
 
-            {/* Visual Difficulty Dots */}
-            <div className="flex items-center gap-1" title={`Difficulty Level ${currentQ?.d || 1}`}>
-              {[1, 2, 3, 4, 5].map((dot) => (
-                <div
-                  key={dot}
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    dot <= (currentQ?.d || 1)
-                      ? 'bg-[#F59E0B] shadow-[0_0_4px_#F59E0B]'
-                      : 'bg-white/15'
-                  }`}
-                />
-              ))}
+            <div className="flex items-center gap-2">
+              {/* Question Read-Aloud Speaker Button (TTS) */}
+              <button
+                onClick={handleSpeakQuestion}
+                title={isSpeaking ? 'Stop Audio' : 'Listen to Question & Options'}
+                className={`p-1.5 rounded-xl border shrink-0 transition-all cursor-pointer ${
+                  isSpeaking
+                    ? 'bg-amber-500 border-amber-300 text-slate-950 shadow-[0_0_12px_#F59E0B]'
+                    : 'bg-white/10 hover:bg-white/20 border-white/15 text-amber-300'
+                }`}
+              >
+                {isSpeaking ? (
+                  <VolumeX className="w-4 h-4 animate-pulse" />
+                ) : (
+                  <Volume2 className="w-4 h-4" />
+                )}
+              </button>
+
+              {/* Visual Difficulty Dots */}
+              <div className="flex items-center gap-1" title={`Difficulty Level ${currentQ?.d || 1}`}>
+                {[1, 2, 3, 4, 5].map((dot) => (
+                  <div
+                    key={dot}
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      dot <= (currentQ?.d || 1)
+                        ? 'bg-[#F59E0B] shadow-[0_0_4px_#F59E0B]'
+                        : 'bg-white/15'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
 
           {/* Question Text */}
-          <h2 className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wide leading-snug sm:leading-relaxed">
+          <h2 className="text-xs sm:text-sm md:text-base font-bold text-white tracking-wide leading-snug sm:leading-relaxed pr-2">
             {currentQ?.q}
           </h2>
         </motion.div>

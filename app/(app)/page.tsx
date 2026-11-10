@@ -196,65 +196,50 @@ export default function HomeLobbyPage() {
             </div>
           </div>
 
-          {/* Right: Quick Action Controls & 60s Speed Drill */}
+          {/* Right: Quick Action Controls & Compact 60s Speed Drill */}
           <div className="flex items-center gap-1.5 shrink-0">
-            {/* Lo-Fi Ambient Engine Toggle */}
-            <button
-              onClick={handleToggleLofi}
-              title="Lo-Fi Ambient Beats"
-              className={`p-2 rounded-xl border transition-all cursor-pointer ${
-                isLofiPlaying
-                  ? 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.4)]'
-                  : 'bg-white/10 border-white/10 text-slate-400 hover:text-white'
-              }`}
-            >
-              <Music className="w-4 h-4" />
-            </button>
-
-            {/* Live AI Voice Call Button */}
+            {/* Live AI Voice Call Button (Sleek Micro-Pill) */}
             <button
               onClick={() => {
                 playClickSound();
                 setCallModalOpen(true);
               }}
               title="Call Delhi Study Buddy"
-              className="flex items-center gap-1.5 py-2 px-3 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-black text-xs shadow-[0_0_15px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-black text-[10px] shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
-              <PhoneCall className="w-3.5 h-3.5 text-emerald-400 animate-bounce" />
+              <PhoneCall className="w-3 h-3 text-emerald-400 animate-bounce" />
               <span>Call Buddy</span>
             </button>
 
-            {/* Glowing 60s Rapid Drill Button */}
+            {/* Glowing 60s Rapid Drill Button (Sleek Micro-Pill) */}
             <button
               onClick={() => {
                 playClickSound();
                 setDrillOpen(true);
               }}
-              className="group relative flex items-center gap-2 py-2 px-3 rounded-2xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black font-black text-xs shadow-[0_4px_0_#B45309,0_0_20px_rgba(245,158,11,0.5)] hover:brightness-110 active:translate-y-1 active:shadow-[0_1px_0_#B45309] transition-all cursor-pointer animate-pulse"
+              className="group relative flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black font-black text-[10px] shadow-[0_3px_0_#B45309,0_0_15px_rgba(245,158,11,0.4)] hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#B45309] transition-all cursor-pointer"
             >
-              <Zap className="w-4 h-4 fill-black text-black group-hover:scale-110 transition-transform" />
-              <div className="text-left leading-tight">
-                <div className="text-[11px] font-black uppercase tracking-tight">60s Drill</div>
-                <div className="text-[8px] font-extrabold opacity-80">+50 XP BLAST</div>
-              </div>
+              <Zap className="w-3 h-3 fill-black text-black group-hover:scale-110 transition-transform" />
+              <span className="uppercase tracking-tight">60s Drill</span>
             </button>
           </div>
         </div>
 
         {/* Mini Stats Bar with Clickable Daily Streak Flame & Mineral Tier */}
-        <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-white/10 text-xs">
+        <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-white/10 text-xs">
+          {/* Daily Streak Micro-Badge */}
           <button
             onClick={() => {
               playClickSound();
               setStreakModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 transition-all cursor-pointer"
+            className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 transition-all cursor-pointer"
           >
-            <Flame className="w-4 h-4 text-orange-400 fill-orange-400 drop-shadow-[0_0_6px_#FB923C]" />
-            <span className="font-black text-amber-300">{userStreak}d</span>
+            <Flame className="w-3.5 h-3.5 text-orange-400 fill-orange-400 drop-shadow-[0_0_6px_#FB923C]" />
+            <span className="font-black text-amber-300 text-[10px]">{userStreak}d</span>
           </button>
 
-          {/* Minecraft Ore Tier Badge */}
+          {/* Minecraft Ore Tier Badge (Compact: Mineral Icon + Name, No 'Ranking' or 'Tier' text) */}
           <Link
             href="/leaderboard"
             onClick={() => playClickSound()}
@@ -263,29 +248,17 @@ export default function HomeLobbyPage() {
             <Image
               src={currentOreTier.iconSvg}
               alt={currentOreTier.name}
-              width={14}
-              height={14}
+              width={13}
+              height={13}
               className="object-contain"
             />
             <span className="text-[10px] font-black text-amber-300">
-              {currentOreTier.name.split(' ')[0]} Tier
+              {currentOreTier.name.split(' ')[0]}
             </span>
           </Link>
 
           {/* Bilingual Language Switcher */}
           <BilingualLanguageToggle size="sm" />
-
-          {/* Report Card 1-Click Trigger */}
-          <button
-            onClick={() => {
-              playClickSound();
-              setReportModalOpen(true);
-            }}
-            className="flex items-center gap-1 text-[10px] font-bold text-slate-300 hover:text-white px-2 py-0.5 rounded-full bg-white/10 border border-white/10 transition-all cursor-pointer"
-          >
-            <Award className="w-3 h-3 text-amber-400" />
-            <span>Report</span>
-          </button>
         </div>
       </header>
 

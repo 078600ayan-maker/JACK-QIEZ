@@ -151,33 +151,70 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           })}
         </div>
 
-        {/* 2x2 Bento Stat Cards */}
-        <div className="grid grid-cols-2 gap-2.5 my-5 text-left">
-          <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Score</div>
-            <div className="text-base font-black text-white mt-0.5">
+        {/* Day-by-Day Duolingo-Style Daily Streak Calendar Strip */}
+        <div className="my-3 p-3 rounded-2xl bg-gradient-to-r from-orange-500/15 via-amber-500/10 to-orange-500/15 border border-orange-500/30">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="text-base">🔥</span>
+              <span className="text-xs font-black text-amber-300">
+                DAILY STREAK BOOSTED!
+              </span>
+            </div>
+            <span className="text-[10px] font-mono font-bold text-orange-400">
+              {user.profile?.streak ?? 7} Days
+            </span>
+          </div>
+          {/* 7-Day Visual Progression (M T W T F S S) */}
+          <div className="grid grid-cols-7 gap-1">
+            {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, idx) => {
+              const isToday = idx === 6; // Current completion
+              const isCompleted = idx <= 6;
+              return (
+                <div
+                  key={idx}
+                  className={`flex flex-col items-center py-1 rounded-lg border text-[9px] font-black ${
+                    isToday
+                      ? 'bg-amber-500 text-slate-950 border-amber-300 shadow-[0_0_8px_#F59E0B] scale-105'
+                      : isCompleted
+                      ? 'bg-orange-500/20 text-orange-300 border-orange-500/40'
+                      : 'bg-white/5 text-slate-500 border-white/5'
+                  }`}
+                >
+                  <span>{day}</span>
+                  <span className="text-[8px] mt-0.5">{isCompleted ? '✓' : '•'}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 2x2 Bento Stat Cards & Performance Percentage */}
+        <div className="grid grid-cols-2 gap-2 my-3 text-left">
+          <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
+            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Correct Answers</div>
+            <div className="text-base font-black text-emerald-400 mt-0.5">
               {score} / {totalQuestions}
             </div>
           </div>
 
-          <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
-            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Accuracy</div>
+          <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
+            <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Overall Accuracy</div>
             <div className={`text-base font-black mt-0.5 ${accuracy >= 75 ? 'text-emerald-400' : 'text-red-400'}`}>
               {accuracy}%
             </div>
           </div>
 
-          <div className="p-3 rounded-2xl bg-white/5 border border-white/10 col-span-2 flex items-center justify-between">
+          <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10 col-span-2 flex items-center justify-between">
             <div>
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">XP Awarded</div>
-              <div className="text-xl font-black text-[#FBBF24] mt-0.5">
+              <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">XP Awarded</div>
+              <div className="text-lg font-black text-[#FBBF24] mt-0.5">
                 +{displayedXp} XP
               </div>
             </div>
             <div className="text-right">
-              <div className="text-[10px] font-bold text-slate-400 uppercase">Hearts Left</div>
-              <div className="text-sm font-black text-red-300">
-                ❤️ {heartsRemaining}
+              <div className="text-[9px] font-bold text-slate-400 uppercase">Mistakes Vault</div>
+              <div className="text-xs font-black text-rose-300">
+                {Math.max(0, totalQuestions - score)} Questions Reviewed
               </div>
             </div>
           </div>
