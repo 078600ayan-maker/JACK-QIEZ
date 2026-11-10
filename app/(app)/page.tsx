@@ -167,15 +167,15 @@ export default function HomeLobbyPage() {
           ========================================================================= */}
       <header className="sticky top-2 z-30 w-full rounded-2xl bg-[rgba(20,27,45,0.85)] backdrop-blur-[20px] backdrop-saturate-[180%] border-t border-white/25 border-x border-b border-white/10 p-3 shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
         <div className="flex items-center justify-between gap-2">
-          {/* Left: Dynamic Greeting with Active Profile Photo */}
-          <div className="flex items-center gap-2.5 min-w-0">
+          {/* Left: Dynamic Greeting with Active Profile Photo (Links directly to Student Profile) */}
+          <Link
+            href="/profile"
+            onClick={() => playClickSound()}
+            className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
+            title="Open Student Profile & Follow Status"
+          >
             <div
-              onClick={() => {
-                playClickSound();
-                setDpModalOpen(true);
-              }}
-              className="relative w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0 border-2 border-amber-400 bg-slate-900 p-0.5 cursor-pointer hover:scale-105 active:scale-95 transition-all"
-              title="Click to change profile DP"
+              className="relative w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0 border-2 border-amber-400 bg-slate-900 p-0.5 group-hover:scale-105 active:scale-95 transition-all"
             >
               <img
                 src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
@@ -187,14 +187,14 @@ export default function HomeLobbyPage() {
               />
             </div>
             <div className="min-w-0">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider group-hover:text-amber-300 transition-colors">
                 Welcome back,
               </span>
-              <h2 className="text-sm font-black text-white truncate leading-tight">
+              <h2 className="text-sm font-black text-white group-hover:text-amber-300 truncate leading-tight transition-colors">
                 {userName}! 👋
               </h2>
             </div>
-          </div>
+          </Link>
 
           {/* Right: Quick Action Controls & Compact 60s Speed Drill */}
           <div className="flex items-center gap-1.5 shrink-0">

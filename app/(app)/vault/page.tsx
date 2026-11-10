@@ -21,6 +21,7 @@ import {
 import { useUserStore } from '@/store/useUserStore';
 import {
   CHARACTER_PRESETS,
+  CANONICAL_10_CHARACTERS,
   CharacterPresetId,
   BOY_BUNDLES,
   GIRL_BUNDLES,
@@ -121,11 +122,16 @@ export default function VaultPage() {
     if (found) {
       updateCustomAvatar({
         ...found.defaultCustomization,
+        name: found.name,
+        skinPath: found.defaultCustomization.skinPath,
         gender: found.gender
       });
+      if (found.photoURL) {
+        updateProfilePhoto(found.photoURL);
+      }
       setTestAnim('cheer');
       setTimeout(() => setTestAnim('idle'), 1800);
-      showToast(`Selected Scholar: ${found.name}`);
+      showToast(`Equipped 100% Skin: ${found.name}!`);
     }
   };
 
@@ -143,8 +149,8 @@ export default function VaultPage() {
   const activeBundleGroup = bundleGender === 'boy' ? BOY_BUNDLES : GIRL_BUNDLES;
   const filteredCharacters =
     characterFilter === 'all'
-      ? CHARACTER_PRESETS
-      : CHARACTER_PRESETS.filter((c) => c.gender === characterFilter);
+      ? CANONICAL_10_CHARACTERS
+      : CANONICAL_10_CHARACTERS.filter((c) => c.gender === characterFilter);
 
   return (
     <div className="w-full max-w-[960px] mx-auto px-2 sm:px-4 pt-2 pb-44 select-none">
@@ -394,7 +400,7 @@ export default function VaultPage() {
                 </button>
               </div>
 
-              {activeSubTab === 'bundles' && (
+              {activeSubTab === 'bundles' ? (
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setBundleGender('boy')}
@@ -415,6 +421,39 @@ export default function VaultPage() {
                     }`}
                   >
                     Girls (20)
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setCharacterFilter('all')}
+                    className={`py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
+                      characterFilter === 'all'
+                        ? 'bg-amber-500 text-slate-950 font-black'
+                        : 'bg-white/5 text-slate-400'
+                    }`}
+                  >
+                    All 10
+                  </button>
+                  <button
+                    onClick={() => setCharacterFilter('boy')}
+                    className={`py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
+                      characterFilter === 'boy'
+                        ? 'bg-blue-500 text-white font-black'
+                        : 'bg-white/5 text-slate-400'
+                    }`}
+                  >
+                    Boys (5)
+                  </button>
+                  <button
+                    onClick={() => setCharacterFilter('girl')}
+                    className={`py-1 px-2 rounded-lg text-[10px] font-bold transition-all ${
+                      characterFilter === 'girl'
+                        ? 'bg-pink-500 text-white font-black'
+                        : 'bg-white/5 text-slate-400'
+                    }`}
+                  >
+                    Girls (5)
                   </button>
                 </div>
               )}

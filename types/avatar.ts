@@ -63,11 +63,19 @@ export interface ClassicProfilePhoto {
 
 export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
   {
+    id: 'dp_kai',
+    name: 'Kai',
+    character: 'Science Vanguard',
+    gender: 'boy',
+    role: 'Science & Physics Vanguard (Varsity K)',
+    src: '/assets/profile_photos/IMG_20261109_001512.png'
+  },
+  {
     id: 'dp_jax',
     name: 'Jax',
     character: 'Tactical Speedster',
     gender: 'boy',
-    role: 'Mathematics & Speed Solver',
+    role: 'Mathematics & Speed Solver (Cyber Cyan)',
     src: '/assets/profile_photos/IMG_20261109_001527.png'
   },
   {
@@ -75,71 +83,63 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     name: 'Otis',
     character: 'Scholar Sage',
     gender: 'boy',
-    role: 'SST & History Chronicler',
-    src: '/assets/profile_photos/IMG_20261109_001512.png'
+    role: 'SST & History Chronicler (Tweed Suit)',
+    src: '/assets/profile_photos/IMG_20261109_001555.png'
   },
   {
     id: 'dp_zane',
     name: 'Zane',
-    character: 'Varsity Champion',
+    character: 'Cosmic Sorcerer',
     gender: 'boy',
-    role: 'Logic & Speed Drills',
-    src: '/assets/profile_photos/IMG_20261109_001555.png'
-  },
-  {
-    id: 'dp_kai',
-    name: 'Kai',
-    character: 'Cosmic Voyager',
-    gender: 'boy',
-    role: 'Science & Physics Vanguard',
+    role: 'Logic & Galaxy Cloak Master',
     src: '/assets/profile_photos/IMG_20261109_001625.png'
   },
   {
-    id: 'dp_leo',
-    name: 'Leo',
-    character: 'Grand Champion',
+    id: 'dp_ryo',
+    name: 'Ryo',
+    character: 'Tactical Vanguard',
     gender: 'boy',
-    role: 'All-Rounder JAC Rank 1',
+    role: 'Green Varsity R & Red Headband Scholar',
     src: '/assets/profile_photos/IMG_20261109_001652.png'
   },
   {
-    id: 'dp_fay',
-    name: 'Fay',
-    character: 'Solar Guardian',
+    id: 'dp_elis',
+    name: 'Elis',
+    character: 'Royal Scholar',
     gender: 'girl',
-    role: 'Biology & Natural Sciences',
+    role: 'Biology & Natural Sciences (Overalls & Quill)',
     src: '/assets/profile_photos/IMG_20261109_001715.png'
-  },
-  {
-    id: 'dp_noor',
-    name: 'Noor',
-    character: 'Nature Sentinel',
-    gender: 'girl',
-    role: 'Geography & Ecology',
-    src: '/assets/profile_photos/IMG_20261109_001805.png'
   },
   {
     id: 'dp_nova',
     name: 'Nova',
     character: 'Starlight Mage',
     gender: 'girl',
-    role: 'English & Literature Visionary',
+    role: 'English Visionary (Purple Galaxy & Star Wand)',
     src: '/assets/profile_photos/IMG_20261109_001739.png'
   },
   {
-    id: 'dp_aria',
-    name: 'Aria',
+    id: 'dp_fay',
+    name: 'Fay',
+    character: 'Nature Guardian',
+    gender: 'girl',
+    role: 'Geography & Ecology (Woodland Green Dress)',
+    src: '/assets/profile_photos/IMG_20261109_001805.png'
+  },
+  {
+    id: 'dp_zara',
+    name: 'Zara',
     character: 'Speed Runner',
     gender: 'girl',
-    role: 'Algebra & Physics Accelerator',
+    role: 'Algebra & Physics (Red Athletic Tracksuit)',
     src: '/assets/profile_photos/IMG_20261109_001833.png'
   },
   {
-    id: 'dp_zuri',
-    name: 'Zuri',
+    id: 'dp_mia',
+    name: 'Mia',
     character: 'Creative Artisan',
     gender: 'girl',
-    role: 'Hindi & Creative Expression',
+    role: 'Hindi & Fine Arts (Pastel Pink Hair & Palette)',
     src: '/assets/profile_photos/IMG_20261109_001853.png'
   }
 ];
@@ -445,10 +445,15 @@ export const CHARACTER_PRESETS: PresetConfig[] = [
       elytra: 'celestial_gold',
       shoes: 'gold_boots',
       accessory: 'golden_crown',
-      skinPath: '/skins/girl/nami-one-piece.png'
+      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png'
     }
   },
+];
 
+// The strictly defined 10 Main Canonical Scholars from the master reference card:
+export const CANONICAL_10_CHARACTERS = CHARACTER_PRESETS.slice(0, 10);
+
+export const LEGACY_PRESETS: PresetConfig[] = [
   // Legacy Presets for backward compatibility
   {
     id: 'steve',

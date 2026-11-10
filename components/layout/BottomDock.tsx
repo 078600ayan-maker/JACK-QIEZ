@@ -26,8 +26,8 @@ function BottomDockContent() {
   ];
 
   return (
-    <nav className="fixed bottom-3 inset-x-0 mx-auto w-[96%] max-w-[480px] z-40 select-none">
-      <div className="flex items-center justify-around py-1.5 px-1.5 rounded-[999px] bg-[rgba(16,22,38,0.94)] backdrop-blur-[24px] backdrop-saturate-[180%] border-t border-white/25 border-x border-b border-white/10 shadow-[0_12px_36px_rgba(0,0,0,0.7),0_0_25px_rgba(245,158,11,0.15)]">
+    <nav className="fixed bottom-3 inset-x-0 mx-auto w-[96%] max-w-[480px] z-50 select-none pb-[env(safe-area-inset-bottom)] pointer-events-auto">
+      <div className="flex items-center justify-around py-1.5 px-1.5 rounded-[999px] bg-[rgba(16,22,38,0.96)] backdrop-blur-[24px] backdrop-saturate-[180%] border-t border-white/25 border-x border-b border-white/10 shadow-[0_12px_36px_rgba(0,0,0,0.85),0_0_25px_rgba(245,158,11,0.2)]">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;
 

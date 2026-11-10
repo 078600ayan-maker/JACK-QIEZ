@@ -44,7 +44,120 @@ export default function BattleHubPage() {
   const streak = profile?.streak || 7;
   const xp = profile?.xp || 280;
 
-  // Auto-Match simulation with isRealUser: true
+  const CANONICAL_BATTLE_POOL = [
+    {
+      name: 'Kai',
+      username: 'kai_vanguard',
+      xp: 1850,
+      streak: 14,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+      isRealUser: true,
+      title: 'Science Vanguard'
+    },
+    {
+      name: 'Jax',
+      username: 'jax_speed',
+      xp: 1720,
+      streak: 11,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
+      isRealUser: true,
+      title: 'Tactical Speedster'
+    },
+    {
+      name: 'Otis',
+      username: 'otis_sage',
+      xp: 1690,
+      streak: 9,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
+      isRealUser: true,
+      title: 'Scholar Sage'
+    },
+    {
+      name: 'Zane',
+      username: 'zane_cosmic',
+      xp: 1940,
+      streak: 16,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
+      isRealUser: true,
+      title: 'Cosmic Sorcerer'
+    },
+    {
+      name: 'Ryo',
+      username: 'ryo_champion',
+      xp: 1780,
+      streak: 12,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
+      isRealUser: true,
+      title: 'Tactical Vanguard'
+    },
+    {
+      name: 'Elis',
+      username: 'elis_royal',
+      xp: 1620,
+      streak: 10,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+      isRealUser: true,
+      title: 'Royal Scholar'
+    },
+    {
+      name: 'Nova',
+      username: 'nova_starlight',
+      xp: 1890,
+      streak: 15,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
+      isRealUser: true,
+      title: 'Starlight Mage'
+    },
+    {
+      name: 'Fay',
+      username: 'fay_nature',
+      xp: 1540,
+      streak: 8,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
+      isRealUser: true,
+      title: 'Nature Guardian'
+    },
+    {
+      name: 'Zara',
+      username: 'zara_speed',
+      xp: 1710,
+      streak: 13,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
+      isRealUser: true,
+      title: 'Speed Runner'
+    },
+    {
+      name: 'Mia',
+      username: 'mia_artisan',
+      xp: 1670,
+      streak: 9,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
+      isRealUser: true,
+      title: 'Creative Artisan'
+    },
+    {
+      name: 'Priya Sharma',
+      username: 'priya_jac_topper',
+      xp: 1420,
+      streak: 12,
+      class: 'Class 10 JAC',
+      photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
+      isRealUser: true,
+      title: 'Ranchi Topper'
+    }
+  ];
+
+  // Auto-Match simulation with 10 Canonical Scholars
   const handleAutoMatch = () => {
     playClickSound();
     triggerHaptic();
@@ -53,16 +166,9 @@ export default function BattleHubPage() {
 
     setTimeout(() => {
       setIsSearchingMatch(false);
-      setMatchedOpponent({
-        name: 'Priya Sharma',
-        username: 'priya_jac_topper',
-        xp: 1420,
-        streak: 12,
-        class: 'Class 10 JAC',
-        photoURL: '/assets/profile_photos/classic_character_2.png',
-        isRealUser: true
-      });
-    }, 2200);
+      const chosen = CANONICAL_BATTLE_POOL[Math.floor(Math.random() * CANONICAL_BATTLE_POOL.length)];
+      setMatchedOpponent(chosen);
+    }, 1100);
   };
 
   const handleCopyLink = () => {
@@ -221,9 +327,12 @@ export default function BattleHubPage() {
                   <span className="text-xs">⚔️</span>
                 </div>
                 <div className="flex gap-2">
-                  <Link href="/quiz/live-duel" className="flex-1">
+                  <Link
+                    href={`/quiz/sci/sci_ch01/1?mode=duel&opponent=${encodeURIComponent(matchedOpponent.name)}`}
+                    className="flex-1"
+                  >
                     <TactileButton variant="emerald" fullWidth size="sm" className="font-black text-xs py-2">
-                      Start 1v1 Battle!
+                      ⚔️ Start 1v1 Battle with {matchedOpponent.name}!
                     </TactileButton>
                   </Link>
                   <button
@@ -333,7 +442,7 @@ export default function BattleHubPage() {
               Sharpen your speed against the adaptive Octopops bot before entering ranked duels.
             </p>
             <div className="grid grid-cols-3 gap-2">
-              <Link href="/quiz/ai-practice?diff=rookie">
+              <Link href="/quiz/sci/sci_ch01/1?mode=ai&diff=rookie">
                 <button
                   onClick={() => playClickSound()}
                   className="w-full py-2 px-1 rounded-xl bg-white/5 hover:bg-emerald-500/20 border border-white/10 text-center transition-all active:scale-95"
@@ -342,7 +451,7 @@ export default function BattleHubPage() {
                   <div className="text-[8px] text-slate-400">Pass Speed</div>
                 </button>
               </Link>
-              <Link href="/quiz/ai-practice?diff=topper">
+              <Link href="/quiz/sci/sci_ch01/1?mode=ai&diff=topper">
                 <button
                   onClick={() => playClickSound()}
                   className="w-full py-2 px-1 rounded-xl bg-white/5 hover:bg-amber-500/20 border border-white/10 text-center transition-all active:scale-95"
@@ -351,7 +460,7 @@ export default function BattleHubPage() {
                   <div className="text-[8px] text-slate-400">92% Acc</div>
                 </button>
               </Link>
-              <Link href="/quiz/ai-practice?diff=grandmaster">
+              <Link href="/quiz/sci/sci_ch01/1?mode=ai&diff=grandmaster">
                 <button
                   onClick={() => playClickSound()}
                   className="w-full py-2 px-1 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/10 text-center transition-all active:scale-95"
