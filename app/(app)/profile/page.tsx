@@ -29,9 +29,20 @@ import {
   UserPlus,
   Shirt
 } from 'lucide-react';
-import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 import { useUserStore } from '@/store/useUserStore';
+import { UserProfile } from '@/types/user';
+import {
+  searchUsersInDatabase,
+  toggleFollowInDatabase,
+  fetchUsersByUids,
+  fetchResolvedFollowRelations,
+  subscribeGlobalLeaderboard,
+  normalizeUsername,
+  isUsernameAvailable,
+  upsertUserInDirectory,
+} from '@/lib/socialService';
 import { CrownBadge } from '@/components/ui/CrownBadge';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { MinecraftVoxelCharacter } from '@/components/avatar/MinecraftVoxelCharacter';
@@ -60,8 +71,8 @@ export interface ScholarItem {
   class: string;
   xp: number;
   streak: number;
-  followers?: number;
-  following?: number;
+  followers: number;
+  following: number;
   photoURL: string;
   skinPath?: string;
   dressedOutfit?: string;
@@ -69,57 +80,247 @@ export interface ScholarItem {
   role?: string;
   bio?: string;
   isCurrentUser?: boolean;
-  followersList?: ScholarFollowRef[];
-  followingList?: ScholarFollowRef[];
+  followersUids?: string[];
+  followingUids?: string[];
+  isOnline?: boolean;
+}
+
+function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem {
+  const ore = getUserCurrentOreTier(u.xp || 0);
+  const followersUids = Array.isArray(u.followersUids) ? u.followersUids : [];
+  const followingUids = Array.isArray(u.followingUids) ? u.followingUids : [];
+  return {
+    uid: u.uid,
+    name: u.name || u.displayName || 'JAC Scholar',
+    username: u.username || normalizeUsername(u.name, u.uid),
+    class: 'Class 10 JAC',
+    xp: u.xp || 0,
+    streak: u.streak || 0,
+    followers: Math.max(followersUids.length, u.followersCount ?? 0),
+    following: Math.max(followingUids.length, u.followingCount ?? 0),
+    photoURL: u.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+    skinPath: u.customAvatar?.skinPath || '/skins/boy/minecraft-skins.png',
+    dressedOutfit: u.customAvatar?.name || 'Royal Student Wardrobe',
+    isRealUser: u.isRealUser !== false,
+    role: u.role || `${ore.name} Scholar`,
+    bio: u.bio || 'Class 10 JAC Scholar preparing for Board Exams 2026.',
+    isCurrentUser: Boolean(currentUid && u.uid === currentUid),
+    followersUids,
+    followingUids,
+    isOnline: Boolean(u.isOnline),
+  };
 }
 
 function ProfileContent() {
   const router = useRouter();
-  const { profile, refillHearts, updateCustomAvatar, updateProfilePhoto } = useUserStore();
+  const { profile, setProfile, logoutUser, refillHearts, updateCustomAvatar, updateProfilePhoto } = useUserStore();
 
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [avatarTab, setAvatarTab] = useState<'bundles' | 'characters'>('characters');
   const [dpModalOpen, setDpModalOpen] = useState(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState(false);
 
-  // Inspected Scholar Modal state ("अंदर घुसने का ऑप्शन")
+  // Inspected Scholar Modal state
   const [inspectedScholar, setInspectedScholar] = useState<ScholarItem | null>(null);
   const [inspectorTab, setInspectorTab] = useState<'overview' | 'followers' | 'following'>('overview');
+  const [inspectedFollowersList, setInspectedFollowersList] = useState<ScholarItem[]>([]);
+  const [inspectedFollowingList, setInspectedFollowingList] = useState<ScholarItem[]>([]);
+  const [loadingRelations, setLoadingRelations] = useState(false);
 
-  // Social Hub state
+  // Own Followers/Following modal state
+  const [ownSocialModalTab, setOwnSocialModalTab] = useState<'followers' | 'following' | null>(null);
+  const [ownFollowersList, setOwnFollowersList] = useState<ScholarItem[]>([]);
+  const [ownFollowingList, setOwnFollowingList] = useState<ScholarItem[]>([]);
+  const [loadingOwnSocial, setLoadingOwnSocial] = useState(false);
+
+  // Real-time Firestore Users Directory & Search State
   const [searchUsername, setSearchUsername] = useState('');
-  const [followingMap, setFollowingMap] = useState<Record<string, boolean>>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const raw = localStorage.getItem('sbr_following_ids');
-        return raw ? JSON.parse(raw) : { priya_jac: true, kai_vanguard: true, jax_speed: true };
-      } catch {
-        return { priya_jac: true, kai_vanguard: true, jax_speed: true };
-      }
+  const [directoryScholars, setDirectoryScholars] = useState<ScholarItem[]>([]);
+  const [searchResults, setSearchResults] = useState<ScholarItem[] | null>(null);
+  const [searchingDb, setSearchingDb] = useState(false);
+
+  // Bidirectional Follow State backed by Firestore
+  const [followingUids, setFollowingUids] = useState<string[]>(profile?.followingUids || []);
+  const [followersUids, setFollowersUids] = useState<string[]>(profile?.followersUids || []);
+  const [followBusyMap, setFollowBusyMap] = useState<Record<string, boolean>>({});
+  const [socialFeedback, setSocialFeedback] = useState<string | null>(null);
+
+  // Keep local follow UID arrays synced with Zustand + resolved Firestore `follows` edges
+  useEffect(() => {
+    if (!profile?.uid) return;
+    if (Array.isArray(profile.followingUids)) {
+      setFollowingUids((prev) => Array.from(new Set([...(profile.followingUids || []), ...prev.filter((id) => profile.followingUids?.includes(id))])));
     }
-    return {};
-  });
-
-  // User Follow / Follower Counts
-  const followingCount = Object.values(followingMap).filter(Boolean).length + 12;
-  const followersCount = 148 + Object.values(followingMap).filter(Boolean).length * 2;
-
-  const handleToggleFollow = async (userId: string) => {
-    playClickSound();
-    setFollowingMap((prev) => {
-      const next = { ...prev, [userId]: !prev[userId] };
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('sbr_following_ids', JSON.stringify(next));
-      }
-      // Cloud sync to Firestore
-      if (profile?.uid) {
-        try {
-          const userRef = doc(db, 'users', profile.uid);
-          setDoc(userRef, { followingMap: next }, { merge: true }).catch(() => {});
-        } catch {}
-      }
-      return next;
+    if (Array.isArray(profile.followersUids)) {
+      setFollowersUids(profile.followersUids);
+    }
+    let active = true;
+    fetchResolvedFollowRelations(profile.uid).then(({ followersUids: fers, followingUids: fing }) => {
+      if (!active) return;
+      setFollowersUids(fers);
+      setFollowingUids(fing);
     });
+    return () => {
+      active = false;
+    };
+  }, [profile?.uid, profile?.followingUids, profile?.followersUids]);
+
+  // Subscribe to global Firestore users directory
+  useEffect(() => {
+    const unsub = subscribeGlobalLeaderboard((users) => {
+      setDirectoryScholars(users.map((u) => profileToScholarItem(u, profile?.uid)));
+    }, 50);
+    return () => unsub();
+  }, [profile?.uid]);
+
+  // Debounced live Firestore search when user types in `@username` / name search bar
+  useEffect(() => {
+    const clean = searchUsername.trim();
+    if (!clean) {
+      setSearchResults(null);
+      setSearchingDb(false);
+      return;
+    }
+
+    let cancelled = false;
+    setSearchingDb(true);
+    const timer = setTimeout(async () => {
+      try {
+        const users = await searchUsersInDatabase(clean, 30);
+        if (!cancelled) {
+          setSearchResults(users.map((u) => profileToScholarItem(u, profile?.uid)));
+        }
+      } finally {
+        if (!cancelled) setSearchingDb(false);
+      }
+    }, 250);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [searchUsername, profile?.uid]);
+
+  // Load real Followers & Following profiles when opening an inspected scholar
+  useEffect(() => {
+    if (!inspectedScholar) {
+      setInspectedFollowersList([]);
+      setInspectedFollowingList([]);
+      return;
+    }
+    let cancelled = false;
+    setLoadingRelations(true);
+    (async () => {
+      try {
+        const { followersUids: fers, followingUids: fing } = await fetchResolvedFollowRelations(
+          inspectedScholar.uid
+        );
+        const [ferUsers, fingUsers] = await Promise.all([
+          fetchUsersByUids(fers),
+          fetchUsersByUids(fing),
+        ]);
+        if (cancelled) return;
+        setInspectedFollowersList(ferUsers.map((u) => profileToScholarItem(u, profile?.uid)));
+        setInspectedFollowingList(fingUsers.map((u) => profileToScholarItem(u, profile?.uid)));
+        setInspectedScholar((prev) =>
+          prev && prev.uid === inspectedScholar.uid
+            ? {
+                ...prev,
+                followers: Math.max(fers.length, prev.followers),
+                following: Math.max(fing.length, prev.following),
+              }
+            : prev
+        );
+      } finally {
+        if (!cancelled) setLoadingRelations(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inspectedScholar?.uid]);
+
+  const openOwnSocialList = async (tab: 'followers' | 'following') => {
+    playClickSound();
+    setOwnSocialModalTab(tab);
+    if (!profile?.uid) return;
+    setLoadingOwnSocial(true);
+    try {
+      const { followersUids: fers, followingUids: fing } = await fetchResolvedFollowRelations(profile.uid);
+      setFollowersUids(fers);
+      setFollowingUids(fing);
+      const [ferUsers, fingUsers] = await Promise.all([
+        fetchUsersByUids(fers),
+        fetchUsersByUids(fing),
+      ]);
+      setOwnFollowersList(ferUsers.map((u) => profileToScholarItem(u, profile.uid)));
+      setOwnFollowingList(fingUsers.map((u) => profileToScholarItem(u, profile.uid)));
+    } finally {
+      setLoadingOwnSocial(false);
+    }
+  };
+
+  const followingCount = Math.max(followingUids.length, profile?.followingCount ?? 0);
+  const followersCount = Math.max(followersUids.length, profile?.followersCount ?? 0);
+
+  const handleToggleFollow = async (targetUid: string) => {
+    if (!profile?.uid || !targetUid || targetUid === profile.uid) return;
+    if (followBusyMap[targetUid]) return;
+
+    playClickSound();
+    const currentlyFollowing = followingUids.includes(targetUid);
+    const shouldFollow = !currentlyFollowing;
+
+    // Optimistic state updates for instant zero-lag UI across header, directory, and modals
+    const nextFollowingUids = shouldFollow
+      ? Array.from(new Set([...followingUids, targetUid]))
+      : followingUids.filter((id) => id !== targetUid);
+
+    setFollowBusyMap((prev) => ({ ...prev, [targetUid]: true }));
+    setFollowingUids(nextFollowingUids);
+
+    setProfile({
+      ...profile,
+      followingUids: nextFollowingUids,
+      connectedFriends: nextFollowingUids,
+      followingCount: nextFollowingUids.length,
+    });
+
+    const delta = shouldFollow ? 1 : -1;
+    setDirectoryScholars((prev) =>
+      prev.map((s) =>
+        s.uid === targetUid ? { ...s, followers: Math.max(0, s.followers + delta) } : s
+      )
+    );
+    setSearchResults((prev) =>
+      prev
+        ? prev.map((s) =>
+            s.uid === targetUid ? { ...s, followers: Math.max(0, s.followers + delta) } : s
+          )
+        : null
+    );
+    setInspectedScholar((prev) =>
+      prev && prev.uid === targetUid
+        ? { ...prev, followers: Math.max(0, prev.followers + delta) }
+        : prev
+    );
+
+    try {
+      const res = await toggleFollowInDatabase(profile.uid, targetUid, shouldFollow);
+      if (!res.ok) {
+        // Revert optimistic update if Firestore write failed completely
+        setFollowingUids(followingUids);
+        setProfile(profile);
+        setSocialFeedback(res.error || 'Failed to sync follow status to database.');
+        setTimeout(() => setSocialFeedback(null), 3000);
+      } else {
+        setSocialFeedback(shouldFollow ? 'Followed & synced to cloud!' : 'Unfollowed & synced to cloud!');
+        setTimeout(() => setSocialFeedback(null), 2000);
+      }
+    } finally {
+      setFollowBusyMap((prev) => ({ ...prev, [targetUid]: false }));
+    }
   };
 
   // Duel state
@@ -132,515 +333,12 @@ function ProfileContent() {
   const [editAge, setEditAge] = useState(String(profile?.age || ''));
   const [editUsername, setEditUsername] = useState(profile?.username || '');
   const [editSaving, setEditSaving] = useState(false);
-
-  // Real Peer Scholars Pool: All 10 Canonical Scholars with authentic 3D Dressed Skins
-  const KNOWN_SCHOLARS: ScholarItem[] = [
-    {
-      uid: 'kai_vanguard',
-      name: 'Kai',
-      username: 'kai_vanguard',
-      class: 'Class 10 JAC',
-      xp: 1850,
-      streak: 14,
-      followers: 412,
-      following: 28,
-      photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-      skinPath: '/skins/boy/minecraft-skins.png',
-      dressedOutfit: "Letter 'K' Blue Varsity Jacket & Indigo Jeans",
-      isRealUser: true,
-      role: 'Science Vanguard',
-      bio: 'Varsity K Blue Jacket. Physics & Science Olympiad JAC Gold Medalist.',
-      followersList: [
-        {
-          uid: 'jax_speed',
-          name: 'Jax',
-          username: 'jax_speed',
-          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
-          xp: 1720,
-          role: 'Tactical Speedster',
-          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-          dressedOutfit: 'Cyber Cyan Glowing Hoodie'
-        },
-        {
-          uid: 'elis_royal',
-          name: 'Elis',
-          username: 'elis_royal',
-          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
-          xp: 1620,
-          role: 'Royal Scholar',
-          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
-          dressedOutfit: 'Yellow Overalls & Blonde Buns'
-        },
-        {
-          uid: 'otis_sage',
-          name: 'Otis',
-          username: 'otis_sage',
-          photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
-          xp: 1690,
-          role: 'Scholar Sage',
-          skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
-          dressedOutfit: 'Tweed Blazer Suit & Bowtie'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'zane_cosmic',
-          name: 'Zane',
-          username: 'zane_cosmic',
-          photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
-          xp: 1940,
-          role: 'Cosmic Sorcerer',
-          skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
-          dressedOutfit: 'Cosmic Purple Galaxy Cloak'
-        },
-        {
-          uid: 'nova_starlight',
-          name: 'Nova',
-          username: 'nova_starlight',
-          photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
-          xp: 1890,
-          role: 'Starlight Mage',
-          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-          dressedOutfit: 'Dark Purple Cosmic Star Robe'
-        }
-      ]
-    },
-    {
-      uid: 'jax_speed',
-      name: 'Jax',
-      username: 'jax_speed',
-      class: 'Class 10 JAC',
-      xp: 1720,
-      streak: 11,
-      followers: 380,
-      following: 34,
-      photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
-      skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-      dressedOutfit: 'Cyber Cyan Glowing Hoodie with Tactical Headset',
-      isRealUser: true,
-      role: 'Tactical Speedster',
-      bio: 'Cyber Cyan Headset Master. 60s Speed Drill Record Holder.',
-      followersList: [
-        {
-          uid: 'kai_vanguard',
-          name: 'Kai',
-          username: 'kai_vanguard',
-          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-          xp: 1850,
-          role: 'Science Vanguard',
-          skinPath: '/skins/boy/minecraft-skins.png',
-          dressedOutfit: 'Blue Varsity Jacket'
-        },
-        {
-          uid: 'zara_speed',
-          name: 'Zara',
-          username: 'zara_speed',
-          photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
-          xp: 1710,
-          role: 'Speed Runner',
-          skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
-          dressedOutfit: 'Red Athletic Tracksuit'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'ryo_champion',
-          name: 'Ryo',
-          username: 'ryo_champion',
-          photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
-          xp: 1780,
-          role: 'Tactical Vanguard',
-          skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
-          dressedOutfit: "Green Varsity 'R' & Martial Headband"
-        }
-      ]
-    },
-    {
-      uid: 'otis_sage',
-      name: 'Otis',
-      username: 'otis_sage',
-      class: 'Class 10 JAC',
-      xp: 1690,
-      streak: 9,
-      followers: 295,
-      following: 19,
-      photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
-      skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
-      dressedOutfit: 'Tweed Blazer Suit, Bowtie, Glasses & Ancient Scroll',
-      isRealUser: true,
-      role: 'Scholar Sage',
-      bio: 'Tweed Blazer & Glasses. Social Studies & History Chronicler.',
-      followersList: [
-        {
-          uid: 'fay_nature',
-          name: 'Fay',
-          username: 'fay_nature',
-          photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
-          xp: 1540,
-          role: 'Nature Guardian',
-          skinPath: '/skins/girl/anime-hd-girl-green.png',
-          dressedOutfit: 'Woodland Green Dress'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'kai_vanguard',
-          name: 'Kai',
-          username: 'kai_vanguard',
-          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-          xp: 1850,
-          role: 'Science Vanguard',
-          skinPath: '/skins/boy/minecraft-skins.png',
-          dressedOutfit: 'Blue Varsity Jacket'
-        }
-      ]
-    },
-    {
-      uid: 'zane_cosmic',
-      name: 'Zane',
-      username: 'zane_cosmic',
-      class: 'Class 10 JAC',
-      xp: 1940,
-      streak: 16,
-      followers: 520,
-      following: 42,
-      photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
-      skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
-      dressedOutfit: 'Cosmic Purple Galaxy Robe with Golden Trim & Silver Hair',
-      isRealUser: true,
-      role: 'Cosmic Sorcerer',
-      bio: 'Galaxy Purple Robe with Golden Trim. Logic & Math Duelist.',
-      followersList: [
-        {
-          uid: 'kai_vanguard',
-          name: 'Kai',
-          username: 'kai_vanguard',
-          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-          xp: 1850,
-          role: 'Science Vanguard',
-          skinPath: '/skins/boy/minecraft-skins.png',
-          dressedOutfit: 'Blue Varsity Jacket'
-        },
-        {
-          uid: 'nova_starlight',
-          name: 'Nova',
-          username: 'nova_starlight',
-          photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
-          xp: 1890,
-          role: 'Starlight Mage',
-          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-          dressedOutfit: 'Purple Galaxy Hoodie'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'jax_speed',
-          name: 'Jax',
-          username: 'jax_speed',
-          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
-          xp: 1720,
-          role: 'Tactical Speedster',
-          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-          dressedOutfit: 'Cyber Cyan Glowing Hoodie'
-        }
-      ]
-    },
-    {
-      uid: 'ryo_champion',
-      name: 'Ryo',
-      username: 'ryo_champion',
-      class: 'Class 10 JAC',
-      xp: 1780,
-      streak: 12,
-      followers: 365,
-      following: 22,
-      photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
-      skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
-      dressedOutfit: "Green Varsity 'R' Jacket, Red Headband & Digital Tablet",
-      isRealUser: true,
-      role: 'Tactical Vanguard',
-      bio: 'Green Varsity R Jacket with Red Headband & Tablet. JAC Rank 1 Contender.',
-      followersList: [
-        {
-          uid: 'zara_speed',
-          name: 'Zara',
-          username: 'zara_speed',
-          photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
-          xp: 1710,
-          role: 'Speed Runner',
-          skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
-          dressedOutfit: 'Red Tracksuit'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'jax_speed',
-          name: 'Jax',
-          username: 'jax_speed',
-          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
-          xp: 1720,
-          role: 'Tactical Speedster',
-          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-          dressedOutfit: 'Cyan Cyber Hoodie'
-        }
-      ]
-    },
-    {
-      uid: 'elis_royal',
-      name: 'Elis',
-      username: 'elis_royal',
-      class: 'Class 10 JAC',
-      xp: 1620,
-      streak: 10,
-      followers: 340,
-      following: 31,
-      photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
-      skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
-      dressedOutfit: 'Yellow Overalls, Blonde Buns, Open Book & Quill Feather',
-      isRealUser: true,
-      role: 'Royal Scholar',
-      bio: 'Yellow Overalls & Blonde Buns with Quill. Biology & Life Sciences Topper.',
-      followersList: [
-        {
-          uid: 'mia_artisan',
-          name: 'Mia',
-          username: 'mia_artisan',
-          photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
-          xp: 1670,
-          role: 'Creative Artisan',
-          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-          dressedOutfit: 'Pastel Cardigan'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'kai_vanguard',
-          name: 'Kai',
-          username: 'kai_vanguard',
-          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-          xp: 1850,
-          role: 'Science Vanguard',
-          skinPath: '/skins/boy/minecraft-skins.png',
-          dressedOutfit: 'Blue Varsity Jacket'
-        }
-      ]
-    },
-    {
-      uid: 'nova_starlight',
-      name: 'Nova',
-      username: 'nova_starlight',
-      class: 'Class 10 JAC',
-      xp: 1890,
-      streak: 15,
-      followers: 478,
-      following: 39,
-      photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
-      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-      dressedOutfit: 'Cosmic Purple Galaxy Hoodie & Magical Star Wand',
-      isRealUser: true,
-      role: 'Starlight Mage',
-      bio: 'Purple Galaxy Hoodie & Star Wand. English & Literature Visionary.',
-      followersList: [
-        {
-          uid: 'zane_cosmic',
-          name: 'Zane',
-          username: 'zane_cosmic',
-          photoURL: '/assets/profile_photos/IMG_20261109_001625.png',
-          xp: 1940,
-          role: 'Cosmic Sorcerer',
-          skinPath: '/skins/boy/sasuke-uchiha-naruto-shippuden-hero-rogue-ninja-sharingan-boy-anime.png',
-          dressedOutfit: 'Cosmic Robe'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'elis_royal',
-          name: 'Elis',
-          username: 'elis_royal',
-          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
-          xp: 1620,
-          role: 'Royal Scholar',
-          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
-          dressedOutfit: 'Yellow Overalls'
-        }
-      ]
-    },
-    {
-      uid: 'fay_nature',
-      name: 'Fay',
-      username: 'fay_nature',
-      class: 'Class 10 JAC',
-      xp: 1540,
-      streak: 8,
-      followers: 310,
-      following: 25,
-      photoURL: '/assets/profile_photos/IMG_20261109_001805.png',
-      skinPath: '/skins/girl/anime-hd-girl-green.png',
-      dressedOutfit: 'Woodland Green Druid Dress with Leaf Embroidery',
-      isRealUser: true,
-      role: 'Nature Guardian',
-      bio: 'Woodland Green Dress with Leaf Book. Ecology & Geography Specialist.',
-      followersList: [
-        {
-          uid: 'otis_sage',
-          name: 'Otis',
-          username: 'otis_sage',
-          photoURL: '/assets/profile_photos/IMG_20261109_001555.png',
-          xp: 1690,
-          role: 'Scholar Sage',
-          skinPath: '/skins/boy/kid-kakashi-minecraft-skin.png',
-          dressedOutfit: 'Tweed Blazer Suit'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'elis_royal',
-          name: 'Elis',
-          username: 'elis_royal',
-          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
-          xp: 1620,
-          role: 'Royal Scholar',
-          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
-          dressedOutfit: 'Yellow Overalls'
-        }
-      ]
-    },
-    {
-      uid: 'zara_speed',
-      name: 'Zara',
-      username: 'zara_speed',
-      class: 'Class 10 JAC',
-      xp: 1710,
-      streak: 13,
-      followers: 395,
-      following: 30,
-      photoURL: '/assets/profile_photos/IMG_20261109_001833.png',
-      skinPath: '/skins/girl/rei-ayanami-neon-genesis-evangelion-evangelion-pilot-kuudere-white-pale-blue-hair-pretty-cute-girl-anime.png',
-      dressedOutfit: 'Red Athletic Sports Tracksuit with Gold Stripe & Neck Headphones',
-      isRealUser: true,
-      role: 'Speed Runner',
-      bio: 'Red Athletic Tracksuit with Neck Headphones. Algebra & Physics Accelerator.',
-      followersList: [
-        {
-          uid: 'jax_speed',
-          name: 'Jax',
-          username: 'jax_speed',
-          photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
-          xp: 1720,
-          role: 'Tactical Speedster',
-          skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-          dressedOutfit: 'Cyber Cyan Hoodie'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'ryo_champion',
-          name: 'Ryo',
-          username: 'ryo_champion',
-          photoURL: '/assets/profile_photos/IMG_20261109_001652.png',
-          xp: 1780,
-          role: 'Tactical Vanguard',
-          skinPath: '/skins/boy/goku-ultra-instinto-perfecto.png',
-          dressedOutfit: 'Varsity R Jacket'
-        }
-      ]
-    },
-    {
-      uid: 'mia_artisan',
-      name: 'Mia',
-      username: 'mia_artisan',
-      class: 'Class 10 JAC',
-      xp: 1670,
-      streak: 9,
-      followers: 350,
-      following: 27,
-      photoURL: '/assets/profile_photos/IMG_20261109_001853.png',
-      skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-      dressedOutfit: 'Pastel Cardigan, Pink Anime Hair with Art Palette & Pencil',
-      isRealUser: true,
-      role: 'Creative Artisan',
-      bio: 'Pastel Cardigan & Pink Hair with Color Palette. Hindi & Creative Arts.',
-      followersList: [
-        {
-          uid: 'elis_royal',
-          name: 'Elis',
-          username: 'elis_royal',
-          photoURL: '/assets/profile_photos/IMG_20261109_001715.png',
-          xp: 1620,
-          role: 'Royal Scholar',
-          skinPath: '/skins/girl/anime-girl-nezuko-chan.png',
-          dressedOutfit: 'Yellow Overalls'
-        }
-      ],
-      followingList: [
-        {
-          uid: 'nova_starlight',
-          name: 'Nova',
-          username: 'nova_starlight',
-          photoURL: '/assets/profile_photos/IMG_20261109_001739.png',
-          xp: 1890,
-          role: 'Starlight Mage',
-          skinPath: '/skins/girl/mori-calliope-hololive-em-reaper-rapper-new-outfit-pink-hair-cute-pretty-girl-jacket-sneakers-earrings-necklace-detalis-anime.png',
-          dressedOutfit: 'Cosmic Purple Robe'
-        }
-      ]
-    }
-  ];
-
-  // Self Scholar Representation
-  const currentUserScholar: ScholarItem = {
-    uid: profile?.uid || 'current_user',
-    name: profile?.name || 'Royal Scholar',
-    username: profile?.username || 'scholar',
-    class: 'Class 10 JAC',
-    xp: profile?.xp || 280,
-    streak: profile?.streak || 3,
-    followers: followersCount,
-    following: followingCount,
-    photoURL: profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-    skinPath: profile?.customAvatar?.skinPath || '/skins/boy/minecraft-skins.png',
-    dressedOutfit: profile?.customAvatar?.name || 'Royal Student Wardrobe',
-    isRealUser: true,
-    role: 'Active Scholar',
-    bio: 'JAC Class 10 Scholar preparing for Board Exams 2026.',
-    isCurrentUser: true,
-    followersList: [
-      {
-        uid: 'kai_vanguard',
-        name: 'Kai',
-        username: 'kai_vanguard',
-        photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
-        xp: 1850,
-        role: 'Science Vanguard',
-        skinPath: '/skins/boy/minecraft-skins.png',
-        dressedOutfit: 'Blue Varsity Jacket'
-      },
-      {
-        uid: 'jax_speed',
-        name: 'Jax',
-        username: 'jax_speed',
-        photoURL: '/assets/profile_photos/IMG_20261109_001527.png',
-        xp: 1720,
-        role: 'Tactical Speedster',
-        skinPath: '/skins/boy/anime-purple-mask-boy-galactic.png',
-        dressedOutfit: 'Cyan Cyber Hoodie'
-      }
-    ],
-    followingList: KNOWN_SCHOLARS.slice(0, 3).map((s) => ({
-      uid: s.uid,
-      name: s.name,
-      username: s.username,
-      photoURL: s.photoURL,
-      xp: s.xp,
-      role: s.role || 'Scholar',
-      skinPath: s.skinPath || '/skins/boy/minecraft-skins.png',
-      dressedOutfit: s.dressedOutfit || 'Scholar Wardrobe'
-    }))
-  };
+  const [editError, setEditError] = useState('');
 
   const handleRandomDuel = () => {
     playClickSound();
-    const pool = KNOWN_SCHOLARS.filter((s) => s.uid !== profile?.uid);
+    const pool = directoryScholars.filter((s) => s.uid !== profile?.uid);
+    if (pool.length === 0) return;
     const rand = pool[Math.floor(Math.random() * pool.length)] || pool[0];
     setDuelOpponent(rand);
   };
@@ -648,23 +346,29 @@ function ProfileContent() {
   const handleSaveProfile = async () => {
     if (!profile) return;
     setEditSaving(true);
+    setEditError('');
     try {
-      const updates = {
+      const cleanedUsername = normalizeUsername(editUsername || editFirstName, profile.uid);
+      const available = await isUsernameAvailable(cleanedUsername, profile.uid);
+      if (!available) {
+        setEditError(`@${cleanedUsername} is already taken by another scholar.`);
+        return;
+      }
+
+      const combinedName =
+        `${editFirstName.trim()} ${editLastName.trim()}`.trim() || profile.name;
+      const synced = await upsertUserInDirectory({
         ...profile,
         firstName: editFirstName.trim(),
         lastName: editLastName.trim(),
-        name: `${editFirstName.trim()} ${editLastName.trim()}`.trim() || profile.name,
-        age: parseInt(editAge) || profile.age,
-        username: editUsername.trim().toLowerCase()
-      };
-      const { saveLocalUserProfile } = await import('@/lib/firestore');
-      saveLocalUserProfile(updates);
-      try {
-        await setDoc(doc(db, 'users', profile.uid), updates, { merge: true });
-      } catch {
-        // offline fallback
-      }
-      useUserStore.setState({ profile: updates });
+        name: combinedName,
+        displayName: combinedName,
+        nameLower: combinedName.toLowerCase(),
+        age: parseInt(editAge, 10) || profile.age,
+        username: cleanedUsername,
+        usernameLower: cleanedUsername.toLowerCase(),
+      });
+      setProfile(synced);
       setEditModalOpen(false);
     } finally {
       setEditSaving(false);
@@ -672,10 +376,10 @@ function ProfileContent() {
   };
 
   const name = profile?.name || 'Royal Scholar';
-  const email = profile?.email || 'scholar@studybuddy.royal';
+  const email = profile?.email || 'scholar@jackquiz.cloud';
   const photoURL = profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png';
-  const xp = profile?.xp ?? 280;
-  const streak = profile?.streak ?? 3;
+  const xp = profile?.xp ?? 0;
+  const streak = profile?.streak ?? 0;
   const hearts = profile?.hearts ?? 5;
 
   const currentOre = getUserCurrentOreTier(xp);
@@ -685,29 +389,40 @@ function ProfileContent() {
   const crownsWon = Object.values(profile?.progress || {}).filter((lvl) => lvl >= 5).length;
   const scores = Object.values(profile?.levelScores || {});
   const avgAccuracy =
-    scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 92;
+    scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+
+  // Compute live Global Rank from Firestore directory
+  const sortedDirectory = [...directoryScholars].sort((a, b) => b.xp - a.xp);
+  const computedRankIdx = sortedDirectory.findIndex((s) => s.uid === profile?.uid);
+  const userStateRank = computedRankIdx >= 0 ? `#${computedRankIdx + 1}` : directoryScholars.length > 0 ? `#${directoryScholars.length + 1}` : '#1';
 
   const handleRefill = () => {
     playClickSound();
     refillHearts();
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     playClickSound();
-    router.push('/login');
+    try {
+      await signOut(auth);
+    } catch {
+      // ignore if offline/anonymous cleanup
+    }
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('sbr_session_verified');
+    }
+    logoutUser();
+    router.replace('/login');
   };
 
-  // Filtered Scholars List (Includes user themselves and real scholars)
-  const term = searchUsername.trim().toLowerCase();
-  const allScholarsList = [currentUserScholar, ...KNOWN_SCHOLARS];
-  const displayedScholars = term
-    ? allScholarsList.filter(
-        (s) =>
-          s.name.toLowerCase().includes(term) ||
-          s.username.toLowerCase().includes(term) ||
-          (s.role && s.role.toLowerCase().includes(term))
-      )
-    : allScholarsList;
+  // Scholars displayed in the directory / search results
+  const term = searchUsername.trim();
+  const baseDirectory = directoryScholars.length > 0
+    ? directoryScholars
+    : profile
+    ? [profileToScholarItem(profile, profile.uid)]
+    : [];
+  const displayedScholars = term ? (searchResults ?? []) : baseDirectory;
 
   // Day of week calendar for Duolingo-style streak
   const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -842,23 +557,31 @@ function ProfileContent() {
             PRIMARY SOCIAL & STUDENT STATUS BAR: FOLLOW, FOLLOWING, STATUS
             ========================================================================= */}
         <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-3 gap-2 text-center">
-          <div className="p-2 rounded-xl bg-white/5 border border-white/5">
+          <button
+            type="button"
+            onClick={() => openOwnSocialList('followers')}
+            className="p-2 rounded-xl bg-white/5 hover:bg-amber-500/10 border border-white/5 hover:border-amber-400/40 transition-all cursor-pointer active:scale-95"
+          >
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
               Followers
             </span>
             <div className="text-base font-black text-amber-300">{followersCount}</div>
-          </div>
-          <div className="p-2 rounded-xl bg-white/5 border border-white/5">
+          </button>
+          <button
+            type="button"
+            onClick={() => openOwnSocialList('following')}
+            className="p-2 rounded-xl bg-white/5 hover:bg-blue-500/10 border border-white/5 hover:border-blue-400/40 transition-all cursor-pointer active:scale-95"
+          >
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
               Following
             </span>
             <div className="text-base font-black text-blue-300">{followingCount}</div>
-          </div>
+          </button>
           <div className="p-2 rounded-xl bg-white/5 border border-white/5">
             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-              State Rank
+              Global Rank
             </span>
-            <div className="text-base font-black text-emerald-400">#1 Top 1%</div>
+            <div className="text-base font-black text-emerald-400">{userStateRank}</div>
           </div>
         </div>
 
@@ -1087,126 +810,155 @@ function ProfileContent() {
       </div>
 
       {/* =========================================================================
-          SOCIAL HUB: Find Study Buddies & Classmates (with Profile Inspection)
+          SOCIAL HUB: Find Study Buddies & Classmates (Database @username Search)
           ========================================================================= */}
       <div className="mt-5 p-4 rounded-3xl bg-[rgba(26,34,53,0.85)] backdrop-blur-xl border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-blue-400" />
             <h3 className="text-xs font-black uppercase tracking-wider text-white">
-              🔍 Find Study Buddies &amp; Friends
+              🔍 Find Users by @username
             </h3>
           </div>
           <span className="text-[9px] font-black text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full border border-blue-400/30">
-            {displayedScholars.length} Scholars
+            {searchingDb ? 'Searching Cloud...' : `${displayedScholars.length} Found`}
           </span>
         </div>
 
-        {/* Search Input (Real-time Filter) */}
+        {/* Search Input (Live Firestore Query) */}
         <div className="relative mb-3">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search scholar by name, @username or subject..."
+            placeholder="Search database by @username or full name..."
             value={searchUsername}
             onChange={(e) => setSearchUsername(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-10 pr-4 py-2.5 text-xs placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50 transition"
+            className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-10 pr-8 py-2.5 text-xs placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50 transition"
           />
+          {searchUsername && (
+            <button
+              type="button"
+              onClick={() => setSearchUsername('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+              title="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
 
-        {/* Scholars Cards with View Profile ("अंदर घुसने का ऑप्शन") */}
-        <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
-          {displayedScholars.map((s) => {
-            const isFollowing = !!followingMap[s.username || s.uid];
-            const isYou = s.isCurrentUser || s.uid === profile?.uid;
+        {socialFeedback && (
+          <div className="mb-2.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-[11px] font-bold text-emerald-300 text-center">
+            {socialFeedback}
+          </div>
+        )}
 
-            return (
-              <div
-                key={s.uid}
-                className={`p-3 rounded-2xl border transition-all ${
-                  isYou
-                    ? 'bg-amber-500/10 border-amber-400/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
-                    : 'bg-white/5 border-white/10 hover:border-white/20'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <img
-                      src={s.photoURL}
-                      alt={s.name}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
-                      }}
-                      className="w-10 h-10 rounded-xl object-cover border border-white/15 shrink-0 bg-slate-900"
-                    />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <p className="text-xs font-black text-white truncate">{s.name}</p>
-                        {isYou && (
-                          <span className="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950">
-                            YOU
-                          </span>
-                        )}
+        {/* Scholars Cards with View Profile */}
+        <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
+          {displayedScholars.length === 0 ? (
+            <div className="p-6 text-center rounded-2xl bg-white/5 border border-white/10">
+              <p className="text-xs font-bold text-slate-300">
+                {searchingDb
+                  ? 'Searching Firestore users directory...'
+                  : term
+                  ? `No registered scholar matched "@${term.replace(/^@+/, '')}".`
+                  : 'No scholars in directory yet. Invite classmates to sign up!'}
+              </p>
+            </div>
+          ) : (
+            displayedScholars.map((s) => {
+              const isFollowing = followingUids.includes(s.uid);
+              const isBusy = Boolean(followBusyMap[s.uid]);
+              const isYou = s.isCurrentUser || s.uid === profile?.uid;
+
+              return (
+                <div
+                  key={s.uid}
+                  className={`p-3 rounded-2xl border transition-all ${
+                    isYou
+                      ? 'bg-amber-500/10 border-amber-400/40 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                      : 'bg-white/5 border-white/10 hover:border-white/20'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <img
+                        src={s.photoURL}
+                        alt={s.name}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                        }}
+                        className="w-10 h-10 rounded-xl object-cover border border-white/15 shrink-0 bg-slate-900"
+                      />
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-xs font-black text-white truncate">{s.name}</p>
+                          {isYou && (
+                            <span className="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950">
+                              YOU
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[10px] text-amber-400 font-bold truncate">
+                          @{s.username} &bull; {s.xp} XP &bull; {s.followers} followers
+                        </p>
                       </div>
-                      <p className="text-[10px] text-amber-400 font-bold truncate">
-                        @{s.username} &bull; {s.xp} XP &bull; {s.streak}d 🔥
-                      </p>
+                    </div>
+
+                    {/* Actions: View Profile + Follow/Unfollow + Duel */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <button
+                        onClick={() => {
+                          playClickSound();
+                          setInspectedScholar(s);
+                          setInspectorTab('overview');
+                        }}
+                        className="px-2.5 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-[10px] font-black text-blue-300 flex items-center gap-1 transition-all active:scale-95"
+                        title="View Full Profile Details"
+                      >
+                        <Eye className="w-3 h-3" />
+                        <span>Profile</span>
+                      </button>
+
+                      {!isYou && (
+                        <>
+                          <button
+                            disabled={isBusy}
+                            onClick={() => handleToggleFollow(s.uid)}
+                            className={`px-2.5 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center gap-1 disabled:opacity-60 ${
+                              isFollowing
+                                ? 'bg-amber-500/20 hover:bg-red-500/20 hover:text-red-300 hover:border-red-400/40 text-amber-300 border border-amber-400/40'
+                                : 'bg-emerald-500 text-slate-950 font-black shadow-[0_2px_0_#065F46]'
+                            }`}
+                          >
+                            {isFollowing ? (
+                              <>
+                                <UserCheck className="w-3 h-3" />
+                                <span>Following</span>
+                              </>
+                            ) : (
+                              <>
+                                <UserPlus className="w-3 h-3" />
+                                <span>Follow</span>
+                              </>
+                            )}
+                          </button>
+                          <Link
+                            href={`/quiz/sci/sci_ch01/1?mode=duel&opponent=${encodeURIComponent(s.name)}`}
+                            onClick={() => playClickSound()}
+                            className="px-2 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-[10px] font-black text-red-300 flex items-center gap-1"
+                          >
+                            <Swords className="w-3 h-3" />
+                            <span>Duel</span>
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
-
-                  {/* Actions: View Profile ("अंदर घुसने का ऑप्शन") + Follow + Duel */}
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    {/* View Profile Button ("अंदर घुसने का ऑप्शन") */}
-                    <button
-                      onClick={() => {
-                        playClickSound();
-                        setInspectedScholar(s);
-                        setInspectorTab('overview');
-                      }}
-                      className="px-2.5 py-1.5 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-[10px] font-black text-blue-300 flex items-center gap-1 transition-all active:scale-95"
-                      title="View Full Profile Details"
-                    >
-                      <Eye className="w-3 h-3" />
-                      <span>Profile</span>
-                    </button>
-
-                    {!isYou && (
-                      <>
-                        <button
-                          onClick={() => handleToggleFollow(s.username || s.uid)}
-                          className={`px-2.5 py-1.5 rounded-xl text-[10px] font-black transition-all flex items-center gap-1 ${
-                            isFollowing
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
-                              : 'bg-emerald-500 text-slate-950 font-black shadow-[0_2px_0_#065F46]'
-                          }`}
-                        >
-                          {isFollowing ? (
-                            <>
-                              <UserCheck className="w-3 h-3" />
-                              <span>Following</span>
-                            </>
-                          ) : (
-                            <>
-                              <UserPlus className="w-3 h-3" />
-                              <span>Follow</span>
-                            </>
-                          )}
-                        </button>
-                        <Link
-                          href={`/quiz/sci/sci_ch01/1?mode=duel&opponent=${encodeURIComponent(s.name)}`}
-                          onClick={() => playClickSound()}
-                          className="px-2 py-1.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/40 text-[10px] font-black text-red-300 flex items-center gap-1"
-                        >
-                          <Swords className="w-3 h-3" />
-                          <span>Duel</span>
-                        </Link>
-                      </>
-                    )}
-                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
 
@@ -1304,7 +1056,7 @@ function ProfileContent() {
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                👥 Followers ({inspectedScholar.followersList?.length || 3})
+                👥 Followers ({Math.max(inspectedScholar.followers, inspectedFollowersList.length)})
               </button>
               <button
                 onClick={() => { playClickSound(); setInspectorTab('following'); }}
@@ -1314,7 +1066,7 @@ function ProfileContent() {
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
-                ⭐ Following ({inspectedScholar.followingList?.length || 2})
+                ⭐ Following ({Math.max(inspectedScholar.following, inspectedFollowingList.length)})
               </button>
             </div>
 
@@ -1322,7 +1074,6 @@ function ProfileContent() {
             {inspectorTab === 'overview' && (
               <div>
                 <div className="flex items-center gap-4 mb-4">
-                  {/* Interactive 3D Dressed Avatar Model */}
                   <div className="w-24 h-28 shrink-0 rounded-2xl bg-black/50 border-2 border-amber-400/40 p-1 flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.3)]">
                     <MinecraftVoxelCharacter
                       skinPath={inspectedScholar.skinPath || '/skins/boy/minecraft-skins.png'}
@@ -1340,7 +1091,7 @@ function ProfileContent() {
                     </span>
                     <div className="mt-2 flex items-center gap-1.5 text-[10px] text-slate-300">
                       <Shirt className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span className="truncate">{inspectedScholar.dressedOutfit || 'Authentic Outfit'}</span>
+                      <span className="truncate">{inspectedScholar.dressedOutfit || 'Royal Student Wardrobe'}</span>
                     </div>
                   </div>
                 </div>
@@ -1349,7 +1100,7 @@ function ProfileContent() {
                   {inspectedScholar.bio || 'Active Class 10 Scholar preparing for JAC Board Exams 2026.'}
                 </p>
 
-                {/* Scholar Stats */}
+                {/* Live Scholar Stats */}
                 <div className="grid grid-cols-4 gap-2 text-center py-3 border-y border-white/10 mb-4">
                   <div className="p-2 rounded-xl bg-white/5">
                     <span className="text-[9px] font-bold text-slate-400 uppercase block">XP</span>
@@ -1359,131 +1110,145 @@ function ProfileContent() {
                     <span className="text-[9px] font-bold text-slate-400 uppercase block">Streak</span>
                     <span className="text-sm font-black text-orange-400">{inspectedScholar.streak}d 🔥</span>
                   </div>
-                  <div className="p-2 rounded-xl bg-white/5">
+                  <button
+                    type="button"
+                    onClick={() => setInspectorTab('followers')}
+                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition"
+                  >
                     <span className="text-[9px] font-bold text-slate-400 uppercase block">Followers</span>
-                    <span className="text-sm font-black text-white">{inspectedScholar.followers || 300}</span>
-                  </div>
-                  <div className="p-2 rounded-xl bg-white/5">
+                    <span className="text-sm font-black text-white">{Math.max(inspectedScholar.followers, inspectedFollowersList.length)}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInspectorTab('following')}
+                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition"
+                  >
                     <span className="text-[9px] font-bold text-slate-400 uppercase block">Following</span>
-                    <span className="text-sm font-black text-white">{inspectedScholar.following || 25}</span>
-                  </div>
+                    <span className="text-sm font-black text-white">{Math.max(inspectedScholar.following, inspectedFollowingList.length)}</span>
+                  </button>
                 </div>
               </div>
             )}
 
-            {/* TAB 2: FOLLOWERS LIST (ACCOUNTS FOLLOWING THIS SCHOLAR) */}
+            {/* TAB 2: FOLLOWERS LIST (LIVE FROM FIRESTORE) */}
             {inspectorTab === 'followers' && (
               <div className="space-y-2 mb-4 max-h-[260px] overflow-y-auto pr-1">
                 <p className="text-[11px] text-slate-400 mb-2">
                   Scholars following @{inspectedScholar.username}:
                 </p>
-                {(inspectedScholar.followersList || []).map((f) => (
-                  <div
-                    key={f.uid}
-                    className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-all"
-                  >
-                    <div
-                      onClick={() => {
-                        playClickSound();
-                        const full = KNOWN_SCHOLARS.find((k) => k.uid === f.uid) || {
-                          uid: f.uid,
-                          name: f.name,
-                          username: f.username,
-                          class: 'Class 10 JAC',
-                          xp: f.xp,
-                          streak: 8,
-                          photoURL: f.photoURL,
-                          skinPath: f.skinPath,
-                          dressedOutfit: f.dressedOutfit,
-                          isRealUser: true,
-                          role: f.role
-                        };
-                        setInspectedScholar(full);
-                        setInspectorTab('overview');
-                      }}
-                      className="flex items-center gap-2.5 cursor-pointer min-w-0"
-                    >
-                      <img
-                        src={f.photoURL}
-                        alt={f.name}
-                        className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-xs font-black text-white truncate">{f.name}</p>
-                        <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
-                      </div>
-                    </div>
+                {loadingRelations ? (
+                  <p className="text-xs text-slate-400 py-4 text-center">Loading followers from database...</p>
+                ) : inspectedFollowersList.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-4 text-center">No followers yet.</p>
+                ) : (
+                  inspectedFollowersList.map((f) => {
+                    const isFollowingF = followingUids.includes(f.uid);
+                    const isSelfF = f.uid === profile?.uid;
+                    return (
+                      <div
+                        key={f.uid}
+                        className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-all"
+                      >
+                        <div
+                          onClick={() => {
+                            playClickSound();
+                            setInspectedScholar(f);
+                            setInspectorTab('overview');
+                          }}
+                          className="flex items-center gap-2.5 cursor-pointer min-w-0"
+                        >
+                          <img
+                            src={f.photoURL}
+                            alt={f.name}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                            }}
+                            className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-xs font-black text-white truncate">{f.name}</p>
+                            <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
+                          </div>
+                        </div>
 
-                    <button
-                      onClick={() => handleToggleFollow(f.username || f.uid)}
-                      className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
-                        followingMap[f.username || f.uid]
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
-                          : 'bg-emerald-500 text-slate-950'
-                      }`}
-                    >
-                      {followingMap[f.username || f.uid] ? 'Following ✓' : '+ Follow'}
-                    </button>
-                  </div>
-                ))}
+                        {!isSelfF && (
+                          <button
+                            disabled={Boolean(followBusyMap[f.uid])}
+                            onClick={() => handleToggleFollow(f.uid)}
+                            className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
+                              isFollowingF
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                                : 'bg-emerald-500 text-slate-950'
+                            }`}
+                          >
+                            {isFollowingF ? 'Following ✓' : '+ Follow'}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             )}
 
-            {/* TAB 3: FOLLOWING LIST (ACCOUNTS THIS SCHOLAR IS FOLLOWING) */}
+            {/* TAB 3: FOLLOWING LIST (LIVE FROM FIRESTORE) */}
             {inspectorTab === 'following' && (
               <div className="space-y-2 mb-4 max-h-[260px] overflow-y-auto pr-1">
                 <p className="text-[11px] text-slate-400 mb-2">
                   Scholars followed by @{inspectedScholar.username}:
                 </p>
-                {(inspectedScholar.followingList || []).map((f) => (
-                  <div
-                    key={f.uid}
-                    className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-all"
-                  >
-                    <div
-                      onClick={() => {
-                        playClickSound();
-                        const full = KNOWN_SCHOLARS.find((k) => k.uid === f.uid) || {
-                          uid: f.uid,
-                          name: f.name,
-                          username: f.username,
-                          class: 'Class 10 JAC',
-                          xp: f.xp,
-                          streak: 8,
-                          photoURL: f.photoURL,
-                          skinPath: f.skinPath,
-                          dressedOutfit: f.dressedOutfit,
-                          isRealUser: true,
-                          role: f.role
-                        };
-                        setInspectedScholar(full);
-                        setInspectorTab('overview');
-                      }}
-                      className="flex items-center gap-2.5 cursor-pointer min-w-0"
-                    >
-                      <img
-                        src={f.photoURL}
-                        alt={f.name}
-                        className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
-                      />
-                      <div className="min-w-0">
-                        <p className="text-xs font-black text-white truncate">{f.name}</p>
-                        <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
-                      </div>
-                    </div>
+                {loadingRelations ? (
+                  <p className="text-xs text-slate-400 py-4 text-center">Loading following list from database...</p>
+                ) : inspectedFollowingList.length === 0 ? (
+                  <p className="text-xs text-slate-400 py-4 text-center">Not following anyone yet.</p>
+                ) : (
+                  inspectedFollowingList.map((f) => {
+                    const isFollowingF = followingUids.includes(f.uid);
+                    const isSelfF = f.uid === profile?.uid;
+                    return (
+                      <div
+                        key={f.uid}
+                        className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition-all"
+                      >
+                        <div
+                          onClick={() => {
+                            playClickSound();
+                            setInspectedScholar(f);
+                            setInspectorTab('overview');
+                          }}
+                          className="flex items-center gap-2.5 cursor-pointer min-w-0"
+                        >
+                          <img
+                            src={f.photoURL}
+                            alt={f.name}
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                            }}
+                            className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-xs font-black text-white truncate">{f.name}</p>
+                            <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
+                          </div>
+                        </div>
 
-                    <button
-                      onClick={() => handleToggleFollow(f.username || f.uid)}
-                      className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
-                        followingMap[f.username || f.uid]
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
-                          : 'bg-emerald-500 text-slate-950'
-                      }`}
-                    >
-                      {followingMap[f.username || f.uid] ? 'Following ✓' : '+ Follow'}
-                    </button>
-                  </div>
-                ))}
+                        {!isSelfF && (
+                          <button
+                            disabled={Boolean(followBusyMap[f.uid])}
+                            onClick={() => handleToggleFollow(f.uid)}
+                            className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
+                              isFollowingF
+                                ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                                : 'bg-emerald-500 text-slate-950'
+                            }`}
+                          >
+                            {isFollowingF ? 'Following ✓' : '+ Follow'}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             )}
 
@@ -1492,17 +1257,18 @@ function ProfileContent() {
               {!inspectedScholar.isCurrentUser && (
                 <>
                   <button
-                    onClick={() => handleToggleFollow(inspectedScholar.username || inspectedScholar.uid)}
-                    className={`w-full py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 ${
-                      followingMap[inspectedScholar.username || inspectedScholar.uid]
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                    disabled={Boolean(followBusyMap[inspectedScholar.uid])}
+                    onClick={() => handleToggleFollow(inspectedScholar.uid)}
+                    className={`w-full py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 disabled:opacity-60 ${
+                      followingUids.includes(inspectedScholar.uid)
+                        ? 'bg-amber-500/20 hover:bg-red-500/20 hover:text-red-300 hover:border-red-400/40 text-amber-300 border border-amber-400/40'
                         : 'bg-emerald-500 text-slate-950 font-black shadow-[0_3px_0_#065F46]'
                     }`}
                   >
-                    {followingMap[inspectedScholar.username || inspectedScholar.uid] ? (
+                    {followingUids.includes(inspectedScholar.uid) ? (
                       <>
                         <UserCheck className="w-4 h-4" />
-                        <span>Following Scholar ✓</span>
+                        <span>Following Scholar ✓ (Tap to Unfollow)</span>
                       </>
                     ) : (
                       <>
@@ -1595,12 +1361,12 @@ function ProfileContent() {
 
               <div className="grid grid-cols-2 gap-2 text-center">
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-[10px] text-slate-400 font-bold">Total Students</span>
-                  <div className="text-base font-black text-white mt-0.5">48 Scholars</div>
+                  <span className="text-[10px] text-slate-400 font-bold">Cloud Scholars</span>
+                  <div className="text-base font-black text-white mt-0.5">{directoryScholars.length} Registered</div>
                 </div>
                 <div className="p-2.5 rounded-xl bg-white/5 border border-white/5">
-                  <span className="text-[10px] text-slate-400 font-bold">Avg Attendance</span>
-                  <div className="text-base font-black text-emerald-400 mt-0.5">96.4%</div>
+                  <span className="text-[10px] text-slate-400 font-bold">Your Avg Accuracy</span>
+                  <div className="text-base font-black text-emerald-400 mt-0.5">{avgAccuracy}%</div>
                 </div>
               </div>
             </div>
@@ -1618,6 +1384,102 @@ function ProfileContent() {
         </div>
       )}
 
+      {/* Own Followers / Following Modal (Live from Firestore) */}
+      {ownSocialModalTab && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
+          <div className="relative w-full max-w-[420px] rounded-3xl bg-gradient-to-b from-[#16213A] to-[#0A0E18] border-2 border-amber-500/40 p-5 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => openOwnSocialList('followers')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition ${
+                    ownSocialModalTab === 'followers'
+                      ? 'bg-amber-500 text-slate-950'
+                      : 'bg-white/5 text-slate-300'
+                  }`}
+                >
+                  Followers ({followersCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openOwnSocialList('following')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-black transition ${
+                    ownSocialModalTab === 'following'
+                      ? 'bg-blue-500 text-slate-950'
+                      : 'bg-white/5 text-slate-300'
+                  }`}
+                >
+                  Following ({followingCount})
+                </button>
+              </div>
+              <button
+                onClick={() => setOwnSocialModalTab(null)}
+                className="w-8 h-8 rounded-full bg-white/10 text-slate-300 hover:text-white flex items-center justify-center"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
+              {loadingOwnSocial ? (
+                <p className="text-xs text-slate-400 py-6 text-center">Loading from Firestore database...</p>
+              ) : (ownSocialModalTab === 'followers' ? ownFollowersList : ownFollowingList).length === 0 ? (
+                <p className="text-xs text-slate-400 py-6 text-center">
+                  {ownSocialModalTab === 'followers'
+                    ? 'No scholars following you yet.'
+                    : 'You are not following anyone yet. Search @username below to connect!'}
+                </p>
+              ) : (
+                (ownSocialModalTab === 'followers' ? ownFollowersList : ownFollowingList).map((u) => {
+                  const isFollowingU = followingUids.includes(u.uid);
+                  const isBusyU = Boolean(followBusyMap[u.uid]);
+                  return (
+                    <div
+                      key={u.uid}
+                      className="flex items-center justify-between p-2.5 rounded-2xl bg-white/5 border border-white/10"
+                    >
+                      <div
+                        onClick={() => {
+                          setOwnSocialModalTab(null);
+                          setInspectedScholar(u);
+                          setInspectorTab('overview');
+                        }}
+                        className="flex items-center gap-2.5 min-w-0 cursor-pointer"
+                      >
+                        <img
+                          src={u.photoURL}
+                          alt={u.name}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                          }}
+                          className="w-9 h-9 rounded-xl object-cover border border-white/15 shrink-0"
+                        />
+                        <div className="min-w-0">
+                          <p className="text-xs font-black text-white truncate">{u.name}</p>
+                          <p className="text-[10px] text-amber-400 font-bold truncate">@{u.username} &bull; {u.xp} XP</p>
+                        </div>
+                      </div>
+                      <button
+                        disabled={isBusyU}
+                        onClick={() => handleToggleFollow(u.uid)}
+                        className={`px-2.5 py-1 rounded-xl text-[10px] font-black shrink-0 ${
+                          isFollowingU
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                            : 'bg-emerald-500 text-slate-950'
+                        }`}
+                      >
+                        {isFollowingU ? 'Following ✓' : '+ Follow'}
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Edit Profile Modal */}
       {editModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
@@ -1625,12 +1487,18 @@ function ProfileContent() {
             <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
               <h3 className="text-sm font-black text-white">⚙️ Edit Profile</h3>
               <button
-                onClick={() => setEditModalOpen(false)}
+                onClick={() => { setEditModalOpen(false); setEditError(''); }}
                 className="w-8 h-8 rounded-full bg-white/10 text-slate-300 hover:text-white flex items-center justify-center"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
+
+            {editError && (
+              <div className="mb-3 p-2.5 rounded-xl bg-red-500/20 border border-red-400/40 text-xs font-bold text-red-200">
+                {editError}
+              </div>
+            )}
 
             <div className="space-y-3">
               <div>

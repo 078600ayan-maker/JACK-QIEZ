@@ -10,70 +10,107 @@ import { ParticleCanvas } from '@/components/ui/ParticleCanvas';
 import { BottomDock } from '@/components/layout/BottomDock';
 import { DynamicToast } from '@/components/ui/DynamicToast';
 import { useUserStore } from '@/store/useUserStore';
-import { getLocalUserProfile, saveLocalUserProfile } from '@/lib/firestore';
+import {
+  getLocalUserProfile,
+  saveLocalUserProfile,
+  clearLocalUserProfile
+} from '@/lib/firestore';
+import { upsertUserInDirectory } from '@/lib/socialService';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { profile, initUser } = useUserStore();
+  const { initUser } = useUserStore();
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     let unsubSnapshot: (() => void) | null = null;
+    let mounted = true;
 
-    // Fast-fallback timer: If Firebase auth takes > 800ms, load local profile instantly!
+    const attachLiveUserListener = (uid: string) => {
+      if (unsubSnapshot) unsubSnapshot();
+      try {
+        unsubSnapshot = onSnapshot(doc(db, 'users', uid), (snap) => {
+          if (snap.exists() && mounted) {
+            const liveData = snap.data();
+            useUserStore.setState((prev) => {
+              const merged = prev.profile ? { ...prev.profile, ...liveData } : (liveData as any);
+              saveLocalUserProfile(merged);
+              return { profile: merged };
+            });
+          }
+        });
+      } catch (e) {
+        console.warn('Realtime onSnapshot fallback:', e);
+      }
+    };
+
+    const redirectToLoginOnly = () => {
+      clearLocalUserProfile();
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('sbr_session_verified');
+      }
+      router.replace('/login');
+    };
+
+    // Fast-fallback timer: Wait briefly for Firebase Auth; only allow verified local session, otherwise enforce /login
     const fallbackTimer = setTimeout(async () => {
+      if (!mounted) return;
+      const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
       const local = getLocalUserProfile();
-      if (local) {
+      if (verified && local && local.uid) {
         if (!useUserStore.getState().profile) {
           await initUser(local.uid, local.name, local.email);
         }
+        attachLiveUserListener(local.uid);
         setAuthReady(true);
       } else {
-        // Create an instant guest scholar profile so home screen loads immediately!
-        const guest = await initUser('scholar_guest', 'Scholar', 'scholar@royal.edu');
-        setAuthReady(true);
+        redirectToLoginOnly();
       }
-    }, 800);
+    }, 1500);
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       clearTimeout(fallbackTimer);
-      if (firebaseUser) {
-        // Firebase user is signed in
-        if (!profile) {
-          await initUser(firebaseUser.uid, firebaseUser.displayName || undefined, firebaseUser.email || undefined);
-        }
-        setAuthReady(true);
+      if (!mounted) return;
 
-        // Real-Time onSnapshot Listener (Phase 2 Requirement 1)
-        try {
-          unsubSnapshot = onSnapshot(doc(db, 'users', firebaseUser.uid), (snap) => {
-            if (snap.exists()) {
-              const liveData = snap.data();
-              useUserStore.setState((prev) => {
-                const merged = prev.profile ? { ...prev.profile, ...liveData } : (liveData as any);
-                saveLocalUserProfile(merged);
-                return { profile: merged };
-              });
-            }
-          });
-        } catch (e) {
-          console.warn('Realtime onSnapshot fallback:', e);
+      if (firebaseUser) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('sbr_session_verified', 'true');
         }
-      } else {
-        // No Firebase user — check localStorage fallback or instant guest scholar
-        const local = getLocalUserProfile();
-        if (local) {
-          if (!profile) {
-            await initUser(local.uid, local.name, local.email);
-          }
-        } else {
-          await initUser('scholar_guest', 'Scholar', 'scholar@royal.edu');
+        await initUser(
+          firebaseUser.uid,
+          firebaseUser.displayName || undefined,
+          firebaseUser.email || undefined
+        );
+        const cur = useUserStore.getState().profile;
+        if (cur) {
+          const synced = await upsertUserInDirectory(cur);
+          useUserStore.setState({ profile: synced });
+          saveLocalUserProfile(synced);
         }
+        attachLiveUserListener(firebaseUser.uid);
         setAuthReady(true);
+      } else {
+        const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
+        const local = getLocalUserProfile();
+        if (verified && local && local.uid) {
+          await initUser(local.uid, local.name, local.email);
+          const cur = useUserStore.getState().profile;
+          if (cur) {
+            const synced = await upsertUserInDirectory(cur);
+            useUserStore.setState({ profile: synced });
+            saveLocalUserProfile(synced);
+          }
+          attachLiveUserListener(local.uid);
+          setAuthReady(true);
+        } else {
+          // Brand-new or logged-out visitor: strictly redirect to /login interface ONLY
+          redirectToLoginOnly();
+        }
       }
     });
 
     return () => {
+      mounted = false;
       clearTimeout(fallbackTimer);
       unsubscribe();
       if (unsubSnapshot) unsubSnapshot();

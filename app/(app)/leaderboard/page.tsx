@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import {
   Trophy,
@@ -16,6 +17,13 @@ import {
   Info
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
+import { UserProfile } from '@/types/user';
+import {
+  subscribeGlobalLeaderboard,
+  fetchUsersByUids,
+  sendBuddyNudgeInCloud,
+  normalizeUsername
+} from '@/lib/socialService';
 import { CrownBadge } from '@/components/ui/CrownBadge';
 import {
   playClickSound,
@@ -37,109 +45,83 @@ export default function LeaderboardPage() {
   const [selectedOreId, setSelectedOreId] = useState<string>('coal');
   const [oreModalOpen, setOreModalOpen] = useState(false);
   const [remindedList, setRemindedList] = useState<Record<string, boolean>>({});
+  const [dbUsers, setDbUsers] = useState<UserProfile[]>([]);
+  const [buddyProfiles, setBuddyProfiles] = useState<UserProfile[]>([]);
 
-  const userXp = profile?.xp ?? 120;
-  const userStreak = profile?.streak ?? 1;
+  const userXp = profile?.xp ?? 0;
+  const userStreak = profile?.streak ?? 0;
   const currentTier = getUserCurrentOreTier(userXp);
   const nextTier = getNextOreTier(userXp);
 
-  // Real JAC Class 10 Scholars Pool (Real dynamic ranks with today's real streak)
-  const realScholarsBase = [
-    {
-      id: 's1',
-      name: 'Priya Sharma',
-      username: 'priya_jac',
-      xp: 450,
-      streak: 3,
-      avatarSvg: '/assets/profile_photos/classic_character_2.png',
-      oreTier: 'Copper Ingot',
-      isUser: false,
-      isRealUser: true
-    },
-    {
-      id: 's2',
-      name: 'Rohit Kumar',
-      username: 'rohit_ranchi',
-      xp: 320,
-      streak: 2,
-      avatarSvg: '/assets/profile_photos/classic_character_1.png',
-      oreTier: 'Coal Ore',
-      isUser: false,
-      isRealUser: true
-    },
-    {
-      id: 's3',
-      name: 'Aman Verma',
-      username: 'aman_bokaro',
-      xp: 290,
-      streak: 1,
-      avatarSvg: '/assets/profile_photos/classic_character_4.png',
-      oreTier: 'Coal Ore',
-      isUser: false,
-      isRealUser: true
-    },
-    {
-      id: 's4',
-      name: 'Sneha Mishra',
-      username: 'sneha_dhanbad',
-      xp: 210,
-      streak: 2,
-      avatarSvg: '/assets/profile_photos/classic_character_3.png',
-      oreTier: 'Coal Ore',
-      isUser: false,
-      isRealUser: true
+  // Real-time Global Firestore Leaderboard subscription
+  useEffect(() => {
+    const unsub = subscribeGlobalLeaderboard((users) => {
+      setDbUsers(users);
+    }, 50);
+    return () => unsub();
+  }, []);
+
+  // Load real followed buddies from Firestore
+  useEffect(() => {
+    const uids = profile?.followingUids || profile?.connectedFriends || [];
+    if (uids.length === 0) {
+      setBuddyProfiles([]);
+      return;
     }
-  ];
+    let cancelled = false;
+    fetchUsersByUids(uids).then((list) => {
+      if (!cancelled) setBuddyProfiles(list);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [profile?.followingUids, profile?.connectedFriends]);
 
-  // Insert logged-in user and sort strictly by XP descending
-  const allScholars = [
-    ...realScholarsBase,
-    {
-      id: profile?.uid || 'user',
-      name: profile?.name || 'You (Scholar)',
-      username: profile?.username || 'scholar',
-      xp: userXp,
-      streak: userStreak,
-      avatarSvg: profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-      oreTier: currentTier.name,
-      isUser: true,
-      isRealUser: true
-    }
-  ].sort((a, b) => b.xp - a.xp).map((item, index) => ({
-    ...item,
-    rank: index + 1
-  }));
+  // Merge logged-in user if not yet returned in top 50, then rank by XP descending
+  const mergedMap = new Map<string, UserProfile>();
+  dbUsers.forEach((u) => mergedMap.set(u.uid, u));
+  if (profile?.uid && !mergedMap.has(profile.uid)) {
+    mergedMap.set(profile.uid, profile);
+  }
 
-  const scholars = allScholars;
+  const scholars = Array.from(mergedMap.values())
+    .sort((a, b) => (b.xp || 0) - (a.xp || 0))
+    .map((u, index) => {
+      const ore = getUserCurrentOreTier(u.xp || 0);
+      return {
+        id: u.uid,
+        rank: index + 1,
+        name: u.name || u.displayName || 'JAC Scholar',
+        username: u.username || normalizeUsername(u.name, u.uid),
+        xp: u.xp || 0,
+        streak: u.streak || 0,
+        avatarSvg: ore.iconSvg,
+        photoURL: u.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+        oreTier: ore.name,
+        isUser: Boolean(profile?.uid && u.uid === profile.uid),
+      };
+    });
 
-  const buddiesList = [
-    {
-      id: 'b1',
-      name: 'Priya Sharma',
-      username: 'priya_jac',
-      days: 3,
-      lessons: 12,
-      xp: 450,
-      avatarSvg: '/assets/profile_photos/classic_character_2.png',
-      rig: 'Scholar Girl Rig',
-      ore: 'Copper Ingot'
-    },
-    {
-      id: 'b2',
-      name: 'Rohit Kumar',
-      username: 'rohit_ranchi',
-      days: 2,
-      lessons: 8,
-      xp: 320,
-      avatarSvg: '/assets/profile_photos/classic_character_1.png',
-      rig: 'Scholar Boy Rig',
-      ore: 'Coal Ore'
-    }
-  ];
+  const buddiesList = buddyProfiles.map((b) => {
+    const ore = getUserCurrentOreTier(b.xp || 0);
+    return {
+      id: b.uid,
+      name: b.name || b.displayName || 'JAC Scholar',
+      username: b.username || normalizeUsername(b.name, b.uid),
+      days: b.streak || 0,
+      xp: b.xp || 0,
+      avatarSvg: ore.iconSvg,
+      rig: b.customAvatar?.name || 'Scholar Wardrobe',
+      ore: ore.name,
+    };
+  });
 
-  const handleRemind = (id: string) => {
+  const handleRemind = async (id: string) => {
     playClickSound();
-    setRemindedList(prev => ({ ...prev, [id]: true }));
+    setRemindedList((prev) => ({ ...prev, [id]: true }));
+    if (profile?.uid) {
+      await sendBuddyNudgeInCloud(profile.uid, profile.name || 'Scholar', id);
+    }
   };
 
   const isOreUnlocked = (tier: OreTier) => {
@@ -345,30 +327,36 @@ export default function LeaderboardPage() {
       )}
 
       {/* TOP 3 PODIUM (GOLD, SILVER, BRONZE ORES) */}
-      {activeTab === 'ores' && (
+      {activeTab === 'ores' && scholars.length > 0 && (
         <div className="grid grid-cols-3 gap-2 items-end mb-5 pt-3">
           {/* Rank 2 */}
           <div className="flex flex-col items-center p-3 rounded-2xl bg-white/5 border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
-            <div className="relative w-12 h-12 rounded-xl bg-black/50 border border-slate-400/50 p-1 mb-1">
-              <Image
-                src={scholars[1].avatarSvg}
-                alt={scholars[1].name}
-                width={40}
-                height={40}
-                className="object-contain"
-              />
-              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-300 text-black text-[10px] font-black flex items-center justify-center">
-                2
-              </span>
-            </div>
-            <h4 className="text-xs font-black text-white truncate max-w-[85px] text-center">
-              {scholars[1].name.split(' ')[0]}
-            </h4>
-            <span className="text-[10px] font-black text-amber-300 mt-0.5">
-              {scholars[1].xp} XP
-            </span>
+            {scholars[1] ? (
+              <>
+                <div className="relative w-12 h-12 rounded-xl bg-black/50 border border-slate-400/50 p-1 mb-1">
+                  <Image
+                    src={scholars[1].avatarSvg}
+                    alt={scholars[1].name}
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-slate-300 text-black text-[10px] font-black flex items-center justify-center">
+                    2
+                  </span>
+                </div>
+                <h4 className="text-xs font-black text-white truncate max-w-[85px] text-center">
+                  {scholars[1].name.split(' ')[0]}
+                </h4>
+                <span className="text-[10px] font-black text-amber-300 mt-0.5">
+                  {scholars[1].xp} XP
+                </span>
+              </>
+            ) : (
+              <span className="text-[10px] text-slate-500 font-bold py-4">Rank #2 Open</span>
+            )}
             <div className="w-full h-8 rounded-lg bg-slate-400/20 border border-slate-400/30 mt-2 flex items-center justify-center text-[10px] font-black text-slate-300">
-              Iron Tier
+              {scholars[1]?.oreTier?.split(' ')[0] || 'Silver'} Tier
             </div>
           </div>
 
@@ -393,32 +381,38 @@ export default function LeaderboardPage() {
               {scholars[0].xp} XP
             </span>
             <div className="w-full h-11 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-400 text-black mt-2 flex items-center justify-center text-xs font-black shadow-[0_2px_8px_rgba(245,158,11,0.5)]">
-              Gold Tier
+              #1 Leader
             </div>
           </div>
 
           {/* Rank 3 */}
           <div className="flex flex-col items-center p-3 rounded-2xl bg-white/5 border border-white/10 shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
-            <div className="relative w-12 h-12 rounded-xl bg-black/50 border border-amber-700/50 p-1 mb-1">
-              <Image
-                src={scholars[2].avatarSvg}
-                alt={scholars[2].name}
-                width={40}
-                height={40}
-                className="object-contain"
-              />
-              <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-700 text-white text-[10px] font-black flex items-center justify-center">
-                3
-              </span>
-            </div>
-            <h4 className="text-xs font-black text-white truncate max-w-[85px] text-center">
-              {scholars[2].name.split(' ')[0]}
-            </h4>
-            <span className="text-[10px] font-black text-amber-300 mt-0.5">
-              {scholars[2].xp} XP
-            </span>
+            {scholars[2] ? (
+              <>
+                <div className="relative w-12 h-12 rounded-xl bg-black/50 border border-amber-700/50 p-1 mb-1">
+                  <Image
+                    src={scholars[2].avatarSvg}
+                    alt={scholars[2].name}
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                  />
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-700 text-white text-[10px] font-black flex items-center justify-center">
+                    3
+                  </span>
+                </div>
+                <h4 className="text-xs font-black text-white truncate max-w-[85px] text-center">
+                  {scholars[2].name.split(' ')[0]}
+                </h4>
+                <span className="text-[10px] font-black text-amber-300 mt-0.5">
+                  {scholars[2].xp} XP
+                </span>
+              </>
+            ) : (
+              <span className="text-[10px] text-slate-500 font-bold py-4">Rank #3 Open</span>
+            )}
             <div className="w-full h-6 rounded-lg bg-amber-800/20 border border-amber-800/30 mt-2 flex items-center justify-center text-[10px] font-black text-amber-600">
-              Bronze Tier
+              {scholars[2]?.oreTier?.split(' ')[0] || 'Bronze'} Tier
             </div>
           </div>
         </div>
@@ -429,7 +423,7 @@ export default function LeaderboardPage() {
         <div className="space-y-2">
           {scholars.map(scholar => (
             <div
-              key={scholar.rank}
+              key={scholar.id}
               className={`flex items-center justify-between p-3 rounded-2xl border transition-all ${
                 scholar.isUser
                   ? 'bg-amber-500/20 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.25)]'
@@ -463,8 +457,10 @@ export default function LeaderboardPage() {
                     )}
                   </div>
                   <div className="flex items-center gap-1 text-[10px] text-slate-400">
+                    <span className="text-amber-400 font-bold">@{scholar.username}</span>
+                    <span>•</span>
                     <Flame className="w-3 h-3 text-orange-400 fill-orange-400" />
-                    <span>{scholar.streak}d streak</span>
+                    <span>{scholar.streak}d</span>
                     <span>•</span>
                     <span className="text-slate-300 font-semibold">{scholar.oreTier}</span>
                   </div>
@@ -486,54 +482,69 @@ export default function LeaderboardPage() {
         <div className="space-y-3">
           <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-300">
-              Encourage buddies to keep their streak alive!
+              Encourage followed buddies to keep their streak alive!
             </span>
-            <span className="text-xs font-black text-amber-400">3 Buddies</span>
+            <span className="text-xs font-black text-amber-400">{buddiesList.length} Buddies</span>
           </div>
 
-          {buddiesList.map(buddy => (
-            <div
-              key={buddy.id}
-              className="flex items-center justify-between p-3.5 rounded-2xl bg-white/5 border border-white/10"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="relative w-10 h-10 rounded-xl bg-black/50 border border-white/15 p-1 shrink-0">
-                  <Image
-                    src={buddy.avatarSvg}
-                    alt={buddy.name}
-                    width={32}
-                    height={32}
-                    className="object-contain"
-                  />
-                </div>
-                <div className="min-w-0">
-                  <h5 className="text-xs font-black text-white truncate">
-                    {buddy.name}
-                  </h5>
-                  <p className="text-[10px] text-slate-400 truncate">
-                    {buddy.rig} • <span className="text-amber-300">{buddy.ore}</span>
-                  </p>
-                  <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
-                    <span className="text-orange-400 font-bold">{buddy.days}d streak</span>
-                    <span>•</span>
-                    <span>{buddy.xp} XP</span>
+          {buddiesList.length === 0 ? (
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 text-center space-y-2.5">
+              <p className="text-xs font-bold text-slate-300">
+                You are not following any classmates yet!
+              </p>
+              <Link
+                href="/profile"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 text-slate-950 text-xs font-black"
+              >
+                <Users className="w-3.5 h-3.5" />
+                <span>Find Buddies by @username</span>
+              </Link>
+            </div>
+          ) : (
+            buddiesList.map(buddy => (
+              <div
+                key={buddy.id}
+                className="flex items-center justify-between p-3.5 rounded-2xl bg-white/5 border border-white/10"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="relative w-10 h-10 rounded-xl bg-black/50 border border-white/15 p-1 shrink-0">
+                    <Image
+                      src={buddy.avatarSvg}
+                      alt={buddy.name}
+                      width={32}
+                      height={32}
+                      className="object-contain"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h5 className="text-xs font-black text-white truncate">
+                      {buddy.name}
+                    </h5>
+                    <p className="text-[10px] text-slate-400 truncate">
+                      @{buddy.username} • <span className="text-amber-300">{buddy.ore}</span>
+                    </p>
+                    <div className="flex items-center gap-2 text-[10px] text-slate-400 mt-0.5">
+                      <span className="text-orange-400 font-bold">{buddy.days}d streak</span>
+                      <span>•</span>
+                      <span>{buddy.xp} XP</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <button
-                onClick={() => handleRemind(buddy.id)}
-                disabled={remindedList[buddy.id]}
-                className={`py-1.5 px-3 rounded-xl text-xs font-black border transition-all cursor-pointer ${
-                  remindedList[buddy.id]
-                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                    : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40 active:scale-95'
-                }`}
-              >
-                {remindedList[buddy.id] ? 'Nudged ✓' : 'Nudge 🔔'}
-              </button>
-            </div>
-          ))}
+                <button
+                  onClick={() => handleRemind(buddy.id)}
+                  disabled={remindedList[buddy.id]}
+                  className={`py-1.5 px-3 rounded-xl text-xs font-black border transition-all cursor-pointer ${
+                    remindedList[buddy.id]
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                      : 'bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/40 active:scale-95'
+                  }`}
+                >
+                  {remindedList[buddy.id] ? 'Nudged ✓' : 'Nudge 🔔'}
+                </button>
+              </div>
+            ))
+          )}
         </div>
       )}
 

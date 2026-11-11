@@ -1,9 +1,14 @@
 import { create } from 'zustand';
 import { UserProfile } from '@/types/user';
 import { AvatarCustomization } from '@/types/avatar';
-import { fetchUserProfile, syncOnLevelComplete, getLocalUserProfile, saveLocalUserProfile } from '@/lib/firestore';
-import { setLanguagePreferenceInCloud, syncUserOreScoreToCloud } from '@/lib/firebaseAuthMultiplayer';
-import { getUserCurrentOreTier } from '@/types/ranking';
+import {
+  fetchUserProfile,
+  syncOnLevelComplete,
+  saveLocalUserProfile,
+  clearLocalUserProfile,
+  syncProfileFields,
+} from '@/lib/firestore';
+import { setLanguagePreferenceInCloud } from '@/lib/firebaseAuthMultiplayer';
 
 interface UserState {
   profile: UserProfile | null;
@@ -12,6 +17,9 @@ interface UserState {
 
   // Actions
   initUser: (uid: string, name?: string, email?: string) => Promise<void>;
+  setProfile: (profile: UserProfile | null) => void;
+  updateProfilePartial: (partial: Partial<UserProfile>) => Promise<void>;
+  logoutUser: () => void;
   setActiveSubjectId: (subId: string) => void;
   setLanguagePreference: (lang: 'hi' | 'en') => Promise<void>;
   updateCustomAvatar: (avatar: AvatarCustomization) => void;
@@ -40,6 +48,29 @@ export const useUserStore = create<UserState>((set, get) => ({
     set({ profile, isLoading: false });
   },
 
+  setProfile: (profile: UserProfile | null) => {
+    if (profile) {
+      saveLocalUserProfile(profile);
+    } else {
+      clearLocalUserProfile();
+    }
+    set({ profile, isLoading: false });
+  },
+
+  updateProfilePartial: async (partial: Partial<UserProfile>) => {
+    const { profile } = get();
+    if (!profile) return;
+    const updated: UserProfile = { ...profile, ...partial };
+    saveLocalUserProfile(updated);
+    set({ profile: updated });
+    await syncProfileFields(profile.uid, partial);
+  },
+
+  logoutUser: () => {
+    clearLocalUserProfile();
+    set({ profile: null, isLoading: false });
+  },
+
   setActiveSubjectId: (subId: string) => {
     set({ activeSubjectId: subId });
   },
@@ -59,6 +90,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     const updated: UserProfile = { ...profile, customAvatar: avatar, avatarId: avatar.preset };
     saveLocalUserProfile(updated);
     set({ profile: updated });
+    void syncProfileFields(profile.uid, { customAvatar: avatar, avatarId: avatar.preset });
   },
 
   updateProfilePhoto: (photoURL: string) => {
@@ -67,6 +99,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     const updated: UserProfile = { ...profile, photoURL };
     saveLocalUserProfile(updated);
     set({ profile: updated });
+    void syncProfileFields(profile.uid, { photoURL });
   },
 
   recordLevelCompletion: async (data) => {
@@ -83,6 +116,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     const updated = { ...profile, hearts: newHearts };
     saveLocalUserProfile(updated);
     set({ profile: updated });
+    void syncProfileFields(profile.uid, { hearts: newHearts });
   },
 
   refillHearts: () => {
@@ -91,6 +125,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     const updated = { ...profile, hearts: 5 };
     saveLocalUserProfile(updated);
     set({ profile: updated });
+    void syncProfileFields(profile.uid, { hearts: 5 });
   },
 
   removeMistake: (questionId: number) => {
@@ -100,5 +135,6 @@ export const useUserStore = create<UserState>((set, get) => ({
     const updated = { ...profile, mistakes: updatedMistakes };
     saveLocalUserProfile(updated);
     set({ profile: updated });
+    void syncProfileFields(profile.uid, { mistakes: updatedMistakes });
   }
 }));

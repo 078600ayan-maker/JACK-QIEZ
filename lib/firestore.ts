@@ -1,6 +1,11 @@
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase';
 import { UserProfile, SpacedMistakeItem, SpeedDrillRecord } from '@/types/user';
+import {
+  normalizeUsername,
+  upsertUserInDirectory,
+  fetchResolvedFollowRelations,
+} from './socialService';
 
 const LOCAL_STORAGE_KEY = 'sbr_user_profile';
 
@@ -29,10 +34,25 @@ export function saveLocalUserProfile(profile: UserProfile): void {
   }
 }
 
+export function clearLocalUserProfile(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 export function createDefaultProfile(uid: string, name?: string, email?: string): UserProfile {
+  const cleanName = (name || 'Royal Scholar').trim();
+  const username = normalizeUsername(cleanName.split(' ')[0], uid);
   return {
     uid,
-    name: name || 'Royal Scholar',
+    name: cleanName,
+    displayName: cleanName,
+    username,
+    usernameLower: username.toLowerCase(),
+    nameLower: cleanName.toLowerCase(),
     email: email || 'scholar@royal.edu',
     photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
     avatarId: 'kai',
@@ -41,45 +61,104 @@ export function createDefaultProfile(uid: string, name?: string, email?: string)
     streakShieldActive: true,
     lastActive: new Date().toISOString().split('T')[0],
     hearts: 5,
+    oreRank: 'Coal Ore',
+    oreRankScore: 120,
+    currentStreak: 1,
+    isRealUser: true,
     progress: {
       sci_ch01: 0 // Ch 1 Level 1 is ready to play
     },
     levelScores: {},
     mistakes: [],
     detailedMistakes: [],
-    drillHistory: []
+    drillHistory: [],
+    followersUids: [],
+    followingUids: [],
+    followersCount: 0,
+    followingCount: 0,
+    joinedAt: new Date().toISOString(),
   };
 }
 
 /**
- * Fetch profile from Firestore, fallback to LocalStorage or default
+ * Fetch profile from Firestore first so server-side stats, follow counts, and
+ * search fields stay authoritative across devices, with localStorage as offline fallback.
  */
 export async function fetchUserProfile(uid: string, displayName?: string, email?: string): Promise<UserProfile> {
   const local = getLocalUserProfile();
-  if (local && local.uid === uid) {
-    return local;
-  }
 
   try {
     const userDocRef = doc(db, 'users', uid);
-    // 1500ms fast timeout so offline/slow Firebase never blocks the home screen
     const fetchPromise = getDoc(userDocRef);
     const timeoutPromise = new Promise<null>((_, reject) =>
-      setTimeout(() => reject(new Error('Firestore timeout')), 1500)
+      setTimeout(() => reject(new Error('Firestore timeout')), 2500)
     );
-    const snap = await Promise.race([fetchPromise, timeoutPromise]) as any;
+    const snap = await Promise.race([fetchPromise, timeoutPromise]);
     if (snap && snap.exists()) {
-      const data = snap.data() as UserProfile;
-      saveLocalUserProfile(data);
-      return data;
+      const remoteData = snap.data() as UserProfile;
+      const relations = await fetchResolvedFollowRelations(uid);
+      const mergedFollowers = Array.from(
+        new Set([...(remoteData.followersUids || []), ...relations.followersUids])
+      );
+      const mergedFollowing = Array.from(
+        new Set([...(remoteData.followingUids || []), ...relations.followingUids])
+      );
+
+      let merged: UserProfile = {
+        ...createDefaultProfile(uid, displayName || remoteData.name, email || remoteData.email),
+        ...remoteData,
+        uid,
+        name: remoteData.name || remoteData.displayName || displayName || 'Royal Scholar',
+        followersUids: mergedFollowers,
+        followingUids: mergedFollowing,
+        followersCount: Math.max(mergedFollowers.length, remoteData.followersCount ?? 0),
+        followingCount: Math.max(mergedFollowing.length, remoteData.followingCount ?? 0),
+        isOnline: true,
+      };
+
+      if (!remoteData.usernameLower || !remoteData.nameLower) {
+        merged = await upsertUserInDirectory(merged);
+      }
+
+      saveLocalUserProfile(merged);
+      return merged;
     }
+
+    const baseProfile =
+      local && local.uid === uid
+        ? { ...createDefaultProfile(uid, displayName || local.name, email || local.email), ...local, uid }
+        : createDefaultProfile(uid, displayName, email);
+
+    const indexed = await upsertUserInDirectory(baseProfile);
+    saveLocalUserProfile(indexed);
+    return indexed;
   } catch (err) {
-    console.warn('Firestore read error/timeout, using instant local profile:', err);
+    console.warn('Firestore read error/timeout, using local profile fallback:', err);
+  }
+
+  if (local && local.uid === uid) {
+    return local;
   }
 
   const newProfile = createDefaultProfile(uid, displayName, email);
   saveLocalUserProfile(newProfile);
   return newProfile;
+}
+
+export async function syncProfileFields(uid: string, partial: Partial<UserProfile>): Promise<void> {
+  if (!uid) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      {
+        ...partial,
+        updatedAt: new Date().toISOString(),
+      },
+      { merge: true }
+    );
+  } catch (err) {
+    console.warn('Firestore partial sync failed:', err);
+  }
 }
 
 /**

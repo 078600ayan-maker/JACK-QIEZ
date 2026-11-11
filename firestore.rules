@@ -11,7 +11,30 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuth();
       allow create: if isOwner(userId);
-      allow update: if isOwner(userId) && request.resource.data.oreRankScore >= resource.data.oreRankScore;
+      allow update: if isOwner(userId) || (
+        isAuth() &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['followersUids', 'followersCount', 'updatedAt'])
+      );
+
+      match /callLogs/{logId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    match /follows/{edgeId} {
+      allow read: if isAuth();
+      allow create, update: if isAuth() && request.resource.data.followerUid == request.auth.uid;
+      allow delete: if isAuth() && resource.data.followerUid == request.auth.uid;
+    }
+
+    match /duel_rooms/{pin} {
+      allow read, create, update: if isAuth();
+    }
+
+    match /nudges/{nudgeId} {
+      allow read: if isAuth();
+      allow create, update: if isAuth() && request.resource.data.fromUid == request.auth.uid;
     }
 
     match /friendships/{pairId} {

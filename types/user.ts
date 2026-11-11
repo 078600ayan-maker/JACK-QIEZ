@@ -55,6 +55,10 @@ export interface UserProfile {
   firstName?: string;
   lastName?: string;
   username?: string;
+  usernameLower?: string;
+  nameLower?: string;
+  bio?: string;
+  role?: string;
   age?: number;
   onboardingComplete?: boolean;
   studyGoals?: {
@@ -62,6 +66,16 @@ export interface UserProfile {
     dailyGoal: string;
     focusSubject: string;
   };
+  followersUids?: string[];
+  followingUids?: string[];
+  followersCount?: number;
+  followingCount?: number;
+  dailyCallCredits?: number;
+  dailyCallCreditsDate?: string;
+  lastGiftClaimDate?: string;
+  duelWins?: number;
+  duelPlayed?: number;
+  isAnonymous?: boolean;
   isOnline?: boolean;
   joinedAt?: string;
   weeklyXp?: number;
