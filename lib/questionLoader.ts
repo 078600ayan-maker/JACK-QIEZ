@@ -1,7 +1,7 @@
 import { Question } from '@/types/question';
 
-const CACHE_VERSION = 3;
-const CACHE_PREFIX = 'sbr_cache_v3_';
+const CACHE_VERSION = 4;
+const CACHE_PREFIX = 'sbr_cache_v4_';
 
 export async function fetchChapterQuestions(filePath: string): Promise<Question[]> {
   const cacheKey = `${CACHE_PREFIX}${filePath}`;
@@ -47,42 +47,43 @@ export async function fetchChapterQuestions(filePath: string): Promise<Question[
 
 /**
  * Filter and prepare unique, non-repeating questions for a given level (1 to 5).
- * Each chapter has 30 questions total divided cleanly into 5 levels (6 unique questions per level).
+ * Supports 150-question chapters (30 unique questions per level) as well as legacy 30-question chapters (6 per level).
  */
 export function getQuestionsForLevel(allQuestions: Question[], level: number): Question[] {
   if (!allQuestions || allQuestions.length === 0) return [];
 
   const targetLevel = Math.min(Math.max(level, 1), 5);
-  const QUESTIONS_PER_LEVEL = 6;
+  const questionsPerLevel = allQuestions.length >= 150 ? 30 : 6;
 
-  // 1. Try to slice 6 distinct, sequential questions for each level (Zero repetition)
-  const startIndex = (targetLevel - 1) * QUESTIONS_PER_LEVEL;
-  const endIndex = startIndex + QUESTIONS_PER_LEVEL;
+  // 1. Prefer exact difficulty match when available in sufficient count
+  const exactDiff = allQuestions.filter(q => q.d === targetLevel);
+  if (exactDiff.length >= questionsPerLevel) {
+    return exactDiff.slice(0, questionsPerLevel);
+  }
 
-  // If chapter has at least 30 questions, assign exactly 6 unique questions per level
-  if (allQuestions.length >= 30) {
+  // 2. Fallback: slice sequential questions for each level (Zero repetition)
+  const startIndex = (targetLevel - 1) * questionsPerLevel;
+  const endIndex = startIndex + questionsPerLevel;
+  if (allQuestions.length >= questionsPerLevel * 5) {
     const levelSlice = allQuestions.slice(startIndex, endIndex);
     if (levelSlice.length > 0) {
       return levelSlice;
     }
   }
 
-  // 2. Fallback: match difficulty, avoiding cross-level duplicate overlaps
-  const targetDiff = targetLevel;
-  const exactDiff = allQuestions.filter(q => q.d === targetDiff);
-  if (exactDiff.length >= QUESTIONS_PER_LEVEL) {
-    return exactDiff.slice(0, QUESTIONS_PER_LEVEL);
+  if (exactDiff.length > 0) {
+    return exactDiff;
   }
 
   // 3. Fallback: even distribution across the entire question pool
   const poolSize = allQuestions.length;
   const step = Math.max(1, Math.floor(poolSize / 5));
   const dynamicStart = (targetLevel - 1) * step;
-  const dynamicSlice = allQuestions.slice(dynamicStart, dynamicStart + QUESTIONS_PER_LEVEL);
+  const dynamicSlice = allQuestions.slice(dynamicStart, dynamicStart + questionsPerLevel);
 
   if (dynamicSlice.length > 0) {
     return dynamicSlice;
   }
 
-  return allQuestions.slice(0, Math.min(allQuestions.length, QUESTIONS_PER_LEVEL));
+  return allQuestions.slice(0, Math.min(allQuestions.length, questionsPerLevel));
 }
