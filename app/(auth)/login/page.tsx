@@ -1,34 +1,35 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ExternalLink, ShieldCheck, ArrowLeft, User, AtSign } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ExternalLink, ShieldCheck, ArrowLeft, User } from 'lucide-react';
 import {
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signInAnonymously,
   updateProfile,
   sendPasswordResetEmail,
   onAuthStateChanged
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { useUserStore } from '@/store/useUserStore';
-import { getLocalUserProfile, saveLocalUserProfile } from '@/lib/firestore';
-import { upsertUserInDirectory, normalizeUsername, isUsernameAvailable } from '@/lib/socialService';
+import { getLocalUserProfile } from '@/lib/firestore';
+import { upsertUserInDirectory, normalizeUsername } from '@/lib/socialService';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { playClickSound } from '@/lib/audioEngine';
 
 export default function LoginPage() {
   const router = useRouter();
   const { initUser, setProfile } = useUserStore();
+  const manualAuthInFlight = useRef(false);
 
   const [showEmailDrawer, setShowEmailDrawer] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [handleInput, setHandleInput] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -40,9 +41,7 @@ export default function LoginPage() {
     uid: string,
     name?: string,
     userEmail?: string,
-    photoURL?: string,
-    preferredUsername?: string,
-    isAnonymous?: boolean
+    photoURL?: string
   ) => {
     await initUser(uid, name, userEmail);
     const current = useUserStore.getState().profile;
@@ -53,11 +52,9 @@ export default function LoginPage() {
         displayName: name || current.displayName || current.name,
         email: userEmail || current.email,
         photoURL: photoURL || current.photoURL,
-        username: preferredUsername
-          ? normalizeUsername(preferredUsername, uid)
-          : current.username || normalizeUsername(name || current.name, uid),
-        isRealUser: !isAnonymous,
-        isAnonymous: Boolean(isAnonymous),
+        username: current.username || normalizeUsername(name || userEmail?.split('@')[0] || current.name, uid),
+        isRealUser: true,
+        isAnonymous: false,
       });
       setProfile(updated);
     }
@@ -67,9 +64,12 @@ export default function LoginPage() {
     router.replace('/');
   };
 
-  // 1. Silent Auth Check on Boot
+  // 1. Silent Auth & Google Redirect Result Check on Boot
   useEffect(() => {
+    let active = true;
+
     const fastTimer = setTimeout(() => {
+      if (!active || manualAuthInFlight.current) return;
       const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
       const local = getLocalUserProfile();
       if (verified && local && local.uid) {
@@ -78,21 +78,45 @@ export default function LoginPage() {
       } else {
         setCheckingSession(false);
       }
-    }, 600);
+    }, 800);
+
+    getRedirectResult(auth)
+      .then(async (redirectRes) => {
+        if (!active) return;
+        if (redirectRes?.user) {
+          clearTimeout(fastTimer);
+          manualAuthInFlight.current = true;
+          setLoading(true);
+          await syncAndRedirect(
+            redirectRes.user.uid,
+            redirectRes.user.displayName || redirectRes.user.email?.split('@')[0] || 'Royal Scholar',
+            redirectRes.user.email || '',
+            redirectRes.user.photoURL || undefined
+          );
+        }
+      })
+      .catch((err: unknown) => {
+        if (!active) return;
+        const code = (err as { code?: string })?.code || '';
+        if (code === 'auth/unauthorized-domain') {
+          const host = typeof window !== 'undefined' ? window.location.hostname : 'this domain';
+          setErrorMsg(`Add "${host}" in Firebase Console → Authentication → Settings → Authorized domains for Google Sign-In, or use Email & Password below.`);
+        } else if (code && code !== 'auth/no-current-user') {
+          setErrorMsg('Google sign-in could not complete. Please select your Google email again or sign in with Email & Password.');
+        }
+        setCheckingSession(false);
+      });
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!active || manualAuthInFlight.current) return;
       clearTimeout(fastTimer);
       if (user) {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('sbr_session_verified', 'true');
-        }
-        await initUser(user.uid, user.displayName || undefined, user.email || undefined);
-        const cur = useUserStore.getState().profile;
-        if (cur) {
-          const synced = await upsertUserInDirectory(cur);
-          setProfile(synced);
-        }
-        router.replace('/');
+        await syncAndRedirect(
+          user.uid,
+          user.displayName || user.email?.split('@')[0] || 'Royal Scholar',
+          user.email || '',
+          user.photoURL || undefined
+        );
       } else {
         const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
         const local = getLocalUserProfile();
@@ -106,90 +130,65 @@ export default function LoginPage() {
     });
 
     return () => {
+      active = false;
       clearTimeout(fastTimer);
       unsubscribe();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 2. High-Speed Google Sign-In Flow synced with Firestore Users Directory
+  // 2. Direct Google Sign-In Flow (Popup + Automatic Mobile Redirect Fallback)
   const handleGoogleSignIn = async () => {
     playClickSound();
+    manualAuthInFlight.current = true;
     setLoading(true);
     setErrorMsg('');
+    setSuccessMsg('');
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
+
     try {
       const res = await signInWithPopup(auth, googleProvider);
       if (res.user) {
         await syncAndRedirect(
           res.user.uid,
-          res.user.displayName || 'Royal Scholar',
+          res.user.displayName || res.user.email?.split('@')[0] || 'Royal Scholar',
           res.user.email || '',
           res.user.photoURL || undefined
         );
       }
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code || '';
-      if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
-        setErrorMsg('Google sign-in popup was closed. Try again or use Email/Cloud Scholar.');
-      } else if (code === 'auth/unauthorized-domain') {
-        setErrorMsg('This domain is not whitelisted for Google Popup. Use Email Sign-In or Cloud Scholar below.');
-      } else {
-        setErrorMsg('Google popup failed on this browser. Try Email Sign-In or Cloud Scholar.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 3. Instant Cloud Scholar Sign-In (Uses Firebase Anonymous Auth + Firestore Directory)
-  const handleQuickScholarLogin = async (customName?: string) => {
-    playClickSound();
-    setLoading(true);
-    setErrorMsg('');
-    try {
-      const scholarName = (customName || '').trim() || `Scholar ${Math.floor(100 + Math.random() * 900)}`;
-      try {
-        const anon = await signInAnonymously(auth);
-        if (anon.user) {
-          await syncAndRedirect(
-            anon.user.uid,
-            scholarName,
-            `${normalizeUsername(scholarName, anon.user.uid)}@jackquiz.cloud`,
-            undefined,
-            undefined,
-            true
-          );
+      if (
+        code === 'auth/popup-blocked' ||
+        code === 'auth/operation-not-supported-in-this-environment' ||
+        code === 'auth/cancelled-popup-request'
+      ) {
+        try {
+          await signInWithRedirect(auth, googleProvider);
           return;
+        } catch (redirErr: unknown) {
+          const redirCode = (redirErr as { code?: string })?.code || '';
+          if (redirCode === 'auth/unauthorized-domain') {
+            const host = typeof window !== 'undefined' ? window.location.hostname : 'this domain';
+            setErrorMsg(`Google Sign-In requires "${host}" in Firebase Console → Authentication → Settings → Authorized domains. Use Email & Password below.`);
+          } else {
+            setErrorMsg('Google redirect failed. Please use Sign in with Email & Password below.');
+          }
         }
-      } catch (anonErr) {
-        console.warn('Firebase anonymous auth unavailable, falling back to cloud-indexed UID:', anonErr);
+      } else if (code === 'auth/popup-closed-by-user') {
+        setErrorMsg('Google sign-in popup was closed. Tap Continue with Google to select your email.');
+      } else if (code === 'auth/unauthorized-domain') {
+        const host = typeof window !== 'undefined' ? window.location.hostname : 'this domain';
+        setErrorMsg(`Google Sign-In requires "${host}" in Firebase Console → Authentication → Settings → Authorized domains. Or sign in with Email & Password below.`);
+      } else {
+        setErrorMsg('Google sign-in failed on this browser. Please try again or use Email & Password below.');
       }
-
-      const existing = getLocalUserProfile();
-      const uid = existing?.uid && existing.uid !== 'scholar_guest'
-        ? existing.uid
-        : `scholar_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
-      await syncAndRedirect(
-        uid,
-        existing?.name || scholarName,
-        existing?.email || `${normalizeUsername(scholarName, uid)}@jackquiz.cloud`,
-        existing?.photoURL,
-        existing?.username,
-        true
-      );
-      const local = getLocalUserProfile();
-      if (local) {
-        local.lastActive = new Date().toISOString().split('T')[0];
-        saveLocalUserProfile(local);
-      }
-    } catch {
-      setErrorMsg('Could not create cloud scholar session. Please check your connection.');
-    } finally {
+      manualAuthInFlight.current = false;
       setLoading(false);
     }
   };
 
-  // 4. Email & Password Sign In / Sign Up Flow with @username Claim
+  // 3. Email & Password Sign In / Sign Up Flow synced to Firestore
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
@@ -197,34 +196,27 @@ export default function LoginPage() {
       return;
     }
     playClickSound();
+    manualAuthInFlight.current = true;
     setLoading(true);
     setErrorMsg('');
+    setSuccessMsg('');
 
     try {
       if (isSignUp) {
-        const desiredHandle = normalizeUsername(handleInput || fullName || email.split('@')[0], Date.now().toString(36));
-        const available = await isUsernameAvailable(desiredHandle, 'new_user_check');
-        if (!available) {
-          setErrorMsg(`Username @${desiredHandle} is already taken. Choose another handle.`);
-          setLoading(false);
-          return;
-        }
         const res = await createUserWithEmailAndPassword(auth, email.trim(), password);
-        const chosenName = fullName.trim() || email.split('@')[0];
+        const chosenName = fullName.trim() || email.trim().split('@')[0];
         if (res.user) {
           await updateProfile(res.user, { displayName: chosenName }).catch(() => {});
-          await syncAndRedirect(res.user.uid, chosenName, email.trim(), undefined, desiredHandle, false);
+          await syncAndRedirect(res.user.uid, chosenName, email.trim(), undefined);
         }
       } else {
         const res = await signInWithEmailAndPassword(auth, email.trim(), password);
         if (res.user) {
           await syncAndRedirect(
             res.user.uid,
-            res.user.displayName || email.split('@')[0],
+            res.user.displayName || email.trim().split('@')[0],
             res.user.email || email.trim(),
-            res.user.photoURL || undefined,
-            undefined,
-            false
+            res.user.photoURL || undefined
           );
         }
       }
@@ -240,7 +232,7 @@ export default function LoginPage() {
       } else {
         setErrorMsg('Authentication error. Please check your network.');
       }
-    } finally {
+      manualAuthInFlight.current = false;
       setLoading(false);
     }
   };
@@ -356,12 +348,12 @@ export default function LoginPage() {
         )}
 
         {/* =========================================================================
-            TWO MAIN PILLARS: GOOGLE AUTH & EMAIL AUTH (LIFTED DIRECTLY INTO VIEW)
+            TWO MAIN PILLARS: DIRECT GOOGLE EMAIL SIGN-IN & EMAIL/PASSWORD AUTH
             ========================================================================= */}
-        <div className="w-full space-y-2 mt-3 px-1">
+        <div className="w-full space-y-2.5 mt-3 px-1">
           {!showEmailDrawer ? (
             <>
-              {/* PILLAR 1: Continue with Google */}
+              {/* PILLAR 1: Continue with Google (Direct Google Account Selector) */}
               <TactileButton
                 variant="gold"
                 fullWidth
@@ -379,40 +371,17 @@ export default function LoginPage() {
                 <span>{loading ? 'Connecting Google Account...' : 'Continue with Google'}</span>
               </TactileButton>
 
-              {/* PILLAR 2: 1-Tap Instant Scholar Login (Zero-Fail Duolingo Onboarding) */}
+              {/* PILLAR 2: Sign in with Email & Password */}
               <button
-                onClick={() => handleQuickScholarLogin()}
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-500 hover:to-teal-600 border border-emerald-400/50 text-xs font-black text-white shadow-[0_3px_0_#065F46] transition-all active:scale-95"
-              >
-                <span>⚡</span>
-                <span>{loading ? 'Authenticating Scholar...' : '1-Tap Instant Scholar Login'}</span>
-              </button>
-
-              {/* PILLAR 3: Sign in with Email & Password */}
-              <button
-                onClick={() => { playClickSound(); setShowEmailDrawer(true); }}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-slate-300 hover:text-white transition-all active:scale-95"
+                onClick={() => { playClickSound(); setIsSignUp(false); setShowEmailDrawer(true); }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-bold text-slate-200 hover:text-white transition-all active:scale-95"
               >
                 <Mail className="w-3.5 h-3.5 text-amber-400" />
                 <span>Sign in with Email &amp; Password</span>
               </button>
-
-              {/* PILLAR 4: Create Account / Claim @username */}
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setIsSignUp(true);
-                  setShowEmailDrawer(true);
-                }}
-                className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-2xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/30 text-xs font-bold text-amber-300 hover:text-amber-200 transition-all active:scale-95"
-              >
-                <AtSign className="w-3.5 h-3.5 text-amber-400" />
-                <span>Create Scholar Account &amp; @username</span>
-              </button>
             </>
           ) : (
-            /* Email Drawer Form */
+            /* Email & Password Drawer Form */
             <motion.div
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
@@ -436,28 +405,16 @@ export default function LoginPage() {
 
               <form onSubmit={handleEmailAuth} className="space-y-2">
                 {isSignUp && (
-                  <>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-                      <input
-                        type="text"
-                        placeholder="Full Name (e.g. Riya Sharma)"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50 transition"
-                      />
-                    </div>
-                    <div className="relative">
-                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-amber-400" />
-                      <input
-                        type="text"
-                        placeholder="Choose @username (e.g. riya_jac10)"
-                        value={handleInput}
-                        onChange={(e) => setHandleInput(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                        className="w-full bg-white/5 border border-white/10 text-amber-300 rounded-xl pl-9 pr-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50 transition"
-                      />
-                    </div>
-                  </>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Full Name (e.g. Riya Sharma)"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-9 pr-3 py-2 text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50 transition"
+                    />
+                  </div>
                 )}
 
                 <div className="relative">

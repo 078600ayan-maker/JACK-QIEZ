@@ -83,7 +83,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         );
         const cur = useUserStore.getState().profile;
         if (cur) {
-          const synced = await upsertUserInDirectory(cur);
+          const synced = await upsertUserInDirectory({
+            ...cur,
+            name: cur.name || firebaseUser.displayName || 'Royal Scholar',
+            displayName: cur.displayName || firebaseUser.displayName || cur.name || 'Royal Scholar',
+            email: cur.email || firebaseUser.email || '',
+            photoURL: cur.photoURL || firebaseUser.photoURL || undefined,
+            isRealUser: !firebaseUser.isAnonymous,
+            isAnonymous: firebaseUser.isAnonymous,
+          });
           useUserStore.setState({ profile: synced });
           saveLocalUserProfile(synced);
         }

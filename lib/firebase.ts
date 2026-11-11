@@ -18,6 +18,8 @@ if (typeof window !== 'undefined') {
   setPersistence(auth, browserLocalPersistence).catch(() => {});
 }
 const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 const db = getFirestore(app);
 const storage = getStorage(app);
