@@ -23,6 +23,11 @@ import {
   Sparkles,
   X,
   Radio,
+  Pause,
+  Play,
+  RotateCcw,
+  Bookmark,
+  MessageSquareText,
 } from 'lucide-react';
 import {
   playCallingRingtone,
@@ -42,26 +47,46 @@ interface LiveCallModalProps {
   studentName?: string;
 }
 
+type CallMode = 'normal' | 'medium' | 'high';
+type CallLanguage = 'hinglish' | 'english' | 'hindi';
+
+const MODE_OPTIONS: Array<{
+  id: CallMode;
+  label: string;
+  subtitle: string;
+  badgeClass: string;
+}> = [
+  {
+    id: 'normal',
+    label: 'Normal',
+    subtitle: 'Class 6–10 Pending • Zero-Base Easy',
+    badgeClass: 'bg-emerald-500/20 border-emerald-400/50 text-emerald-300',
+  },
+  {
+    id: 'medium',
+    label: 'Medium',
+    subtitle: 'Class 8–10 Pending • Board Bridge',
+    badgeClass: 'bg-amber-500/20 border-amber-400/50 text-amber-300',
+  },
+  {
+    id: 'high',
+    label: 'High',
+    subtitle: 'Few 10th Topics Left • Topper HOTS',
+    badgeClass: 'bg-rose-500/20 border-rose-400/50 text-rose-300',
+  },
+];
+
 const CALL_SUBJECTS = CLASS_10_MASTER_SYLLABUS.map((sub) => ({
   id: sub.id,
   name: sub.title,
   hindi: sub.hindiTitle,
-  color:
-    sub.id === 'sci'
-      ? 'from-emerald-500/20 to-teal-950/40 border-emerald-500/40 text-emerald-300'
-      : sub.id === 'math'
-      ? 'from-blue-500/20 to-indigo-950/40 border-blue-500/40 text-blue-300'
-      : sub.id === 'sst'
-      ? 'from-amber-500/20 to-yellow-950/40 border-amber-500/40 text-amber-300'
-      : sub.id === 'eng'
-      ? 'from-cyan-500/20 to-sky-950/40 border-cyan-500/40 text-cyan-300'
-      : 'from-pink-500/20 to-rose-950/40 border-pink-500/40 text-pink-300',
   chapters: sub.chapters.map((ch) => `Ch ${ch.num}: ${ch.title}`)
 }));
 
 const QUICK_GENZ_CHIPS = [
   'Zero se samjhao 💡',
-  'Short example do 🎯',
+  'Example do 🎯',
+  'Hint do 🔍',
   'Next Question ➡️',
   'Short Trick ⚡',
 ];
@@ -87,25 +112,34 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
         s.id.toLowerCase() === currentSubject.toLowerCase()
     ) || CALL_SUBJECTS[0];
 
-  // Call States: 'setup' -> 'ringing' -> 'connected' -> 'ended'
+  // Core Call State
   const [callState, setCallState] = useState<'setup' | 'ringing' | 'connected' | 'ended'>('setup');
+  const [callMode, setCallMode] = useState<CallMode>('normal');
+  const [callLang, setCallLang] = useState<CallLanguage>('hinglish');
   const [selectedSub, setSelectedSub] = useState<string>(initialSubjectObj.name);
   const [selectedChap, setSelectedChap] = useState<string>(initialSubjectObj.chapters[0]);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(300); // 5:00 min session limit
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(300);
+  const [isTimerPaused, setIsTimerPaused] = useState<boolean>(false);
   const [creditsLeft, setCreditsLeft] = useState<number>(5);
+
+  // Voice & Live Controls
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isSpeakerMuted, setIsSpeakerMuted] = useState(false);
   const [handsFreeMode, setHandsFreeMode] = useState(true);
-  const [mascotMood, setMascotMood] = useState<'idle' | 'happy' | 'thinking' | 'celebrate' | 'laugh' | 'shock'>('idle');
+  const [voiceRate, setVoiceRate] = useState<0.9 | 1.0 | 1.15>(1.0);
+  const [mascotMood, setMascotMood] = useState<'idle' | 'happy' | 'thinking'>('idle');
   const [currentSpeech, setCurrentSpeech] = useState<string>('');
   const [conversationHistory, setConversationHistory] = useState<Array<{ role: 'user' | 'assistant'; text: string }>>([]);
+  const [showTranscript, setShowTranscript] = useState(false);
+  const [savedNotesCount, setSavedNotesCount] = useState(0);
+  const [noteSavedToast, setNoteSavedToast] = useState(false);
   const [userTextInput, setUserTextInput] = useState('');
   const [isAiThinking, setIsAiThinking] = useState(false);
   const [liveScore, setLiveScore] = useState<string | null>(null);
-  const [activeProviderLabel, setActiveProviderLabel] = useState<string>('Calm Mentor AI');
+  const [activeProviderLabel, setActiveProviderLabel] = useState<string>('Delhi Bhai Mentor');
 
-  // Hidden 10-Key AI Vault (masked password inputs, sessionStorage only, never shown in plaintext)
+  // Hidden 10-Key AI Vault
   const [serverVaultCount, setServerVaultCount] = useState<number>(0);
   const [showVaultDrawer, setShowVaultDrawer] = useState(false);
   const [vaultKeys, setVaultKeys] = useState<string[]>(() => Array(10).fill(''));
@@ -126,18 +160,14 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
   const callStateRef = useRef(callState);
   const handsFreeRef = useRef(handsFreeMode);
   const isSpeakerMutedRef = useRef(isSpeakerMuted);
+  const isTimerPausedRef = useRef(isTimerPaused);
+  const voiceRateRef = useRef(voiceRate);
 
-  useEffect(() => {
-    callStateRef.current = callState;
-  }, [callState]);
-
-  useEffect(() => {
-    handsFreeRef.current = handsFreeMode;
-  }, [handsFreeMode]);
-
-  useEffect(() => {
-    isSpeakerMutedRef.current = isSpeakerMuted;
-  }, [isSpeakerMuted]);
+  useEffect(() => { callStateRef.current = callState; }, [callState]);
+  useEffect(() => { handsFreeRef.current = handsFreeMode; }, [handsFreeMode]);
+  useEffect(() => { isSpeakerMutedRef.current = isSpeakerMuted; }, [isSpeakerMuted]);
+  useEffect(() => { isTimerPausedRef.current = isTimerPaused; }, [isTimerPaused]);
+  useEffect(() => { voiceRateRef.current = voiceRate; }, [voiceRate]);
 
   const buildVaultHeader = useCallback((): string => {
     return vaultKeys
@@ -152,8 +182,10 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
     if (!isOpen) return;
     callLoggedRef.current = false;
     setRemainingSeconds(300);
+    setIsTimerPaused(false);
     setCallState('setup');
     setShowFeedback(false);
+    setShowTranscript(false);
     setFbStatus(null);
     setLiveScore(null);
 
@@ -166,15 +198,15 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
         if (saved) {
           const parsed = JSON.parse(saved);
           if (Array.isArray(parsed)) {
-            const next = Array(10)
-              .fill('')
-              .map((_, i) => (typeof parsed[i] === 'string' ? parsed[i] : ''));
-            setVaultKeys(next);
+            setVaultKeys(Array(10).fill('').map((_, i) => (typeof parsed[i] === 'string' ? parsed[i] : '')));
           }
         }
-      } catch {
-        // Ignore sessionStorage read errors
-      }
+        const notesRaw = localStorage.getItem('jq_saved_call_notes');
+        if (notesRaw) {
+          const notes = JSON.parse(notesRaw);
+          if (Array.isArray(notes)) setSavedNotesCount(notes.length);
+        }
+      } catch {}
     }
 
     fetch('/api/ai-call')
@@ -200,9 +232,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
       if (typeof window !== 'undefined') {
         try {
           sessionStorage.setItem('jq_ai_vault_slots', JSON.stringify(next));
-        } catch {
-          // Ignore storage errors
-        }
+        } catch {}
       }
       return next;
     });
@@ -210,7 +240,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
 
   // Waveform Canvas Loop
   useEffect(() => {
-    if (!isOpen || callState === 'setup') return;
+    if (!isOpen || callState === 'setup' || callState === 'ended') return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -256,7 +286,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
     return () => cancelAnimationFrame(animId);
   }, [isOpen, callState, isAiThinking, mascotMood, isListening]);
 
-  // Clean Speech-to-Text Capture (Web Speech API)
+  // Web Speech-to-Text
   const startListening = useCallback((sendFn: (msg: string) => void) => {
     if (typeof window === 'undefined') return;
     const w = window as unknown as {
@@ -291,9 +321,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
       rec.maxAlternatives = 1;
       rec.onresult = (event) => {
         const spoken = event.results?.[0]?.[0]?.transcript || '';
-        if (spoken.trim()) {
-          sendFn(spoken.trim());
-        }
+        if (spoken.trim()) sendFn(spoken.trim());
       };
       rec.onerror = () => setIsListening(false);
       rec.onend = () => setIsListening(false);
@@ -306,7 +334,47 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
     }
   }, []);
 
-  // Send message to Calm Mentor AI (locked strictly to selected Subject & Chapter)
+  // Indian TTS + Hands-Free Auto-Listen Loop
+  const speakWithDelhiVoice = useCallback((text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (isSpeakerMutedRef.current) return;
+
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/\[SFX:[^\]]+\]/g, '').replace(/⭐[^\n]+/g, '').trim();
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+
+    const voices = window.speechSynthesis.getVoices();
+    const indianVoice = voices.find(
+      (v) =>
+        v.lang === 'hi-IN' ||
+        v.lang === 'en-IN' ||
+        v.name.includes('Swara') ||
+        v.name.includes('Prabhat') ||
+        v.name.includes('India') ||
+        v.name.includes('Hindi')
+    );
+
+    if (indianVoice) utterance.voice = indianVoice;
+    utterance.pitch = 1.04;
+    utterance.rate = voiceRateRef.current;
+
+    utterance.onstart = () => setMascotMood('happy');
+    utterance.onend = () => {
+      setMascotMood('idle');
+      if (callStateRef.current === 'connected' && handsFreeRef.current && !isSpeakerMutedRef.current) {
+        setTimeout(() => {
+          if (callStateRef.current === 'connected' && handsFreeRef.current) {
+            startListening((spoken) => handleSendMessage(spoken));
+          }
+        }, 350);
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startListening]);
+
+  // Send message to Delhi Mentor AI
   const handleSendMessage = async (text: string) => {
     const clean = text.trim();
     if (!clean || isAiThinking) return;
@@ -329,77 +397,32 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
           history: nextHistory,
           currentSubject: selectedSub,
           currentChapter: selectedChap,
-          studentName
+          studentName,
+          mode: callMode,
+          language: callLang,
         })
       });
 
       if (res.ok) {
         const data = await res.json();
-        const reply = data.reply || `Shabash ${studentName}! "${selectedChap}" ke agle concept par bol!`;
+        const reply = data.reply || `Shabash bhidu ${studentName}! "${selectedChap}" ke agle point pe chalte hain!`;
         if (data.providerLabel) setActiveProviderLabel(data.providerLabel);
         setCurrentSpeech(reply);
         setConversationHistory((prev) => [...prev, { role: 'assistant', text: reply }]);
 
         const scoreMatch = reply.match(/⭐\s*Live Score:\s*([\d\.]+\/10)/i);
-        if (scoreMatch) {
-          setLiveScore(scoreMatch[1]);
-        }
+        if (scoreMatch) setLiveScore(scoreMatch[1]);
 
         speakWithDelhiVoice(reply);
       }
     } catch {
-      const fallback = `Aaram se ${studentName}, "${selectedChap}" ka basic concept bilkul zero se samajhte hain — apna doubt ya answer bol!`;
+      const fallback = `Chill kar bhai ${studentName}, "${selectedChap}" ka basic funda ekdum chutki mein samajhte hain — apna doubt bol!`;
       setCurrentSpeech(fallback);
       setConversationHistory((prev) => [...prev, { role: 'assistant', text: fallback }]);
       speakWithDelhiVoice(fallback);
     } finally {
       setIsAiThinking(false);
     }
-  };
-
-  // Clean TTS Voice with Indian/Hindi Accent + Hands-Free Auto-Listen loop
-  const speakWithDelhiVoice = (text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    if (isSpeakerMutedRef.current) return;
-
-    window.speechSynthesis.cancel();
-    const cleanText = text.replace(/\[SFX:[^\]]+\]/g, '').replace(/⭐[^\n]+/g, '').trim();
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-
-    const voices = window.speechSynthesis.getVoices();
-    const indianVoice = voices.find(
-      (v) =>
-        v.lang === 'hi-IN' ||
-        v.lang === 'en-IN' ||
-        v.name.includes('Swara') ||
-        v.name.includes('Prabhat') ||
-        v.name.includes('India') ||
-        v.name.includes('Hindi')
-    );
-
-    if (indianVoice) utterance.voice = indianVoice;
-    utterance.pitch = 1.04;
-    utterance.rate = 0.98;
-
-    utterance.onstart = () => {
-      setMascotMood('happy');
-    };
-    utterance.onend = () => {
-      setMascotMood('idle');
-      if (
-        callStateRef.current === 'connected' &&
-        handsFreeRef.current &&
-        !isSpeakerMutedRef.current
-      ) {
-        setTimeout(() => {
-          if (callStateRef.current === 'connected' && handsFreeRef.current) {
-            startListening((spoken) => handleSendMessage(spoken));
-          }
-        }, 350);
-      }
-    };
-
-    window.speechSynthesis.speak(utterance);
   };
 
   // Start Call Handler
@@ -422,7 +445,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
       setCallState('connected');
       playSfxByName('bell');
 
-      const defaultGreeting = `Hey ${studentName}! Bilkul relax hoke baitho. Aaj hum ${selectedSub} ka "${selectedChap}" bilkul zero se, super easy examples ke saath samjhenge. Ready? Pehla chhota sa question puchhu?`;
+      const defaultGreeting = `Oye bhidu ${studentName}, tension mat le! Aaj ${callMode.toUpperCase()} mode mein ${selectedSub} ka "${selectedChap}" ekdum mast funda bana ke set karenge. Ready? Pehla question bolu?`;
       setCurrentSpeech(defaultGreeting);
       setConversationHistory([{ role: 'assistant', text: defaultGreeting }]);
       speakWithDelhiVoice(defaultGreeting);
@@ -436,11 +459,13 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
           method: 'POST',
           headers,
           body: JSON.stringify({
-            userMessage: `Start teaching ${selectedSub} (${selectedChap}) from zero in short, easy, creative style and ask the first simple question.`,
+            userMessage: `Start teaching ${selectedSub} (${selectedChap}) in ${callMode} mode and ask the first crisp question.`,
             history: [],
             currentSubject: selectedSub,
             currentChapter: selectedChap,
-            studentName
+            studentName,
+            mode: callMode,
+            language: callLang,
           })
         });
         if (res.ok) {
@@ -452,11 +477,10 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
             speakWithDelhiVoice(data.reply);
           }
         }
-      } catch {
-        // defaultGreeting stays active if offline
-      }
+      } catch {}
 
       countdownIntervalRef.current = setInterval(() => {
+        if (isTimerPausedRef.current) return;
         setRemainingSeconds((prev) => {
           if (prev <= 1) {
             handleHangup();
@@ -465,19 +489,17 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
           return prev - 1;
         });
       }, 1000);
-    }, 1800);
+    }, 1500);
   };
 
-  // Hangup Handler with Firestore Viva Session Log
+  // Hangup Handler
   const handleHangup = () => {
     triggerHapticTick();
     playHangupSound();
     if (ringtoneRef.current) ringtoneRef.current.stop();
     if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
     if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch {}
+      try { recognitionRef.current.stop(); } catch {}
     }
     setIsListening(false);
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -506,14 +528,36 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
   const handleToggleMic = () => {
     triggerHapticTick();
     if (isListening) {
-      try {
-        recognitionRef.current?.stop();
-      } catch {}
+      try { recognitionRef.current?.stop(); } catch {}
       setIsListening(false);
       setIsMicMuted(true);
       return;
     }
     startListening((spoken) => handleSendMessage(spoken));
+  };
+
+  const handleSaveCurrentNote = () => {
+    if (!currentSpeech.trim()) return;
+    triggerHapticTick();
+    try {
+      const existingRaw = localStorage.getItem('jq_saved_call_notes');
+      const existing = existingRaw ? JSON.parse(existingRaw) : [];
+      const next = [
+        {
+          id: Date.now(),
+          subject: selectedSub,
+          chapter: selectedChap,
+          mode: callMode,
+          text: currentSpeech,
+          at: new Date().toISOString(),
+        },
+        ...(Array.isArray(existing) ? existing : []),
+      ].slice(0, 30);
+      localStorage.setItem('jq_saved_call_notes', JSON.stringify(next));
+      setSavedNotesCount(next.length);
+      setNoteSavedToast(true);
+      setTimeout(() => setNoteSavedToast(false), 1800);
+    } catch {}
   };
 
   const handleSubmitFeedback = async (e: React.FormEvent) => {
@@ -564,6 +608,8 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
   const timeFormatted = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   const localRuntimeCount = vaultKeys.filter((k) => k.trim().length > 0).length;
   const totalHiddenKeys = Math.min(10, serverVaultCount + localRuntimeCount);
+  const activeModeObj = MODE_OPTIONS.find((m) => m.id === callMode) || MODE_OPTIONS[0];
+  const userTurnsCount = conversationHistory.filter((m) => m.role === 'user').length;
 
   return (
     <AnimatePresence>
@@ -580,7 +626,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
           className="relative w-full max-w-[480px] max-h-[92dvh] rounded-[32px] bg-gradient-to-b from-[#141B2D] via-[#0D1220] to-[#080B14] border-2 border-emerald-500/50 shadow-[0_25px_80px_rgba(0,0,0,0.95)] flex flex-col overflow-hidden"
         >
           {/* =========================================================================
-              VIEW 1: PRE-CALL SUBJECT & CHAPTER PICKER
+              VIEW 1: PRE-CALL SETUP (3 MODES + SUBJECT + CHAPTER + VAULT + FEEDBACK)
               ========================================================================= */}
           {callState === 'setup' && (
             <div className="flex-1 flex flex-col p-4 sm:p-5 overflow-y-auto space-y-3.5">
@@ -595,7 +641,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                       Live Study Call
                     </h3>
                     <p className="text-[11px] font-bold text-emerald-400">
-                      Zero-to-Hero Calm AI Mentor
+                      Delhi Mentor • Credit-Optimized
                     </p>
                   </div>
                 </div>
@@ -629,25 +675,22 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                 </div>
               </div>
 
-              {/* Hidden 10-Key AI Vault (Masked Inputs Only) */}
+              {/* Hidden 10-Key AI Vault */}
               {showVaultDrawer && (
                 <div className="p-3 rounded-2xl bg-slate-950/80 border border-emerald-500/30 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
                       <KeyRound className="w-3.5 h-3.5" />
-                      Hidden 10-Key AI Vault (Gemini / Groq / OpenAI / OpenRouter)
+                      Hidden 10-Key AI Vault
                     </span>
-                    <button
-                      onClick={() => setShowVaultDrawer(false)}
-                      className="text-slate-400 hover:text-white cursor-pointer"
-                    >
+                    <button onClick={() => setShowVaultDrawer(false)} className="text-slate-400 hover:text-white cursor-pointer">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                   <p className="text-[10px] text-slate-400 leading-relaxed">
-                    Server keys: <span className="text-emerald-300 font-bold">{serverVaultCount} hidden</span>. Add up to 10 masked fallback keys below for this session (never shown in plain text):
+                    Server pool: <span className="text-emerald-300 font-bold">{serverVaultCount} hidden keys</span>. Optional masked session keys:
                   </p>
-                  <div className="grid grid-cols-2 gap-1.5 max-h-32 overflow-y-auto pr-1">
+                  <div className="grid grid-cols-2 gap-1.5 max-h-28 overflow-y-auto pr-1">
                     {vaultKeys.map((val, idx) => (
                       <input
                         key={idx}
@@ -665,20 +708,13 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
 
               {/* Feedback Drawer */}
               {showFeedback && (
-                <form
-                  onSubmit={handleSubmitFeedback}
-                  className="p-3 rounded-2xl bg-sky-950/30 border border-sky-500/30 space-y-2"
-                >
+                <form onSubmit={handleSubmitFeedback} className="p-3 rounded-2xl bg-sky-950/30 border border-sky-500/30 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
                       <Mail className="w-3.5 h-3.5" />
                       Feedback • Folder: JackQuiz_App_Feedback
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setShowFeedback(false)}
-                      className="text-slate-400 hover:text-white cursor-pointer"
-                    >
+                    <button type="button" onClick={() => setShowFeedback(false)} className="text-slate-400 hover:text-white cursor-pointer">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -689,9 +725,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                         key={cat}
                         onClick={() => setFbCategory(cat)}
                         className={`px-2 py-1 rounded-lg text-[10px] font-bold border cursor-pointer ${
-                          fbCategory === cat
-                            ? 'bg-sky-500 text-slate-950 border-sky-400'
-                            : 'bg-white/5 text-slate-300 border-white/10'
+                          fbCategory === cat ? 'bg-sky-500 text-slate-950 border-sky-400' : 'bg-white/5 text-slate-300 border-white/10'
                         }`}
                       >
                         {cat}
@@ -705,9 +739,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                         type="button"
                         key={star}
                         onClick={() => setFbRating(star)}
-                        className={`px-1.5 py-0.5 rounded cursor-pointer ${
-                          fbRating >= star ? 'text-amber-400' : 'text-slate-600'
-                        }`}
+                        className={`px-1.5 py-0.5 rounded cursor-pointer ${fbRating >= star ? 'text-amber-400' : 'text-slate-600'}`}
                       >
                         ★
                       </button>
@@ -717,7 +749,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                     rows={2}
                     value={fbMessage}
                     onChange={(e) => setFbMessage(e.target.value)}
-                    placeholder="Write your feedback or suggestion..."
+                    placeholder="Write your feedback..."
                     className="w-full px-3 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-sky-400"
                   />
                   <button
@@ -731,10 +763,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                     <div className="text-[11px] text-emerald-300 font-bold space-y-1">
                       <p>{fbStatus.text}</p>
                       {fbStatus.mailtoHref && (
-                        <a
-                          href={fbStatus.mailtoHref}
-                          className="inline-flex items-center gap-1 underline text-sky-300"
-                        >
+                        <a href={fbStatus.mailtoHref} className="inline-flex items-center gap-1 underline text-sky-300">
                           <Mail className="w-3 h-3" /> Open in Email App
                         </a>
                       )}
@@ -743,10 +772,56 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                 </form>
               )}
 
-              {/* Step 1: Select Subject */}
-              <div className="space-y-2">
+              {/* Step 1: Select 3 Learning Modes (Normal / Medium / High) */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between px-1">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    1. Choose Level Mode:
+                  </span>
+                  <div className="flex items-center gap-1">
+                    {(['hinglish', 'english', 'hindi'] as CallLanguage[]).map((lng) => (
+                      <button
+                        key={lng}
+                        type="button"
+                        onClick={() => setCallLang(lng)}
+                        className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase border cursor-pointer ${
+                          callLang === lng
+                            ? 'bg-emerald-500/20 border-emerald-400 text-emerald-300'
+                            : 'bg-white/5 border-white/10 text-slate-400'
+                        }`}
+                      >
+                        {lng === 'hinglish' ? 'Delhi' : lng}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {MODE_OPTIONS.map((m) => {
+                    const active = callMode === m.id;
+                    return (
+                      <button
+                        key={m.id}
+                        type="button"
+                        onClick={() => {
+                          triggerHapticTick();
+                          setCallMode(m.id);
+                        }}
+                        className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer ${
+                          active ? `${m.badgeClass} shadow-md scale-[1.02]` : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-300'
+                        }`}
+                      >
+                        <span className="text-xs font-black block text-white">{m.label}</span>
+                        <span className="text-[9px] font-bold leading-tight block mt-0.5 opacity-90">{m.subtitle}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 2: Select Subject */}
+              <div className="space-y-1.5">
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-1">
-                  1. Choose Subject (AI stays strictly on this topic):
+                  2. Choose Subject (Locked Topic):
                 </span>
                 <div className="grid grid-cols-2 gap-2">
                   {CALL_SUBJECTS.map((sub) => {
@@ -759,30 +834,26 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                           setSelectedSub(sub.name);
                           setSelectedChap(sub.chapters[0]);
                         }}
-                        className={`p-3 rounded-2xl border text-left transition-all cursor-pointer ${
+                        className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-emerald-500/25 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)] scale-[1.02]'
+                            ? 'bg-emerald-500/25 border-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.35)]'
                             : 'bg-white/5 hover:bg-white/10 border-white/10'
                         }`}
                       >
-                        <span className="text-xs font-black text-white block">
-                          {sub.name}
-                        </span>
-                        <span className="text-[10px] text-amber-300/90 font-bold block">
-                          {sub.hindi}
-                        </span>
+                        <span className="text-xs font-black text-white block">{sub.name}</span>
+                        <span className="text-[10px] text-amber-300/90 font-bold block">{sub.hindi}</span>
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Step 2: Select Chapter */}
-              <div className="space-y-2">
+              {/* Step 3: Select Chapter */}
+              <div className="space-y-1.5">
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block px-1">
-                  2. Choose Chapter for Q&A + Doubt Clearing:
+                  3. Choose Chapter:
                 </span>
-                <div className="space-y-1.5 max-h-[150px] overflow-y-auto pr-1">
+                <div className="space-y-1.5 max-h-[120px] overflow-y-auto pr-1">
                   {currentSubjectObj.chapters.map((ch, idx) => {
                     const isChSelected = selectedChap === ch;
                     return (
@@ -792,20 +863,13 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                           triggerHapticTick();
                           setSelectedChap(ch);
                         }}
-                        className={`p-2.5 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
+                        className={`p-2 rounded-xl border flex items-center justify-between transition-all cursor-pointer ${
                           isChSelected
                             ? 'bg-amber-500/20 border-amber-400 text-amber-300'
                             : 'bg-white/5 hover:bg-white/10 border-white/10 text-slate-300'
                         }`}
                       >
-                        <div className="flex items-center gap-2 min-w-0 pr-2">
-                          <span className="text-[10px] font-mono font-bold text-amber-400">
-                            Ch {idx + 1}
-                          </span>
-                          <span className="text-xs font-bold truncate text-white">
-                            {ch}
-                          </span>
-                        </div>
+                        <span className="text-xs font-bold truncate text-white">{ch}</span>
                         {isChSelected && <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />}
                       </div>
                     );
@@ -821,15 +885,12 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                   className="w-full py-3.5 px-6 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_5px_20px_rgba(16,185,129,0.5)] border border-[#86EFAC] bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-slate-950 active:scale-95 disabled:opacity-40 transition-all cursor-pointer"
                 >
                   <Phone className="w-4 h-4 animate-bounce" />
-                  <span>{creditsLeft <= 0 ? 'Daily Call Credits Exhausted' : `Start Live Call (${selectedSub})`}</span>
+                  <span>{creditsLeft <= 0 ? 'Daily Call Credits Exhausted' : `Start ${activeModeObj.label} Live Call`}</span>
                 </button>
               </div>
 
               <div className="text-center">
-                <button
-                  onClick={onClose}
-                  className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
-                >
+                <button onClick={onClose} className="text-xs text-slate-400 hover:text-white transition-colors cursor-pointer">
                   Cancel
                 </button>
               </div>
@@ -837,20 +898,23 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
           )}
 
           {/* =========================================================================
-              VIEW 2: ACTIVE CALL SCREEN (GOOGLE-LIVE ORB + HANDS-FREE VOICE + 5:00 TIMER)
+              VIEW 2: ACTIVE CALL SCREEN (SLEEK 10-FEATURE LIVE CONVERSATION)
               ========================================================================= */}
           {callState !== 'setup' && callState !== 'ended' && (
             <div className="flex-1 flex flex-col p-4 sm:p-5 justify-between overflow-y-auto">
-              {/* Top HUD */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/10 shrink-0">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 shrink-0">
-                    <Radio className="w-5 h-5 animate-pulse" />
+              {/* Top HUD: Provider + Active Mode Switcher + Score + Timer */}
+              <div className="flex items-center justify-between pb-2.5 border-b border-white/10 shrink-0 gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-300 shrink-0">
+                    <Radio className="w-4 h-4 animate-pulse" />
                   </div>
                   <div className="min-w-0">
-                    <h4 className="text-xs font-black text-white leading-tight truncate">
-                      {activeProviderLabel} • Locked Topic
-                    </h4>
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="text-xs font-black text-white truncate">{activeProviderLabel}</h4>
+                      <span className={`px-1.5 py-0.5 rounded-md border text-[9px] font-black uppercase ${activeModeObj.badgeClass}`}>
+                        {activeModeObj.label}
+                      </span>
+                    </div>
                     <p className="text-[10px] text-amber-300 font-bold truncate">
                       {selectedSub} • {selectedChap}
                     </p>
@@ -864,66 +928,142 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                       <span>{liveScore}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-black">
-                    <Clock className="w-3.5 h-3.5" />
+                  <button
+                    type="button"
+                    onClick={() => setIsTimerPaused((p) => !p)}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 border border-emerald-500/40 text-emerald-400 font-mono text-xs font-black cursor-pointer"
+                    title={isTimerPaused ? 'Resume Timer' : 'Pause Timer'}
+                  >
+                    {isTimerPaused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
                     <span>{timeFormatted}</span>
-                  </div>
+                  </button>
                 </div>
               </div>
 
-              {/* Google Live-Style Pulsing Orb */}
-              <div className="flex flex-col items-center justify-center py-3">
-                <motion.div
-                  animate={{
-                    scale:
-                      mascotMood === 'happy' || isListening
-                        ? [1, 1.12, 1]
+              {/* Compact Mode Switcher + Utility Strip (Speed, Replay, Save Note, Transcript) */}
+              <div className="flex items-center justify-between gap-1.5 py-2 border-b border-white/5 text-[10px]">
+                <div className="flex items-center gap-1">
+                  {MODE_OPTIONS.map((m) => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setCallMode(m.id)}
+                      className={`px-2 py-1 rounded-lg font-black border cursor-pointer ${
+                        callMode === m.id ? m.badgeClass : 'bg-white/5 border-white/10 text-slate-400'
+                      }`}
+                    >
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setVoiceRate((r) => (r === 1.0 ? 1.15 : r === 1.15 ? 0.9 : 1.0))}
+                    className="px-2 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-bold cursor-pointer"
+                    title="Change Voice Speed"
+                  >
+                    {voiceRate}x
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => currentSpeech && speakWithDelhiVoice(currentSpeech)}
+                    className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-emerald-300 cursor-pointer"
+                    title="Replay Last Reply"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveCurrentNote}
+                    className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-amber-300 cursor-pointer"
+                    title="Bookmark This Explanation"
+                  >
+                    <Bookmark className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowTranscript((v) => !v)}
+                    className={`p-1.5 rounded-lg border cursor-pointer ${
+                      showTranscript ? 'bg-sky-500/20 border-sky-400 text-sky-300' : 'bg-white/5 border-white/10 text-slate-300'
+                    }`}
+                    title="Toggle Transcript History"
+                  >
+                    <MessageSquareText className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              {noteSavedToast && (
+                <div className="text-center text-[10px] font-black text-emerald-300 py-1">
+                  ✓ Saved to Revision Notes ({savedNotesCount} total)
+                </div>
+              )}
+
+              {/* Pulsing Orb + Waveform OR Transcript History */}
+              {showTranscript ? (
+                <div className="flex-1 my-2 p-3 rounded-2xl bg-black/50 border border-white/10 overflow-y-auto space-y-2 max-h-52">
+                  {conversationHistory.map((m, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-2 rounded-xl text-xs ${
+                        m.role === 'user'
+                          ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-200 ml-6'
+                          : 'bg-white/5 border border-white/10 text-slate-100 mr-6'
+                      }`}
+                    >
+                      <span className="text-[9px] font-black uppercase opacity-70 block mb-0.5">
+                        {m.role === 'user' ? studentName : 'Mentor'}
+                      </span>
+                      {m.text}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
+                  <div className="flex flex-col items-center justify-center py-2.5">
+                    <motion.div
+                      animate={{
+                        scale:
+                          mascotMood === 'happy' || isListening
+                            ? [1, 1.1, 1]
+                            : isAiThinking
+                            ? [1, 1.05, 0.96, 1]
+                            : [1, 1.03, 1],
+                      }}
+                      transition={{ repeat: Infinity, duration: isListening ? 1.1 : 2.2 }}
+                      className={`w-20 h-20 rounded-full flex items-center justify-center shadow-2xl border-2 ${
+                        isListening
+                          ? 'bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-600 border-sky-200 shadow-[0_0_35px_rgba(56,189,248,0.65)]'
+                          : isAiThinking
+                          ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 border-amber-200 shadow-[0_0_30px_rgba(251,191,36,0.55)]'
+                          : 'bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 border-emerald-200 shadow-[0_0_30px_rgba(16,185,129,0.55)]'
+                      }`}
+                    >
+                      <Sparkles className="w-8 h-8 text-slate-950" />
+                    </motion.div>
+                    <span className="mt-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      {callState === 'ringing'
+                        ? 'Connecting...'
+                        : isListening
+                        ? 'Listening...'
                         : isAiThinking
-                        ? [1, 1.06, 0.96, 1]
-                        : [1, 1.03, 1],
-                  }}
-                  transition={{ repeat: Infinity, duration: isListening ? 1.1 : 2.2 }}
-                  className={`w-24 h-24 rounded-full flex items-center justify-center shadow-2xl border-2 ${
-                    isListening
-                      ? 'bg-gradient-to-br from-sky-400 via-cyan-500 to-blue-600 border-sky-200 shadow-[0_0_40px_rgba(56,189,248,0.65)]'
-                      : isAiThinking
-                      ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 border-amber-200 shadow-[0_0_35px_rgba(251,191,36,0.55)]'
-                      : 'bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 border-emerald-200 shadow-[0_0_35px_rgba(16,185,129,0.55)]'
-                  }`}
-                >
-                  <Sparkles className="w-9 h-9 text-slate-950" />
-                </motion.div>
-                <span className="mt-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  {callState === 'ringing'
-                    ? 'Connecting Live Tutor...'
-                    : isListening
-                    ? 'Listening to you...'
-                    : isAiThinking
-                    ? 'Preparing easy explanation...'
-                    : mascotMood === 'happy'
-                    ? 'Tutor Speaking...'
-                    : handsFreeMode
-                    ? 'Hands-Free Live Mode On'
-                    : 'Tap Mic or Type Below'}
-                </span>
-              </div>
+                        ? 'Thinking...'
+                        : mascotMood === 'happy'
+                        ? 'Tutor Speaking...'
+                        : `Active • ${activeModeObj.label} Mode (${userTurnsCount} turns)`}
+                    </span>
+                  </div>
 
-              {/* Audio Waveform Canvas */}
-              <div className="w-full h-11 mb-2 px-1">
-                <canvas
-                  ref={canvasRef}
-                  width={380}
-                  height={44}
-                  className="w-full h-full rounded-2xl bg-black/50 border border-white/5"
-                />
-              </div>
+                  <div className="w-full h-10 mb-2 px-1">
+                    <canvas ref={canvasRef} width={380} height={40} className="w-full h-full rounded-2xl bg-black/50 border border-white/5" />
+                  </div>
 
-              {/* Teacher Voice Transcript Bubble */}
-              <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center shadow-lg mb-2">
-                <p className="text-xs font-bold text-white leading-relaxed">
-                  &ldquo;{currentSpeech}&rdquo;
-                </p>
-              </div>
+                  <div className="p-3 rounded-2xl bg-white/5 border border-white/10 text-center shadow-lg mb-2">
+                    <p className="text-xs font-bold text-white leading-relaxed">&ldquo;{currentSpeech}&rdquo;</p>
+                  </div>
+                </>
+              )}
 
               {/* Quick Gen-Z Chips */}
               <div className="flex flex-wrap gap-1.5 justify-center mb-2">
@@ -939,7 +1079,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                 ))}
               </div>
 
-              {/* Text Input for Student Answer or Doubt */}
+              {/* Text Input */}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -986,11 +1126,8 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                     setHandsFreeMode((v) => !v);
                   }}
                   className={`px-3 h-10 rounded-xl border text-[10px] font-black transition-all cursor-pointer ${
-                    handsFreeMode
-                      ? 'bg-emerald-500/20 border-emerald-400/60 text-emerald-300'
-                      : 'bg-white/5 border-white/10 text-slate-400'
+                    handsFreeMode ? 'bg-emerald-500/20 border-emerald-400/60 text-emerald-300' : 'bg-white/5 border-white/10 text-slate-400'
                   }`}
-                  title="Auto-listen after Tutor finishes speaking"
                 >
                   {handsFreeMode ? 'Hands-Free ON' : 'Hands-Free OFF'}
                 </button>
@@ -1009,11 +1146,8 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                     setIsSpeakerMuted(!isSpeakerMuted);
                   }}
                   className={`w-12 h-12 rounded-2xl border flex items-center justify-center transition-all cursor-pointer ${
-                    isSpeakerMuted
-                      ? 'bg-red-500/20 border-red-500 text-red-300'
-                      : 'bg-white/10 hover:bg-white/20 border-white/10 text-white'
+                    isSpeakerMuted ? 'bg-red-500/20 border-red-500 text-red-300' : 'bg-white/10 hover:bg-white/20 border-white/10 text-white'
                   }`}
-                  title={isSpeakerMuted ? 'Turn Speaker On' : 'Turn Speaker Off'}
                 >
                   {isSpeakerMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5 text-amber-400" />}
                 </button>
@@ -1022,7 +1156,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
           )}
 
           {/* =========================================================================
-              VIEW 3: CALL ENDED + QUICK FEEDBACK TO SINGLE EMAIL FOLDER
+              VIEW 3: CALL ENDED SUMMARY + SINGLE-FOLDER FEEDBACK
               ========================================================================= */}
           {callState === 'ended' && (
             <div className="flex-1 flex flex-col p-5 space-y-4 overflow-y-auto">
@@ -1032,14 +1166,26 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
                 </div>
                 <h3 className="text-base font-black text-white">Live Session Complete!</h3>
                 <p className="text-xs text-slate-400">
-                  {selectedSub} • {selectedChap} {liveScore ? `• ${liveScore}` : ''}
+                  {selectedSub} • {selectedChap}
                 </p>
               </div>
 
-              <form
-                onSubmit={handleSubmitFeedback}
-                className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2.5"
-              >
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
+                  <span className="text-[9px] text-slate-400 uppercase font-bold block">Mode</span>
+                  <span className="text-xs font-black text-emerald-300">{activeModeObj.label}</span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
+                  <span className="text-[9px] text-slate-400 uppercase font-bold block">Turns</span>
+                  <span className="text-xs font-black text-amber-300">{userTurnsCount}</span>
+                </div>
+                <div className="p-2.5 rounded-2xl bg-white/5 border border-white/10">
+                  <span className="text-[9px] text-slate-400 uppercase font-bold block">Score / Notes</span>
+                  <span className="text-xs font-black text-sky-300">{liveScore || `${savedNotesCount} saved`}</span>
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmitFeedback} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2.5">
                 <span className="text-[10px] font-black uppercase tracking-wider text-sky-300 flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5" />
                   Quick Feedback (Folder: JackQuiz_App_Feedback)

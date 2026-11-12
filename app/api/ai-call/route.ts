@@ -45,19 +45,34 @@ async function loadChapterQuestions(subject: string, chapter: string): Promise<C
   }
 }
 
-const MASTER_CALM_GENZ_TUTOR_PROMPT = `
-You are an extraordinarily calm, warm, patient Indian Class 10 JAC Board Mentor speaking in easy, friendly Indian Gen-Z Hinglish/English style.
+type CallDifficultyMode = 'normal' | 'medium' | 'high';
 
-CRITICAL STUDENT PROFILE & TEACHING RULES:
-1. NEVER MENTION EXPERIENCE: Never state how many years you have been teaching or brag about experience. Just teach naturally with calm mastery.
-2. ZERO-BASE FOUNDATION (13-YEAR-OLD, 2-MONTH SPRINT): Assume the student is 13 years old, missed Classes 6, 7, 8 and half of Class 9, and has only 2 months left for Class 10 Board exams. Build every concept from absolute zero—never assume prior Class 6-9 knowledge.
-3. SHORT, SUPER-EASY & CREATIVE EXPLANATIONS: Keep every answer and explanation short (2-4 crisp sentences), super easy to understand, and creative—use vivid everyday Indian analogies (chai, cricket, UPI, metro, phone battery, pressure cooker) so complex topics click instantly.
-4. STRICT SUBJECT & CHAPTER LOCK: Stay 100% locked to the selected Subject and Chapter. Ask focused Q&A, clear doubts strictly on that topic, and NEVER drift off-topic.
-5. LIVE VIVA LOOP:
-   - Grade any student answer with "⭐ Live Score: X/10" + brief encouraging feedback.
-   - If the student asks a doubt, clear it from zero in a short, creative way.
-   - End by calmly asking ONE short board question or checking understanding ("Samjha? Ab bata...").
+function buildDelhiMentorPrompt(mode: CallDifficultyMode, language: string): string {
+  const modeRule =
+    mode === 'high'
+      ? `MODE = HIGH (Hard / Board Topper): Student has almost finished Class 10 and only a few tricky topics remain. Skip basic Class 6-9 definitions; jump straight into sharp Class 10 JAC Board HOTS questions, tricky exam traps, and crisp 2-line precision answers.`
+      : mode === 'medium'
+      ? `MODE = MEDIUM (Intermediate): Student has Class 8 to Class 10 syllabus pending. Briefly bridge any missing Class 8-9 link in 1 crisp line, then explain the Class 10 formula/concept clearly and ask a solid board-level question.`
+      : `MODE = NORMAL (Zero-Base Beginner): Student has Class 6 to Class 10 syllabus completely pending ("pura bhoka dola hai"). Assume ZERO prior Class 6-9 knowledge. Explain from absolute scratch in super easy, creative 2-3 line everyday examples so even a beginner gets it instantly.`;
+
+  const langRule =
+    language === 'english'
+      ? 'LANGUAGE: Easy conversational Indian English with light friendly Delhi warmth.'
+      : language === 'hindi'
+      ? 'LANGUAGE: Simple, clear Devanagari/Hinglish Hindi with friendly Delhi local vibe.'
+      : 'LANGUAGE: Authentic, clean Delhi Local Hinglish (bhai, bhidu, mamu, yaar, dost, boss, scene, ekdum, mast, jhakaas, solid, bindas, pakka, seedha, funda, jugad, dimaag ki batti, chutki mein, line pe aa, set hai, badiya, lajawab, kadak, asaan, khallas, pakad, dhyan de, sun na, dekh, chal, apun, tera, full-on, zero se hero, ek number, top class, halka, bhari, sorted, rock kar, board phod, chill kar, tension mat le, samajh le, patak se, bol, scene set, mast wala, dimaag mein baitha, chakachak, bilkul tight). Keep it respectful, warm, and NEVER vulgar or cringe.';
+
+  return `
+You are a calm, sharp, super-friendly Delhi Local Mentor ("Bhai / Bhidu / Mamu" vibe) for Class 10 JAC Board students.
+
+CORE RULES:
+1. NEVER MENTION EXPERIENCE YEARS: Never say how many years you have taught. Just teach naturally.
+2. ${modeRule}
+3. ${langRule}
+4. CREDIT-OPTIMIZED BREVITY: Keep every reply ultra-crisp (2-3 short sentences max) so explanations are fast, creative, and token-efficient.
+5. STRICT SUBJECT & CHAPTER LOCK: Stay 100% locked to the active Subject and Chapter. Grade answers with "⭐ Live Score: X/10", clear doubts cleanly, and end with ONE short question ("Samjha bhidu? Ab bata...").
 `;
+}
 
 export async function GET() {
   const summary = getServerPoolSummary();
@@ -72,7 +87,18 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { userMessage, history, currentSubject, currentChapter, studentName } = body;
+    const {
+      userMessage,
+      history,
+      currentSubject,
+      currentChapter,
+      studentName,
+      mode = 'normal',
+      language = 'hinglish',
+    } = body;
+
+    const activeMode: CallDifficultyMode =
+      mode === 'high' || mode === 'medium' ? mode : 'normal';
 
     // Optional hidden runtime vault header (comma-separated masked keys passed strictly over HTTPS POST, never echoed back)
     const runtimeHeader = req.headers.get('x-ai-vault') || '';
@@ -87,29 +113,30 @@ export async function POST(req: NextRequest) {
 
     const chapterQuestions = await loadChapterQuestions(subContext, chContext);
     const turnsCount = Array.isArray(history) ? history.length : 0;
-    const sampleQuestions = chapterQuestions.slice(0, 8);
+    // Credit-optimized: only top 4 relevant questions from the locked chapter
+    const sampleQuestions = chapterQuestions.slice(0, 4);
     const chapterReferenceBlock =
       sampleQuestions.length > 0
         ? sampleQuestions
             .map(
               (item, idx) =>
-                `${idx + 1}. Q: ${item.q} | Correct: ${item.o?.[item.a] ?? ''} | Concept: ${item.e}`
+                `${idx + 1}. Q: ${item.q} | Ans: ${item.o?.[item.a] ?? ''} | Key: ${item.e}`
             )
             .join('\n')
         : '';
 
     const systemContext = [
-      MASTER_CALM_GENZ_TUTOR_PROMPT,
-      `STUDENT NAME: ${scholarName}`,
-      `LOCKED SUBJECT: ${subContext}`,
-      `LOCKED CHAPTER: ${chContext}`,
-      chapterReferenceBlock ? `OFFICIAL JAC CHAPTER BANK:\n${chapterReferenceBlock}` : '',
+      buildDelhiMentorPrompt(activeMode, String(language || 'hinglish')),
+      `STUDENT: ${scholarName} | MODE: ${activeMode.toUpperCase()}`,
+      `LOCKED SUBJECT: ${subContext} | CHAPTER: ${chContext}`,
+      chapterReferenceBlock ? `CHAPTER BANK:\n${chapterReferenceBlock}` : '',
     ]
       .filter(Boolean)
       .join('\n\n');
 
+    // Credit-optimized: only last 4 conversation turns
     const recentTurns = Array.isArray(history)
-      ? history.slice(-6).map((h: { role: string; text: string }) => ({
+      ? history.slice(-4).map((h: { role: string; text: string }) => ({
           role: h.role === 'user' ? 'user' : 'assistant',
           content: h.text,
         }))
@@ -138,8 +165,8 @@ export async function POST(req: NextRequest) {
               },
             ],
             generationConfig: {
-              temperature: 0.75,
-              maxOutputTokens: 220,
+              temperature: 0.72,
+              maxOutputTokens: 165,
             },
           };
 
@@ -176,8 +203,8 @@ export async function POST(req: NextRequest) {
             },
             body: JSON.stringify({
               model: slot.model,
-              temperature: 0.75,
-              max_tokens: 220,
+              temperature: 0.72,
+              max_tokens: 165,
               messages: [
                 { role: 'system', content: systemContext },
                 ...recentTurns,

@@ -34,17 +34,17 @@ export interface ProviderSlot {
 const PROVIDER_DEFAULTS: Record<AIProviderKind, { endpoint: string; model: string; label: string }> = {
   gemini: {
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.8-flash',
     label: 'Google Gemini',
   },
   groq: {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
-    model: 'llama-3.3-70b-versatile',
+    model: 'llama-3.1-8b-instant',
     label: 'Groq LPU',
   },
   openrouter: {
     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-    model: 'google/gemini-2.0-flash-001',
+    model: 'openrouter/auto',
     label: 'OpenRouter',
   },
   openai: {
