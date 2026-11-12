@@ -88,6 +88,7 @@ export function createDefaultProfile(uid: string, name?: string, email?: string)
     followingUids: [],
     followersCount: 0,
     followingCount: 0,
+    verificationTick: 'green',
     joinedAt: new Date().toISOString(),
   };
 }

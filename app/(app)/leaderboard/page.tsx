@@ -25,6 +25,7 @@ import {
   normalizeUsername
 } from '@/lib/socialService';
 import { CrownBadge } from '@/components/ui/CrownBadge';
+import { VerificationTick } from '@/components/ui/VerificationTick';
 import {
   playClickSound,
   playOreUnlockFanfare,
@@ -98,6 +99,7 @@ export default function LeaderboardPage() {
         avatarSvg: ore.iconSvg,
         photoURL: u.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
         oreTier: ore.name,
+        verificationTick: u.verificationTick || 'green',
         isUser: Boolean(profile?.uid && u.uid === profile.uid),
       };
     });
@@ -450,6 +452,7 @@ export default function LeaderboardPage() {
                     <h5 className="text-xs font-black text-white truncate">
                       {scholar.name}
                     </h5>
+                    <VerificationTick tick={scholar.verificationTick} size="xs" />
                     {scholar.isUser && (
                       <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-amber-400 text-black">
                         YOU

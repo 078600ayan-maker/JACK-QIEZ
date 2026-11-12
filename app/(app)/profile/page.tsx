@@ -49,7 +49,9 @@ import {
   isUsernameAvailable,
   upsertUserInDirectory,
   fetchActiveScholarsCount,
+  updateUserVerificationTickInCloud,
 } from '@/lib/socialService';
+import { VerificationTick } from '@/components/ui/VerificationTick';
 import {
   buildWeeklyStreakStrip,
   buildMonthlyStreakMatrix,
@@ -97,6 +99,7 @@ export interface ScholarItem {
   followersUids?: string[];
   followingUids?: string[];
   isOnline?: boolean;
+  verificationTick?: 'green' | 'red' | 'black';
 }
 
 function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem {
@@ -122,6 +125,7 @@ function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem 
     followersUids,
     followingUids,
     isOnline: Boolean(u.isOnline),
+    verificationTick: u.verificationTick || 'green',
   };
 }
 
@@ -135,6 +139,13 @@ function ProfileContent() {
   const [teacherModalOpen, setTeacherModalOpen] = useState(false);
   const [activeOnlineCount, setActiveOnlineCount] = useState<number>(1);
   const [copiedProfileLink, setCopiedProfileLink] = useState(false);
+
+  // Admin Verification Tick Console State
+  const [adminModalOpen, setAdminModalOpen] = useState(false);
+  const [adminPasscode, setAdminPasscode] = useState('');
+  const [adminAuthorized, setAdminAuthorized] = useState(false);
+  const [adminStatus, setAdminStatus] = useState<string | null>(null);
+  const [adminBusyUid, setAdminBusyUid] = useState<string | null>(null);
 
   // Inspected Scholar Modal state
   const [inspectedScholar, setInspectedScholar] = useState<ScholarItem | null>(null);
@@ -548,7 +559,13 @@ function ProfileContent() {
           </div>
 
           <div className="flex-1 min-w-0 pr-2">
-            <h2 className="text-lg font-black text-white tracking-tight truncate">{name}</h2>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h2 className="text-lg font-black text-white tracking-tight truncate">{name}</h2>
+              <VerificationTick tick={profile?.verificationTick || 'green'} size="sm" />
+            </div>
+            <div className="mt-1">
+              <VerificationTick tick={profile?.verificationTick || 'green'} size="xs" showLabel />
+            </div>
             <p className="text-[11px] text-amber-400 font-black truncate mt-0.5">
               @{profile?.username || 'scholar'} {profile?.age ? `• ${profile.age}y` : ''}
             </p>
@@ -823,6 +840,18 @@ function ProfileContent() {
             <h3 className="text-xs font-black uppercase tracking-wider text-white">
               Pro Scholar Telemetry &amp; 69-Chapter Mastery
             </h3>
+            <button
+              type="button"
+              onClick={() => {
+                playClickSound();
+                setAdminStatus(null);
+                setAdminModalOpen(true);
+              }}
+              className="px-2 py-0.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[9px] font-black text-slate-300 cursor-pointer"
+              title="Admin Verification Tick Control"
+            >
+              🛡️ Admin Tick
+            </button>
           </div>
           <button
             type="button"
@@ -1086,6 +1115,7 @@ function ProfileContent() {
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <p className="text-xs font-black text-white truncate">{s.name}</p>
+                          <VerificationTick tick={s.verificationTick} size="xs" />
                           {isYou && (
                             <span className="text-[8px] font-black px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-950">
                               YOU
@@ -1277,8 +1307,14 @@ function ProfileContent() {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-lg font-black text-white truncate">{inspectedScholar.name}</h3>
-                    <p className="text-xs font-bold text-amber-400">@{inspectedScholar.username}</p>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h3 className="text-lg font-black text-white truncate">{inspectedScholar.name}</h3>
+                      <VerificationTick tick={inspectedScholar.verificationTick} size="sm" />
+                    </div>
+                    <div className="mt-1">
+                      <VerificationTick tick={inspectedScholar.verificationTick} size="xs" showLabel />
+                    </div>
+                    <p className="text-xs font-bold text-amber-400 mt-1">@{inspectedScholar.username}</p>
                     <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-[10px] font-bold text-blue-300">
                       {inspectedScholar.role || 'Class 10 JAC Scholar'}
                     </span>
@@ -1649,7 +1685,10 @@ function ProfileContent() {
                           className="w-9 h-9 rounded-xl object-cover border border-white/15 shrink-0"
                         />
                         <div className="min-w-0">
-                          <p className="text-xs font-black text-white truncate">{u.name}</p>
+                          <div className="flex items-center gap-1">
+                            <p className="text-xs font-black text-white truncate">{u.name}</p>
+                            <VerificationTick tick={u.verificationTick} size="xs" />
+                          </div>
                           <p className="text-[10px] text-amber-400 font-bold truncate">@{u.username} &bull; {u.xp} XP</p>
                         </div>
                       </div>
@@ -1746,6 +1785,138 @@ function ProfileContent() {
             >
               {editSaving ? 'Saving...' : '✓ Save Changes'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Admin Verification Tick Console (Green = Default All, Red & Black = Admin-Controlled) */}
+      {adminModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
+          <div className="relative w-full max-w-[440px] max-h-[85dvh] flex flex-col rounded-3xl bg-gradient-to-b from-[#16213A] to-[#0A0E18] border-2 border-amber-500/40 p-5 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
+              <div>
+                <h3 className="text-sm font-black text-white">🛡️ Admin Verification Tick Console</h3>
+                <p className="text-[10px] text-slate-400">
+                  Green is active by default for all scholars. Only Admin can grant Red or Black ticks.
+                </p>
+              </div>
+              <button
+                onClick={() => setAdminModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/10 text-slate-300 hover:text-white flex items-center justify-center cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {!adminAuthorized ? (
+              <div className="space-y-3">
+                <input
+                  type="password"
+                  value={adminPasscode}
+                  onChange={(e) => setAdminPasscode(e.target.value)}
+                  placeholder="Enter Admin Verification Key..."
+                  className="w-full bg-black/60 border border-white/15 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-400"
+                />
+                {adminStatus && (
+                  <p className="text-[11px] font-bold text-red-300">{adminStatus}</p>
+                )}
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setAdminStatus(null);
+                    try {
+                      const res = await fetch('/api/admin/verify-tick', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ passcode: adminPasscode, tick: 'green' }),
+                      });
+                      const data = await res.json();
+                      if (res.ok && data.authorized) {
+                        setAdminAuthorized(true);
+                        setAdminStatus('Admin Verified. Select any scholar to update tick.');
+                      } else {
+                        setAdminStatus(data.error || 'Invalid Admin Key.');
+                      }
+                    } catch {
+                      setAdminStatus('Could not verify Admin Key.');
+                    }
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs cursor-pointer"
+                >
+                  Unlock Admin Control
+                </button>
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+                {adminStatus && (
+                  <p className="text-[11px] font-bold text-emerald-300 pb-1">{adminStatus}</p>
+                )}
+                {directoryScholars.slice(0, 30).map((sch) => (
+                  <div
+                    key={sch.uid}
+                    className="p-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between gap-2"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-black text-white truncate">{sch.name}</span>
+                        <VerificationTick tick={sch.verificationTick} size="xs" />
+                      </div>
+                      <span className="text-[10px] text-amber-400 font-bold">@{sch.username}</span>
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      {(['green', 'red', 'black'] as const).map((tk) => (
+                        <button
+                          key={tk}
+                          disabled={adminBusyUid === sch.uid}
+                          onClick={async () => {
+                            setAdminBusyUid(sch.uid);
+                            setAdminStatus(null);
+                            try {
+                              const checkRes = await fetch('/api/admin/verify-tick', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  passcode: adminPasscode,
+                                  targetUid: sch.uid,
+                                  tick: tk,
+                                }),
+                              });
+                              if (!checkRes.ok) {
+                                setAdminStatus('Admin verification expired.');
+                                return;
+                              }
+                              const saved = await updateUserVerificationTickInCloud(sch.uid, tk);
+                              if (saved) {
+                                setDirectoryScholars((prev) =>
+                                  prev.map((item) =>
+                                    item.uid === sch.uid ? { ...item, verificationTick: tk } : item
+                                  )
+                                );
+                                if (profile && profile.uid === sch.uid) {
+                                  setProfile({ ...profile, verificationTick: tk });
+                                }
+                                setAdminStatus(`Updated ${sch.name} to ${tk.toUpperCase()} tick.`);
+                              } else {
+                                setAdminStatus('Firestore permission blocked or network error.');
+                              }
+                            } finally {
+                              setAdminBusyUid(null);
+                            }
+                          }}
+                          className={`px-2 py-1 rounded-lg text-[9px] font-black uppercase border cursor-pointer ${
+                            (sch.verificationTick || 'green') === tk
+                              ? 'border-amber-400 bg-amber-500/20 text-white'
+                              : 'border-white/10 bg-black/40 text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          {tk}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}

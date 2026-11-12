@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { getNextGeminiKey, reportKeyFailure, reportKeySuccess } from '@/lib/geminiKeyManager';
+import {
+  buildSlotsWithRuntimeKeys,
+  getProviderLabel,
+  getServerPoolSummary,
+  reportKeyFailure,
+  reportKeySuccess,
+} from '@/lib/geminiKeyManager';
 
 interface ChapterQuestion {
   i: number;
@@ -39,23 +45,41 @@ async function loadChapterQuestions(subject: string, chapter: string): Promise<C
   }
 }
 
-const MASTER_FRIEND_SYSTEM_PROMPT = `
-You are the student's Best Study Friend ("Bhai / Yaar") and a 10-Year Veteran Class 10 Board Paper Setter & Examiner.
-You are talking directly with the student in a LIVE CHAPTER-LOCKED BOARD VIVA TELEPHONE CALL.
+const MASTER_CALM_GENZ_TUTOR_PROMPT = `
+You are an extraordinarily calm, warm, patient Indian Class 10 JAC Board Mentor speaking in easy, friendly Indian Gen-Z Hinglish/English style.
 
-STRICT CHAPTER-LOCK MANDATE:
-- The active Subject and Chapter are STRICTLY LOCKED. Ask viva questions and solve doubts ONLY from this chapter.
-- Keep replies punchy, voice-optimized, and natural in 2 to 4 sentences max.
-
-SPEAKING STYLE:
-- Friendly Delhi best-buddy energy ("Haan bhai {name}!", "Ekdam kadak answer!", "Tera bhai abhi crystal clear samjhata hai!").
-- When evaluating an answer, always include "⭐ Live Score: X/10" followed immediately by the next high-yield question from the locked chapter.
+CRITICAL STUDENT PROFILE & TEACHING RULES:
+1. NEVER MENTION EXPERIENCE: Never state how many years you have been teaching or brag about experience. Just teach naturally with calm mastery.
+2. ZERO-BASE FOUNDATION (13-YEAR-OLD, 2-MONTH SPRINT): Assume the student is 13 years old, missed Classes 6, 7, 8 and half of Class 9, and has only 2 months left for Class 10 Board exams. Build every concept from absolute zero—never assume prior Class 6-9 knowledge.
+3. SHORT, SUPER-EASY & CREATIVE EXPLANATIONS: Keep every answer and explanation short (2-4 crisp sentences), super easy to understand, and creative—use vivid everyday Indian analogies (chai, cricket, UPI, metro, phone battery, pressure cooker) so complex topics click instantly.
+4. STRICT SUBJECT & CHAPTER LOCK: Stay 100% locked to the selected Subject and Chapter. Ask focused Q&A, clear doubts strictly on that topic, and NEVER drift off-topic.
+5. LIVE VIVA LOOP:
+   - Grade any student answer with "⭐ Live Score: X/10" + brief encouraging feedback.
+   - If the student asks a doubt, clear it from zero in a short, creative way.
+   - End by calmly asking ONE short board question or checking understanding ("Samjha? Ab bata...").
 `;
+
+export async function GET() {
+  const summary = getServerPoolSummary();
+  return NextResponse.json({
+    ok: true,
+    vaultConfiguredCount: summary.configuredCount,
+    providers: summary.providers,
+    keysHidden: true,
+  });
+}
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { userMessage, history, currentSubject, currentChapter, studentName } = body;
+
+    // Optional hidden runtime vault header (comma-separated masked keys passed strictly over HTTPS POST, never echoed back)
+    const runtimeHeader = req.headers.get('x-ai-vault') || '';
+    const runtimeKeys = runtimeHeader
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
 
     const scholarName = studentName || 'Scholar';
     const subContext = currentSubject || 'Science';
@@ -63,85 +87,132 @@ export async function POST(req: NextRequest) {
 
     const chapterQuestions = await loadChapterQuestions(subContext, chContext);
     const turnsCount = Array.isArray(history) ? history.length : 0;
-    const sampleQuestions = chapterQuestions.slice(0, 6);
+    const sampleQuestions = chapterQuestions.slice(0, 8);
     const chapterReferenceBlock =
       sampleQuestions.length > 0
         ? sampleQuestions
             .map(
               (item, idx) =>
-                `${idx + 1}. Q: ${item.q} | Correct Answer: ${item.o?.[item.a] ?? ''} | Fact: ${item.e}`
+                `${idx + 1}. Q: ${item.q} | Correct: ${item.o?.[item.a] ?? ''} | Concept: ${item.e}`
             )
             .join('\n')
         : '';
 
-    const models = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+    const systemContext = [
+      MASTER_CALM_GENZ_TUTOR_PROMPT,
+      `STUDENT NAME: ${scholarName}`,
+      `LOCKED SUBJECT: ${subContext}`,
+      `LOCKED CHAPTER: ${chContext}`,
+      chapterReferenceBlock ? `OFFICIAL JAC CHAPTER BANK:\n${chapterReferenceBlock}` : '',
+    ]
+      .filter(Boolean)
+      .join('\n\n');
 
-    // Round-Robin Key & Model Failover Loop
-    for (let attempt = 0; attempt < 4; attempt++) {
-      const keyObj = getNextGeminiKey();
-      if (!keyObj || !keyObj.key) break;
+    const recentTurns = Array.isArray(history)
+      ? history.slice(-6).map((h: { role: string; text: string }) => ({
+          role: h.role === 'user' ? 'user' : 'assistant',
+          content: h.text,
+        }))
+      : [];
 
-      const { key, index } = keyObj;
-      const modelName = models[attempt % models.length];
+    const slots = buildSlotsWithRuntimeKeys(runtimeKeys);
+
+    for (let attempt = 0; attempt < slots.length; attempt += 1) {
+      const slot = slots[attempt];
+      if (!slot.key || Date.now() < slot.cooldownUntil) continue;
 
       try {
-        const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${key}`;
+        if (slot.provider === 'gemini') {
+          const endpoint = `${slot.endpoint}/${slot.model}:generateContent?key=${slot.key}`;
+          const promptPayload = {
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { text: systemContext },
+                  ...recentTurns.map((t) => ({
+                    text: `${t.role === 'user' ? scholarName : 'Calm Mentor'}: ${t.content}`,
+                  })),
+                  { text: `${scholarName} says: "${userMessage || 'Hi sir, please start calm live teaching and ask my first question!'}"` },
+                ],
+              },
+            ],
+            generationConfig: {
+              temperature: 0.75,
+              maxOutputTokens: 220,
+            },
+          };
 
-        const promptPayload = {
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                { text: MASTER_FRIEND_SYSTEM_PROMPT.replace('{name}', scholarName).replace('{chapter}', chContext) },
-                { text: `STUDENT NAME: ${scholarName}` },
-                { text: `LOCKED SUBJECT: ${subContext}` },
-                { text: `LOCKED CHAPTER (DO NOT DEVIATE): ${chContext}` },
-                ...(chapterReferenceBlock
-                  ? [{ text: `REAL CHAPTER QUESTION BANK REFERENCE:\n${chapterReferenceBlock}` }]
-                  : []),
-                ...(history || []).slice(-6).map((h: { role: string; text: string }) => ({
-                  text: `${h.role === 'user' ? scholarName : 'Delhi Buddy-Teacher'}: ${h.text}`
-                })),
-                { text: `${scholarName} says: "${userMessage || 'Haan bhai, shuru karo!'}"` }
-              ]
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(promptPayload),
+          });
+
+          if (res.ok) {
+            const geminiData = await res.json();
+            const generatedReply = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (generatedReply) {
+              reportKeySuccess(slot.index);
+              return NextResponse.json({
+                reply: generatedReply.trim(),
+                status: 'success',
+                providerLabel: getProviderLabel(slot.provider),
+                keySlotMasked: `Slot #${attempt + 1} • Hidden`,
+                lockedSubject: subContext,
+                lockedChapter: chContext,
+              });
             }
-          ],
-          generationConfig: {
-            temperature: 0.8,
-            maxOutputTokens: 180
-          }
-        };
-
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(promptPayload)
-        });
-
-        if (res.ok) {
-          const geminiData = await res.json();
-          const generatedReply = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-          if (generatedReply) {
-            reportKeySuccess(index);
-            return NextResponse.json({
-              reply: generatedReply.trim(),
-              status: 'success',
-              provider: modelName,
-              keyIndex: index,
-              lockedSubject: subContext,
-              lockedChapter: chContext
-            });
+          } else {
+            reportKeyFailure(slot.index, res.status);
           }
         } else {
-          reportKeyFailure(index, res.status);
+          // Universal OpenAI-compatible chat completions call (Groq, OpenRouter, OpenAI, Mistral, Together, Cerebras, DeepSeek, Fireworks)
+          const res = await fetch(slot.endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${slot.key}`,
+            },
+            body: JSON.stringify({
+              model: slot.model,
+              temperature: 0.75,
+              max_tokens: 220,
+              messages: [
+                { role: 'system', content: systemContext },
+                ...recentTurns,
+                {
+                  role: 'user',
+                  content: userMessage || 'Hi sir, please start calm live teaching and ask my first question!',
+                },
+              ],
+            }),
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const generatedReply = data?.choices?.[0]?.message?.content;
+            if (generatedReply) {
+              reportKeySuccess(slot.index);
+              return NextResponse.json({
+                reply: generatedReply.trim(),
+                status: 'success',
+                providerLabel: getProviderLabel(slot.provider),
+                keySlotMasked: `Slot #${attempt + 1} • Hidden`,
+                lockedSubject: subContext,
+                lockedChapter: chContext,
+              });
+            }
+          } else {
+            reportKeyFailure(slot.index, res.status);
+          }
         }
       } catch {
-        reportKeyFailure(index, 500);
+        reportKeyFailure(slot.index, 500);
       }
     }
 
-    // Chapter-Locked Data-Driven Viva Fallback (uses real chapter JSON questions!)
+    // Calm Gen-Z Chapter-Bank Tutor Fallback (works cleanly even before API keys are added!)
     if (chapterQuestions.length > 0) {
       const prevQ = chapterQuestions[Math.max(0, (turnsCount - 1) % chapterQuestions.length)];
       const nextQ = chapterQuestions[(turnsCount + 1) % chapterQuestions.length];
@@ -156,37 +227,42 @@ export async function POST(req: NextRequest) {
       const asksExplain =
         msgLower.includes('samajh') ||
         msgLower.includes('explain') ||
-        msgLower.includes('nahi aaya') ||
+        msgLower.includes('example') ||
+        msgLower.includes('nahi') ||
         msgLower.includes('doubt') ||
         msgLower.includes('hint');
 
       const evaluation = asksExplain
-        ? `Arre tension mat le ${scholarName}! Easy mein sun: ${prevQ.e}`
+        ? `Relax ${scholarName}, bilkul easy reel-style example se sun: ${prevQ.e}`
         : matchedAns
-        ? `Oye hoye kadak jawab ${scholarName}! ⭐ Live Score: 9/10! ${prevQ.e}`
-        : `Badhiya try ${scholarName}! Correct answer "${prevQ.o?.[prevQ.a]}" hai — kyunki ${prevQ.e} ⭐ Live Score: 7/10!`;
+        ? `Ekdum clean & sorted answer ${scholarName}! ⭐ Live Score: 9/10! ${prevQ.e}`
+        : `Chill ${scholarName}, achha try tha! Exact point "${prevQ.o?.[prevQ.a]}" hai — simple logic: ${prevQ.e} ⭐ Live Score: 7/10!`;
 
-      const nextPrompt = `${evaluation} Ab "${chContext}" ka agla board question sun: ${nextQ.q.replace(/\s*\[JAC[^\]]*\]/gi, '')}`;
+      const nextPrompt = `${evaluation} Ab "${chContext}" ka next calm board question try kar: ${nextQ.q.replace(/\s*\[JAC[^\]]*\]/gi, '')}`;
 
       return NextResponse.json({
         reply: nextPrompt,
         status: 'chapter-bank',
+        providerLabel: 'JAC Chapter Bank',
+        keySlotMasked: 'Offline Ready',
         lockedSubject: subContext,
-        lockedChapter: chContext
+        lockedChapter: chContext,
       });
     }
 
     return NextResponse.json({
-      reply: `Haan bhai ${scholarName}! "${chContext}" mein apna point aur clear bol, tera bhai saath hai! Is chapter ka main concept bata.`,
+      reply: `Relax ${scholarName}! "${chContext}" ko ekdum easy real-life example se samajhte hain — tu apna doubt bol, main step-by-step clear karta hoon.`,
       status: 'fallback',
+      providerLabel: 'Calm Mentor Bank',
+      keySlotMasked: 'Ready',
       lockedSubject: subContext,
-      lockedChapter: chContext
+      lockedChapter: chContext,
     });
   } catch {
     return NextResponse.json(
       {
-        reply: 'Haan bhai! Thoda network jhatka le gaya, lekin tera bhai yahin hai. Bindaas bol, kya doubt hai?',
-        status: 'error'
+        reply: 'No stress yaar! Thoda network glitch aaya tha, tu dubara bol apna point — main yahin hoon.',
+        status: 'error',
       },
       { status: 500 }
     );

@@ -933,3 +933,24 @@ export async function logLiveCallSessionInCloud(
     return 0;
   }
 }
+
+export async function updateUserVerificationTickInCloud(
+  targetUid: string,
+  tick: 'green' | 'red' | 'black'
+): Promise<boolean> {
+  if (!targetUid) return false;
+  try {
+    await setDoc(
+      doc(db, 'users', targetUid),
+      {
+        verificationTick: tick,
+        updatedAt: new Date().toISOString(),
+      },
+      { merge: true }
+    );
+    return true;
+  } catch (err) {
+    console.error('[socialService] updateUserVerificationTickInCloud failed:', err);
+    return false;
+  }
+}

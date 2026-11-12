@@ -10,12 +10,28 @@ service cloud.firestore {
 
     match /users/{userId} {
       allow read: if isAuth();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId) || (
+      allow create: if isOwner(userId) && (
+        !('verificationTick' in request.resource.data) ||
+        request.resource.data.verificationTick == 'green'
+      );
+      allow update: if (
+        isOwner(userId) &&
+        (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verificationTick', 'isAdmin']) ||
+          (
+            request.resource.data.verificationTick == resource.data.verificationTick &&
+            request.resource.data.isAdmin == resource.data.isAdmin
+          )
+        )
+      ) || (
+        isAuth() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true
+      ) || (
         isAuth() &&
         request.resource.data.diff(resource.data).affectedKeys()
           .hasOnly(['followersUids', 'followersCount', 'updatedAt'])
       );
+      allow delete: if isOwner(userId);
 
       match /callLogs/{logId} {
         allow read, write: if isOwner(userId);

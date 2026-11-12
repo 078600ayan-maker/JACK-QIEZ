@@ -88,4 +88,6 @@ export interface UserProfile {
   classLevel?: string;
   joinedAt?: string;
   weeklyXp?: number;
+  verificationTick?: 'green' | 'red' | 'black';
+  isAdmin?: boolean;
 }

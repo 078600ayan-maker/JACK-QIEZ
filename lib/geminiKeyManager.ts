@@ -1,87 +1,237 @@
 /**
- * Centralized Gemini API Key Pool & Round-Robin Load Balancer
- * Supports 10 Google AI Studio API Keys for 100+ concurrent users with instant failover on 429/timeouts.
+ * Centralized Multi-Provider AI API Key Pool & Round-Robin Load Balancer
+ * Supports up to 10 hidden server-side API keys across Google Gemini AND
+ * any OpenAI-compatible AI provider (Groq, OpenRouter, OpenAI, Mistral, Together, Cerebras, DeepSeek, Fireworks)
+ * with instant failover on rate-limits (429) or auth errors.
  */
 
-// 10 API Key Slots (Bindings via env variables or direct key insertion)
-export const GEMINI_API_KEYS: string[] = [
-  process.env.GEMINI_KEY_1 || process.env.NEXT_PUBLIC_GEMINI_KEY_1 || '',
-  process.env.GEMINI_KEY_2 || process.env.NEXT_PUBLIC_GEMINI_KEY_2 || '',
-  process.env.GEMINI_KEY_3 || process.env.NEXT_PUBLIC_GEMINI_KEY_3 || '',
-  process.env.GEMINI_KEY_4 || process.env.NEXT_PUBLIC_GEMINI_KEY_4 || '',
-  process.env.GEMINI_KEY_5 || process.env.NEXT_PUBLIC_GEMINI_KEY_5 || '',
-  process.env.GEMINI_KEY_6 || process.env.NEXT_PUBLIC_GEMINI_KEY_6 || '',
-  process.env.GEMINI_KEY_7 || process.env.NEXT_PUBLIC_GEMINI_KEY_7 || '',
-  process.env.GEMINI_KEY_8 || process.env.NEXT_PUBLIC_GEMINI_KEY_8 || '',
-  process.env.GEMINI_KEY_9 || process.env.NEXT_PUBLIC_GEMINI_KEY_9 || '',
-  process.env.GEMINI_KEY_10 || process.env.NEXT_PUBLIC_GEMINI_KEY_10 || '',
-].map(k => k.trim());
+export type AIProviderKind =
+  | 'gemini'
+  | 'groq'
+  | 'openrouter'
+  | 'openai'
+  | 'mistral'
+  | 'together'
+  | 'cerebras'
+  | 'deepseek'
+  | 'fireworks';
 
-// Key health tracker
-interface KeyStatus {
+export interface ProviderSlot {
   key: string;
+  provider: AIProviderKind;
+  model: string;
+  endpoint: string;
   index: number;
   failsCount: number;
   lastUsed: number;
   cooldownUntil: number;
 }
 
-let keyStatuses: KeyStatus[] = GEMINI_API_KEYS.map((key, index) => ({
-  key,
-  index,
-  failsCount: 0,
-  lastUsed: 0,
-  cooldownUntil: 0
-}));
+const PROVIDER_DEFAULTS: Record<AIProviderKind, { endpoint: string; model: string; label: string }> = {
+  gemini: {
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
+    model: 'gemini-2.5-flash',
+    label: 'Google Gemini',
+  },
+  groq: {
+    endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+    model: 'llama-3.3-70b-versatile',
+    label: 'Groq LPU',
+  },
+  openrouter: {
+    endpoint: 'https://openrouter.ai/api/v1/chat/completions',
+    model: 'google/gemini-2.0-flash-001',
+    label: 'OpenRouter',
+  },
+  openai: {
+    endpoint: 'https://api.openai.com/v1/chat/completions',
+    model: 'gpt-4o-mini',
+    label: 'OpenAI',
+  },
+  mistral: {
+    endpoint: 'https://api.mistral.ai/v1/chat/completions',
+    model: 'mistral-small-latest',
+    label: 'Mistral AI',
+  },
+  together: {
+    endpoint: 'https://api.together.xyz/v1/chat/completions',
+    model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
+    label: 'Together AI',
+  },
+  cerebras: {
+    endpoint: 'https://api.cerebras.ai/v1/chat/completions',
+    model: 'llama-3.3-70b',
+    label: 'Cerebras',
+  },
+  deepseek: {
+    endpoint: 'https://api.deepseek.com/chat/completions',
+    model: 'deepseek-chat',
+    label: 'DeepSeek',
+  },
+  fireworks: {
+    endpoint: 'https://api.fireworks.ai/inference/v1/chat/completions',
+    model: 'accounts/fireworks/models/llama-v3p3-70b-instruct',
+    label: 'Fireworks AI',
+  },
+};
+
+export function detectProviderFromRaw(rawEntry: string): { provider: AIProviderKind; key: string } {
+  const trimmed = rawEntry.trim();
+  const colonIdx = trimmed.indexOf(':');
+  if (colonIdx > 1 && colonIdx < 16) {
+    const prefix = trimmed.slice(0, colonIdx).toLowerCase() as AIProviderKind;
+    if (prefix in PROVIDER_DEFAULTS) {
+      return { provider: prefix, key: trimmed.slice(colonIdx + 1).trim() };
+    }
+  }
+  if (trimmed.startsWith('AIzaSy')) return { provider: 'gemini', key: trimmed };
+  if (trimmed.startsWith('gsk_')) return { provider: 'groq', key: trimmed };
+  if (trimmed.startsWith('sk-or-')) return { provider: 'openrouter', key: trimmed };
+  if (trimmed.startsWith('csk-')) return { provider: 'cerebras', key: trimmed };
+  if (trimmed.startsWith('fw_')) return { provider: 'fireworks', key: trimmed };
+  if (trimmed.startsWith('sk-')) return { provider: 'openai', key: trimmed };
+  return { provider: 'gemini', key: trimmed };
+}
+
+function collectServerEnvKeys(): string[] {
+  // Server-only secret env slots (never exposed to browser bundle)
+  const rawSlots = [
+    process.env.AI_KEY_1 || process.env.GEMINI_KEY_1 || '',
+    process.env.AI_KEY_2 || process.env.GEMINI_KEY_2 || '',
+    process.env.AI_KEY_3 || process.env.GEMINI_KEY_3 || '',
+    process.env.AI_KEY_4 || process.env.GEMINI_KEY_4 || '',
+    process.env.AI_KEY_5 || process.env.GEMINI_KEY_5 || '',
+    process.env.AI_KEY_6 || process.env.GEMINI_KEY_6 || '',
+    process.env.AI_KEY_7 || process.env.GEMINI_KEY_7 || '',
+    process.env.AI_KEY_8 || process.env.GEMINI_KEY_8 || '',
+    process.env.AI_KEY_9 || process.env.GEMINI_KEY_9 || '',
+    process.env.AI_KEY_10 || process.env.GEMINI_KEY_10 || '',
+    process.env.GEMINI_API_KEY || '',
+    process.env.GROQ_API_KEY ? `groq:${process.env.GROQ_API_KEY}` : '',
+    process.env.OPENROUTER_API_KEY ? `openrouter:${process.env.OPENROUTER_API_KEY}` : '',
+    process.env.OPENAI_API_KEY ? `openai:${process.env.OPENAI_API_KEY}` : '',
+    process.env.MISTRAL_API_KEY ? `mistral:${process.env.MISTRAL_API_KEY}` : '',
+    process.env.TOGETHER_API_KEY ? `together:${process.env.TOGETHER_API_KEY}` : '',
+    process.env.CEREBRAS_API_KEY ? `cerebras:${process.env.CEREBRAS_API_KEY}` : '',
+    process.env.DEEPSEEK_API_KEY ? `deepseek:${process.env.DEEPSEEK_API_KEY}` : '',
+    process.env.FIREWORKS_API_KEY ? `fireworks:${process.env.FIREWORKS_API_KEY}` : '',
+  ];
+
+  // Also support comma-separated AI_PROVIDER_KEYS or GEMINI_API_KEYS
+  const csvExtra = (process.env.AI_PROVIDER_KEYS || process.env.GEMINI_API_KEYS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  return Array.from(new Set([...rawSlots, ...csvExtra].map((k) => k.trim()).filter(Boolean))).slice(0, 10);
+}
+
+// Legacy export preserved for backwards compatibility
+export const GEMINI_API_KEYS: string[] = [];
+
+const keyStatuses: ProviderSlot[] = collectServerEnvKeys().map((raw, index) => {
+  const { provider, key } = detectProviderFromRaw(raw);
+  const meta = PROVIDER_DEFAULTS[provider];
+  return {
+    key,
+    provider,
+    model: meta.model,
+    endpoint: meta.endpoint,
+    index,
+    failsCount: 0,
+    lastUsed: 0,
+    cooldownUntil: 0,
+  };
+});
 
 let currentRoundRobinIndex = 0;
 
+export function buildSlotsWithRuntimeKeys(runtimeKeys: string[] = []): ProviderSlot[] {
+  const validRuntime = runtimeKeys
+    .map((k) => k.trim())
+    .filter((k) => k.length >= 12)
+    .slice(0, 10)
+    .map((raw, idx) => {
+      const { provider, key } = detectProviderFromRaw(raw);
+      const meta = PROVIDER_DEFAULTS[provider];
+      return {
+        key,
+        provider,
+        model: meta.model,
+        endpoint: meta.endpoint,
+        index: 100 + idx,
+        failsCount: 0,
+        lastUsed: 0,
+        cooldownUntil: 0,
+      };
+    });
+
+  return [...keyStatuses, ...validRuntime].slice(0, 10);
+}
+
+export function getProviderLabel(provider: AIProviderKind): string {
+  return PROVIDER_DEFAULTS[provider]?.label || 'AI Engine';
+}
+
 /**
- * Get the next healthy API key using round-robin distribution with instant failover
+ * Get the next healthy API key from server pool using round-robin + cooldown failover
  */
-export function getNextGeminiKey(): { key: string; index: number } | null {
+export function getNextGeminiKey(): { key: string; index: number; provider: AIProviderKind; model: string; endpoint: string } | null {
   const now = Date.now();
   const total = keyStatuses.length;
+  if (total === 0) return null;
 
   for (let i = 0; i < total; i++) {
     const idx = (currentRoundRobinIndex + i) % total;
     const item = keyStatuses[idx];
 
-    // Check if key is configured and not in cooldown
-    if (item.key && item.key.startsWith('AIzaSy') && now > item.cooldownUntil) {
+    if (item.key && item.key.length >= 12 && now > item.cooldownUntil) {
       currentRoundRobinIndex = (idx + 1) % total;
       item.lastUsed = now;
-      return { key: item.key, index: item.index };
+      return {
+        key: item.key,
+        index: item.index,
+        provider: item.provider,
+        model: item.model,
+        endpoint: item.endpoint,
+      };
     }
   }
 
-  // Fallback: Return any available configured key
-  const available = keyStatuses.find(k => k.key && k.key.startsWith('AIzaSy'));
-  return available ? { key: available.key, index: available.index } : null;
+  const available = keyStatuses.find((k) => k.key && k.key.length >= 12);
+  return available
+    ? {
+        key: available.key,
+        index: available.index,
+        provider: available.provider,
+        model: available.model,
+        endpoint: available.endpoint,
+      }
+    : null;
 }
 
-/**
- * Report key rate limit or failure to trigger instant failover and cooling
- */
 export function reportKeyFailure(index: number, statusCode?: number) {
   if (index >= 0 && index < keyStatuses.length) {
     const item = keyStatuses[index];
     item.failsCount += 1;
-    // Cool down for 60 seconds on rate limit (429) or 15 seconds on general network error
     const cooldownMs = statusCode === 429 ? 60000 : 15000;
     item.cooldownUntil = Date.now() + cooldownMs;
-    console.warn(`[GeminiKeyManager] Key #${index + 1} marked on cooldown for ${cooldownMs / 1000}s (status: ${statusCode})`);
+    console.warn(`[AIKeyManager] Slot #${index + 1} (${item.provider}) cooled down for ${cooldownMs / 1000}s (status: ${statusCode})`);
   }
 }
 
-/**
- * Report key success
- */
 export function reportKeySuccess(index: number) {
   if (index >= 0 && index < keyStatuses.length) {
     keyStatuses[index].failsCount = 0;
     keyStatuses[index].cooldownUntil = 0;
   }
+}
+
+export function getServerPoolSummary(): { configuredCount: number; providers: string[] } {
+  return {
+    configuredCount: keyStatuses.length,
+    providers: Array.from(new Set(keyStatuses.map((s) => getProviderLabel(s.provider)))),
+  };
 }
 
 /**
@@ -98,7 +248,6 @@ export function getUserDailyCallCredits(): UserCallCreditStatus {
     return { date: '', creditsLeft: 5, totalPerDay: 5 };
   }
 
-  // Get current date string in IST (Indian Standard Time)
   const istDate = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
   const storageKey = 'jack_quiz_daily_ai_credits';
 
@@ -112,11 +261,10 @@ export function getUserDailyCallCredits(): UserCallCreditStatus {
     }
   } catch {}
 
-  // New day or first time: initialize with 5 credits
   const initial: UserCallCreditStatus = {
     date: istDate,
     creditsLeft: 5,
-    totalPerDay: 5
+    totalPerDay: 5,
   };
 
   try {
@@ -132,7 +280,7 @@ export function deductUserDailyCallCredit(): number {
   const nextCredits = Math.max(0, status.creditsLeft - 1);
   const updated: UserCallCreditStatus = {
     ...status,
-    creditsLeft: nextCredits
+    creditsLeft: nextCredits,
   };
   try {
     localStorage.setItem('jack_quiz_daily_ai_credits', JSON.stringify(updated));

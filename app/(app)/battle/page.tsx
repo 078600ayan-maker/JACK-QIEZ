@@ -32,6 +32,7 @@ import {
   Bell
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
+import { VerificationTick } from '@/components/ui/VerificationTick';
 import { UserProfile } from '@/types/user';
 import {
   subscribeGlobalLeaderboard,
@@ -1062,14 +1063,18 @@ function BattleHubContent() {
 
                   <div className="grid grid-cols-2 gap-2 text-[10px]">
                     <div className="p-2 rounded-xl bg-white/5 border border-white/10">
-                      <div className="font-black text-white truncate">Host: {activeRoom.hostName}</div>
+                      <div className="font-black text-white truncate flex items-center gap-1">
+                        <span className="truncate">Host: {activeRoom.hostName}</span>
+                        <VerificationTick tick="green" size="xs" />
+                      </div>
                       <div className="text-emerald-400 font-bold">
                         {activeRoom.hostReady ? '✅ Ready' : '⏳ Preparing'}
                       </div>
                     </div>
                     <div className="p-2 rounded-xl bg-white/5 border border-white/10">
-                      <div className="font-black text-white truncate">
-                        Guest: {activeRoom.guestName || 'Invite Friend…'}
+                      <div className="font-black text-white truncate flex items-center gap-1">
+                        <span className="truncate">Guest: {activeRoom.guestName || 'Invite Friend…'}</span>
+                        {activeRoom.guestUid && <VerificationTick tick="green" size="xs" />}
                       </div>
                       <div className="text-amber-300 font-bold">
                         {activeRoom.guestUid ? (activeRoom.guestReady ? '✅ Ready' : '⏳ Preparing') : 'Share Link'}
