@@ -1,17 +1,20 @@
 'use client';
 
 import React, { useEffect, useState, Suspense } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Manifest } from '@/types/manifest';
 import { fetchChapterQuestions, getQuestionsForLevel } from '@/lib/questionLoader';
 import { fetchQuestionsByLanguage } from '@/lib/supabaseClient';
 import { useQuizStore } from '@/store/useQuizStore';
 import { useUserStore } from '@/store/useUserStore';
 import { QuizTheater } from '@/components/quiz/QuizTheater';
+import { seededShuffleArray } from '@/lib/matchIntegrity';
 
 function QuizPageContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const seedParam = searchParams?.get('seed');
   const subjectId = (params?.subject as string) || 'sci';
   const chapterId = (params?.chapter as string) || 'sci_ch01';
   const levelNum = parseInt((params?.level as string) || '1', 10) || 1;
@@ -103,12 +106,17 @@ function QuizPageContent() {
           throw new Error(`No questions found for ${subjectTitle} Chapter ${chNum}`);
         }
 
-        // 3. Filter and slice questions for this level
+        // 3. Filter and slice questions for this level (deterministic order if duel seed provided)
         const levelQuestions = getQuestionsForLevel(allQuestions, levelNum);
+        const baseList = levelQuestions.length > 0 ? levelQuestions : allQuestions.slice(0, 30);
+        const parsedSeed = seedParam ? parseInt(seedParam, 10) : NaN;
+        const finalQuestions = !Number.isNaN(parsedSeed) && parsedSeed > 0
+          ? seededShuffleArray(baseList, parsedSeed)
+          : baseList;
 
         // 4. Initialize Quiz in store with all 30 questions
         startQuiz({
-          questions: levelQuestions.length > 0 ? levelQuestions : allQuestions.slice(0, 30),
+          questions: finalQuestions,
           level: levelNum,
           chapterId: `${targetSubjId}_ch${chNumStr}`,
           chapterName,
@@ -127,7 +135,7 @@ function QuizPageContent() {
     if (subjectId && chapterId && levelNum) {
       initQuizSession();
     }
-  }, [subjectId, chapterId, levelNum, startQuiz, userHearts, userLang]);
+  }, [subjectId, chapterId, levelNum, startQuiz, userHearts, userLang, seedParam]);
 
   if (loading) {
     return (

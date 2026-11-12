@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 import {
   Swords,
   Bot,
@@ -13,6 +14,7 @@ import {
   Share2,
   Trophy,
   ShieldAlert,
+  ShieldCheck,
   Sparkles,
   Zap,
   ArrowRight,
@@ -20,7 +22,14 @@ import {
   CheckCircle2,
   Copy,
   Clock,
-  RotateCcw
+  RotateCcw,
+  Search,
+  UserPlus,
+  UserCheck,
+  Lock,
+  ChevronDown,
+  ChevronUp,
+  Bell
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { UserProfile } from '@/types/user';
@@ -34,8 +43,21 @@ import {
   claimDailyGiftInCloud,
   fetchUsersByUids,
   normalizeUsername,
+  searchUsersInDatabase,
+  toggleFollowInDatabase,
+  toggleDuelRoomReady,
+  fetchRecentPairDuels,
+  fetchActiveScholarsCount,
+  sendBuddyNudgeInCloud,
   DuelRoom
 } from '@/lib/socialService';
+import {
+  computeSelfTrustScore,
+  evaluatePairAntiFix,
+  findBestGlobalMatch,
+  DuelHistorySlice,
+  PairAntiFixReport,
+} from '@/lib/matchIntegrity';
 import { playClickSound } from '@/lib/audioEngine';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { triggerHaptic } from '@/lib/haptics';
@@ -44,14 +66,26 @@ interface BattleScholarCard {
   uid: string;
   name: string;
   username: string;
+  emailLower?: string;
   xp: number;
   streak: number;
   photoURL: string;
   title: string;
+  isOnline?: boolean;
+  isAnonymous?: boolean;
   pin?: string;
 }
 
-export default function BattleHubPage() {
+const DUEL_SUBJECTS = [
+  { id: 'sci', slug: 'sci', name: 'Science (विज्ञान)', chapters: 13 },
+  { id: 'math', slug: 'math', name: 'Maths (गणित)', chapters: 14 },
+  { id: 'sst', slug: 'sst', name: 'Social Science', chapters: 14 },
+  { id: 'eng', slug: 'eng', name: 'English', chapters: 14 },
+  { id: 'hin', slug: 'hin', name: 'Hindi (हिंदी)', chapters: 14 },
+];
+
+function BattleHubContent() {
+  const searchParams = useSearchParams();
   const { profile, setProfile } = useUserStore();
   const [activeTab, setActiveTab] = useState<'matchmaking' | 'social' | 'trophies'>('matchmaking');
 
@@ -62,7 +96,25 @@ export default function BattleHubPage() {
   const [activeRoom, setActiveRoom] = useState<DuelRoom | null>(null);
   const [roomCode, setRoomCode] = useState('');
   const [roomError, setRoomError] = useState<string | null>(null);
+  const [roomSuccess, setRoomSuccess] = useState<string | null>(null);
   const [roomBusy, setRoomBusy] = useState(false);
+
+  // Global Matchmaking & Anti-Fixing State
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string>('sci');
+  const [selectedChapterId, setSelectedChapterId] = useState<number>(1);
+  const [strictBracket, setStrictBracket] = useState<boolean>(true);
+  const [recentDuels, setRecentDuels] = useState<DuelHistorySlice[]>([]);
+  const [activeOnlineCount, setActiveOnlineCount] = useState<number>(1);
+  const [showIntegrityMatrix, setShowIntegrityMatrix] = useState<boolean>(false);
+
+  // Online Friend Search & Linking Hub State (10 linking features)
+  const [friendQuery, setFriendQuery] = useState('');
+  const [friendResults, setFriendResults] = useState<UserProfile[]>([]);
+  const [friendSearching, setFriendSearching] = useState(false);
+  const [followingUids, setFollowingUids] = useState<string[]>(profile?.followingUids || []);
+  const [followBusyMap, setFollowBusyMap] = useState<Record<string, boolean>>({});
+  const [linkingNotice, setLinkingNotice] = useState<string | null>(null);
+  const [copiedPin, setCopiedPin] = useState(false);
 
   const [isSearchingMatch, setIsSearchingMatch] = useState(false);
   const [matchedOpponent, setMatchedOpponent] = useState<BattleScholarCard | null>(null);
@@ -77,24 +129,89 @@ export default function BattleHubPage() {
   const xp = profile?.xp ?? 0;
   const today = new Date().toISOString().split('T')[0];
   const [giftClaimed, setGiftClaimed] = useState(profile?.lastGiftClaimDate === today);
+  const selectedSubjectMeta = DUEL_SUBJECTS.find((s) => s.id === selectedSubjectId) || DUEL_SUBJECTS[0];
+  const chKey = `${selectedSubjectId}_ch${String(selectedChapterId).padStart(2, '0')}`;
 
   useEffect(() => {
     setGiftClaimed(profile?.lastGiftClaimDate === today);
   }, [profile?.lastGiftClaimDate, today]);
 
-  // Live Firestore Global Scholars + Active Duel Rooms
+  useEffect(() => {
+    if (Array.isArray(profile?.followingUids)) {
+      setFollowingUids(profile.followingUids);
+    }
+  }, [profile?.followingUids]);
+
+  // Live Firestore Global Scholars + Active Duel Rooms + Recent Pair Duels
   useEffect(() => {
     const unsubUsers = subscribeGlobalLeaderboard((users) => {
       setDbScholars(users);
+      const nowMs = Date.now();
+      const online = users.filter((u) => {
+        const ts = u.lastSeenAt ? Date.parse(u.lastSeenAt) : u.updatedAt ? Date.parse(u.updatedAt) : 0;
+        return u.isOnline || (ts > 0 && nowMs - ts <= 20 * 60 * 1000);
+      }).length;
+      if (online > 0) setActiveOnlineCount(online);
     }, 50);
     const unsubRooms = subscribeOpenDuelRooms((rooms) => {
       setOpenRooms(rooms);
-    }, 10);
+    }, 12);
+    fetchActiveScholarsCount().then((c) => {
+      if (c > 0) setActiveOnlineCount((prev) => Math.max(prev, c));
+    }).catch(() => {});
     return () => {
       unsubUsers();
       unsubRooms();
     };
   }, []);
+
+  useEffect(() => {
+    if (!profile?.uid) return;
+    fetchRecentPairDuels(profile.uid).then((list) => setRecentDuels(list)).catch(() => {});
+  }, [profile?.uid]);
+
+  // Auto-read ?pin=XXXX deep link and pre-fill or join automatically
+  useEffect(() => {
+    const urlPin = searchParams?.get('pin');
+    if (urlPin && /^\d{4}$/.test(urlPin)) {
+      setRoomCode(urlPin);
+      if (profile?.uid && (!activeRoom || activeRoom.pin !== urlPin)) {
+        joinDuelRoomByPin(urlPin, profile).then((res) => {
+          if (res.ok && res.room) {
+            setActiveRoom(res.room);
+            setRoomSuccess(`Linked to PIN Room #${urlPin}!`);
+          }
+        }).catch(() => {});
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, profile?.uid]);
+
+  // Debounced Friend Search (Email, @username, or Full Name) right in Battle Hub
+  useEffect(() => {
+    const clean = friendQuery.trim();
+    if (!clean) {
+      setFriendResults([]);
+      setFriendSearching(false);
+      return;
+    }
+    let cancelled = false;
+    setFriendSearching(true);
+    const t = setTimeout(async () => {
+      try {
+        const found = await searchUsersInDatabase(clean, 20);
+        if (!cancelled) {
+          setFriendResults(found.filter((u) => u.uid !== profile?.uid));
+        }
+      } finally {
+        if (!cancelled) setFriendSearching(false);
+      }
+    }, 250);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
+  }, [friendQuery, profile?.uid]);
 
   // Live Friend Profiles for Co-op Quests
   useEffect(() => {
@@ -123,6 +240,7 @@ export default function BattleHubPage() {
           uid: room.guestUid,
           name: room.guestName || 'Challenger',
           username: room.guestUsername || 'challenger',
+          emailLower: room.guestEmailLower,
           xp: room.guestXp || 0,
           streak: 1,
           photoURL: room.guestPhoto || '/assets/profile_photos/classic_character_1.png',
@@ -140,72 +258,247 @@ export default function BattleHubPage() {
       uid: u.uid,
       name: u.name || u.displayName || 'JAC Scholar',
       username: u.username || normalizeUsername(u.name, u.uid),
+      emailLower: u.emailLower || (u.email || '').trim().toLowerCase(),
       xp: u.xp || 0,
       streak: u.streak || 0,
       photoURL: u.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-      title: u.role || 'JAC Class 10 Scholar'
+      title: u.role || 'JAC Class 10 Scholar',
+      isOnline: u.isOnline,
+      isAnonymous: u.isAnonymous,
     }));
 
-  // Global Matchmaking using real Firestore scholars
-  const handleAutoMatch = () => {
+  const selfTrustScore = computeSelfTrustScore(profile, recentDuels);
+  const currentAntiFixReport: PairAntiFixReport = evaluatePairAntiFix({
+    selfProfile: profile,
+    opponent: matchedOpponent
+      ? {
+          uid: matchedOpponent.uid,
+          name: matchedOpponent.name,
+          emailLower: matchedOpponent.emailLower,
+          xp: matchedOpponent.xp,
+          isAnonymous: matchedOpponent.isAnonymous,
+        }
+      : activeRoom && activeRoom.guestUid && profile?.uid !== activeRoom.guestUid
+        ? {
+            uid: activeRoom.guestUid,
+            name: activeRoom.guestName,
+            emailLower: activeRoom.guestEmailLower,
+            xp: activeRoom.guestXp,
+          }
+        : null,
+    pin: activeRoom?.pin || roomCode || '1000',
+    seed: activeRoom?.questionSeed,
+    subjectId: selectedSubjectId === 'sci' ? 'science' : selectedSubjectId === 'math' ? 'maths' : selectedSubjectId === 'sst' ? 'social_science' : selectedSubjectId === 'eng' ? 'english' : 'hindi',
+    chapterId: selectedChapterId,
+    recentDuels,
+  });
+
+  // Global Matchmaking Pro: Skill-bracket + 10-point anti-fixing check + live global room sync
+  const handleAutoMatch = async () => {
     playClickSound();
     triggerHaptic();
     setRoomError(null);
+    setRoomSuccess(null);
     setIsSearchingMatch(true);
     setMatchedOpponent(null);
 
-    setTimeout(() => {
-      setIsSearchingMatch(false);
-      if (realOpponentsPool.length === 0) {
-        setRoomError('No other registered scholars online yet. Create a 4-digit PIN room to invite a friend!');
+    try {
+      const subjectFull =
+        selectedSubjectId === 'sci'
+          ? 'science'
+          : selectedSubjectId === 'math'
+            ? 'maths'
+            : selectedSubjectId === 'sst'
+              ? 'social_science'
+              : selectedSubjectId === 'eng'
+                ? 'english'
+                : 'hindi';
+
+      // First check if another verified global waiting room matches cleanly (excluding self/same-email)
+      const selfEmail = (profile?.emailLower || profile?.email || '').trim().toLowerCase();
+      const openGlobalRoom = openRooms.find(
+        (r) =>
+          r.mode === 'global' &&
+          r.status === 'waiting' &&
+          r.hostUid !== profile?.uid &&
+          (!selfEmail || !r.hostEmailLower || r.hostEmailLower !== selfEmail)
+      );
+
+      if (openGlobalRoom && profile?.uid) {
+        const joined = await joinDuelRoomByPin(openGlobalRoom.pin, profile);
+        if (joined.ok && joined.room) {
+          setActiveRoom(joined.room);
+          setRoomCode(joined.room.pin);
+          setMatchedOpponent({
+            uid: joined.room.hostUid,
+            name: joined.room.hostName,
+            username: joined.room.hostUsername,
+            emailLower: joined.room.hostEmailLower,
+            xp: joined.room.hostXp,
+            streak: 1,
+            photoURL: joined.room.hostPhoto,
+            title: 'Global Matched Host',
+            pin: joined.room.pin,
+          });
+          setRoomSuccess(`Matched into live Global Room #${joined.room.pin} (Seed #${joined.room.questionSeed})!`);
+          setIsSearchingMatch(false);
+          return;
+        }
+      }
+
+      const best = findBestGlobalMatch({
+        selfProfile: profile,
+        scholars: dbScholars,
+        recentDuels,
+        subjectId: subjectFull,
+        chapterId: selectedChapterId,
+        strictBracket,
+      });
+
+      if (!best) {
+        // Fallback to relaxed bracket if strict bracket had no close peer
+        const relaxed = strictBracket
+          ? findBestGlobalMatch({
+              selfProfile: profile,
+              scholars: dbScholars,
+              recentDuels,
+              subjectId: subjectFull,
+              chapterId: selectedChapterId,
+              strictBracket: false,
+            })
+          : null;
+
+        if (!relaxed) {
+          setRoomError('No eligible verified scholars in bracket right now. Generate a 4-Digit PIN below to invite a friend!');
+          setIsSearchingMatch(false);
+          return;
+        }
+        let createdPin: string | undefined;
+        if (profile?.uid) {
+          const globalRoom = await createDuelRoom(profile, selectedSubjectId, selectedSubjectMeta.name, {
+            chapterId: selectedChapterId,
+            mode: 'global',
+            integrityScore: relaxed.integrityReport.integrityScore,
+            integrityStatus: relaxed.integrityReport.status,
+            integrityFlags: relaxed.integrityReport.flags,
+          });
+          setActiveRoom(globalRoom);
+          setRoomCode(globalRoom.pin);
+          createdPin = globalRoom.pin;
+        }
+        setMatchedOpponent({
+          uid: relaxed.scholar.uid,
+          name: relaxed.scholar.name || relaxed.scholar.displayName || 'JAC Scholar',
+          username: relaxed.scholar.username || normalizeUsername(relaxed.scholar.name, relaxed.scholar.uid),
+          emailLower: relaxed.scholar.emailLower,
+          xp: relaxed.scholar.xp || 0,
+          streak: relaxed.scholar.streak || 0,
+          photoURL: relaxed.scholar.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+          title: `${relaxed.bracketLabel} • Verified`,
+          pin: createdPin,
+        });
+        setIsSearchingMatch(false);
         return;
       }
-      // Prefer nearest XP scholar or random among closest 5
-      const sortedByGap = [...realOpponentsPool].sort(
-        (a, b) => Math.abs(a.xp - xp) - Math.abs(b.xp - xp)
-      );
-      const candidates = sortedByGap.slice(0, Math.min(5, sortedByGap.length));
-      const chosen = candidates[Math.floor(Math.random() * candidates.length)];
-      setMatchedOpponent(chosen);
-    }, 600);
+
+      let createdPin: string | undefined;
+      if (profile?.uid) {
+        const globalRoom = await createDuelRoom(profile, selectedSubjectId, selectedSubjectMeta.name, {
+          chapterId: selectedChapterId,
+          mode: 'global',
+          integrityScore: best.integrityReport.integrityScore,
+          integrityStatus: best.integrityReport.status,
+          integrityFlags: best.integrityReport.flags,
+        });
+        setActiveRoom(globalRoom);
+        setRoomCode(globalRoom.pin);
+        createdPin = globalRoom.pin;
+      }
+
+      setMatchedOpponent({
+        uid: best.scholar.uid,
+        name: best.scholar.name || best.scholar.displayName || 'JAC Scholar',
+        username: best.scholar.username || normalizeUsername(best.scholar.name, best.scholar.uid),
+        emailLower: best.scholar.emailLower,
+        xp: best.scholar.xp || 0,
+        streak: best.scholar.streak || 0,
+        photoURL: best.scholar.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+        title: `${best.bracketLabel} • ${best.integrityReport.integrityScore}% Fair-Play`,
+        pin: createdPin,
+      });
+    } finally {
+      setIsSearchingMatch(false);
+    }
   };
 
-  const handleCreatePinRoom = async () => {
-    if (!profile?.uid || roomBusy) return;
+  const handleCreatePinRoom = async (invitedFriend?: UserProfile) => {
+    if (!profile?.uid) {
+      setRoomError('Please sign in first to generate a cloud 4-digit PIN room.');
+      return;
+    }
+    if (roomBusy) return;
     playClickSound();
     triggerHaptic();
     setRoomBusy(true);
     setRoomError(null);
+    setRoomSuccess(null);
     try {
-      const room = await createDuelRoom(profile, 'sci', 'Science & JAC Board');
+      const room = await createDuelRoom(profile, selectedSubjectId, selectedSubjectMeta.name, {
+        chapterId: selectedChapterId,
+        invitedFriendUid: invitedFriend?.uid,
+        mode: 'friend',
+        integrityScore: selfTrustScore,
+        integrityStatus: selfTrustScore >= 80 ? 'Verified' : 'Caution',
+      });
       setRoomCode(room.pin);
       setActiveRoom(room);
-    } catch {
-      setRoomError('Failed to create cloud duel room. Check network.');
+      const inviteUrl = `https://jackquiz.vercel.app/battle?pin=${room.pin}`;
+      navigator.clipboard?.writeText(inviteUrl);
+      if (invitedFriend?.uid) {
+        await sendBuddyNudgeInCloud(profile.uid, profile.name || 'Scholar', invitedFriend.uid);
+        setRoomSuccess(`4-Digit PIN #${room.pin} generated, invite link copied & ${invitedFriend.name} notified!`);
+      } else {
+        setRoomSuccess(`4-Digit PIN #${room.pin} generated! Invite link copied to clipboard.`);
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Unable to generate PIN room. Check connection.';
+      setRoomError(msg);
     } finally {
       setRoomBusy(false);
     }
   };
 
   const handleJoinPinRoom = async () => {
-    if (!profile?.uid || !roomCode.trim() || roomBusy) return;
+    const cleanPin = roomCode.replace(/\D/g, '').trim();
+    if (!profile?.uid) {
+      setRoomError('Please sign in to join a cloud PIN room.');
+      return;
+    }
+    if (cleanPin.length !== 4) {
+      setRoomError('Enter a valid 4-digit PIN (e.g. 4829).');
+      return;
+    }
+    if (roomBusy) return;
     playClickSound();
     triggerHaptic();
     setRoomBusy(true);
     setRoomError(null);
+    setRoomSuccess(null);
     try {
-      const res = await joinDuelRoomByPin(roomCode.trim(), profile);
+      const res = await joinDuelRoomByPin(cleanPin, profile);
       if (!res.ok || !res.room) {
         setRoomError(res.error || 'Room not found.');
         return;
       }
       setActiveRoom(res.room);
+      setRoomSuccess(`Joined PIN Room #${res.room.pin}! Anti-Match-Fixing Shield Active.`);
       const isHostSelf = res.room.hostUid === profile.uid;
       if (!isHostSelf) {
         setMatchedOpponent({
           uid: res.room.hostUid,
           name: res.room.hostName,
           username: res.room.hostUsername,
+          emailLower: res.room.hostEmailLower,
           xp: res.room.hostXp,
           streak: 1,
           photoURL: res.room.hostPhoto,
@@ -216,6 +509,42 @@ export default function BattleHubPage() {
     } finally {
       setRoomBusy(false);
     }
+  };
+
+  const handleToggleFollowFriend = async (targetUid: string) => {
+    if (!profile?.uid || !targetUid || targetUid === profile.uid || followBusyMap[targetUid]) return;
+    playClickSound();
+    const currentlyFollowing = followingUids.includes(targetUid);
+    const shouldFollow = !currentlyFollowing;
+    const nextFollowing = shouldFollow
+      ? Array.from(new Set([...followingUids, targetUid]))
+      : followingUids.filter((id) => id !== targetUid);
+
+    setFollowBusyMap((p) => ({ ...p, [targetUid]: true }));
+    setFollowingUids(nextFollowing);
+    setProfile({
+      ...profile,
+      followingUids: nextFollowing,
+      connectedFriends: nextFollowing,
+      followingCount: nextFollowing.length,
+    });
+    try {
+      const res = await toggleFollowInDatabase(profile.uid, targetUid, shouldFollow);
+      if (res.ok) {
+        setLinkingNotice(shouldFollow ? 'Friend linked & synced to your roster!' : 'Friend unlinked.');
+        setTimeout(() => setLinkingNotice(null), 2500);
+      }
+    } finally {
+      setFollowBusyMap((p) => ({ ...p, [targetUid]: false }));
+    }
+  };
+
+  const handleToggleReady = async () => {
+    if (!activeRoom || !profile?.uid) return;
+    playClickSound();
+    const isHost = activeRoom.hostUid === profile.uid;
+    const next = isHost ? !activeRoom.hostReady : !activeRoom.guestReady;
+    await toggleDuelRoomReady(activeRoom.pin, isHost ? 'host' : 'guest', next);
   };
 
   const handleCopyLink = () => {
@@ -359,28 +688,157 @@ export default function BattleHubPage() {
           ========================================================================= */}
       {activeTab === 'matchmaking' && (
         <div className="space-y-4">
-          {/* 1. Global Auto-Match Card */}
+          {/* 0. DEDICATED ANTI-MATCH-FIXING & INTEGRITY ENGINE (ABOVE GLOBAL & FRIEND LOBBIES) */}
+          <div className="p-4 rounded-3xl bg-gradient-to-br from-[#10242A] via-[#131D30] to-[#0D1322] border border-cyan-400/35 shadow-[0_10px_28px_rgba(6,182,212,0.12)]">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-cyan-300" />
+                <h3 className="text-xs font-black uppercase tracking-wider text-white">
+                  🛡️ Anti-Match-Fixing &amp; Integrity Shield
+                </h3>
+              </div>
+              <span
+                className={`text-[9px] font-black px-2 py-0.5 rounded-full border ${
+                  currentAntiFixReport.status === 'Verified'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40'
+                    : currentAntiFixReport.status === 'Caution'
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+                    : 'bg-red-500/20 text-red-300 border-red-400/40'
+                }`}
+              >
+                {currentAntiFixReport.status} • {currentAntiFixReport.integrityScore}%
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-center mb-2.5">
+              <div className="p-2 rounded-xl bg-black/30 border border-white/10">
+                <div className="text-[9px] text-slate-400 font-bold uppercase">Trust Score</div>
+                <div className="text-xs font-black text-cyan-300">{selfTrustScore}%</div>
+              </div>
+              <div className="p-2 rounded-xl bg-black/30 border border-white/10">
+                <div className="text-[9px] text-slate-400 font-bold uppercase">Online Now</div>
+                <div className="text-xs font-black text-emerald-300">{activeOnlineCount} Active</div>
+              </div>
+              <div className="p-2 rounded-xl bg-black/30 border border-white/10">
+                <div className="text-[9px] text-slate-400 font-bold uppercase">Rank Mult</div>
+                <div className="text-xs font-black text-amber-300">
+                  {currentAntiFixReport.xpMultiplier}x XP
+                </div>
+              </div>
+            </div>
+
+            {currentAntiFixReport.flags.length > 0 && (
+              <div className="mb-2 p-2 rounded-xl bg-amber-500/15 border border-amber-400/35 text-[10px] font-bold text-amber-200">
+                ⚠️ {currentAntiFixReport.flags.join(' • ')}
+              </div>
+            )}
+
+            <button
+              type="button"
+              onClick={() => {
+                playClickSound();
+                setShowIntegrityMatrix((v) => !v);
+              }}
+              className="w-full py-1.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-between text-[10px] font-black text-cyan-200"
+            >
+              <span>Inspect 10 Pro Anti-Match-Fixing Protections ({currentAntiFixReport.checks.filter((c) => c.passed).length}/10 Active)</span>
+              {showIntegrityMatrix ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+
+            {showIntegrityMatrix && (
+              <div className="mt-2.5 space-y-1.5 max-h-[240px] overflow-y-auto pr-1">
+                {currentAntiFixReport.checks.map((chk) => (
+                  <div
+                    key={chk.id}
+                    className={`p-2 rounded-xl border text-[10px] flex items-start justify-between gap-2 ${
+                      chk.passed
+                        ? 'bg-emerald-500/10 border-emerald-500/25 text-slate-200'
+                        : 'bg-red-500/15 border-red-500/35 text-red-200'
+                    }`}
+                  >
+                    <div>
+                      <div className="font-black text-white">
+                        {chk.id}. {chk.label}
+                      </div>
+                      <div className="text-[9px] text-slate-400">{chk.detail}</div>
+                    </div>
+                    <span className="shrink-0 font-black">
+                      {chk.passed ? '✅' : '⛔'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* 1. GLOBAL AUTO-MATCHMAKING PRO (ELO + SUBJECT LOCK + SEEDED) */}
           <div className="p-4 rounded-3xl bg-[rgba(26,34,53,0.85)] backdrop-blur-xl border border-white/10 shadow-lg">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <Globe2 className="w-4 h-4 text-emerald-400" />
-                <h3 className="text-sm font-black text-white">Global Auto-Match</h3>
+                <h3 className="text-sm font-black text-white">Global Auto-Match Pro</h3>
               </div>
               <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                Real Scholars Only
+                10-Point Verified
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 mb-3">
-              Instantly pair with active Class 10 JAC students ranked near your XP level.
+            <p className="text-[11px] text-slate-400 mb-2.5">
+              Skill-bracket pairing across 69 chapters with shared cryptographic board seeds &amp; cooldown guards.
             </p>
+
+            {/* Subject & Bracket Controls */}
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <select
+                value={selectedSubjectId}
+                onChange={(e) => {
+                  setSelectedSubjectId(e.target.value);
+                  setSelectedChapterId(1);
+                }}
+                className="bg-white/5 border border-white/15 rounded-xl px-2.5 py-2 text-[11px] font-bold text-white focus:outline-none focus:border-emerald-400/50"
+              >
+                {DUEL_SUBJECTS.map((s) => (
+                  <option key={s.id} value={s.id} className="bg-[#0F172A]">
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={selectedChapterId}
+                onChange={(e) => setSelectedChapterId(Number(e.target.value) || 1)}
+                className="bg-white/5 border border-white/15 rounded-xl px-2.5 py-2 text-[11px] font-bold text-white focus:outline-none focus:border-emerald-400/50"
+              >
+                {Array.from({ length: selectedSubjectMeta.chapters }, (_, i) => i + 1).map((num) => (
+                  <option key={num} value={num} className="bg-[#0F172A]">
+                    Chapter {num}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex items-center justify-between mb-3 px-2.5 py-1.5 rounded-xl bg-black/30 border border-white/10 text-[10px]">
+              <span className="font-bold text-slate-300">
+                Bracket Mode: {strictBracket ? 'ELO Tight (±800 XP)' : 'Open Global Pool'}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  setStrictBracket((v) => !v);
+                }}
+                className="px-2 py-0.5 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 font-black"
+              >
+                Switch
+              </button>
+            </div>
 
             {isSearchingMatch ? (
               <div className="py-4 text-center space-y-2">
                 <div className="w-8 h-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin mx-auto" />
                 <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">
-                  Scanning JAC Matchmaking Servers...
+                  Running ELO &amp; Anti-Fixing Scan...
                 </p>
-                <p className="text-[10px] text-slate-400">Searching players with isRealUser: true</p>
+                <p className="text-[10px] text-slate-400">Verifying Seed #{currentAntiFixReport.seed} &amp; Scholar Bracket</p>
               </div>
             ) : matchedOpponent ? (
               <div className="p-3 rounded-2xl bg-emerald-950/50 border border-emerald-500/40 space-y-3">
@@ -396,17 +854,24 @@ export default function BattleHubPage() {
                       <p className="text-[10px] text-emerald-400 font-bold">
                         @{matchedOpponent.username} &bull; {matchedOpponent.xp} XP
                       </p>
+                      <p className="text-[9px] text-cyan-300 font-bold">
+                        {matchedOpponent.title} {matchedOpponent.pin ? `• PIN #${matchedOpponent.pin}` : ''}
+                      </p>
                     </div>
                   </div>
                   <span className="text-xs">⚔️</span>
                 </div>
                 <div className="flex gap-2">
                   <Link
-                    href={`/quiz/sci/sci_ch01/1?mode=duel&opponent=${encodeURIComponent(matchedOpponent.name)}`}
+                    href={`/quiz/${selectedSubjectId}/${chKey}/1?mode=duel&opponent=${encodeURIComponent(
+                      matchedOpponent.name
+                    )}${matchedOpponent.pin ? `&pin=${matchedOpponent.pin}` : ''}&seed=${
+                      activeRoom?.questionSeed || currentAntiFixReport.seed
+                    }`}
                     className="flex-1"
                   >
                     <TactileButton variant="emerald" fullWidth size="sm" className="font-black text-xs py-2">
-                      ⚔️ Start 1v1 Battle with {matchedOpponent.name}!
+                      ⚔️ Launch Synced 1v1 ({selectedSubjectMeta.id.toUpperCase()} Ch {selectedChapterId})
                     </TactileButton>
                   </Link>
                   <button
@@ -425,46 +890,131 @@ export default function BattleHubPage() {
                 onClick={handleAutoMatch}
                 className="font-black text-xs py-3 shadow-[0_4px_0_#065F46]"
               >
-                ⚡ Instant Matchmaking
+                ⚡ Find Fair Global Opponent
               </TactileButton>
             )}
           </div>
 
-          {/* 2. 1v1 Friend Duel Room Card (Real Firestore PIN Lobby) */}
-          <div className="p-4 rounded-3xl bg-[rgba(26,34,53,0.85)] backdrop-blur-xl border border-white/10 shadow-lg">
-            <div className="flex items-center justify-between mb-2">
+          {/* 2. ONLINE FRIEND MERGING, EMAIL SEARCH & 4-DIGIT PIN LOBBY (10 LINKING FEATURES) */}
+          <div className="p-4 rounded-3xl bg-[rgba(26,34,53,0.85)] backdrop-blur-xl border border-amber-400/25 shadow-lg space-y-3">
+            <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-amber-400" />
-                <h3 className="text-sm font-black text-white">4-Digit PIN Friend Lobby</h3>
+                <h3 className="text-sm font-black text-white">Online Linking &amp; 4-Digit PIN Lobby</h3>
               </div>
               <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Cloud Synced
+                10 Pro Link Features
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 mb-3">
-              Create a 4-digit PIN room in Firestore or enter a friend&apos;s PIN to clash live.
-            </p>
+
+            {/* Inline Friend Search by Email / @username / Name */}
+            <div className="space-y-2">
+              <div className="relative">
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  placeholder="Search friend by Email, @username, or Name..."
+                  value={friendQuery}
+                  onChange={(e) => setFriendQuery(e.target.value)}
+                  className="w-full bg-black/35 border border-white/15 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-400/60"
+                />
+              </div>
+
+              {linkingNotice && (
+                <div className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-[10px] font-bold text-emerald-300 text-center">
+                  {linkingNotice}
+                </div>
+              )}
+
+              {friendQuery.trim() && (
+                <div className="space-y-1.5 max-h-[210px] overflow-y-auto pr-1">
+                  {friendSearching ? (
+                    <p className="text-[10px] text-slate-400 text-center py-2">Searching Email &amp; Scholar Cloud...</p>
+                  ) : friendResults.length === 0 ? (
+                    <p className="text-[10px] text-slate-400 text-center py-2">
+                      No scholar found matching &ldquo;{friendQuery.trim()}&rdquo;. Check spelling or email.
+                    </p>
+                  ) : (
+                    friendResults.map((f) => {
+                      const isFollowing = followingUids.includes(f.uid);
+                      return (
+                        <div
+                          key={f.uid}
+                          className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between gap-2"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <img
+                              src={f.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                              alt={f.name}
+                              className="w-8 h-8 rounded-full object-cover border border-amber-400/40 shrink-0"
+                            />
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs font-black text-white truncate">{f.name}</span>
+                                {f.isOnline && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />}
+                              </div>
+                              <p className="text-[9px] text-amber-300 font-bold truncate">
+                                @{f.username} • {f.xp || 0} XP {f.emailLower ? `• ${f.emailLower}` : ''}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button
+                              type="button"
+                              disabled={Boolean(followBusyMap[f.uid])}
+                              onClick={() => handleToggleFollowFriend(f.uid)}
+                              className={`px-2 py-1 rounded-lg text-[9px] font-black flex items-center gap-1 ${
+                                isFollowing
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                                  : 'bg-white/10 text-white border border-white/15 hover:bg-white/20'
+                              }`}
+                            >
+                              {isFollowing ? <UserCheck className="w-3 h-3" /> : <UserPlus className="w-3 h-3" />}
+                              <span>{isFollowing ? 'Linked' : 'Link'}</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleCreatePinRoom(f)}
+                              className="px-2 py-1 rounded-lg bg-amber-500 text-slate-950 text-[9px] font-black hover:bg-amber-400"
+                            >
+                              🎲 PIN Duel
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              )}
+            </div>
 
             {roomError && (
-              <div className="mb-2.5 p-2 rounded-xl bg-red-500/15 border border-red-400/40 text-[11px] font-bold text-red-200">
+              <div className="p-2 rounded-xl bg-red-500/15 border border-red-400/40 text-[11px] font-bold text-red-200">
                 {roomError}
               </div>
             )}
+            {roomSuccess && (
+              <div className="p-2 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-[11px] font-bold text-emerald-200">
+                {roomSuccess}
+              </div>
+            )}
 
-            <div className="space-y-2">
+            {/* 4-Digit PIN Join & Generate Controls */}
+            <div className="space-y-2 pt-1 border-t border-white/10">
               <div className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Enter 4-Digit Room PIN (e.g. 4829)"
-                  maxLength={6}
+                  inputMode="numeric"
+                  placeholder="Enter 4-Digit PIN (e.g. 4829)"
+                  maxLength={4}
                   value={roomCode}
-                  onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs font-mono font-bold text-white placeholder:text-slate-500 uppercase tracking-widest focus:outline-none focus:border-amber-400/50"
+                  onChange={(e) => setRoomCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                  className="flex-1 bg-white/5 border border-white/15 rounded-xl px-3 py-2 text-xs font-mono font-bold text-white placeholder:text-slate-500 tracking-widest focus:outline-none focus:border-amber-400/60"
                 />
                 <TactileButton
                   variant="gold"
                   size="sm"
-                  disabled={!roomCode.trim() || roomBusy}
+                  disabled={roomCode.trim().length !== 4 || roomBusy}
                   onClick={handleJoinPinRoom}
                   className="font-black text-xs px-4"
                 >
@@ -472,25 +1022,86 @@ export default function BattleHubPage() {
                 </TactileButton>
               </div>
 
-              <div className="flex items-center justify-between pt-1">
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={handleCreatePinRoom}
+                  type="button"
+                  onClick={() => handleCreatePinRoom()}
                   disabled={roomBusy}
-                  className="text-[11px] font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer disabled:opacity-50"
+                  className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-[0_3px_0_#92400E] active:translate-y-0.5 transition-all cursor-pointer disabled:opacity-50"
                 >
-                  <span>🎲 Create Cloud Room PIN</span>
+                  <span>{roomBusy ? '⏳ Generating...' : '🎲 Generate 4-Digit PIN'}</span>
                 </button>
-
-                {activeRoom ? (
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                    Room #{activeRoom.pin} • {activeRoom.status === 'active' ? 'Challenger Joined!' : 'Waiting for Friend...'}
-                  </span>
-                ) : roomCode ? (
-                  <span className="text-[10px] font-mono text-amber-300 font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/30">
-                    PIN: {roomCode}
-                  </span>
-                ) : null}
+                {activeRoom && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      playClickSound();
+                      navigator.clipboard?.writeText(`https://jackquiz.vercel.app/battle?pin=${activeRoom.pin}`);
+                      setCopiedPin(true);
+                      setTimeout(() => setCopiedPin(false), 2000);
+                    }}
+                    className="py-2 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-[10px] font-black text-amber-300 flex items-center gap-1"
+                  >
+                    <Copy className="w-3.5 h-3.5" />
+                    <span>{copiedPin ? 'Copied!' : `#${activeRoom.pin}`}</span>
+                  </button>
+                )}
               </div>
+
+              {/* Active Synchronized PIN Room Card */}
+              {activeRoom && (
+                <div className="p-3 rounded-2xl bg-black/40 border border-amber-400/35 space-y-2.5 mt-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-amber-300 font-mono tracking-wider">
+                      ROOM PIN #{activeRoom.pin} • SEED #{activeRoom.questionSeed || currentAntiFixReport.seed}
+                    </span>
+                    <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">
+                      {activeRoom.guestUid ? 'Linked & Ready!' : 'Waiting Guest...'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-[10px]">
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                      <div className="font-black text-white truncate">Host: {activeRoom.hostName}</div>
+                      <div className="text-emerald-400 font-bold">
+                        {activeRoom.hostReady ? '✅ Ready' : '⏳ Preparing'}
+                      </div>
+                    </div>
+                    <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+                      <div className="font-black text-white truncate">
+                        Guest: {activeRoom.guestName || 'Invite Friend…'}
+                      </div>
+                      <div className="text-amber-300 font-bold">
+                        {activeRoom.guestUid ? (activeRoom.guestReady ? '✅ Ready' : '⏳ Preparing') : 'Share Link'}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleToggleReady}
+                      className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-[10px] font-black text-white"
+                    >
+                      Toggle Ready
+                    </button>
+                    <Link
+                      href={`/quiz/${activeRoom.subjectId || selectedSubjectId}/${activeRoom.subjectId || selectedSubjectId}_ch${String(
+                        activeRoom.chapterId || selectedChapterId
+                      ).padStart(2, '0')}/1?mode=duel&opponent=${encodeURIComponent(
+                        activeRoom.guestUid && activeRoom.hostUid === profile?.uid
+                          ? activeRoom.guestName || 'Challenger'
+                          : activeRoom.hostName
+                      )}&pin=${activeRoom.pin}&seed=${activeRoom.questionSeed || currentAntiFixReport.seed}`}
+                      className="flex-1"
+                    >
+                      <TactileButton variant="emerald" fullWidth size="sm" className="font-black text-xs py-2">
+                        ⚔️ Enter PIN Room Battle
+                      </TactileButton>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -897,5 +1508,13 @@ export default function BattleHubPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function BattleHubPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#090D16] flex items-center justify-center text-white text-xs font-bold">Loading Battle Hub...</div>}>
+      <BattleHubContent />
+    </Suspense>
   );
 }

@@ -7,6 +7,12 @@ import { X, Flame, Shield, Share2, Users, Calendar, Award, Check, Bell, Sparkles
 import { useUserStore } from '@/store/useUserStore';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { playClickSound } from '@/lib/audioEngine';
+import {
+  buildMonthlyStreakMatrix,
+  buildWeeklyStreakStrip,
+  getDuolingoStreakLevel,
+  getEffectiveJoinDateKey,
+} from '@/lib/streakEngine';
 
 interface StreakDashboardModalProps {
   isOpen: boolean;
@@ -322,65 +328,121 @@ export const StreakDashboardModal: React.FC<StreakDashboardModalProps> = ({
               </>
             ) : (
               <>
-                {/* 30-Day Activity Radar Tab */}
-                <div className="rounded-2xl p-4 bg-gradient-to-r from-orange-500/20 via-amber-500/10 to-transparent border border-orange-500/30 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-black uppercase text-orange-400 tracking-wider block">
-                      CURRENT STREAK
-                    </span>
-                    <div className="text-3xl font-black text-white tracking-tight">
-                      {streakDays} <span className="text-base text-amber-400">Days 🔥</span>
-                    </div>
-                    <span className="text-[11px] text-slate-300 mt-1 block">
-                      Top 5% consistency in Class 10 JAC
-                    </span>
-                  </div>
+                {/* 30-Day Duolingo-Style Streak Level & Activity Radar */}
+                {(() => {
+                  const weekCells = buildWeeklyStreakStrip(profile);
+                  const monthCells = buildMonthlyStreakMatrix(profile);
+                  const joinKey = getEffectiveJoinDateKey(profile);
+                  const streakLevel = getDuolingoStreakLevel(streakDays);
+                  const activeMonthCount = monthCells.filter((c) => c.status === 'active').length;
 
-                  <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-center">
-                    <Shield className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
-                    <span className="text-[9px] font-black uppercase text-emerald-300 block">
-                      {isShieldActive ? 'Shield Active' : 'Unprotected'}
-                    </span>
-                    <span className="text-[8px] text-slate-400">1 Freeze Ready</span>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl p-4 bg-white/5 border border-white/10">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 text-slate-300 text-xs font-bold">
-                      <Calendar className="w-4 h-4 text-amber-400" />
-                      <span>30-Day Activity Radar</span>
-                    </div>
-                    <span className="text-[10px] font-mono text-emerald-400 font-bold">
-                      {streakDays} / 30 Days
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-10 gap-1.5 pt-1">
-                    {Array.from({ length: 30 }).map((_, idx) => {
-                      const dayNum = idx + 1;
-                      const isCompleted = dayNum <= streakDays;
-                      const isToday = dayNum === streakDays;
-
-                      return (
-                        <div
-                          key={dayNum}
-                          className={`
-                            aspect-square rounded-lg flex items-center justify-center text-[9px] font-bold transition-all
-                            ${isToday
-                              ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-black shadow-[0_0_10px_#F59E0B] font-black scale-105'
-                              : isCompleted
-                              ? 'bg-emerald-500/80 text-white'
-                              : 'bg-white/5 border border-white/5 text-slate-600'
-                            }
-                          `}
-                        >
-                          {dayNum}
+                  return (
+                    <>
+                      <div className="rounded-2xl p-4 bg-gradient-to-r from-orange-500/20 via-amber-500/10 to-transparent border border-orange-500/30 flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] font-black uppercase text-orange-400 tracking-wider block">
+                            {streakLevel.badgeEmoji} {streakLevel.title} (LVL {streakLevel.level})
+                          </span>
+                          <div className="text-3xl font-black text-white tracking-tight">
+                            {streakDays} <span className="text-base text-amber-400">Days 🔥</span>
+                          </div>
+                          <span className="text-[10px] text-slate-300 mt-0.5 block">
+                            Started {joinKey} &bull; Next Tier: {streakLevel.nextMilestone}d
+                          </span>
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
+
+                        <div className="p-3 rounded-2xl bg-black/40 border border-white/10 text-center">
+                          <Shield className="w-5 h-5 text-emerald-400 mx-auto mb-1" />
+                          <span className="text-[9px] font-black uppercase text-emerald-300 block">
+                            {isShieldActive ? 'Shield Active' : 'Unprotected'}
+                          </span>
+                          <span className="text-[8px] text-slate-400">
+                            {profile?.streakFreezes ?? 1} Freeze Ready
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* 7-Day Weekly Strip with strict Pre-Join Crossing */}
+                      <div className="rounded-2xl p-3 bg-white/5 border border-white/10">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-[11px] font-black text-white uppercase tracking-wider">
+                            Weekly Streak (Mon – Sun)
+                          </span>
+                          <span className="text-[9px] text-slate-400 font-bold">Pre-join days crossed</span>
+                        </div>
+                        <div className="grid grid-cols-7 gap-1.5">
+                          {weekCells.map((cell) => (
+                            <div
+                              key={cell.dateKey}
+                              className={`py-2 rounded-xl flex flex-col items-center justify-center border text-center ${
+                                cell.isToday
+                                  ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-slate-950 border-white font-black shadow-[0_0_12px_rgba(245,158,11,0.7)]'
+                                  : cell.status === 'active'
+                                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                                  : cell.status === 'pre_join'
+                                  ? 'bg-slate-900/60 border-white/5 text-slate-600 line-through opacity-60'
+                                  : cell.status === 'missed'
+                                  ? 'bg-red-950/40 border-red-500/30 text-red-400'
+                                  : 'bg-white/5 border-white/5 text-slate-500'
+                              }`}
+                            >
+                              <span className="text-[8px] font-bold uppercase">{cell.label}</span>
+                              <span className="text-[11px] mt-0.5 font-black">
+                                {cell.isToday
+                                  ? '🔥'
+                                  : cell.status === 'active'
+                                  ? '✓'
+                                  : cell.status === 'pre_join'
+                                  ? '—'
+                                  : cell.status === 'missed'
+                                  ? '✕'
+                                  : '•'}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 30-Day Monthly Calendar */}
+                      <div className="rounded-2xl p-4 bg-white/5 border border-white/10">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2 text-slate-300 text-xs font-bold">
+                            <Calendar className="w-4 h-4 text-amber-400" />
+                            <span>30-Day Monthly Calendar</span>
+                          </div>
+                          <span className="text-[10px] font-mono text-emerald-400 font-bold">
+                            {activeMonthCount} Active Days
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-10 gap-1.5 pt-1">
+                          {monthCells.map((cell) => (
+                            <div
+                              key={cell.dayNum}
+                              title={`${cell.dateKey}: ${cell.status.replace('_', ' ')}`}
+                              className={`
+                                aspect-square rounded-lg flex items-center justify-center text-[9px] font-bold transition-all relative
+                                ${
+                                  cell.isToday
+                                    ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-black shadow-[0_0_10px_#F59E0B] font-black scale-105 border border-white'
+                                    : cell.status === 'active'
+                                    ? 'bg-emerald-500/80 text-white'
+                                    : cell.status === 'pre_join'
+                                    ? 'bg-slate-900/50 border border-white/5 text-slate-600 line-through opacity-55'
+                                    : cell.status === 'missed'
+                                    ? 'bg-red-950/40 border border-red-500/25 text-red-400 line-through'
+                                    : 'bg-white/5 border border-white/5 text-slate-600'
+                                }
+                              `}
+                            >
+                              {cell.isToday ? '🔥' : cell.status === 'pre_join' ? `/${cell.dayNum}` : cell.status === 'missed' ? '✕' : cell.dayNum}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </>
             )}
           </div>

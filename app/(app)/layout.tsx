@@ -15,7 +15,7 @@ import {
   saveLocalUserProfile,
   clearLocalUserProfile
 } from '@/lib/firestore';
-import { upsertUserInDirectory } from '@/lib/socialService';
+import { upsertUserInDirectory, heartbeatUserPresence } from '@/lib/socialService';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -152,6 +152,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep live presence heartbeat synced every 60s for active scholar counts & battle invites
+  const activeUid = useUserStore((s) => s.profile?.uid);
+  useEffect(() => {
+    if (!activeUid) return;
+    void heartbeatUserPresence(activeUid);
+    const id = setInterval(() => {
+      void heartbeatUserPresence(activeUid);
+    }, 60000);
+    return () => clearInterval(id);
+  }, [activeUid]);
 
   // Don't render children or BottomDock until auth is confirmed
   if (!authReady) {

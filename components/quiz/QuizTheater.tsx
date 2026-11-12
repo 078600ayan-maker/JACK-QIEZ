@@ -29,6 +29,7 @@ import {
   isLofiAmbientPlaying
 } from '@/lib/audioEngine';
 import { recordSpacedMistake } from '@/lib/firestore';
+import { recordDuelRoomResult } from '@/lib/socialService';
 
 export const QuizTheater: React.FC = () => {
   const router = useRouter();
@@ -43,6 +44,7 @@ export const QuizTheater: React.FC = () => {
   const [avatarSpeech, setAvatarSpeech] = useState<string>('🤔 ध्यान से सोचो...');
   const [showExplanationDrawer, setShowExplanationDrawer] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [sessionStartMs] = useState<number>(() => Date.now());
   const mascotIframeRef = React.useRef<HTMLIFrameElement>(null);
 
   // Sound toggle
@@ -114,7 +116,22 @@ export const QuizTheater: React.FC = () => {
         newMistakeIds: quiz.mistakeIdsInSession,
         remainingHearts: quiz.hearts
       });
+
+      if (typeof window !== 'undefined') {
+        const sp = new URLSearchParams(window.location.search);
+        const pin = sp.get('pin');
+        if (pin) {
+          void recordDuelRoomResult({
+            pin,
+            uid: user.profile.uid,
+            role: sp.get('mode') === 'duel' ? 'host' : 'solo',
+            scorePercent: accuracy,
+            durationMs: Math.max(1000, Date.now() - sessionStartMs),
+          });
+        }
+      }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quiz.isFinished]);
 
   // Handle Avatar Reactions on Answer Submission & Hinglish Motivational Speech

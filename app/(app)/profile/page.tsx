@@ -27,7 +27,13 @@ import {
   PhoneCall,
   UserCheck,
   UserPlus,
-  Shirt
+  Shirt,
+  Copy,
+  Share2,
+  Zap,
+  Shield,
+  BookOpen,
+  Activity
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -42,7 +48,15 @@ import {
   normalizeUsername,
   isUsernameAvailable,
   upsertUserInDirectory,
+  fetchActiveScholarsCount,
 } from '@/lib/socialService';
+import {
+  buildWeeklyStreakStrip,
+  buildMonthlyStreakMatrix,
+  getDuolingoStreakLevel,
+  getEffectiveJoinDateKey,
+} from '@/lib/streakEngine';
+import { computeSelfTrustScore } from '@/lib/matchIntegrity';
 import { CrownBadge } from '@/components/ui/CrownBadge';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { MinecraftVoxelCharacter } from '@/components/avatar/MinecraftVoxelCharacter';
@@ -99,8 +113,8 @@ function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem 
     followers: Math.max(followersUids.length, u.followersCount ?? 0),
     following: Math.max(followingUids.length, u.followingCount ?? 0),
     photoURL: u.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-    skinPath: u.customAvatar?.skinPath || '/skins/boy/minecraft-skins.png',
-    dressedOutfit: u.customAvatar?.name || 'Royal Student Wardrobe',
+    skinPath: u.customAvatar?.skinPath || CHARACTER_PRESETS[0].defaultCustomization.skinPath || '/skins/boy/skullwar.png',
+    dressedOutfit: u.customAvatar?.name || CHARACTER_PRESETS[0].defaultCustomization.name || 'Skullwar Champion',
     isRealUser: u.isRealUser !== false,
     role: u.role || `${ore.name} Scholar`,
     bio: u.bio || 'Class 10 JAC Scholar preparing for Board Exams 2026.',
@@ -119,6 +133,8 @@ function ProfileContent() {
   const [avatarTab, setAvatarTab] = useState<'bundles' | 'characters'>('characters');
   const [dpModalOpen, setDpModalOpen] = useState(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState(false);
+  const [activeOnlineCount, setActiveOnlineCount] = useState<number>(1);
+  const [copiedProfileLink, setCopiedProfileLink] = useState(false);
 
   // Inspected Scholar Modal state
   const [inspectedScholar, setInspectedScholar] = useState<ScholarItem | null>(null);
@@ -165,11 +181,20 @@ function ProfileContent() {
     };
   }, [profile?.uid, profile?.followingUids, profile?.followersUids]);
 
-  // Subscribe to global Firestore users directory
+  // Subscribe to global Firestore users directory + live active scholars count
   useEffect(() => {
     const unsub = subscribeGlobalLeaderboard((users) => {
       setDirectoryScholars(users.map((u) => profileToScholarItem(u, profile?.uid)));
+      const nowMs = Date.now();
+      const online = users.filter((u) => {
+        const ts = u.lastSeenAt ? Date.parse(u.lastSeenAt) : u.updatedAt ? Date.parse(u.updatedAt) : 0;
+        return u.isOnline || (ts > 0 && nowMs - ts <= 20 * 60 * 1000);
+      }).length;
+      if (online > 0) setActiveOnlineCount(online);
     }, 50);
+    fetchActiveScholarsCount().then((c) => {
+      if (c > 0) setActiveOnlineCount((prev) => Math.max(prev, c));
+    }).catch(() => {});
     return () => unsub();
   }, [profile?.uid]);
 
@@ -424,10 +449,23 @@ function ProfileContent() {
     : [];
   const displayedScholars = term ? (searchResults ?? []) : baseDirectory;
 
-  // Day of week calendar for Duolingo-style streak
-  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const todayIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
-  const todayDateOfMonth = new Date().getDate(); // e.g. 10 for Nov 10
+  // Duolingo-style Pre-Join-Aware Weekly & Monthly Streak + 10 Pro Telemetry Compute
+  const weekCells = buildWeeklyStreakStrip(profile);
+  const monthCells = buildMonthlyStreakMatrix(profile);
+  const effectiveJoinDate = getEffectiveJoinDateKey(profile);
+  const streakLevel = getDuolingoStreakLevel(streak);
+  const activeDaysThisMonth = monthCells.filter((c) => c.status === 'active').length;
+  const trustScore = computeSelfTrustScore(profile);
+  const drillHistory = profile?.drillHistory || [];
+  const bestDrillScore = drillHistory.reduce((m, d) => Math.max(m, d.score || 0), 0);
+  const bestDrillAcc = drillHistory.reduce((m, d) => Math.max(m, d.accuracy || 0), 0);
+  const subjectSpecs = [
+    { id: 'sci', label: 'Science', totalCh: 13, color: 'from-emerald-400 to-teal-500' },
+    { id: 'math', label: 'Maths', totalCh: 14, color: 'from-amber-400 to-orange-500' },
+    { id: 'sst', label: 'Social Sci', totalCh: 14, color: 'from-sky-400 to-blue-500' },
+    { id: 'eng', label: 'English', totalCh: 14, color: 'from-purple-400 to-fuchsia-500' },
+    { id: 'hin', label: 'Hindi', totalCh: 14, color: 'from-rose-400 to-red-500' },
+  ];
 
   return (
     <div className="w-full max-w-[480px] mx-auto px-4 pt-3 pb-44 select-none">
@@ -470,12 +508,14 @@ function ProfileContent() {
               ROYAL SCHOLAR IDENTITY
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-[9px] font-black text-emerald-300">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              ONLINE CLOUD
+              {activeOnlineCount} ONLINE
             </span>
-            <span className="text-[10px] font-mono font-bold text-slate-400">CLASS 10 JAC</span>
+            <span className="text-[10px] font-mono font-bold text-slate-400">
+              {profile?.classLevel || 'CLASS 10 JAC'}
+            </span>
           </div>
         </div>
 
@@ -510,7 +550,7 @@ function ProfileContent() {
           <div className="flex-1 min-w-0 pr-2">
             <h2 className="text-lg font-black text-white tracking-tight truncate">{name}</h2>
             <p className="text-[11px] text-amber-400 font-black truncate mt-0.5">
-              @{profile?.username || 'scholar'}
+              @{profile?.username || 'scholar'} {profile?.age ? `• ${profile.age}y` : ''}
             </p>
             <p className="text-[10px] text-slate-400 truncate mt-0.5">{email}</p>
             <div className="flex items-center gap-1.5 mt-2 flex-wrap">
@@ -522,15 +562,16 @@ function ProfileContent() {
                   height={12}
                   className="object-contain"
                 />
-                <span>{currentOre.name} Tier</span>
+                <span>{currentOre.name}</span>
               </span>
-              <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300">
-                Joined 2026
+              <span className="flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-200">
+                <Shirt className="w-2.5 h-2.5 text-purple-300" />
+                <span className="truncate max-w-[95px]">{activeAvatarCustom.name}</span>
               </span>
             </div>
           </div>
 
-          {/* Minecraft 3D Avatar Mini Preview */}
+          {/* Synced 3D Equipped Wardrobe Outfit Showcase (Matches Home Lobby 1:1) */}
           <div
             onClick={() => {
               playClickSound();
@@ -538,17 +579,25 @@ function ProfileContent() {
               setAvatarModalOpen(true);
             }}
             className="shrink-0 flex flex-col items-center cursor-pointer group"
+            title="Tap to Change Equipped Dress & 3D Skin"
           >
-            <div className="w-20 h-20 rounded-2xl bg-black/40 border-2 border-amber-400/30 overflow-hidden flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.3)] group-hover:scale-105 transition-transform">
+            <div className="w-24 h-24 rounded-2xl bg-gradient-to-b from-amber-500/10 to-black/60 border-2 border-amber-400/50 overflow-hidden flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.35)] group-hover:scale-105 transition-transform">
               <MinecraftVoxelCharacter
-                skinPath={activeAvatarCustom.skinPath || '/skins/boy/minecraft-skins.png'}
+                key={activeAvatarCustom.skinPath || 'default-skin'}
+                skinPath={
+                  activeAvatarCustom.skinPath ||
+                  CHARACTER_PRESETS[0].defaultCustomization.skinPath ||
+                  '/skins/boy/skullwar.png'
+                }
                 mode="thumbnail"
-                width={56}
-                height={72}
+                width={68}
+                height={88}
+                showSecondLayer={true}
+                showCape={true}
               />
             </div>
-            <span className="text-[9px] font-black text-amber-300 mt-1 tracking-wider uppercase text-center max-w-[80px] truncate">
-              {activeAvatarCustom.name}
+            <span className="text-[9px] font-black text-amber-300 mt-1 tracking-wider uppercase text-center max-w-[92px] truncate">
+              👕 {activeAvatarCustom.name}
             </span>
           </div>
         </div>
@@ -668,74 +717,218 @@ function ProfileContent() {
 
 
       {/* =========================================================================
-          DUOLINGO-STYLE 7-DAY WEEKLY STREAK & 30-DAY CALENDAR (TODAY GLOWS, PAST MISSED CROSSED)
+          DUOLINGO-STYLE PRE-JOIN-AWARE 7-DAY & 30-DAY STREAK ALGORITHM + LEVELS
           ========================================================================= */}
-      <div className="p-4 rounded-3xl bg-[rgba(30,41,59,0.65)] backdrop-blur-xl border border-white/10 mb-4 shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2 text-[#F59E0B]">
+      <div className="p-4 rounded-3xl bg-[rgba(30,41,59,0.72)] backdrop-blur-xl border border-amber-500/25 mb-4 shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
             <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
             <span className="text-xs font-black uppercase tracking-wider text-white">
-              Daily Streak &bull; Day {todayDateOfMonth} On Fire 🔥
+              {streakLevel.badgeEmoji} {streakLevel.title} &bull; {streak}d Streak
             </span>
           </div>
-          <span className="text-xs font-black text-amber-300">{streak} Days Active</span>
+          <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
+            Joined {effectiveJoinDate}
+          </span>
         </div>
 
-        {/* 7-Day Week Day Strip (Mon - Sun) */}
-        <div className="grid grid-cols-7 gap-1.5 mb-3">
-          {daysOfWeek.map((dayName, idx) => {
-            const isPastOrToday = idx <= todayIndex;
-            const isToday = idx === todayIndex;
+        {/* Duolingo Streak Level Progress Bar */}
+        <div className="mb-3">
+          <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
+            <span>
+              Level {streakLevel.level} • Longest: {Math.max(streak, profile?.longestStreak || 1)}d • Freeze: {profile?.streakFreezes ?? 1} 🛡️
+            </span>
+            <span className="text-amber-300 font-bold">Goal: {streakLevel.nextMilestone}d</span>
+          </div>
+          <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-300 transition-all"
+              style={{ width: `${Math.max(8, streakLevel.progressPercent)}%` }}
+            />
+          </div>
+        </div>
 
-            return (
-              <div
-                key={dayName}
-                className={`py-2 rounded-xl flex flex-col items-center justify-center transition-all ${
-                  isToday
-                    ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-slate-950 shadow-[0_0_12px_rgba(245,158,11,0.6)] scale-105'
-                    : isPastOrToday
-                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300'
-                    : 'bg-white/5 border border-white/5 text-slate-500'
+        {/* 7-Day Week Strip (Mon - Sun): Days prior to joinedAt are strictly crossed out */}
+        <div className="grid grid-cols-7 gap-1.5 mb-3">
+          {weekCells.map((cell) => (
+            <div
+              key={cell.dateKey}
+              title={`${cell.label} (${cell.dateKey}): ${cell.status.replace('_', ' ')}`}
+              className={`py-2 rounded-xl flex flex-col items-center justify-center transition-all border ${
+                cell.isToday
+                  ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-slate-950 border-white shadow-[0_0_12px_rgba(245,158,11,0.65)] scale-105'
+                  : cell.status === 'active'
+                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                  : cell.status === 'pre_join'
+                  ? 'bg-slate-950/60 border-white/5 text-slate-600 line-through opacity-55'
+                  : cell.status === 'missed'
+                  ? 'bg-red-950/40 border-red-500/30 text-red-400'
+                  : 'bg-white/5 border-white/5 text-slate-500'
+              }`}
+            >
+              <span className="text-[9px] font-bold uppercase">{cell.label}</span>
+              <span className="text-xs mt-0.5 font-black">
+                {cell.isToday
+                  ? '🔥'
+                  : cell.status === 'active'
+                  ? '✓'
+                  : cell.status === 'pre_join'
+                  ? '✕'
+                  : cell.status === 'missed'
+                  ? '!'
+                  : '•'}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* 30-Day Calendar Matrix: Dates before joinedAt (e.g. 1-24 if joined 25th) are crossed out */}
+        <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-1.5">
+          <span>Monthly 30-Day Radar</span>
+          <span className="text-amber-300">{activeDaysThisMonth} Active Days This Month</span>
+        </div>
+        <div className="grid grid-cols-10 gap-1.5 pt-0.5">
+          {monthCells.map((cell) => (
+            <div
+              key={cell.dayNum}
+              className={`
+                aspect-square rounded-lg flex items-center justify-center text-[8px] font-black transition-all
+                ${
+                  cell.isToday
+                    ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-300 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.9)] scale-110 border border-white'
+                    : cell.status === 'active'
+                    ? 'bg-emerald-500/80 text-white'
+                    : cell.status === 'pre_join'
+                    ? 'bg-slate-950/60 border border-white/5 text-slate-600 line-through opacity-50'
+                    : cell.status === 'missed'
+                    ? 'bg-red-950/40 border border-red-500/20 text-red-400/70 line-through'
+                    : 'bg-white/5 border border-white/5 text-slate-600'
+                }
+              `}
+              title={`${cell.dateKey} (${cell.status.replace('_', ' ')})`}
+            >
+              {cell.isToday ? '🔥' : cell.status === 'pre_join' ? `/${cell.dayNum}` : cell.status === 'missed' ? '✕' : cell.dayNum}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* =========================================================================
+          10-POINT PRO SCHOLAR PROFILE DASHBOARD (MASTERY, TELEMETRY, OUTFIT, SHARE)
+          ========================================================================= */}
+      <div className="p-4 rounded-3xl bg-[rgba(26,34,53,0.82)] backdrop-blur-xl border border-white/10 mb-4 space-y-3.5 shadow-[0_8px_20px_rgba(0,0,0,0.4)]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="w-4 h-4 text-emerald-400" />
+            <h3 className="text-xs font-black uppercase tracking-wider text-white">
+              Pro Scholar Telemetry &amp; 69-Chapter Mastery
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              playClickSound();
+              const url = `https://jackquiz.vercel.app/battle?invite=${encodeURIComponent(profile?.username || 'scholar')}`;
+              navigator.clipboard?.writeText(url);
+              setCopiedProfileLink(true);
+              setTimeout(() => setCopiedProfileLink(false), 2000);
+            }}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-[10px] font-black text-blue-300"
+          >
+            {copiedProfileLink ? <Check className="w-3 h-3 text-emerald-400" /> : <Share2 className="w-3 h-3" />}
+            <span>{copiedProfileLink ? 'Copied Link!' : 'Share Profile'}</span>
+          </button>
+        </div>
+
+        {/* 4-Column Quick Pro Metrics: Trust Score, 60s Drill Best, Duel Wins, Active Scholars */}
+        <div className="grid grid-cols-4 gap-1.5 text-center">
+          <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+            <Shield className="w-3.5 h-3.5 text-emerald-400 mx-auto mb-0.5" />
+            <div className="text-xs font-black text-emerald-300">{trustScore}%</div>
+            <div className="text-[8px] text-slate-400 uppercase font-bold">Trust</div>
+          </div>
+          <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+            <Zap className="w-3.5 h-3.5 text-amber-400 mx-auto mb-0.5" />
+            <div className="text-xs font-black text-amber-300">{bestDrillScore}</div>
+            <div className="text-[8px] text-slate-400 uppercase font-bold">60s Best</div>
+          </div>
+          <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+            <Swords className="w-3.5 h-3.5 text-red-400 mx-auto mb-0.5" />
+            <div className="text-xs font-black text-red-300">{profile?.duelWins ?? 0}</div>
+            <div className="text-[8px] text-slate-400 uppercase font-bold">Duel Wins</div>
+          </div>
+          <div className="p-2 rounded-xl bg-white/5 border border-white/10">
+            <Users className="w-3.5 h-3.5 text-sky-400 mx-auto mb-0.5" />
+            <div className="text-xs font-black text-sky-300">{activeOnlineCount}</div>
+            <div className="text-[8px] text-slate-400 uppercase font-bold">Online Now</div>
+          </div>
+        </div>
+
+        {/* Subject-Wise Mastery Progress across all 69 JAC Chapters */}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-[10px] font-black text-slate-300">
+            <span className="flex items-center gap-1"><BookOpen className="w-3 h-3 text-amber-400" /> JAC Class 10 Subject Mastery</span>
+            <span className="text-amber-300">Best Drill Acc: {bestDrillAcc}%</span>
+          </div>
+          <div className="space-y-1.5">
+            {subjectSpecs.map((sub) => {
+              const completedCount = Object.entries(profile?.progress || {}).filter(
+                ([k, v]) => k.startsWith(`${sub.id}_`) && (v || 0) >= 1
+              ).length;
+              const pct = Math.min(100, Math.round((completedCount / sub.totalCh) * 100));
+              return (
+                <div key={sub.id} className="space-y-0.5">
+                  <div className="flex items-center justify-between text-[10px] font-bold">
+                    <span className="text-slate-300">{sub.label}</span>
+                    <span className="text-slate-400 font-mono">
+                      {completedCount}/{sub.totalCh} Ch ({pct}%)
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full bg-gradient-to-r ${sub.color}`}
+                      style={{ width: `${Math.max(4, pct)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Streak & Scholar Milestone Badges Shelf + Equipped Outfit Bar */}
+        <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {[
+              { label: '⚡ Spark 3d', ok: streak >= 3 || (profile?.longestStreak || 0) >= 3 },
+              { label: '🏆 Week 7d', ok: streak >= 7 || (profile?.longestStreak || 0) >= 7 },
+              { label: '💎 500 XP', ok: xp >= 500 },
+              { label: '👑 Crown', ok: crownsWon >= 1 },
+            ].map((b) => (
+              <span
+                key={b.label}
+                className={`text-[9px] font-black px-2 py-0.5 rounded-full border ${
+                  b.ok
+                    ? 'bg-amber-500/20 border-amber-400/50 text-amber-200'
+                    : 'bg-white/5 border-white/10 text-slate-500'
                 }`}
               >
-                <span className="text-[9px] font-bold uppercase">{dayName}</span>
-                <span className="text-xs mt-0.5">
-                  {isToday ? '🔥' : isPastOrToday ? '✓' : '•'}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* 30-Day Calendar Dot Grid: Today glows, past missed are crossed out ✕ */}
-        <div className="grid grid-cols-10 gap-1.5 pt-1">
-          {Array.from({ length: 30 }).map((_, idx) => {
-            const dayNum = idx + 1;
-            const isToday = dayNum === todayDateOfMonth;
-            const isPast = dayNum < todayDateOfMonth;
-            const isCompletedInStreak = isPast && dayNum >= todayDateOfMonth - streak + 1;
-
-            return (
-              <div
-                key={idx}
-                className={`
-                  aspect-square rounded-lg flex items-center justify-center text-[8px] font-black transition-all
-                  ${
-                    isToday
-                      ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-300 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.9)] scale-110 border border-white animate-pulse'
-                      : isCompletedInStreak
-                      ? 'bg-emerald-500/80 text-white'
-                      : isPast
-                      ? 'bg-red-950/40 border border-red-500/20 text-red-400/60 line-through'
-                      : 'bg-white/5 border border-white/5 text-slate-600'
-                  }
-                `}
-                title={`Day ${dayNum} ${isToday ? '(Today)' : isPast ? (isCompletedInStreak ? '(Streak Active)' : '(Missed)') : '(Upcoming)'}`}
-              >
-                {isToday ? '🔥' : isPast && !isCompletedInStreak ? '✕' : dayNum}
-              </div>
-            );
-          })}
+                {b.label}
+              </span>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              playClickSound();
+              setAvatarTab('bundles');
+              setAvatarModalOpen(true);
+            }}
+            className="text-[10px] font-black text-purple-300 hover:text-purple-200 flex items-center gap-1"
+          >
+            <Shirt className="w-3 h-3" />
+            <span>Outfit: {activeAvatarCustom.name}</span>
+          </button>
         </div>
       </div>
 
@@ -817,7 +1010,7 @@ function ProfileContent() {
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-blue-400" />
             <h3 className="text-xs font-black uppercase tracking-wider text-white">
-              🔍 Find Users by @username
+              🔍 Find Friends (Email / @Username / Name)
             </h3>
           </div>
           <span className="text-[9px] font-black text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full border border-blue-400/30">
@@ -830,7 +1023,7 @@ function ProfileContent() {
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search database by @username or full name..."
+            placeholder="Search by email, @username, or full name..."
             value={searchUsername}
             onChange={(e) => setSearchUsername(e.target.value)}
             className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-10 pr-8 py-2.5 text-xs placeholder:text-slate-500 focus:outline-none focus:border-blue-500/50 transition"

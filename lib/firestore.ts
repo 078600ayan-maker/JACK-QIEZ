@@ -6,6 +6,7 @@ import {
   upsertUserInDirectory,
   fetchResolvedFollowRelations,
 } from './socialService';
+import { markTodayActiveOnProfile, toLocalDateKey } from './streakEngine';
 
 const LOCAL_STORAGE_KEY = 'sbr_user_profile';
 
@@ -45,7 +46,9 @@ export function clearLocalUserProfile(): void {
 
 export function createDefaultProfile(uid: string, name?: string, email?: string): UserProfile {
   const cleanName = (name || 'Royal Scholar').trim();
+  const cleanEmail = (email || 'scholar@royal.edu').trim();
   const username = normalizeUsername(cleanName.split(' ')[0], uid);
+  const todayKey = toLocalDateKey(new Date());
   return {
     uid,
     name: cleanName,
@@ -53,18 +56,27 @@ export function createDefaultProfile(uid: string, name?: string, email?: string)
     username,
     usernameLower: username.toLowerCase(),
     nameLower: cleanName.toLowerCase(),
-    email: email || 'scholar@royal.edu',
+    email: cleanEmail,
+    emailLower: cleanEmail.toLowerCase(),
     photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
     avatarId: 'kai',
-    xp: 120,
+    xp: 0,
     streak: 1,
+    longestStreak: 1,
+    streakFreezes: 1,
     streakShieldActive: true,
-    lastActive: new Date().toISOString().split('T')[0],
+    lastActive: todayKey,
+    activeDates: [todayKey],
     hearts: 5,
     oreRank: 'Coal Ore',
-    oreRankScore: 120,
+    oreRankScore: 0,
     currentStreak: 1,
     isRealUser: true,
+    isOnline: true,
+    lastSeenAt: new Date().toISOString(),
+    classLevel: 'Class 10 JAC',
+    trustScore: 95,
+    rankedDuelsEnabled: true,
     progress: {
       sci_ch01: 0 // Ch 1 Level 1 is ready to play
     },
@@ -106,19 +118,21 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
         new Set([...(remoteData.followingUids || []), ...relations.followingUids])
       );
 
-      const merged: UserProfile = {
+      const merged: UserProfile = markTodayActiveOnProfile({
         ...createDefaultProfile(uid, displayName || remoteData.name, email || remoteData.email),
         ...remoteData,
         uid,
         name: remoteData.name || remoteData.displayName || displayName || 'Royal Scholar',
+        emailLower: (remoteData.emailLower || remoteData.email || email || '').trim().toLowerCase(),
         followersUids: mergedFollowers,
         followingUids: mergedFollowing,
         followersCount: Math.max(mergedFollowers.length, remoteData.followersCount ?? 0),
         followingCount: Math.max(mergedFollowing.length, remoteData.followingCount ?? 0),
         isOnline: true,
-      };
+        lastSeenAt: new Date().toISOString(),
+      });
 
-      if (!remoteData.usernameLower || !remoteData.nameLower) {
+      if (!remoteData.usernameLower || !remoteData.nameLower || !remoteData.emailLower || !remoteData.activeDates) {
         void upsertUserInDirectory(merged).catch(() => {});
       }
 
@@ -126,10 +140,11 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
       return merged;
     }
 
-    const baseProfile =
+    const baseProfile = markTodayActiveOnProfile(
       local && local.uid === uid
         ? { ...createDefaultProfile(uid, displayName || local.name, email || local.email), ...local, uid }
-        : createDefaultProfile(uid, displayName, email);
+        : createDefaultProfile(uid, displayName, email)
+    );
 
     saveLocalUserProfile(baseProfile);
     void upsertUserInDirectory(baseProfile).catch(() => {});
@@ -199,12 +214,8 @@ export async function syncOnLevelComplete(
   // Update Hearts
   profile.hearts = updates.remainingHearts;
 
-  // Update Streak
-  const today = new Date().toISOString().split('T')[0];
-  if (profile.lastActive !== today) {
-    profile.streak = (profile.streak || 0) + 1;
-    profile.lastActive = today;
-  }
+  // Update Streak (Duolingo local-date activeDates tracking)
+  profile = markTodayActiveOnProfile(profile);
 
   // Update legacy Mistakes
   if (updates.newMistakeIds && updates.newMistakeIds.length > 0) {
@@ -245,12 +256,8 @@ export async function syncSpeedDrillToFirebase(
   // Award XP
   profile.xp = (profile.xp || 0) + drillData.earnedXp;
 
-  // Update Streak
-  const today = new Date().toISOString().split('T')[0];
-  if (profile.lastActive !== today) {
-    profile.streak = (profile.streak || 0) + 1;
-    profile.lastActive = today;
-  }
+  // Update Streak (Duolingo local-date activeDates tracking)
+  profile = markTodayActiveOnProfile(profile);
 
   saveLocalUserProfile(profile);
 

@@ -19,6 +19,9 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { UserProfile } from '@/types/user';
+import { createMatchSeed } from './matchIntegrity';
+
+export type PublicUserCard = UserProfile;
 
 export interface DuelRoom {
   pin: string;
@@ -27,14 +30,30 @@ export interface DuelRoom {
   hostUsername: string;
   hostPhoto: string;
   hostXp: number;
+  hostEmailLower?: string;
+  hostReady?: boolean;
+  hostScore?: number;
   guestUid?: string;
   guestName?: string;
   guestUsername?: string;
   guestPhoto?: string;
   guestXp?: number;
+  guestEmailLower?: string;
+  guestReady?: boolean;
+  guestScore?: number;
+  invitedFriendUid?: string;
   subjectId: string;
   subjectName: string;
+  chapterId?: number;
+  chapterName?: string;
+  questionSeed?: number;
+  mode?: 'friend' | 'global';
   status: 'waiting' | 'active' | 'finished';
+  winnerUid?: string;
+  durationMs?: number;
+  integrityScore?: number;
+  integrityStatus?: 'Verified' | 'Caution' | 'Flagged';
+  integrityFlags?: string[];
   lastTaunt?: {
     fromUid: string;
     fromName: string;
@@ -103,6 +122,7 @@ export async function upsertUserInDirectory(profile: UserProfile): Promise<UserP
     : [];
 
   const nowIso = new Date().toISOString();
+  const cleanEmailLower = (profile.email || '').trim().toLowerCase();
   const payload: UserProfile = {
     ...profile,
     name: cleanName,
@@ -110,12 +130,14 @@ export async function upsertUserInDirectory(profile: UserProfile): Promise<UserP
     username,
     usernameLower: username.toLowerCase(),
     nameLower: cleanName.toLowerCase(),
+    emailLower: cleanEmailLower,
     followingUids,
     followersUids,
     followingCount: Math.max(followingUids.length, profile.followingCount ?? 0),
     followersCount: Math.max(followersUids.length, profile.followersCount ?? 0),
     oreRankScore: Math.max(profile.oreRankScore ?? 0, profile.xp ?? 0),
     isOnline: true,
+    lastSeenAt: nowIso,
     updatedAt: nowIso,
   };
 
@@ -150,8 +172,8 @@ export async function isUsernameAvailable(username: string, currentUid: string):
 }
 
 /**
- * Searches real users in Firestore by `@username` prefix or full name prefix.
- * Empty query returns top scholars by XP.
+ * Searches real users in Firestore by `@username`, full name, or email address.
+ * Empty query returns top scholars by XP (plus fallback directory scan).
  */
 export async function searchUsersInDatabase(
   rawTerm: string,
@@ -162,18 +184,25 @@ export async function searchUsersInDatabase(
 
   try {
     if (!term) {
-      const topSnap = await getDocs(
-        query(collection(db, 'users'), orderBy('xp', 'desc'), limit(limitCount))
-      );
+      const [topSnap, recentSnap] = await Promise.all([
+        getDocs(query(collection(db, 'users'), orderBy('xp', 'desc'), limit(limitCount))),
+        getDocs(query(collection(db, 'users'), limit(limitCount))),
+      ]);
       topSnap.forEach((docSnap) => {
         const data = docSnap.data() as UserProfile;
         resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
       });
-      return Array.from(resultsMap.values());
+      recentSnap.forEach((docSnap) => {
+        if (!resultsMap.has(docSnap.id)) {
+          const data = docSnap.data() as UserProfile;
+          resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+        }
+      });
+      return Array.from(resultsMap.values()).slice(0, limitCount);
     }
 
     const endTerm = `${term}\uf8ff`;
-    const [byUsernameSnap, byNameSnap] = await Promise.all([
+    const [byUsernameSnap, byNameSnap, byEmailLowerSnap] = await Promise.all([
       getDocs(
         query(
           collection(db, 'users'),
@@ -181,7 +210,7 @@ export async function searchUsersInDatabase(
           where('usernameLower', '<=', endTerm),
           limit(limitCount)
         )
-      ),
+      ).catch(() => null),
       getDocs(
         query(
           collection(db, 'users'),
@@ -189,29 +218,40 @@ export async function searchUsersInDatabase(
           where('nameLower', '<=', endTerm),
           limit(limitCount)
         )
-      ),
+      ).catch(() => null),
+      getDocs(
+        query(
+          collection(db, 'users'),
+          where('emailLower', '>=', term),
+          where('emailLower', '<=', endTerm),
+          limit(limitCount)
+        )
+      ).catch(() => null),
     ]);
 
-    byUsernameSnap.forEach((docSnap) => {
+    byUsernameSnap?.forEach((docSnap) => {
       const data = docSnap.data() as UserProfile;
       resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
     });
-    byNameSnap.forEach((docSnap) => {
+    byNameSnap?.forEach((docSnap) => {
+      const data = docSnap.data() as UserProfile;
+      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+    });
+    byEmailLowerSnap?.forEach((docSnap) => {
       const data = docSnap.data() as UserProfile;
       resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
     });
 
-    // Fallback substring scan over top active scholars for partial matches (e.g. searching middle chars or legacy users without *Lower)
-    if (resultsMap.size < 8) {
-      const recentSnap = await getDocs(
-        query(collection(db, 'users'), orderBy('xp', 'desc'), limit(50))
-      );
-      recentSnap.forEach((docSnap) => {
+    // Broad substring scan across up to 120 user docs (captures email-only sign-ins & legacy users missing *Lower fields)
+    if (resultsMap.size < 10 || term.includes('@')) {
+      const dirSnap = await getDocs(query(collection(db, 'users'), limit(120)));
+      dirSnap.forEach((docSnap) => {
         if (resultsMap.has(docSnap.id)) return;
         const data = docSnap.data() as UserProfile;
-        const u = (data.username || '').toLowerCase();
-        const n = (data.name || data.displayName || '').toLowerCase();
-        if (u.includes(term) || n.includes(term)) {
+        const u = (data.usernameLower || data.username || '').toLowerCase();
+        const n = (data.nameLower || data.name || data.displayName || '').toLowerCase();
+        const em = (data.emailLower || data.email || '').toLowerCase();
+        if (u.includes(term) || n.includes(term) || em.includes(term)) {
           resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
         }
       });
@@ -219,8 +259,11 @@ export async function searchUsersInDatabase(
 
     const arr = Array.from(resultsMap.values());
     arr.sort((a, b) => {
+      const aEm = (a.emailLower || a.email || '').toLowerCase() === term ? 3 : 0;
+      const bEm = (b.emailLower || b.email || '').toLowerCase() === term ? 3 : 0;
       const aExact = (a.usernameLower || a.username || '').toLowerCase() === term ? 2 : 0;
       const bExact = (b.usernameLower || b.username || '').toLowerCase() === term ? 2 : 0;
+      if (aEm !== bEm) return bEm - aEm;
       if (aExact !== bExact) return bExact - aExact;
       return (b.xp || 0) - (a.xp || 0);
     });
@@ -441,30 +484,67 @@ export function subscribeGlobalLeaderboard(
 }
 
 /**
- * Creates a live 4-digit PIN Duel Room in Firestore (`duel_rooms/{pin}`).
+ * Creates a live 4-digit PIN Duel Room in Firestore (`duel_rooms/{pin}`) with collision checking
+ * and synchronized cryptographic match seed + optional invited friend + anti-fixing metadata.
  */
 export async function createDuelRoom(
   host: UserProfile,
   subjectId: string,
-  subjectName: string
+  subjectName: string,
+  options?: {
+    chapterId?: number;
+    chapterName?: string;
+    invitedFriendUid?: string;
+    mode?: 'friend' | 'global';
+    integrityScore?: number;
+    integrityStatus?: 'Verified' | 'Caution' | 'Flagged';
+    integrityFlags?: string[];
+  }
 ): Promise<DuelRoom> {
-  const pin = Math.floor(1000 + Math.random() * 9000).toString();
+  let chosenPin = Math.floor(1000 + Math.random() * 9000).toString();
+
+  // Retry up to 5 times to guarantee a unique unclaimed/non-active 4-digit PIN
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const candidate = Math.floor(1000 + Math.random() * 9000).toString();
+    try {
+      const existingSnap = await getDoc(doc(db, 'duel_rooms', candidate));
+      if (!existingSnap.exists() || (existingSnap.data() as DuelRoom)?.status === 'finished') {
+        chosenPin = candidate;
+        break;
+      }
+    } catch {
+      chosenPin = candidate;
+      break;
+    }
+  }
+
   const now = new Date().toISOString();
-  const room: DuelRoom = {
-    pin,
+  const seed = createMatchSeed(chosenPin, Date.now() % 10000);
+  const room: DuelRoom = stripUndefined({
+    pin: chosenPin,
     hostUid: host.uid,
     hostName: host.name || host.displayName || 'JAC Scholar',
     hostUsername: host.username || normalizeUsername(host.name, host.uid),
     hostPhoto: host.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
     hostXp: host.xp || 0,
+    hostEmailLower: (host.emailLower || host.email || '').trim().toLowerCase(),
+    hostReady: true,
+    invitedFriendUid: options?.invitedFriendUid,
     subjectId,
     subjectName,
+    chapterId: options?.chapterId ?? 1,
+    chapterName: options?.chapterName,
+    questionSeed: seed,
+    mode: options?.mode || 'friend',
+    integrityScore: options?.integrityScore ?? 96,
+    integrityStatus: options?.integrityStatus || 'Verified',
+    integrityFlags: options?.integrityFlags || [],
     status: 'waiting',
     createdAt: now,
     updatedAt: now,
-  };
+  } as Record<string, unknown>) as unknown as DuelRoom;
 
-  await setDoc(doc(db, 'duel_rooms', pin), room);
+  await setDoc(doc(db, 'duel_rooms', chosenPin), room);
   return room;
 }
 
@@ -475,7 +555,7 @@ export async function joinDuelRoomByPin(
   pin: string,
   guest: UserProfile
 ): Promise<{ ok: boolean; room?: DuelRoom; error?: string }> {
-  const cleanPin = pin.trim();
+  const cleanPin = pin.replace(/\D/g, '').trim();
   if (cleanPin.length !== 4) {
     return { ok: false, error: 'Please enter a valid 4-digit PIN.' };
   }
@@ -489,31 +569,188 @@ export async function joinDuelRoomByPin(
 
     const existing = snap.data() as DuelRoom;
     const now = new Date().toISOString();
+    const isHostRejoin = existing.hostUid === guest.uid;
+    const guestEmailLower = (guest.emailLower || guest.email || '').trim().toLowerCase();
+
     const updated: DuelRoom = {
       ...existing,
-      guestUid: guest.uid,
-      guestName: guest.name || guest.displayName || 'Challenger',
-      guestUsername: guest.username || normalizeUsername(guest.name, guest.uid),
-      guestPhoto: guest.photoURL || '/assets/profile_photos/classic_character_1.png',
-      guestXp: guest.xp || 0,
-      status: existing.hostUid === guest.uid ? existing.status : 'active',
+      ...(isHostRejoin
+        ? {}
+        : {
+            guestUid: guest.uid,
+            guestName: guest.name || guest.displayName || 'Challenger',
+            guestUsername: guest.username || normalizeUsername(guest.name, guest.uid),
+            guestPhoto: guest.photoURL || '/assets/profile_photos/classic_character_1.png',
+            guestXp: guest.xp || 0,
+            guestEmailLower,
+            guestReady: true,
+            status: 'active',
+          }),
       updatedAt: now,
     };
 
-    await updateDoc(roomRef, {
-      guestUid: updated.guestUid,
-      guestName: updated.guestName,
-      guestUsername: updated.guestUsername,
-      guestPhoto: updated.guestPhoto,
-      guestXp: updated.guestXp,
-      status: updated.status,
-      updatedAt: now,
-    });
+    if (!isHostRejoin) {
+      await updateDoc(
+        roomRef,
+        stripUndefined({
+          guestUid: updated.guestUid,
+          guestName: updated.guestName,
+          guestUsername: updated.guestUsername,
+          guestPhoto: updated.guestPhoto,
+          guestXp: updated.guestXp,
+          guestEmailLower: updated.guestEmailLower,
+          guestReady: true,
+          status: updated.status,
+          updatedAt: now,
+        } as Record<string, unknown>)
+      );
+    }
 
     return { ok: true, room: updated };
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Unable to join room.';
     return { ok: false, error: msg };
+  }
+}
+
+export async function toggleDuelRoomReady(
+  pin: string,
+  role: 'host' | 'guest',
+  ready: boolean
+): Promise<void> {
+  if (!pin) return;
+  try {
+    const field = role === 'host' ? 'hostReady' : 'guestReady';
+    await updateDoc(doc(db, 'duel_rooms', pin), {
+      [field]: ready,
+      updatedAt: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.warn('[socialService] toggleDuelRoomReady warning:', err);
+  }
+}
+
+export async function recordDuelRoomResult(params: {
+  pin: string;
+  uid: string;
+  role: 'host' | 'guest' | 'solo';
+  scorePercent: number;
+  durationMs: number;
+}): Promise<void> {
+  const { pin, uid, role, scorePercent, durationMs } = params;
+  if (!pin || !uid) return;
+  try {
+    const roomRef = doc(db, 'duel_rooms', pin);
+    const snap = await getDoc(roomRef);
+    if (!snap.exists()) return;
+    const room = snap.data() as DuelRoom;
+    const scoreField = role === 'guest' ? 'guestScore' : 'hostScore';
+    const nextHostScore = role === 'host' ? scorePercent : room.hostScore;
+    const nextGuestScore = role === 'guest' ? scorePercent : room.guestScore;
+    let winnerUid = room.winnerUid;
+    let status = room.status;
+    if (typeof nextHostScore === 'number' && typeof nextGuestScore === 'number') {
+      winnerUid = nextHostScore >= nextGuestScore ? room.hostUid : (room.guestUid || room.hostUid);
+      status = 'finished';
+    }
+    await updateDoc(
+      roomRef,
+      stripUndefined({
+        [scoreField]: scorePercent,
+        durationMs: Math.max(room.durationMs || 0, durationMs),
+        winnerUid,
+        status,
+        updatedAt: new Date().toISOString(),
+      } as Record<string, unknown>)
+    );
+  } catch (err) {
+    console.warn('[socialService] recordDuelRoomResult warning:', err);
+  }
+}
+
+export async function fetchRecentPairDuels(uid: string): Promise<
+  Array<{
+    pin: string;
+    hostUid: string;
+    guestUid?: string | null;
+    winnerUid?: string | null;
+    status: string;
+    createdAt: number;
+    durationMs?: number;
+    hostScore?: number;
+    guestScore?: number;
+    subjectId?: string;
+  }>
+> {
+  if (!uid) return [];
+  try {
+    const snap = await getDocs(
+      query(collection(db, 'duel_rooms'), orderBy('updatedAt', 'desc'), limit(40))
+    );
+    const out: Array<{
+      pin: string;
+      hostUid: string;
+      guestUid?: string | null;
+      winnerUid?: string | null;
+      status: string;
+      createdAt: number;
+      durationMs?: number;
+      hostScore?: number;
+      guestScore?: number;
+      subjectId?: string;
+    }> = [];
+    snap.forEach((d) => {
+      const data = d.data() as DuelRoom;
+      if (data.hostUid === uid || data.guestUid === uid) {
+        const ts = Date.parse(data.createdAt || data.updatedAt || '');
+        out.push({
+          pin: data.pin,
+          hostUid: data.hostUid,
+          guestUid: data.guestUid,
+          winnerUid: data.winnerUid,
+          status: data.status,
+          createdAt: Number.isNaN(ts) ? Date.now() : ts,
+          durationMs: data.durationMs,
+          hostScore: data.hostScore,
+          guestScore: data.guestScore,
+          subjectId: data.subjectId,
+        });
+      }
+    });
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+export async function heartbeatUserPresence(uid: string): Promise<void> {
+  if (!uid) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      { isOnline: true, lastSeenAt: new Date().toISOString() },
+      { merge: true }
+    );
+  } catch {
+    // non-fatal heartbeat
+  }
+}
+
+export async function fetchActiveScholarsCount(): Promise<number> {
+  try {
+    const snap = await getDocs(query(collection(db, 'users'), limit(120)));
+    const cutoff = Date.now() - 20 * 60 * 1000;
+    let count = 0;
+    snap.forEach((d) => {
+      const u = d.data() as UserProfile;
+      const ts = u.lastSeenAt ? Date.parse(u.lastSeenAt) : u.updatedAt ? Date.parse(u.updatedAt) : 0;
+      if (u.isOnline || (ts && ts >= cutoff)) {
+        count += 1;
+      }
+    });
+    return Math.max(1, count);
+  } catch {
+    return 1;
   }
 }
 

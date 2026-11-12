@@ -77,6 +77,15 @@ export interface UserProfile {
   duelPlayed?: number;
   isAnonymous?: boolean;
   isOnline?: boolean;
+  lastSeenAt?: string;
+  emailLower?: string;
+  trustScore?: number;
+  rankedDuelsEnabled?: boolean;
+  recentOpponentUids?: string[];
+  activeDates?: string[];
+  longestStreak?: number;
+  streakFreezes?: number;
+  classLevel?: string;
   joinedAt?: string;
   weeklyXp?: number;
 }

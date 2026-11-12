@@ -7,7 +7,9 @@ import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firesto
 import { auth, db } from '@/lib/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useUserStore } from '@/store/useUserStore';
-import { saveLocalUserProfile, getLocalUserProfile } from '@/lib/firestore';
+import { saveLocalUserProfile, getLocalUserProfile, createDefaultProfile } from '@/lib/firestore';
+import { isUsernameAvailable, normalizeUsername, upsertUserInDirectory } from '@/lib/socialService';
+import { markTodayActiveOnProfile } from '@/lib/streakEngine';
 
 type StudyGoals = {
   targetScore: string;
@@ -17,7 +19,7 @@ type StudyGoals = {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { profile, initUser } = useUserStore();
+  const { setProfile } = useUserStore();
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,7 @@ export default function OnboardingPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [age, setAge] = useState('');
+  const [classLevel, setClassLevel] = useState('Class 10 JAC');
 
   // Step 2
   const [studyGoals, setStudyGoals] = useState<StudyGoals>({
@@ -38,12 +41,18 @@ export default function OnboardingPage() {
   // Step 3
   const [username, setUsername] = useState('');
   const [usernameStatus, setUsernameStatus] = useState<'idle' | 'checking' | 'available' | 'taken'>('idle');
+  const [usernameSuggestions, setUsernameSuggestions] = useState<string[]>([]);
   const [usernameTimer, setUsernameTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setFirebaseUid(user.uid);
+        if (user.displayName && !firstName) {
+          const parts = user.displayName.trim().split(' ');
+          setFirstName(parts[0] || '');
+          setLastName(parts.slice(1).join(' ') || '');
+        }
       } else {
         // Check localStorage
         const local = getLocalUserProfile();
@@ -55,26 +64,37 @@ export default function OnboardingPage() {
       }
     });
     return () => unsubscribe();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   const handleUsernameChange = (val: string) => {
     const sanitized = val.toLowerCase().replace(/[^a-z0-9_.]/g, '');
     setUsername(sanitized);
     setUsernameStatus('idle');
+    setUsernameSuggestions([]);
 
     if (usernameTimer) clearTimeout(usernameTimer);
     if (sanitized.length >= 3) {
       setUsernameStatus('checking');
       const timer = setTimeout(async () => {
         try {
-          const usersRef = collection(db, 'users');
-          const q = query(usersRef, where('username', '==', sanitized));
-          const snap = await getDocs(q);
-          setUsernameStatus(snap.empty ? 'available' : 'taken');
+          const available = await isUsernameAvailable(sanitized, firebaseUid || '');
+          if (available) {
+            setUsernameStatus('available');
+            setUsernameSuggestions([]);
+          } else {
+            setUsernameStatus('taken');
+            const base = sanitized.replace(/[^a-z0-9_]/g, '').slice(0, 14) || 'scholar';
+            setUsernameSuggestions([
+              `${base}_${Math.floor(10 + Math.random() * 89)}`,
+              `${base}_jac10`,
+              `${base}_${new Date().getFullYear().toString().slice(-2)}`,
+            ]);
+          }
         } catch {
           setUsernameStatus('available'); // Offline fallback
         }
-      }, 600);
+      }, 350);
       setUsernameTimer(timer);
     }
   };
@@ -94,47 +114,38 @@ export default function OnboardingPage() {
     setLoading(true);
     try {
       const local = getLocalUserProfile();
-      const profileData = {
-        uid: firebaseUid,
-        name: `${firstName.trim()} ${lastName.trim()}`,
+      const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
+      const email = local?.email || auth.currentUser?.email || '';
+      const cleanUser = normalizeUsername(username, firebaseUid);
+      const base = createDefaultProfile(firebaseUid, fullName, email);
+      const freshProfile = markTodayActiveOnProfile({
+        ...base,
+        name: fullName,
+        displayName: fullName,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
-        fullName: `${firstName.trim()} ${lastName.trim()}`,
-        age: parseInt(age),
-        username: username,
-        email: local?.email || auth.currentUser?.email || '',
+        age: parseInt(age, 10) || 15,
+        classLevel: classLevel || 'Class 10 JAC',
+        username: cleanUser,
+        usernameLower: cleanUser.toLowerCase(),
+        nameLower: fullName.toLowerCase(),
+        email,
+        emailLower: email.trim().toLowerCase(),
+        photoURL: local?.photoURL || auth.currentUser?.photoURL || base.photoURL,
         studyGoals,
         onboardingComplete: true,
-        joinedAt: new Date().toISOString().split('T')[0],
+        joinedAt: new Date().toISOString(),
         isOnline: true,
+        isRealUser: true,
         xp: local?.xp || 0,
-        streak: local?.streak || 0,
-        photoURL: local?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-        hearts: local?.hearts ?? 5,
-        progress: local?.progress || {},
-        levelScores: local?.levelScores || {},
-        mistakes: local?.mistakes || [],
-        detailedMistakes: local?.detailedMistakes || [],
-        drillHistory: local?.drillHistory || [],
-        lastActive: new Date().toISOString().split('T')[0],
-        avatarId: local?.avatarId || 'kai',
-        customAvatar: local?.customAvatar
-      };
+        progress: local?.progress || { sci_ch01: 0 },
+      });
 
-      // Save to Firestore
-      try {
-        await setDoc(doc(db, 'users', firebaseUid), profileData, { merge: true });
-      } catch (err) {
-        console.warn('Firestore onboarding save fallback:', err);
-      }
+      const synced = await upsertUserInDirectory(freshProfile);
+      saveLocalUserProfile(synced);
+      setProfile(synced);
 
-      // Save locally
-      saveLocalUserProfile(profileData as any);
-
-      // Update store
-      await initUser(firebaseUid, profileData.name, profileData.email);
-
-      router.push('/');
+      router.replace('/');
     } catch (err) {
       console.error('Onboarding error:', err);
     } finally {
@@ -254,6 +265,21 @@ export default function OnboardingPage() {
                     {Array.from({ length: 8 }, (_, i) => i + 13).map((a) => (
                       <option key={a} value={a} className="bg-[#0F172A]">{a} years old</option>
                     ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">
+                    Class / Board
+                  </label>
+                  <select
+                    value={classLevel}
+                    onChange={(e) => setClassLevel(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30 transition appearance-none cursor-pointer"
+                  >
+                    <option value="Class 10 JAC" className="bg-[#0F172A]">Class 10 JAC Board (Recommended)</option>
+                    <option value="Class 9 JAC" className="bg-[#0F172A]">Class 9 JAC Board</option>
+                    <option value="Class 10 CBSE" className="bg-[#0F172A]">Class 10 CBSE</option>
                   </select>
                 </div>
               </div>
@@ -433,7 +459,24 @@ export default function OnboardingPage() {
                   <p className="text-[11px] text-emerald-400 font-black">✓ @{username} is available!</p>
                 )}
                 {usernameStatus === 'taken' && (
-                  <p className="text-[11px] text-red-400 font-black">✗ @{username} is already taken</p>
+                  <div className="space-y-1.5">
+                    <p className="text-[11px] text-red-400 font-black">✗ @{username} is already taken</p>
+                    {usernameSuggestions.length > 0 && (
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="text-[10px] text-slate-400">Try:</span>
+                        {usernameSuggestions.map((s) => (
+                          <button
+                            key={s}
+                            type="button"
+                            onClick={() => handleUsernameChange(s)}
+                            className="px-2 py-0.5 rounded-lg bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-black hover:bg-amber-500/30"
+                          >
+                            @{s}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 )}
                 {username.length > 0 && username.length < 3 && (
                   <p className="text-[11px] text-slate-400">Username must be at least 3 characters</p>

@@ -18,6 +18,7 @@ import { auth, googleProvider } from '@/lib/firebase';
 import { useUserStore } from '@/store/useUserStore';
 import { getLocalUserProfile, createDefaultProfile, fetchUserProfile } from '@/lib/firestore';
 import { upsertUserInDirectory, normalizeUsername } from '@/lib/socialService';
+import { markTodayActiveOnProfile } from '@/lib/streakEngine';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { playClickSound } from '@/lib/audioEngine';
 
@@ -41,56 +42,83 @@ export default function LoginPage() {
     uid: string,
     name?: string,
     userEmail?: string,
-    photoURL?: string
+    photoURL?: string,
+    forceOnboarding = false
   ) => {
     const existingLocal = getLocalUserProfile();
-    const base =
-      existingLocal && existingLocal.uid === uid
-        ? existingLocal
-        : createDefaultProfile(uid, name, userEmail);
+    const isFreshLocal = !(existingLocal && existingLocal.uid === uid);
+    const base = !isFreshLocal
+      ? existingLocal
+      : createDefaultProfile(uid, name, userEmail);
 
     const cleanName = name || base.name || 'Royal Scholar';
-    const instantProfile = {
+    const cleanEmail = userEmail || base.email || '';
+    const instantProfile = markTodayActiveOnProfile({
       ...base,
       uid,
       name: cleanName,
       displayName: cleanName,
-      email: userEmail || base.email,
+      email: cleanEmail,
+      emailLower: cleanEmail.trim().toLowerCase(),
       photoURL: photoURL || base.photoURL,
-      username: base.username || normalizeUsername(cleanName || userEmail?.split('@')[0], uid),
-      usernameLower: (base.username || normalizeUsername(cleanName || userEmail?.split('@')[0], uid)).toLowerCase(),
+      username: base.username || normalizeUsername(cleanName || cleanEmail.split('@')[0], uid),
+      usernameLower: (base.username || normalizeUsername(cleanName || cleanEmail.split('@')[0], uid)).toLowerCase(),
       nameLower: cleanName.toLowerCase(),
       isRealUser: true,
       isAnonymous: false,
       isOnline: true,
-    };
+      lastSeenAt: new Date().toISOString(),
+    });
 
     // Instant local commit & immediate route navigation (<50ms post-OAuth)
     setProfile(instantProfile);
     if (typeof window !== 'undefined') {
       localStorage.setItem('sbr_session_verified', 'true');
     }
-    router.replace('/');
 
-    // Non-blocking background cloud hydration & directory registration
-    void (async () => {
+    if (forceOnboarding) {
+      router.replace('/onboarding');
+    } else {
+      // Check fast cloud state to detect brand-new Google/Email accounts lacking onboarding
+      let needsOnboarding = false;
       try {
-        const remote = await fetchUserProfile(uid, cleanName, userEmail);
-        const merged = {
-          ...remote,
-          name: remote.name || cleanName,
-          displayName: remote.displayName || cleanName,
-          email: remote.email || userEmail || instantProfile.email,
-          photoURL: photoURL || remote.photoURL || instantProfile.photoURL,
-          isRealUser: true,
-          isAnonymous: false,
-        };
-        const synced = await upsertUserInDirectory(merged);
-        setProfile(synced);
-      } catch (e) {
-        console.warn('Background Firestore sync warning:', e);
+        const remote = await Promise.race([
+          fetchUserProfile(uid, cleanName, cleanEmail),
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), 900)),
+        ]);
+        if (remote) {
+          const merged = markTodayActiveOnProfile({
+            ...remote,
+            name: remote.name || cleanName,
+            displayName: remote.displayName || cleanName,
+            email: remote.email || cleanEmail || instantProfile.email,
+            emailLower: (remote.email || cleanEmail || instantProfile.email || '').trim().toLowerCase(),
+            photoURL: photoURL || remote.photoURL || instantProfile.photoURL,
+            isRealUser: true,
+            isAnonymous: false,
+            isOnline: true,
+          });
+          setProfile(merged);
+          needsOnboarding =
+            merged.onboardingComplete === false ||
+            (!merged.onboardingComplete &&
+              (merged.xp || 0) === 0 &&
+              Object.keys(merged.progress || {}).length <= 1);
+          void upsertUserInDirectory(merged).catch(() => {});
+        } else {
+          needsOnboarding = isFreshLocal && !instantProfile.onboardingComplete;
+          void upsertUserInDirectory(instantProfile).catch(() => {});
+        }
+      } catch {
+        needsOnboarding = false;
       }
-    })();
+
+      router.replace(needsOnboarding ? '/onboarding' : '/');
+      return;
+    }
+
+    // Non-blocking background cloud directory registration for forced new signups
+    void upsertUserInDirectory(instantProfile).catch(() => {});
   };
 
   // 1. Fast Auth & Google Redirect Result Check on Boot
@@ -250,7 +278,7 @@ export default function LoginPage() {
         const chosenName = fullName.trim() || email.trim().split('@')[0];
         if (res.user) {
           await updateProfile(res.user, { displayName: chosenName }).catch(() => {});
-          await syncAndRedirect(res.user.uid, chosenName, email.trim(), undefined);
+          await syncAndRedirect(res.user.uid, chosenName, email.trim(), undefined, true);
         }
       } else {
         const res = await signInWithEmailAndPassword(auth, email.trim(), password);
