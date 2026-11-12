@@ -59,7 +59,8 @@ export const SpeedDrillModal: React.FC<SpeedDrillModalProps> = ({ isOpen, onClos
     setLoadingQuestions(true);
 
     try {
-      const randomizedQs = await getSubjectRandomDrillQuestions(sub.id, 25);
+      const lang = profile?.languagePreference === 'en' ? 'en' : 'hi';
+      const randomizedQs = await getSubjectRandomDrillQuestions(sub.id, 25, lang);
       setQuestions(randomizedQs);
       setTimeLeft(60);
       setCurrentIndex(0);

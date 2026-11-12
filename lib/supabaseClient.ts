@@ -1,6 +1,7 @@
 'use client';
 
 import { Question } from '@/types/question';
+import { fetchChapterQuestions } from './questionLoader';
 
 export const BASE_REST_URL = 'https://igmgwqergzwbfqlyaufe.supabase.co/rest/v1';
 
@@ -47,7 +48,7 @@ export async function fetchQuestionsByLanguage(
 
       if (response.ok) {
         const rows: SupabaseQuestionRow[] = await response.json();
-        if (Array.isArray(rows) && rows.length > 0) {
+        if (Array.isArray(rows) && rows.length >= 150) {
           return rows.map((r, idx) => ({
             i: r.id || idx + 1,
             d: (Math.min(5, Math.max(1, r.difficulty || 1)) as 1 | 2 | 3 | 4 | 5),
@@ -94,18 +95,12 @@ async function fetchLocalFallbackQuestions(
   try {
     // Check language specific directory first if English
     if (language === 'en') {
-      const enRes = await fetch(`/data/${folder}_en/ch_${ch}.json`);
-      if (enRes.ok) {
-        const enData: Question[] = await enRes.json();
-        if (Array.isArray(enData) && enData.length > 0) return enData;
-      }
+      const enData = await fetchChapterQuestions(`/data/${folder}_en/ch_${ch}.json`);
+      if (Array.isArray(enData) && enData.length > 0) return enData;
     }
 
-    const res = await fetch(`/data/${folder}/ch_${ch}.json`);
-    if (res.ok) {
-      const data: Question[] = await res.json();
-      return data;
-    }
+    const data = await fetchChapterQuestions(`/data/${folder}/ch_${ch}.json`);
+    if (Array.isArray(data) && data.length > 0) return data;
   } catch (e) {
     console.warn('Local fallback file read error:', e);
   }

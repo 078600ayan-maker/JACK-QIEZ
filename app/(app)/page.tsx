@@ -120,11 +120,12 @@ export default function HomeLobbyPage() {
     setCachingProgress(true);
 
     try {
-      const folders = ['science', 'math', 'sst', 'hindi', 'english'];
-      const maxChapters = [13, 14, 16, 11, 11];
+      const folders = ['science', 'math', 'social_science', 'hindi', 'english'];
+      const maxChapters = [13, 14, 14, 14, 14];
+      const useEn = profile?.languagePreference === 'en';
 
       for (let f = 0; f < folders.length; f++) {
-        const folder = folders[f];
+        const folder = useEn ? `${folders[f]}_en` : folders[f];
         const count = maxChapters[f];
         for (let c = 1; c <= count; c++) {
           const chStr = String(c).padStart(2, '0');
@@ -132,15 +133,15 @@ export default function HomeLobbyPage() {
           if (res.ok) {
             const data = await res.json();
             try {
-              localStorage.setItem(`offline_${folder}_ch${chStr}`, JSON.stringify(data));
-            } catch (e) {
+              localStorage.setItem(`sbr_cache_v5_/data/${folder}/ch_${chStr}.json`, JSON.stringify({ v: 5, data }));
+            } catch {
               // quota limits
             }
           }
         }
       }
       setOfflineCached(true);
-      alert('⚡ Offline Database Pre-Cached! You can now study all 65 chapters without internet.');
+      alert('⚡ Offline Database Pre-Cached! You can now study all 69 chapters (10,350+ Q&A) without internet.');
     } catch (err) {
       console.warn('Offline cache error:', err);
     } finally {

@@ -75,74 +75,74 @@ export const CLASS_10_MASTER_SYLLABUS: MasterSubject[] = [
       {
         id: 'ch_05',
         num: 5,
+        title: 'Periodic Classification of Elements',
+        hindiTitle: 'तत्वों का आवर्त वर्गीकरण',
+        subCategory: 'Chemistry',
+        subCategoryHindi: 'रसायन विज्ञान'
+      },
+      {
+        id: 'ch_06',
+        num: 6,
         title: 'Life Processes',
         hindiTitle: 'जैव प्रक्रम',
         subCategory: 'Biology',
         subCategoryHindi: 'जीव विज्ञान'
       },
       {
-        id: 'ch_06',
-        num: 6,
+        id: 'ch_07',
+        num: 7,
         title: 'Control and Coordination',
         hindiTitle: 'नियंत्रण एवं समन्वय',
         subCategory: 'Biology',
         subCategoryHindi: 'जीव विज्ञान'
       },
       {
-        id: 'ch_07',
-        num: 7,
+        id: 'ch_08',
+        num: 8,
         title: 'How do Organisms Reproduce?',
         hindiTitle: 'जीव जनन कैसे करते हैं?',
         subCategory: 'Biology',
         subCategoryHindi: 'जीव विज्ञान'
       },
       {
-        id: 'ch_08',
-        num: 8,
-        title: 'Heredity',
-        hindiTitle: 'आनुवंशिकता',
+        id: 'ch_09',
+        num: 9,
+        title: 'Heredity and Evolution',
+        hindiTitle: 'आनुवंशिकता एवं जैव विकास',
         subCategory: 'Biology',
         subCategoryHindi: 'जीव विज्ञान'
       },
       {
-        id: 'ch_09',
-        num: 9,
+        id: 'ch_10',
+        num: 10,
         title: 'Light – Reflection and Refraction',
         hindiTitle: 'प्रकाश – परावर्तन तथा अपवर्तन',
         subCategory: 'Physics',
         subCategoryHindi: 'भौतिकी'
       },
       {
-        id: 'ch_10',
-        num: 10,
+        id: 'ch_11',
+        num: 11,
         title: 'The Human Eye and the Colourful World',
         hindiTitle: 'मानव नेत्र तथा रंगबिरंगा संसार',
         subCategory: 'Physics',
         subCategoryHindi: 'भौतिकी'
       },
       {
-        id: 'ch_11',
-        num: 11,
+        id: 'ch_12',
+        num: 12,
         title: 'Electricity',
         hindiTitle: 'विद्युत',
         subCategory: 'Physics',
         subCategoryHindi: 'भौतिकी'
       },
       {
-        id: 'ch_12',
-        num: 12,
+        id: 'ch_13',
+        num: 13,
         title: 'Magnetic Effects of Electric Current',
         hindiTitle: 'विद्युत धारा के चुंबकीय प्रभाव',
         subCategory: 'Physics',
         subCategoryHindi: 'भौतिकी'
-      },
-      {
-        id: 'ch_13',
-        num: 13,
-        title: 'Our Environment',
-        hindiTitle: 'हमारा पर्यावरण',
-        subCategory: 'Biology & Ecology',
-        subCategoryHindi: 'पर्यावरण एवं पारिस्थितिकी'
       }
     ]
   },

@@ -16,7 +16,7 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { useUserStore } from '@/store/useUserStore';
-import { getLocalUserProfile } from '@/lib/firestore';
+import { getLocalUserProfile, createDefaultProfile, fetchUserProfile } from '@/lib/firestore';
 import { upsertUserInDirectory, normalizeUsername } from '@/lib/socialService';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { playClickSound } from '@/lib/audioEngine';
@@ -43,42 +43,85 @@ export default function LoginPage() {
     userEmail?: string,
     photoURL?: string
   ) => {
-    await initUser(uid, name, userEmail);
-    const current = useUserStore.getState().profile;
-    if (current) {
-      const updated = await upsertUserInDirectory({
-        ...current,
-        name: name || current.name,
-        displayName: name || current.displayName || current.name,
-        email: userEmail || current.email,
-        photoURL: photoURL || current.photoURL,
-        username: current.username || normalizeUsername(name || userEmail?.split('@')[0] || current.name, uid),
-        isRealUser: true,
-        isAnonymous: false,
-      });
-      setProfile(updated);
-    }
+    const existingLocal = getLocalUserProfile();
+    const base =
+      existingLocal && existingLocal.uid === uid
+        ? existingLocal
+        : createDefaultProfile(uid, name, userEmail);
+
+    const cleanName = name || base.name || 'Royal Scholar';
+    const instantProfile = {
+      ...base,
+      uid,
+      name: cleanName,
+      displayName: cleanName,
+      email: userEmail || base.email,
+      photoURL: photoURL || base.photoURL,
+      username: base.username || normalizeUsername(cleanName || userEmail?.split('@')[0], uid),
+      usernameLower: (base.username || normalizeUsername(cleanName || userEmail?.split('@')[0], uid)).toLowerCase(),
+      nameLower: cleanName.toLowerCase(),
+      isRealUser: true,
+      isAnonymous: false,
+      isOnline: true,
+    };
+
+    // Instant local commit & immediate route navigation (<50ms post-OAuth)
+    setProfile(instantProfile);
     if (typeof window !== 'undefined') {
       localStorage.setItem('sbr_session_verified', 'true');
     }
     router.replace('/');
+
+    // Non-blocking background cloud hydration & directory registration
+    void (async () => {
+      try {
+        const remote = await fetchUserProfile(uid, cleanName, userEmail);
+        const merged = {
+          ...remote,
+          name: remote.name || cleanName,
+          displayName: remote.displayName || cleanName,
+          email: remote.email || userEmail || instantProfile.email,
+          photoURL: photoURL || remote.photoURL || instantProfile.photoURL,
+          isRealUser: true,
+          isAnonymous: false,
+        };
+        const synced = await upsertUserInDirectory(merged);
+        setProfile(synced);
+      } catch (e) {
+        console.warn('Background Firestore sync warning:', e);
+      }
+    })();
   };
 
-  // 1. Silent Auth & Google Redirect Result Check on Boot
+  // 1. Fast Auth & Google Redirect Result Check on Boot
   useEffect(() => {
     let active = true;
+    router.prefetch('/');
+
+    const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
+    const local = getLocalUserProfile();
+    if (verified && local && local.uid) {
+      setProfile(local);
+      router.replace('/');
+      return () => { active = false; };
+    }
 
     const fastTimer = setTimeout(() => {
       if (!active || manualAuthInFlight.current) return;
-      const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
-      const local = getLocalUserProfile();
-      if (verified && local && local.uid) {
-        initUser(local.uid, local.name, local.email);
-        router.replace('/');
-      } else {
-        setCheckingSession(false);
-      }
-    }, 800);
+      setCheckingSession(false);
+    }, 350);
+
+    if (auth.currentUser) {
+      clearTimeout(fastTimer);
+      manualAuthInFlight.current = true;
+      void syncAndRedirect(
+        auth.currentUser.uid,
+        auth.currentUser.displayName || auth.currentUser.email?.split('@')[0] || 'Royal Scholar',
+        auth.currentUser.email || '',
+        auth.currentUser.photoURL || undefined
+      );
+      return () => { active = false; };
+    }
 
     getRedirectResult(auth)
       .then(async (redirectRes) => {

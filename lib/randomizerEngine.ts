@@ -1,4 +1,4 @@
-import { QuestionTuple } from '@/types/question';
+import { Question, QuestionTuple } from '@/types/question';
 
 export interface DrillQuestionItem {
   id: number;
@@ -10,46 +10,66 @@ export interface DrillQuestionItem {
   chapterId: string;
 }
 
-// In-memory cache for loaded subject question banks
+// In-memory cache keyed by `${subjectId}_${language}`
 const subjectQuestionsCache: Record<string, DrillQuestionItem[]> = {};
 
 /**
- * Loads all chapter files for a given subject, aggregates them, and returns a 100% randomized question array.
+ * Loads all chapter files for a given subject across the 69-chapter JSON bank,
+ * aggregates them (supporting both object arrays and legacy tuple payloads),
+ * and returns a 100% randomized question array.
  */
 export async function getSubjectRandomDrillQuestions(
   subjectId: string,
-  limit = 20
+  limit = 20,
+  language: 'hi' | 'en' = 'hi'
 ): Promise<DrillQuestionItem[]> {
-  // If already cached, return a fresh shuffle
-  if (subjectQuestionsCache[subjectId] && subjectQuestionsCache[subjectId].length > 0) {
-    return shuffleArray([...subjectQuestionsCache[subjectId]]).slice(0, limit);
+  const cacheKey = `${subjectId}_${language}`;
+
+  if (subjectQuestionsCache[cacheKey] && subjectQuestionsCache[cacheKey].length > 0) {
+    return shuffleArray([...subjectQuestionsCache[cacheKey]]).slice(0, limit);
   }
 
   const subjectFolderMap: Record<string, { folder: string; chaptersCount: number }> = {
     sci: { folder: 'science', chaptersCount: 13 },
+    science: { folder: 'science', chaptersCount: 13 },
     math: { folder: 'math', chaptersCount: 14 },
-    sst: { folder: 'sst', chaptersCount: 16 },
-    hin: { folder: 'hindi', chaptersCount: 11 },
-    eng: { folder: 'english', chaptersCount: 11 }
+    sst: { folder: 'social_science', chaptersCount: 14 },
+    hin: { folder: 'hindi', chaptersCount: 14 },
+    hindi: { folder: 'hindi', chaptersCount: 14 },
+    eng: { folder: 'english', chaptersCount: 14 },
+    english: { folder: 'english', chaptersCount: 14 }
   };
 
   const meta = subjectFolderMap[subjectId] || { folder: 'science', chaptersCount: 13 };
+  const targetFolder = language === 'en' ? `${meta.folder}_en` : meta.folder;
   const allQuestions: DrillQuestionItem[] = [];
 
-  // Concurrently fetch all chapter JSONs
   const fetchPromises: Promise<void>[] = [];
 
   for (let ch = 1; ch <= meta.chaptersCount; ch++) {
     const chStr = String(ch).padStart(2, '0');
-    const url = `/data/${meta.folder}/ch_${chStr}.json`;
+    const url = `/data/${targetFolder}/ch_${chStr}.json`;
 
     fetchPromises.push(
       fetch(url)
         .then(res => (res.ok ? res.json() : null))
-        .then((data: { questions?: QuestionTuple[] } | null) => {
-          if (data && Array.isArray(data.questions)) {
+        .then((data: Question[] | { questions?: QuestionTuple[] } | null) => {
+          if (Array.isArray(data)) {
+            data.forEach(q => {
+              if (q && q.q && Array.isArray(q.o) && q.o.length >= 2) {
+                allQuestions.push({
+                  id: q.i,
+                  question: q.q,
+                  options: q.o,
+                  answer: q.a,
+                  explanation: q.e || '',
+                  subjectId,
+                  chapterId: `${subjectId}_ch${chStr}`
+                });
+              }
+            });
+          } else if (data && Array.isArray(data.questions)) {
             data.questions.forEach(q => {
-              // Tuple format: [id, difficulty, text, options, answerIndex, explanation]
               allQuestions.push({
                 id: q[0],
                 question: q[2],
@@ -70,13 +90,11 @@ export async function getSubjectRandomDrillQuestions(
 
   await Promise.all(fetchPromises);
 
-  // If questions were found, cache them
   if (allQuestions.length > 0) {
-    subjectQuestionsCache[subjectId] = allQuestions;
+    subjectQuestionsCache[cacheKey] = allQuestions;
     return shuffleArray([...allQuestions]).slice(0, limit);
   }
 
-  // Fallback default questions if network/fetch failed
   return getFallbackSubjectQuestions(subjectId).slice(0, limit);
 }
 

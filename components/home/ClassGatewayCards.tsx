@@ -70,7 +70,7 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
             5 Core Subjects (Tap to Open Chapters)
           </span>
           <span className="text-[10px] font-bold text-emerald-400">
-            65 Chapters Unlocked
+            69 Chapters Unlocked
           </span>
         </div>
 

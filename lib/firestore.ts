@@ -89,14 +89,16 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
 
   try {
     const userDocRef = doc(db, 'users', uid);
-    const fetchPromise = getDoc(userDocRef);
-    const timeoutPromise = new Promise<null>((_, reject) =>
-      setTimeout(() => reject(new Error('Firestore timeout')), 2500)
+    const fetchPromise = Promise.all([
+      getDoc(userDocRef),
+      fetchResolvedFollowRelations(uid).catch(() => ({ followersUids: [], followingUids: [] })),
+    ]);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Firestore timeout')), 1500)
     );
-    const snap = await Promise.race([fetchPromise, timeoutPromise]);
+    const [snap, relations] = await Promise.race([fetchPromise, timeoutPromise]);
     if (snap && snap.exists()) {
       const remoteData = snap.data() as UserProfile;
-      const relations = await fetchResolvedFollowRelations(uid);
       const mergedFollowers = Array.from(
         new Set([...(remoteData.followersUids || []), ...relations.followersUids])
       );
@@ -104,7 +106,7 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
         new Set([...(remoteData.followingUids || []), ...relations.followingUids])
       );
 
-      let merged: UserProfile = {
+      const merged: UserProfile = {
         ...createDefaultProfile(uid, displayName || remoteData.name, email || remoteData.email),
         ...remoteData,
         uid,
@@ -117,7 +119,7 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
       };
 
       if (!remoteData.usernameLower || !remoteData.nameLower) {
-        merged = await upsertUserInDirectory(merged);
+        void upsertUserInDirectory(merged).catch(() => {});
       }
 
       saveLocalUserProfile(merged);
@@ -129,9 +131,9 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
         ? { ...createDefaultProfile(uid, displayName || local.name, email || local.email), ...local, uid }
         : createDefaultProfile(uid, displayName, email);
 
-    const indexed = await upsertUserInDirectory(baseProfile);
-    saveLocalUserProfile(indexed);
-    return indexed;
+    saveLocalUserProfile(baseProfile);
+    void upsertUserInDirectory(baseProfile).catch(() => {});
+    return baseProfile;
   } catch (err) {
     console.warn('Firestore read error/timeout, using local profile fallback:', err);
   }

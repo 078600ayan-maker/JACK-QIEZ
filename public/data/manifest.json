@@ -10,91 +10,91 @@
         {
           "chId": "sci_ch01",
           "num": 1,
-          "name": "रासायनिक अभिक्रियाएँ एवं समीकरण",
+          "name": "रासायनिक अभिक्रियाएँ एवं समीकरण (Chemical Reactions)",
           "levels": 5,
           "file": "/data/science/ch_01.json"
         },
         {
           "chId": "sci_ch02",
           "num": 2,
-          "name": "अम्ल, क्षारक एवं लवण",
+          "name": "अम्ल, क्षारक एवं लवण (Acids, Bases and Salts)",
           "levels": 5,
           "file": "/data/science/ch_02.json"
         },
         {
           "chId": "sci_ch03",
           "num": 3,
-          "name": "धातु एवं अधातु",
+          "name": "धातु एवं अधातु (Metals and Non-metals)",
           "levels": 5,
           "file": "/data/science/ch_03.json"
         },
         {
           "chId": "sci_ch04",
           "num": 4,
-          "name": "कार्बन एवं उसके यौगिक",
+          "name": "कार्बन एवं उसके यौगिक (Carbon and its Compounds)",
           "levels": 5,
           "file": "/data/science/ch_04.json"
         },
         {
           "chId": "sci_ch05",
           "num": 5,
-          "name": "तत्वों का आवर्त वर्गीकरण",
+          "name": "तत्वों का आवर्त वर्गीकरण (Periodic Classification)",
           "levels": 5,
           "file": "/data/science/ch_05.json"
         },
         {
           "chId": "sci_ch06",
           "num": 6,
-          "name": "जैव प्रक्रम",
+          "name": "जैव प्रक्रम (Life Processes)",
           "levels": 5,
           "file": "/data/science/ch_06.json"
         },
         {
           "chId": "sci_ch07",
           "num": 7,
-          "name": "नियंत्रण एवं समन्वय",
+          "name": "नियंत्रण एवं समन्वय (Control and Coordination)",
           "levels": 5,
           "file": "/data/science/ch_07.json"
         },
         {
           "chId": "sci_ch08",
           "num": 8,
-          "name": "जीव जनन कैसे करते हैं",
+          "name": "जीव जनन कैसे करते हैं (How do Organisms Reproduce?)",
           "levels": 5,
           "file": "/data/science/ch_08.json"
         },
         {
           "chId": "sci_ch09",
           "num": 9,
-          "name": "आनुवंशिकता एवं जैव विकास",
+          "name": "आनुवंशिकता एवं जैव विकास (Heredity and Evolution)",
           "levels": 5,
           "file": "/data/science/ch_09.json"
         },
         {
           "chId": "sci_ch10",
           "num": 10,
-          "name": "प्रकाश – परावर्तन तथा अपवर्तन",
+          "name": "प्रकाश – परावर्तन तथा अपवर्तन (Light)",
           "levels": 5,
           "file": "/data/science/ch_10.json"
         },
         {
           "chId": "sci_ch11",
           "num": 11,
-          "name": "मानव नेत्र तथा रंगबिरंगा संसार",
+          "name": "मानव नेत्र तथा रंगबिरंगा संसार (The Human Eye)",
           "levels": 5,
           "file": "/data/science/ch_11.json"
         },
         {
           "chId": "sci_ch12",
           "num": 12,
-          "name": "विद्युत",
+          "name": "विद्युत (Electricity)",
           "levels": 5,
           "file": "/data/science/ch_12.json"
         },
         {
           "chId": "sci_ch13",
           "num": 13,
-          "name": "विद्युत धारा के चुंबकीय प्रभाव",
+          "name": "विद्युत धारा के चुंबकीय प्रभाव (Magnetic Effects)",
           "levels": 5,
           "file": "/data/science/ch_13.json"
         }
@@ -105,7 +105,7 @@
       "title": "Math (गणित)",
       "themeColor": "#3B82F6",
       "accent3D": "#1D4ED8",
-      "totalChapters": 13,
+      "totalChapters": 14,
       "chapters": [
         {
           "chId": "math_ch01",
@@ -124,7 +124,7 @@
         {
           "chId": "math_ch03",
           "num": 3,
-          "name": "दो चर वाले रैखिक समीकरण युग्म",
+          "name": "दो चर वाले रैखिक समीकरण युग्म (Linear Equations)",
           "levels": 5,
           "file": "/data/math/ch_03.json"
         },
@@ -159,7 +159,7 @@
         {
           "chId": "math_ch08",
           "num": 8,
-          "name": "त्रिकोणमिति का परिचय",
+          "name": "त्रिकोणमिति का परिचय (Intro to Trigonometry)",
           "levels": 5,
           "file": "/data/math/ch_08.json"
         },
@@ -180,23 +180,30 @@
         {
           "chId": "math_ch11",
           "num": 11,
-          "name": "रचनाएँ (Constructions)",
+          "name": "वृत्तों से संबंधित क्षेत्रफल (Areas Related to Circles)",
           "levels": 5,
           "file": "/data/math/ch_11.json"
         },
         {
           "chId": "math_ch12",
           "num": 12,
-          "name": "वृत्तों से संबंधित क्षेत्रफल",
+          "name": "पृष्ठीय क्षेत्रफल और आयतन (Surface Areas & Volumes)",
           "levels": 5,
           "file": "/data/math/ch_12.json"
         },
         {
           "chId": "math_ch13",
           "num": 13,
-          "name": "सांख्यिकी एवं प्रायिकता",
+          "name": "सांख्यिकी (Statistics)",
           "levels": 5,
           "file": "/data/math/ch_13.json"
+        },
+        {
+          "chId": "math_ch14",
+          "num": 14,
+          "name": "प्रायिकता (Probability)",
+          "levels": 5,
+          "file": "/data/math/ch_14.json"
         }
       ]
     },
@@ -205,98 +212,105 @@
       "title": "SST (सामाजिक विज्ञान)",
       "themeColor": "#F59E0B",
       "accent3D": "#B45309",
-      "totalChapters": 13,
+      "totalChapters": 14,
       "chapters": [
         {
           "chId": "sst_ch01",
           "num": 1,
-          "name": "यूरोप में राष्ट्रवाद का उदय",
+          "name": "यूरोप में राष्ट्रवाद का उदय (Rise of Nationalism in Europe)",
           "levels": 5,
           "file": "/data/social_science/ch_01.json"
         },
         {
           "chId": "sst_ch02",
           "num": 2,
-          "name": "भारत में राष्ट्रवाद",
+          "name": "भारत में राष्ट्रवाद (Nationalism in India)",
           "levels": 5,
           "file": "/data/social_science/ch_02.json"
         },
         {
           "chId": "sst_ch03",
           "num": 3,
-          "name": "भूमंडलीकृत विश्व का बनना",
+          "name": "भूमंडलीकृत विश्व का बनना (Making of a Global World)",
           "levels": 5,
           "file": "/data/social_science/ch_03.json"
         },
         {
           "chId": "sst_ch04",
           "num": 4,
-          "name": "औद्योगिकीकरण का युग",
+          "name": "मुद्रण संस्कृति और आधुनिक दुनिया (Print Culture)",
           "levels": 5,
           "file": "/data/social_science/ch_04.json"
         },
         {
           "chId": "sst_ch05",
           "num": 5,
-          "name": "संसाधन एवं विकास",
+          "name": "संसाधन एवं विकास (Resources and Development)",
           "levels": 5,
           "file": "/data/social_science/ch_05.json"
         },
         {
           "chId": "sst_ch06",
           "num": 6,
-          "name": "वन एवं वन्य जीव संसाधन",
+          "name": "वन एवं वन्यजीव संसाधन (Forest, Wildlife & Water Resources)",
           "levels": 5,
           "file": "/data/social_science/ch_06.json"
         },
         {
           "chId": "sst_ch07",
           "num": 7,
-          "name": "जल संसाधन",
+          "name": "कृषि (Agriculture)",
           "levels": 5,
           "file": "/data/social_science/ch_07.json"
         },
         {
           "chId": "sst_ch08",
           "num": 8,
-          "name": "कृषि (Agriculture)",
+          "name": "खनिज, ऊर्जा व विनिर्माण उद्योग (Minerals & Industries)",
           "levels": 5,
           "file": "/data/social_science/ch_08.json"
         },
         {
           "chId": "sst_ch09",
           "num": 9,
-          "name": "सत्ता की साझेदारी",
+          "name": "सत्ता की साझेदारी एवं संघवाद (Power Sharing & Federalism)",
           "levels": 5,
           "file": "/data/social_science/ch_09.json"
         },
         {
           "chId": "sst_ch10",
           "num": 10,
-          "name": "संघवाद (Federalism)",
+          "name": "जाति, धर्म और लैंगिक मसले (Gender, Religion & Caste)",
           "levels": 5,
           "file": "/data/social_science/ch_10.json"
         },
         {
           "chId": "sst_ch11",
           "num": 11,
-          "name": "लोकतंत्र और विविधता",
+          "name": "राजनीतिक दल एवं लोकतंत्र (Political Parties & Democracy)",
           "levels": 5,
           "file": "/data/social_science/ch_11.json"
         },
         {
           "chId": "sst_ch12",
           "num": 12,
-          "name": "विकास (Development)",
+          "name": "विकास एवं अर्थव्यवस्था के क्षेत्रक (Development & Sectors)",
           "levels": 5,
           "file": "/data/social_science/ch_12.json"
         },
         {
           "chId": "sst_ch13",
           "num": 13,
-          "name": "भारतीय अर्थव्यवस्था के क्षेत्रक",
+          "name": "मुद्रा और साख (Money and Credit)",
           "levels": 5,
           "file": "/data/social_science/ch_13.json"
+        },
+        {
+          "chId": "sst_ch14",
+          "num": 14,
+          "name": "वैश्वीकरण और भारतीय अर्थव्यवस्था (Globalisation)",
+          "levels": 5,
+          "file": "/data/social_science/ch_14.json"
         }
       ]
     },
@@ -305,98 +319,105 @@
       "title": "Hindi (हिंदी)",
       "themeColor": "#F43F5E",
       "accent3D": "#BE123C",
-      "totalChapters": 13,
+      "totalChapters": 14,
       "chapters": [
         {
           "chId": "hin_ch01",
           "num": 1,
-          "name": "सूरदास के पद (काव्य खंड)",
+          "name": "सूरदास के पद (क्षितिज - काव्य खंड)",
           "levels": 5,
           "file": "/data/hindi/ch_01.json"
         },
         {
           "chId": "hin_ch02",
           "num": 2,
-          "name": "राम-लक्ष्मण-परशुराम संवाद",
+          "name": "राम-लक्ष्मण-परशुराम संवाद (तुलसीदास)",
           "levels": 5,
           "file": "/data/hindi/ch_02.json"
         },
         {
           "chId": "hin_ch03",
           "num": 3,
-          "name": "उत्साह और अट नहीं रही है",
+          "name": "आत्मकथ्य (जयशंकर प्रसाद)",
           "levels": 5,
           "file": "/data/hindi/ch_03.json"
         },
         {
           "chId": "hin_ch04",
           "num": 4,
-          "name": "यह दंतुरहित मुस्कान और फसल",
+          "name": "उत्साह और अट नहीं रही है (निराला)",
           "levels": 5,
           "file": "/data/hindi/ch_04.json"
         },
         {
           "chId": "hin_ch05",
           "num": 5,
-          "name": "नेताजी का चश्मा (गद्य खंड)",
+          "name": "यह दंतुरित मुस्कान और फसल (नागार्जुन)",
           "levels": 5,
           "file": "/data/hindi/ch_05.json"
         },
         {
           "chId": "hin_ch06",
           "num": 6,
-          "name": "बालगोबिन भगत",
+          "name": "संगतकार (मंगलेश डबराल)",
           "levels": 5,
           "file": "/data/hindi/ch_06.json"
         },
         {
           "chId": "hin_ch07",
           "num": 7,
-          "name": "लखनवी अंदाज़",
+          "name": "नेताजी का चश्मा (स्वयं प्रकाश)",
           "levels": 5,
           "file": "/data/hindi/ch_07.json"
         },
         {
           "chId": "hin_ch08",
           "num": 8,
-          "name": "एक कहानी यह भी",
+          "name": "बालगोबिन भगत (रामवृक्ष बेनीपुरी)",
           "levels": 5,
           "file": "/data/hindi/ch_08.json"
         },
         {
           "chId": "hin_ch09",
           "num": 9,
-          "name": "माता का अँचल (कृतिका)",
+          "name": "लखनवी अंदाज़ (यशपाल)",
           "levels": 5,
           "file": "/data/hindi/ch_09.json"
         },
         {
           "chId": "hin_ch10",
           "num": 10,
-          "name": "जॉर्ज पंचम की नाक",
+          "name": "एक कहानी यह भी (मन्नू भंडारी)",
           "levels": 5,
           "file": "/data/hindi/ch_10.json"
         },
         {
           "chId": "hin_ch11",
           "num": 11,
-          "name": "साना-साना हाथ जोड़ि",
+          "name": "नौबतखाने में इबादत (यतींद्र मिश्र)",
           "levels": 5,
           "file": "/data/hindi/ch_11.json"
         },
         {
           "chId": "hin_ch12",
           "num": 12,
-          "name": "वाक्य भेद एवं वाच्य (व्याकरण)",
+          "name": "संस्कृति (भदंत आनंद कौसल्यायन)",
           "levels": 5,
           "file": "/data/hindi/ch_12.json"
         },
         {
           "chId": "hin_ch13",
           "num": 13,
-          "name": "रस एवं अलंकार (व्याकरण)",
+          "name": "माता का अंचल (शिवपूजन सहाय)",
           "levels": 5,
           "file": "/data/hindi/ch_13.json"
+        },
+        {
+          "chId": "hin_ch14",
+          "num": 14,
+          "name": "साना-साना हाथ जोड़ि व मैं क्यों लिखता हूँ",
+          "levels": 5,
+          "file": "/data/hindi/ch_14.json"
         }
       ]
     },
@@ -405,12 +426,12 @@
       "title": "English (अंग्रेज़ी)",
       "themeColor": "#8B5CF6",
       "accent3D": "#6D28D9",
-      "totalChapters": 13,
+      "totalChapters": 14,
       "chapters": [
         {
           "chId": "eng_ch01",
           "num": 1,
-          "name": "A Letter to God",
+          "name": "A Letter to God (Dust of Snow & Fire and Ice)",
           "levels": 5,
           "file": "/data/english/ch_01.json"
         },
@@ -438,7 +459,7 @@
         {
           "chId": "eng_ch05",
           "num": 5,
-          "name": "Glimpses of India",
+          "name": "Glimpses of India (Baker from Goa, Coorg, Assam)",
           "levels": 5,
           "file": "/data/english/ch_05.json"
         },
@@ -466,37 +487,44 @@
         {
           "chId": "eng_ch09",
           "num": 9,
-          "name": "Dust of Snow & Fire and Ice (Poetry)",
+          "name": "The Proposal (One-Act Play)",
           "levels": 5,
           "file": "/data/english/ch_09.json"
         },
         {
           "chId": "eng_ch10",
           "num": 10,
-          "name": "A Triumph of Surgery (Footprints)",
+          "name": "A Triumph of Surgery & The Thief's Story",
           "levels": 5,
           "file": "/data/english/ch_10.json"
         },
         {
           "chId": "eng_ch11",
           "num": 11,
-          "name": "The Thief's Story",
+          "name": "The Midnight Visitor & A Question of Trust",
           "levels": 5,
           "file": "/data/english/ch_11.json"
         },
         {
           "chId": "eng_ch12",
           "num": 12,
-          "name": "Footprints without Feet",
+          "name": "Footprints Without Feet & Making of a Scientist",
           "levels": 5,
           "file": "/data/english/ch_12.json"
         },
         {
           "chId": "eng_ch13",
           "num": 13,
-          "name": "Tenses & Modals (Grammar Master)",
+          "name": "The Necklace & Bholi",
           "levels": 5,
           "file": "/data/english/ch_13.json"
+        },
+        {
+          "chId": "eng_ch14",
+          "num": 14,
+          "name": "The Book That Saved the Earth & Grammar",
+          "levels": 5,
+          "file": "/data/english/ch_14.json"
         }
       ]
     }

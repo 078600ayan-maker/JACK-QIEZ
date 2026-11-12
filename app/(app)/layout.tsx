@@ -52,6 +52,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       router.replace('/login');
     };
 
+    // Instant UI unlock if session is already verified locally; still verify & attach live listener in background
+    const preVerified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
+    const preLocal = getLocalUserProfile();
+    if (preVerified && preLocal && preLocal.uid) {
+      if (!useUserStore.getState().profile) {
+        useUserStore.setState({ profile: preLocal, isLoading: false });
+      }
+      attachLiveUserListener(preLocal.uid);
+      setAuthReady(true);
+    }
+
     // Fast-fallback timer: Wait briefly for Firebase Auth; only allow verified local session, otherwise enforce /login
     const fallbackTimer = setTimeout(async () => {
       if (!mounted) return;
@@ -59,14 +70,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       const local = getLocalUserProfile();
       if (verified && local && local.uid) {
         if (!useUserStore.getState().profile) {
-          await initUser(local.uid, local.name, local.email);
+          void initUser(local.uid, local.name, local.email);
         }
         attachLiveUserListener(local.uid);
         setAuthReady(true);
       } else {
         redirectToLoginOnly();
       }
-    }, 1500);
+    }, 900);
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       clearTimeout(fallbackTimer);
@@ -76,6 +87,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         if (typeof window !== 'undefined') {
           localStorage.setItem('sbr_session_verified', 'true');
         }
+        // Unblock shell immediately if local profile exists; sync Firestore asynchronously
+        const localMatch = getLocalUserProfile();
+        if (localMatch && localMatch.uid === firebaseUser.uid) {
+          if (!useUserStore.getState().profile) {
+            useUserStore.setState({ profile: localMatch, isLoading: false });
+          }
+          attachLiveUserListener(firebaseUser.uid);
+          setAuthReady(true);
+        }
+
         await initUser(
           firebaseUser.uid,
           firebaseUser.displayName || undefined,
@@ -83,7 +104,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         );
         const cur = useUserStore.getState().profile;
         if (cur) {
-          const synced = await upsertUserInDirectory({
+          attachLiveUserListener(firebaseUser.uid);
+          setAuthReady(true);
+          void upsertUserInDirectory({
             ...cur,
             name: cur.name || firebaseUser.displayName || 'Royal Scholar',
             displayName: cur.displayName || firebaseUser.displayName || cur.name || 'Royal Scholar',
@@ -91,12 +114,16 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             photoURL: cur.photoURL || firebaseUser.photoURL || undefined,
             isRealUser: !firebaseUser.isAnonymous,
             isAnonymous: firebaseUser.isAnonymous,
-          });
-          useUserStore.setState({ profile: synced });
-          saveLocalUserProfile(synced);
+          }).then((synced) => {
+            if (mounted) {
+              useUserStore.setState({ profile: synced });
+              saveLocalUserProfile(synced);
+            }
+          }).catch(() => {});
+        } else {
+          attachLiveUserListener(firebaseUser.uid);
+          setAuthReady(true);
         }
-        attachLiveUserListener(firebaseUser.uid);
-        setAuthReady(true);
       } else {
         const verified = typeof window !== 'undefined' && localStorage.getItem('sbr_session_verified') === 'true';
         const local = getLocalUserProfile();

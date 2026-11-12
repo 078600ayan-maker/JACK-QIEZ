@@ -120,29 +120,29 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         id: 'sci_chem',
         title: 'Chemistry',
         hindiTitle: 'रसायन विज्ञान',
-        totalChapters: 4,
-        completedChapters: 4,
+        totalChapters: 5,
+        completedChapters: 5,
         iconPath: '/images/subjects/science.jpg',
         chapters: [
           { num: 1, id: 'ch_01', title: 'Chemical Reactions and Equations', hindiTitle: 'रासायनिक अभिक्रियाएँ एवं समीकरण' },
           { num: 2, id: 'ch_02', title: 'Acids, Bases and Salts', hindiTitle: 'अम्ल, क्षारक एवं लवण' },
           { num: 3, id: 'ch_03', title: 'Metals and Non-metals', hindiTitle: 'धातु एवं अधातु' },
-          { num: 4, id: 'ch_04', title: 'Carbon and its Compounds', hindiTitle: 'कार्बन एवं उसके यौगिक' }
+          { num: 4, id: 'ch_04', title: 'Carbon and its Compounds', hindiTitle: 'कार्बन एवं उसके यौगिक' },
+          { num: 5, id: 'ch_05', title: 'Periodic Classification of Elements', hindiTitle: 'तत्वों का आवर्त वर्गीकरण' }
         ]
       },
       {
         id: 'sci_bio',
-        title: 'Biology & Ecology',
-        hindiTitle: 'जीव विज्ञान व पर्यावरण',
-        totalChapters: 5,
-        completedChapters: 5,
+        title: 'Biology',
+        hindiTitle: 'जीव विज्ञान',
+        totalChapters: 4,
+        completedChapters: 4,
         iconPath: '/images/subjects/science.jpg',
         chapters: [
-          { num: 5, id: 'ch_05', title: 'Life Processes', hindiTitle: 'जैव प्रक्रम' },
-          { num: 6, id: 'ch_06', title: 'Control and Coordination', hindiTitle: 'नियंत्रण एवं समन्वय' },
-          { num: 7, id: 'ch_07', title: 'How do Organisms Reproduce?', hindiTitle: 'जीव जनन कैसे करते हैं?' },
-          { num: 8, id: 'ch_08', title: 'Heredity', hindiTitle: 'आनुवंशिकता' },
-          { num: 13, id: 'ch_13', title: 'Our Environment', hindiTitle: 'हमारा पर्यावरण' }
+          { num: 6, id: 'ch_06', title: 'Life Processes', hindiTitle: 'जैव प्रक्रम' },
+          { num: 7, id: 'ch_07', title: 'Control and Coordination', hindiTitle: 'नियंत्रण एवं समन्वय' },
+          { num: 8, id: 'ch_08', title: 'How do Organisms Reproduce?', hindiTitle: 'जीव जनन कैसे करते हैं?' },
+          { num: 9, id: 'ch_09', title: 'Heredity and Evolution', hindiTitle: 'आनुवंशिकता एवं जैव विकास' }
         ]
       },
       {
@@ -153,10 +153,10 @@ export const DEEP_SUBJECTS: SubjectData[] = [
         completedChapters: 4,
         iconPath: '/images/subjects/science.jpg',
         chapters: [
-          { num: 9, id: 'ch_09', title: 'Light – Reflection and Refraction', hindiTitle: 'प्रकाश – परावर्तन तथा अपवर्तन' },
-          { num: 10, id: 'ch_10', title: 'The Human Eye and Colourful World', hindiTitle: 'मानव नेत्र तथा रंगबिरंगा संसार' },
-          { num: 11, id: 'ch_11', title: 'Electricity', hindiTitle: 'विद्युत' },
-          { num: 12, id: 'ch_12', title: 'Magnetic Effects of Electric Current', hindiTitle: 'विद्युत धारा के चुंबकीय प्रभाव' }
+          { num: 10, id: 'ch_10', title: 'Light – Reflection and Refraction', hindiTitle: 'प्रकाश – परावर्तन तथा अपवर्तन' },
+          { num: 11, id: 'ch_11', title: 'The Human Eye and Colourful World', hindiTitle: 'मानव नेत्र तथा रंगबिरंगा संसार' },
+          { num: 12, id: 'ch_12', title: 'Electricity', hindiTitle: 'विद्युत' },
+          { num: 13, id: 'ch_13', title: 'Magnetic Effects of Electric Current', hindiTitle: 'विद्युत धारा के चुंबकीय प्रभाव' }
         ]
       }
     ]

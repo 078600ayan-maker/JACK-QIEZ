@@ -43,11 +43,20 @@ function QuizPageContent() {
         const chNumMatch = chapterId.match(/\d+/);
         const chNum = chNumMatch ? parseInt(chNumMatch[0], 10) : 1;
         const chNumStr = String(chNum).padStart(2, '0');
+        const folderMap: Record<string, string> = {
+          sci: 'science',
+          math: 'math',
+          sst: 'social_science',
+          hin: 'hindi',
+          eng: 'english'
+        };
+        const resolvedFolder = folderMap[targetSubjId] || 'science';
+        const langFolder = userLang === 'en' ? `${resolvedFolder}_en` : resolvedFolder;
 
         // Load Manifest to resolve chapter file and name
         let subjectTitle = subjectId;
         let chapterName = `Chapter ${chNum}`;
-        let chapterFile = `/data/${targetSubjId === 'sci' ? 'science' : targetSubjId === 'sst' ? 'social_science' : targetSubjId}/ch_${chNumStr}.json`;
+        let chapterFile = `/data/${langFolder}/ch_${chNumStr}.json`;
 
         try {
           const res = await fetch('/data/manifest.json');
@@ -66,7 +75,9 @@ function QuizPageContent() {
               );
               if (chMeta) {
                 chapterName = chMeta.name;
-                chapterFile = chMeta.file;
+                chapterFile = userLang === 'en'
+                  ? `/data/${resolvedFolder}_en/ch_${chNumStr}.json`
+                  : chMeta.file;
               }
             }
           }
@@ -82,8 +93,7 @@ function QuizPageContent() {
 
         if (!allQuestions || allQuestions.length === 0) {
           // Additional fallback directly to public data
-          const folder = targetSubjId === 'sci' ? 'science' : targetSubjId === 'sst' ? 'social_science' : targetSubjId;
-          const fallbackRes = await fetch(`/data/${folder}/ch_${chNumStr}.json`);
+          const fallbackRes = await fetch(`/data/${langFolder}/ch_${chNumStr}.json`);
           if (fallbackRes.ok) {
             allQuestions = await fallbackRes.json();
           }

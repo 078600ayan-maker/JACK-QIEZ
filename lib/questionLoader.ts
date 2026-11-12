@@ -1,7 +1,7 @@
 import { Question } from '@/types/question';
 
-const CACHE_VERSION = 4;
-const CACHE_PREFIX = 'sbr_cache_v4_';
+const CACHE_VERSION = 5;
+const CACHE_PREFIX = 'sbr_cache_v5_';
 
 export async function fetchChapterQuestions(filePath: string): Promise<Question[]> {
   const cacheKey = `${CACHE_PREFIX}${filePath}`;

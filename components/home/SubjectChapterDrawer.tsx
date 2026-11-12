@@ -14,41 +14,39 @@ interface SubjectChapterDrawerProps {
   onClose: () => void;
 }
 
-// Category mapping per subject
+// Category mapping per subject (aligned 100% with 69 verified chapters)
 const SYLLABUS_CATEGORIES: Record<string, Array<{ name: string; icon: string; range: number[] }>> = {
   sci: [
-    { name: 'All Modules', icon: '🔬', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
+    { name: 'All Modules (13)', icon: '🔬', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
     { name: 'Chemistry (रसायन)', icon: '⚗️', range: [1, 2, 3, 4, 5] },
-    { name: 'Biology (जीव विज्ञान)', icon: '🧬', range: [6, 7, 8, 9, 13] },
-    { name: 'Physics (भौतिकी)', icon: '⚡', range: [10, 11, 12] }
+    { name: 'Biology (जीव विज्ञान)', icon: '🧬', range: [6, 7, 8, 9] },
+    { name: 'Physics (भौतिकी)', icon: '⚡', range: [10, 11, 12, 13] }
   ],
   math: [
-    { name: 'All Modules', icon: '📐', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] },
-    { name: 'Number Systems', icon: '🔢', range: [1] },
-    { name: 'Algebra (बीजगणित)', icon: '📐', range: [2, 3, 4, 5] },
-    { name: 'Geometry (ज्यामिति)', icon: '📏', range: [6, 10, 11] },
-    { name: 'Trigonometry (त्रिकोणमिति)', icon: '📐', range: [8, 9] },
-    { name: 'Mensuration (क्षेत्रमिति)', icon: '📦', range: [12, 13] },
-    { name: 'Statistics & Prob', icon: '📊', range: [14] }
+    { name: 'All Modules (14)', icon: '📐', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] },
+    { name: 'Number & Algebra', icon: '🔢', range: [1, 2, 3, 4, 5] },
+    { name: 'Geometry (ज्यामिति)', icon: '📏', range: [6, 7, 10] },
+    { name: 'Trigonometry', icon: '📐', range: [8, 9] },
+    { name: 'Mensuration (क्षेत्रमिति)', icon: '📦', range: [11, 12] },
+    { name: 'Stats & Prob', icon: '📊', range: [13, 14] }
   ],
   sst: [
-    { name: 'All Modules', icon: '🌍', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] },
+    { name: 'All Modules (14)', icon: '🌍', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] },
     { name: 'History (इतिहास)', icon: '🏛️', range: [1, 2, 3, 4] },
     { name: 'Geography (भूगोल)', icon: '🗺️', range: [5, 6, 7, 8] },
-    { name: 'Civics (नागरिक शास्त्र)', icon: '⚖️', range: [9, 10, 11, 12] },
-    { name: 'Economics (अर्थशास्त्र)', icon: '📈', range: [13, 14, 15, 16] }
+    { name: 'Civics (नागरिक शास्त्र)', icon: '⚖️', range: [9, 10, 11] },
+    { name: 'Economics (अर्थशास्त्र)', icon: '📈', range: [12, 13, 14] }
   ],
   hin: [
-    { name: 'All Modules', icon: '📖', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
-    { name: 'Kshitij (क्षितिज भाग 2)', icon: '📘', range: [1, 2, 3, 4, 5] },
-    { name: 'Kritika (कृतिका भाग 2)', icon: '📗', range: [6, 7, 8] },
-    { name: 'Vyakaran (व्याकरण)', icon: '✍️', range: [9, 10, 11] }
+    { name: 'All Modules (14)', icon: '📖', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] },
+    { name: 'Kshitij Kavya (काव्य)', icon: '📘', range: [1, 2, 3, 4, 5, 6] },
+    { name: 'Kshitij Gadya (गद्य)', icon: '📗', range: [7, 8, 9, 10, 11, 12] },
+    { name: 'Kritika (कृतिका)', icon: '✍️', range: [13, 14] }
   ],
   eng: [
-    { name: 'All Modules', icon: '🔤', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
-    { name: 'First Flight', icon: '🦅', range: [1, 2, 3, 4, 5] },
-    { name: 'Footprints Without Feet', icon: '👣', range: [6, 7, 8] },
-    { name: 'Grammar & Composition', icon: '✍️', range: [9, 10, 11] }
+    { name: 'All Modules (14)', icon: '🔤', range: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] },
+    { name: 'First Flight', icon: '🦅', range: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+    { name: 'Footprints & Grammar', icon: '👣', range: [10, 11, 12, 13, 14] }
   ]
 };
 
@@ -60,6 +58,10 @@ export const SubjectChapterDrawer: React.FC<SubjectChapterDrawerProps> = ({
   const router = useRouter();
   const { profile, setActiveSubjectId } = useUserStore();
   const [activeCategoryIdx, setActiveCategoryIdx] = useState(0);
+
+  React.useEffect(() => {
+    setActiveCategoryIdx(0);
+  }, [subject?.id, isOpen]);
 
   if (!isOpen || !subject) return null;
 
