@@ -14,7 +14,11 @@ export type AIProviderKind =
   | 'together'
   | 'cerebras'
   | 'deepseek'
-  | 'fireworks';
+  | 'fireworks'
+  | 'cohere'
+  | 'zhipu'
+  | 'kilo'
+  | 'llm7';
 
 export interface ProviderSlot {
   key: string;
@@ -73,6 +77,26 @@ const PROVIDER_DEFAULTS: Record<AIProviderKind, { endpoint: string; model: strin
     model: 'accounts/fireworks/models/llama-v3p3-70b-instruct',
     label: 'Fireworks AI',
   },
+  cohere: {
+    endpoint: 'https://api.cohere.ai/compatibility/v1/chat/completions',
+    model: 'command-a-03-2025',
+    label: 'Cohere',
+  },
+  zhipu: {
+    endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+    model: 'glm-4-flash',
+    label: 'Zhipu GLM',
+  },
+  kilo: {
+    endpoint: 'https://api.kilo.ai/api/gateway/chat/completions',
+    model: 'google/gemini-2.0-flash-001',
+    label: 'Kilo Gateway',
+  },
+  llm7: {
+    endpoint: 'https://api.llm7.io/v1/chat/completions',
+    model: 'default',
+    label: 'LLM7 AI',
+  },
 };
 
 export function detectProviderFromRaw(rawEntry: string): { provider: AIProviderKind; key: string } {
@@ -86,7 +110,12 @@ export function detectProviderFromRaw(rawEntry: string): { provider: AIProviderK
   }
   if (trimmed.startsWith('AIzaSy')) return { provider: 'gemini', key: trimmed };
   if (trimmed.startsWith('gsk_')) return { provider: 'groq', key: trimmed };
+  if (trimmed.startsWith('mstrl_')) return { provider: 'mistral', key: trimmed };
   if (trimmed.startsWith('sk-or-')) return { provider: 'openrouter', key: trimmed };
+  if (trimmed.startsWith('cohere_')) return { provider: 'cohere', key: trimmed };
+  if (trimmed.startsWith('eyJ')) return { provider: 'kilo', key: trimmed };
+  if (/^[a-f0-9]{32}\.[A-Za-z0-9]+$/.test(trimmed)) return { provider: 'zhipu', key: trimmed };
+  if (trimmed.endsWith('==') && trimmed.length > 60) return { provider: 'llm7', key: trimmed };
   if (trimmed.startsWith('csk-')) return { provider: 'cerebras', key: trimmed };
   if (trimmed.startsWith('fw_')) return { provider: 'fireworks', key: trimmed };
   if (trimmed.startsWith('sk-')) return { provider: 'openai', key: trimmed };
@@ -115,6 +144,10 @@ function collectServerEnvKeys(): string[] {
     process.env.CEREBRAS_API_KEY ? `cerebras:${process.env.CEREBRAS_API_KEY}` : '',
     process.env.DEEPSEEK_API_KEY ? `deepseek:${process.env.DEEPSEEK_API_KEY}` : '',
     process.env.FIREWORKS_API_KEY ? `fireworks:${process.env.FIREWORKS_API_KEY}` : '',
+    process.env.COHERE_API_KEY ? `cohere:${process.env.COHERE_API_KEY}` : '',
+    process.env.ZHIPU_API_KEY ? `zhipu:${process.env.ZHIPU_API_KEY}` : '',
+    process.env.KILO_API_KEY ? `kilo:${process.env.KILO_API_KEY}` : '',
+    process.env.LLM7_API_KEY ? `llm7:${process.env.LLM7_API_KEY}` : '',
   ];
 
   // Also support comma-separated AI_PROVIDER_KEYS or GEMINI_API_KEYS

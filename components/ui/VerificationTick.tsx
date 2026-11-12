@@ -14,45 +14,37 @@ interface VerificationTickProps {
 const TICK_CONFIG: Record<
   VerificationTickColor,
   {
-    fill: string;
-    ring: string;
-    check: string;
+    src: string;
     label: string;
     title: string;
     pillClass: string;
   }
 > = {
   green: {
-    fill: '#10B981',
-    ring: '#34D399',
-    check: '#FFFFFF',
+    src: '/assets/badges/tick-green.png',
     label: 'Verified Scholar',
-    title: 'Green Tick — Default Verified JackQuiz Scholar',
+    title: 'Green Badge — Default Verified JackQuiz Scholar',
     pillClass: 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300',
   },
   red: {
-    fill: '#EF4444',
-    ring: '#F87171',
-    check: '#FFFFFF',
+    src: '/assets/badges/tick-red.png',
     label: 'Red Admin Verified',
-    title: 'Red Tick — Admin-Awarded Special Verification',
+    title: 'Red Badge — Admin-Awarded Special Verification',
     pillClass: 'bg-red-500/15 border-red-500/40 text-red-300',
   },
   black: {
-    fill: '#111827',
-    ring: '#F59E0B',
-    check: '#FDE68A',
+    src: '/assets/badges/tick-black.png',
     label: 'Black Elite Verified',
-    title: 'Black Tick — Admin-Awarded Elite Verification',
+    title: 'Black Badge — Admin-Awarded Elite Verification',
     pillClass: 'bg-zinc-900 border-amber-400/50 text-amber-200',
   },
 };
 
 const SIZE_PX: Record<NonNullable<VerificationTickProps['size']>, number> = {
-  xs: 14,
-  sm: 16,
-  md: 18,
-  lg: 22,
+  xs: 15,
+  sm: 18,
+  md: 21,
+  lg: 26,
 };
 
 export function normalizeVerificationTick(tick?: string): VerificationTickColor {
@@ -71,30 +63,14 @@ export const VerificationTick: React.FC<VerificationTickProps> = ({
   const px = SIZE_PX[size];
 
   const badge = (
-    <svg
+    <img
+      src={cfg.src}
+      alt={cfg.label}
       width={px}
       height={px}
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-label={cfg.title}
-      className={`inline-block shrink-0 ${className}`}
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        fill={cfg.fill}
-        stroke={cfg.ring}
-        strokeWidth="1.8"
-      />
-      <path
-        d="M7.8 12.4L10.6 15.1L16.4 9.1"
-        stroke={cfg.check}
-        strokeWidth="2.3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+      style={{ width: px, height: px }}
+      className={`inline-block shrink-0 object-contain drop-shadow-[0_1px_3px_rgba(0,0,0,0.45)] ${className}`}
+    />
   );
 
   if (!showLabel) {
