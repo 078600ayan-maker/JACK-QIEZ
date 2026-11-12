@@ -143,9 +143,14 @@ export default function OnboardingPage() {
         isRealUser: true,
       });
 
-      const synced = await upsertUserInDirectory(freshProfile);
-      saveLocalUserProfile(synced);
-      setProfile(synced);
+      saveLocalUserProfile(freshProfile);
+      setProfile(freshProfile);
+
+      // Sync to Firestore with a 1.2s fast cap so onboarding NEVER hangs
+      await Promise.race([
+        upsertUserInDirectory(freshProfile),
+        new Promise<void>((resolve) => setTimeout(resolve, 1200)),
+      ]);
 
       router.replace('/');
     } catch (err) {
@@ -502,7 +507,7 @@ export default function OnboardingPage() {
               </button>
               <button
                 onClick={handleComplete}
-                disabled={username.length < 3 || usernameStatus === 'taken' || usernameStatus === 'checking' || loading}
+                disabled={username.length < 3 || usernameStatus === 'taken' || loading}
                 className="flex-1 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_5px_0_#92400E] active:translate-y-1 active:shadow-none disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
               >
                 {loading ? (

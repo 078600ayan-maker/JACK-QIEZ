@@ -143,9 +143,12 @@ export async function upsertUserInDirectory(profile: UserProfile): Promise<UserP
   };
 
   try {
-    await setDoc(doc(db, 'users', profile.uid), stripUndefined(payload as unknown as Record<string, unknown>), {
-      merge: true,
-    });
+    await Promise.race([
+      setDoc(doc(db, 'users', profile.uid), stripUndefined(payload as unknown as Record<string, unknown>), {
+        merge: true,
+      }),
+      new Promise<void>((resolve) => setTimeout(resolve, 1800)),
+    ]);
   } catch (err) {
     console.error('[socialService] upsertUserInDirectory failed:', err);
   }
@@ -161,7 +164,11 @@ export async function isUsernameAvailable(username: string, currentUid: string):
   if (!clean) return false;
   try {
     const q = query(collection(db, 'users'), where('usernameLower', '==', clean), limit(3));
-    const snap = await getDocs(q);
+    const snap = await Promise.race([
+      getDocs(q),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1800)),
+    ]);
+    if (!snap) return true;
     for (const d of snap.docs) {
       if (d.id !== currentUid) return false;
     }

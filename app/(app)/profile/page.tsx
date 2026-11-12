@@ -393,7 +393,7 @@ function ProfileContent() {
 
       const combinedName =
         `${editFirstName.trim()} ${editLastName.trim()}`.trim() || profile.name;
-      const synced = await upsertUserInDirectory({
+      const updatedProfile = {
         ...profile,
         firstName: editFirstName.trim(),
         lastName: editLastName.trim(),
@@ -403,9 +403,10 @@ function ProfileContent() {
         age: parseInt(editAge, 10) || profile.age,
         username: cleanedUsername,
         usernameLower: cleanedUsername.toLowerCase(),
-      });
-      setProfile(synced);
+      };
+      setProfile(updatedProfile);
       setEditModalOpen(false);
+      void upsertUserInDirectory(updatedProfile).catch(() => {});
     } finally {
       setEditSaving(false);
     }
