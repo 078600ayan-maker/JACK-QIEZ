@@ -526,8 +526,8 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          studentName: profile?.name || studentName,
-          studentEmail: profile?.email || '',
+          userName: profile?.name || studentName,
+          userEmail: profile?.email || '',
           uid: profile?.uid || '',
           category: fbCategory,
           rating: fbRating,
@@ -541,7 +541,7 @@ export const LiveCallModal: React.FC<LiveCallModalProps> = ({
         setFbMessage('');
         setFbStatus({
           text:
-            data.deliveryMode === 'resend'
+            data.deliveredViaEmail
               ? `Sent directly to admin inbox under folder [${data.folderTag}]!`
               : `Organized under folder [${data.folderTag}]! Tap below to send via your Email App.`,
           mailtoHref: data.mailtoHref,
