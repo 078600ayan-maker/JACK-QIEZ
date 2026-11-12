@@ -35,6 +35,7 @@ import { ProgressReportModal } from '@/components/report/ProgressReportModal';
 import { LiveCallModal } from '@/components/ai-calling/LiveCallModal';
 import { BilingualLanguageToggle } from '@/components/ui/BilingualLanguageToggle';
 import { LiveMultiplayerComparison } from '@/components/multiplayer/LiveMultiplayerComparison';
+import { DualArenaHub } from '@/components/arena/DualArenaHub';
 import { HardestWordsModule } from '@/components/modules/HardestWordsModule';
 import { HardestWordsLevel3Module } from '@/components/modules/HardestWordsLevel3Module';
 import { HardestWordsLevel4BossModule } from '@/components/modules/HardestWordsLevel4BossModule';
@@ -358,6 +359,13 @@ export default function HomeLobbyPage() {
             • Drag to Spin 360° •
           </span>
         </div>
+      </section>
+
+      {/* =========================================================================
+          DUAL ARENA BLUEPRINT: STUDY FRIEND ARENA & FUN ARENA (SECTION 01-10)
+          ========================================================================= */}
+      <section>
+        <DualArenaHub />
       </section>
 
       {/* =========================================================================
