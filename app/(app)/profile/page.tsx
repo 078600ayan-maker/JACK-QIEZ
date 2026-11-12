@@ -100,6 +100,7 @@ export interface ScholarItem {
   followingUids?: string[];
   isOnline?: boolean;
   verificationTick?: 'green' | 'red' | 'black';
+  email?: string;
 }
 
 function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem {
@@ -126,6 +127,7 @@ function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem 
     followingUids,
     isOnline: Boolean(u.isOnline),
     verificationTick: u.verificationTick || 'green',
+    email: u.emailLower || u.email || '',
   };
 }
 
@@ -459,7 +461,20 @@ function ProfileContent() {
     : profile
     ? [profileToScholarItem(profile, profile.uid)]
     : [];
-  const displayedScholars = term ? (searchResults ?? []) : baseDirectory;
+  const termLower = term.toLowerCase().replace(/^@+/, '');
+  const localMatches = termLower
+    ? baseDirectory.filter(
+        (s) =>
+          s.name.toLowerCase().includes(termLower) ||
+          s.username.toLowerCase().includes(termLower) ||
+          (s.email || '').toLowerCase().includes(termLower)
+      )
+    : baseDirectory;
+  const displayedScholars = term
+    ? searchResults && searchResults.length > 0
+      ? searchResults
+      : localMatches
+    : baseDirectory;
 
   // Duolingo-style Pre-Join-Aware Weekly & Monthly Streak + 10 Pro Telemetry Compute
   const weekCells = buildWeeklyStreakStrip(profile);

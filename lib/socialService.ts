@@ -209,8 +209,29 @@ export async function searchUsersInDatabase(
       return Array.from(resultsMap.values()).slice(0, limitCount);
     }
 
+    const rawTrimmed = rawTerm.trim();
     const endTerm = `${term}\uf8ff`;
-    const [byUsernameSnap, byNameSnap, byEmailLowerSnap] = await Promise.all([
+    const [
+      byExactEmailLowerSnap,
+      byExactEmailRawSnap,
+      byUsernameSnap,
+      byNameSnap,
+      byEmailLowerSnap,
+    ] = await Promise.all([
+      getDocs(
+        query(
+          collection(db, 'users'),
+          where('emailLower', '==', term),
+          limit(10)
+        )
+      ).catch(() => null),
+      getDocs(
+        query(
+          collection(db, 'users'),
+          where('email', '==', rawTrimmed),
+          limit(10)
+        )
+      ).catch(() => null),
       getDocs(
         query(
           collection(db, 'users'),
@@ -237,6 +258,14 @@ export async function searchUsersInDatabase(
       ).catch(() => null),
     ]);
 
+    byExactEmailLowerSnap?.forEach((docSnap) => {
+      const data = docSnap.data() as UserProfile;
+      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+    });
+    byExactEmailRawSnap?.forEach((docSnap) => {
+      const data = docSnap.data() as UserProfile;
+      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+    });
     byUsernameSnap?.forEach((docSnap) => {
       const data = docSnap.data() as UserProfile;
       resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
@@ -250,16 +279,17 @@ export async function searchUsersInDatabase(
       resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
     });
 
-    // Broad substring scan across up to 120 user docs (captures email-only sign-ins & legacy users missing *Lower fields)
+    // Broad substring scan across up to 400 user docs (captures email-only sign-ins & legacy users missing *Lower fields)
     if (resultsMap.size < 10 || term.includes('@')) {
-      const dirSnap = await getDocs(query(collection(db, 'users'), limit(120)));
-      dirSnap.forEach((docSnap) => {
+      const dirSnap = await getDocs(query(collection(db, 'users'), limit(400))).catch(() => null);
+      dirSnap?.forEach((docSnap) => {
         if (resultsMap.has(docSnap.id)) return;
         const data = docSnap.data() as UserProfile;
         const u = (data.usernameLower || data.username || '').toLowerCase();
         const n = (data.nameLower || data.name || data.displayName || '').toLowerCase();
         const em = (data.emailLower || data.email || '').toLowerCase();
-        if (u.includes(term) || n.includes(term) || em.includes(term)) {
+        const emLocal = em.split('@')[0] || '';
+        if (u.includes(term) || n.includes(term) || em.includes(term) || emLocal.includes(term)) {
           resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
         }
       });
