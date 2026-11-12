@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, limit, query, setDoc, where } from 'firebase/firestore';
 import { db } from './firebase';
 import { UserProfile, SpacedMistakeItem, SpeedDrillRecord } from '@/types/user';
 import {
@@ -102,16 +102,36 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
 
   try {
     const userDocRef = doc(db, 'users', uid);
-    const fetchPromise = Promise.all([
-      getDoc(userDocRef),
-      fetchResolvedFollowRelations(uid).catch(() => ({ followersUids: [], followingUids: [] })),
-    ]);
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Firestore timeout')), 1500)
+      setTimeout(() => reject(new Error('Firestore timeout')), 5000)
     );
-    const [snap, relations] = await Promise.race([fetchPromise, timeoutPromise]);
-    if (snap && snap.exists()) {
-      const remoteData = snap.data() as UserProfile;
+    const snap = await Promise.race([getDoc(userDocRef), timeoutPromise]);
+    const relations = await fetchResolvedFollowRelations(uid).catch(() => ({
+      followersUids: [] as string[],
+      followingUids: [] as string[],
+    }));
+
+    let remoteData: UserProfile | null = snap && snap.exists() ? (snap.data() as UserProfile) : null;
+
+    // Fallback: if no doc at users/{uid}, check if an existing account already exists with this same email
+    const cleanEmailLower = (email || '').trim().toLowerCase();
+    if (!remoteData && cleanEmailLower) {
+      try {
+        const emailQ = query(
+          collection(db, 'users'),
+          where('emailLower', '==', cleanEmailLower),
+          limit(1)
+        );
+        const emailSnap = await Promise.race([getDocs(emailQ), timeoutPromise]);
+        if (emailSnap && !emailSnap.empty) {
+          remoteData = emailSnap.docs[0].data() as UserProfile;
+        }
+      } catch {
+        // Ignore email lookup fallback errors
+      }
+    }
+
+    if (remoteData) {
       const mergedFollowers = Array.from(
         new Set([...(remoteData.followersUids || []), ...relations.followersUids])
       );
@@ -120,7 +140,7 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
       );
 
       const merged: UserProfile = markTodayActiveOnProfile({
-        ...createDefaultProfile(uid, displayName || remoteData.name, email || remoteData.email),
+        ...createDefaultProfile(uid, remoteData.name || displayName, remoteData.email || email),
         ...remoteData,
         uid,
         name: remoteData.name || remoteData.displayName || displayName || 'Royal Scholar',
@@ -133,7 +153,7 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
         lastSeenAt: new Date().toISOString(),
       });
 
-      if (!remoteData.usernameLower || !remoteData.nameLower || !remoteData.emailLower || !remoteData.activeDates) {
+      if (!snap.exists() || !remoteData.usernameLower || !remoteData.nameLower || !remoteData.emailLower || !remoteData.activeDates) {
         void upsertUserInDirectory(merged).catch(() => {});
       }
 

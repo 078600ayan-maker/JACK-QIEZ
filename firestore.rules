@@ -19,8 +19,11 @@ service cloud.firestore {
         (
           !request.resource.data.diff(resource.data).affectedKeys().hasAny(['verificationTick', 'isAdmin']) ||
           (
-            request.resource.data.verificationTick == resource.data.verificationTick &&
-            request.resource.data.isAdmin == resource.data.isAdmin
+            !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin']) &&
+            (
+              (!('verificationTick' in resource.data) && request.resource.data.verificationTick == 'green') ||
+              (('verificationTick' in resource.data) && request.resource.data.verificationTick == resource.data.verificationTick)
+            )
           )
         )
       ) || (

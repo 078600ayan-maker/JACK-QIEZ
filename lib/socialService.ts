@@ -81,9 +81,10 @@ export function normalizeUsername(raw?: string, fallbackUid?: string): string {
     .trim()
     .toLowerCase()
     .replace(/^@+/, '')
-    .replace(/[^a-z0-9_]/g, '_')
-    .replace(/_+/g, '_')
-    .replace(/^_|_$/g, '');
+    .replace(/[^a-z0-9_.]/g, '_')
+    .replace(/_{2,}/g, '_')
+    .replace(/\.{2,}/g, '.')
+    .replace(/^[_.]|[_.]+$/g, '');
   if (base.length >= 3) return base.slice(0, 24);
   const suffix = (fallbackUid || Math.random().toString(36).slice(2, 8))
     .replace(/[^a-zA-Z0-9]/g, '')

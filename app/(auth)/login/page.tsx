@@ -70,55 +70,54 @@ export default function LoginPage() {
       lastSeenAt: new Date().toISOString(),
     });
 
-    // Instant local commit & immediate route navigation (<50ms post-OAuth)
-    setProfile(instantProfile);
     if (typeof window !== 'undefined') {
       localStorage.setItem('sbr_session_verified', 'true');
     }
 
     if (forceOnboarding) {
+      setProfile(instantProfile);
       router.replace('/onboarding');
-    } else {
-      // Check fast cloud state to detect brand-new Google/Email accounts lacking onboarding
-      let needsOnboarding = false;
-      try {
-        const remote = await Promise.race([
-          fetchUserProfile(uid, cleanName, cleanEmail),
-          new Promise<null>((resolve) => setTimeout(() => resolve(null), 900)),
-        ]);
-        if (remote) {
-          const merged = markTodayActiveOnProfile({
-            ...remote,
-            name: remote.name || cleanName,
-            displayName: remote.displayName || cleanName,
-            email: remote.email || cleanEmail || instantProfile.email,
-            emailLower: (remote.email || cleanEmail || instantProfile.email || '').trim().toLowerCase(),
-            photoURL: photoURL || remote.photoURL || instantProfile.photoURL,
-            isRealUser: true,
-            isAnonymous: false,
-            isOnline: true,
-          });
-          setProfile(merged);
-          needsOnboarding =
-            merged.onboardingComplete === false ||
-            (!merged.onboardingComplete &&
-              (merged.xp || 0) === 0 &&
-              Object.keys(merged.progress || {}).length <= 1);
-          void upsertUserInDirectory(merged).catch(() => {});
-        } else {
-          needsOnboarding = isFreshLocal && !instantProfile.onboardingComplete;
-          void upsertUserInDirectory(instantProfile).catch(() => {});
-        }
-      } catch {
-        needsOnboarding = false;
-      }
-
-      router.replace(needsOnboarding ? '/onboarding' : '/');
+      void upsertUserInDirectory(instantProfile).catch(() => {});
       return;
     }
 
-    // Non-blocking background cloud directory registration for forced new signups
-    void upsertUserInDirectory(instantProfile).catch(() => {});
+    // Wait up to 5s for cloud profile so existing Gmail accounts ALWAYS restore old username, XP, and progress
+    let needsOnboarding = false;
+    try {
+      const remote = await Promise.race([
+        fetchUserProfile(uid, cleanName, cleanEmail),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 5000)),
+      ]);
+      if (remote) {
+        const merged = markTodayActiveOnProfile({
+          ...remote,
+          name: remote.name || cleanName,
+          displayName: remote.displayName || remote.name || cleanName,
+          email: remote.email || cleanEmail || instantProfile.email,
+          emailLower: (remote.email || cleanEmail || instantProfile.email || '').trim().toLowerCase(),
+          username: remote.username || instantProfile.username,
+          usernameLower: (remote.usernameLower || remote.username || instantProfile.username || '').toLowerCase(),
+          photoURL: remote.photoURL || photoURL || instantProfile.photoURL,
+          isRealUser: true,
+          isAnonymous: false,
+          isOnline: true,
+        });
+        setProfile(merged);
+        needsOnboarding =
+          merged.onboardingComplete === false ||
+          (!merged.onboardingComplete &&
+            (merged.xp || 0) === 0 &&
+            Object.keys(merged.progress || {}).length <= 1);
+      } else {
+        setProfile(instantProfile);
+        needsOnboarding = isFreshLocal && !instantProfile.onboardingComplete;
+      }
+    } catch {
+      setProfile(instantProfile);
+      needsOnboarding = false;
+    }
+
+    router.replace(needsOnboarding ? '/onboarding' : '/');
   };
 
   // 1. Fast Auth & Google Redirect Result Check on Boot

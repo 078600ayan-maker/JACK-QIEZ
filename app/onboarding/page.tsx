@@ -117,15 +117,19 @@ export default function OnboardingPage() {
       const fullName = `${firstName.trim()} ${lastName.trim()}`.trim();
       const email = local?.email || auth.currentUser?.email || '';
       const cleanUser = normalizeUsername(username, firebaseUid);
-      const base = createDefaultProfile(firebaseUid, fullName, email);
+      const base =
+        local && local.uid === firebaseUid
+          ? local
+          : createDefaultProfile(firebaseUid, fullName, email);
       const freshProfile = markTodayActiveOnProfile({
         ...base,
+        uid: firebaseUid,
         name: fullName,
         displayName: fullName,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
-        age: parseInt(age, 10) || 15,
-        classLevel: classLevel || 'Class 10 JAC',
+        age: parseInt(age, 10) || base.age || 15,
+        classLevel: classLevel || base.classLevel || 'Class 10 JAC',
         username: cleanUser,
         usernameLower: cleanUser.toLowerCase(),
         nameLower: fullName.toLowerCase(),
@@ -134,11 +138,9 @@ export default function OnboardingPage() {
         photoURL: local?.photoURL || auth.currentUser?.photoURL || base.photoURL,
         studyGoals,
         onboardingComplete: true,
-        joinedAt: new Date().toISOString(),
+        joinedAt: base.joinedAt || new Date().toISOString(),
         isOnline: true,
         isRealUser: true,
-        xp: local?.xp || 0,
-        progress: local?.progress || { sci_ch01: 0 },
       });
 
       const synced = await upsertUserInDirectory(freshProfile);
