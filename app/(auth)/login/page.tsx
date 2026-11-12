@@ -76,8 +76,11 @@ export default function LoginPage() {
 
     if (forceOnboarding) {
       setProfile(instantProfile);
+      await Promise.race([
+        upsertUserInDirectory(instantProfile).catch(() => {}),
+        new Promise<void>((resolve) => setTimeout(resolve, 800)),
+      ]);
       router.replace('/onboarding');
-      void upsertUserInDirectory(instantProfile).catch(() => {});
       return;
     }
 
