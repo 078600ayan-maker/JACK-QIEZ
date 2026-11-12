@@ -50,6 +50,7 @@ import {
   upsertUserInDirectory,
   fetchActiveScholarsCount,
   updateUserVerificationTickInCloud,
+  isUserOnline,
 } from '@/lib/socialService';
 import { VerificationTick } from '@/components/ui/VerificationTick';
 import {
@@ -101,6 +102,9 @@ export interface ScholarItem {
   isOnline?: boolean;
   verificationTick?: 'green' | 'red' | 'black';
   email?: string;
+  isAdmin?: boolean;
+  isAdminPermitted?: boolean;
+  isFeaturedReference?: boolean;
 }
 
 function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem {
@@ -125,9 +129,12 @@ function profileToScholarItem(u: UserProfile, currentUid?: string): ScholarItem 
     isCurrentUser: Boolean(currentUid && u.uid === currentUid),
     followersUids,
     followingUids,
-    isOnline: Boolean(u.isOnline),
-    verificationTick: u.verificationTick || 'green',
+    isOnline: isUserOnline(u),
+    verificationTick: u.verificationTick || (u.isAdmin ? 'red' : 'green'),
     email: u.emailLower || u.email || '',
+    isAdmin: Boolean(u.isAdmin),
+    isAdminPermitted: Boolean(u.isAdminPermitted),
+    isFeaturedReference: Boolean(u.isFeaturedReference),
   };
 }
 
@@ -139,7 +146,6 @@ function ProfileContent() {
   const [avatarTab, setAvatarTab] = useState<'bundles' | 'characters'>('characters');
   const [dpModalOpen, setDpModalOpen] = useState(false);
   const [teacherModalOpen, setTeacherModalOpen] = useState(false);
-  const [activeOnlineCount, setActiveOnlineCount] = useState<number>(1);
   const [copiedProfileLink, setCopiedProfileLink] = useState(false);
 
   // Admin Verification Tick Console State
@@ -198,16 +204,7 @@ function ProfileContent() {
   useEffect(() => {
     const unsub = subscribeGlobalLeaderboard((users) => {
       setDirectoryScholars(users.map((u) => profileToScholarItem(u, profile?.uid)));
-      const nowMs = Date.now();
-      const online = users.filter((u) => {
-        const ts = u.lastSeenAt ? Date.parse(u.lastSeenAt) : u.updatedAt ? Date.parse(u.updatedAt) : 0;
-        return u.isOnline || (ts > 0 && nowMs - ts <= 20 * 60 * 1000);
-      }).length;
-      if (online > 0) setActiveOnlineCount(online);
     }, 50);
-    fetchActiveScholarsCount().then((c) => {
-      if (c > 0) setActiveOnlineCount((prev) => Math.max(prev, c));
-    }).catch(() => {});
     return () => unsub();
   }, [profile?.uid]);
 
@@ -456,25 +453,66 @@ function ProfileContent() {
 
   // Scholars displayed in the directory / search results
   const term = searchUsername.trim();
-  const baseDirectory = directoryScholars.length > 0
-    ? directoryScholars
-    : profile
-    ? [profileToScholarItem(profile, profile.uid)]
-    : [];
+
+  // Canonical Admin Reference Account fallback if database has no registered admin account yet
+  const CANONICAL_ADMIN_REFERENCE: ScholarItem = {
+    uid: 'admin_official_ayan',
+    name: 'Ayan Ali (Master Faculty)',
+    username: 'ayan_admin',
+    class: 'Class 10 JAC Faculty',
+    xp: 9999,
+    streak: 365,
+    followers: 1250,
+    following: 12,
+    photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+    skinPath: '/skins/boy/skullwar.png',
+    dressedOutfit: 'Faculty Lead Robes',
+    isRealUser: true,
+    role: 'System Administrator & Faculty Lead',
+    bio: 'Lead Examiner & Master Instructor for JAC Board Examination 2026.',
+    followersUids: [],
+    followingUids: [],
+    isOnline: true,
+    verificationTick: 'red',
+    email: 'admin@jackquiz.com',
+    isAdmin: true,
+    isAdminPermitted: true,
+    isFeaturedReference: true,
+  };
+
+  // Duolingo-style: when no search query, show ONLY Admin and Admin-Permitted reference accounts
+  const isAdminOrPermitted = (s: ScholarItem): boolean => {
+    return Boolean(
+      s.isAdmin ||
+      s.isAdminPermitted ||
+      s.isFeaturedReference ||
+      s.verificationTick === 'red' ||
+      s.verificationTick === 'black' ||
+      (s.role || '').toLowerCase().includes('admin') ||
+      (s.username || '').toLowerCase() === 'ayan' ||
+      (s.username || '').toLowerCase() === 'admin'
+    );
+  };
+
+  const adminPermittedAccounts = directoryScholars.filter(isAdminOrPermitted);
+  const defaultDisplayList = adminPermittedAccounts.length > 0
+    ? adminPermittedAccounts
+    : [CANONICAL_ADMIN_REFERENCE];
+
   const termLower = term.toLowerCase().replace(/^@+/, '');
   const localMatches = termLower
-    ? baseDirectory.filter(
+    ? directoryScholars.filter(
         (s) =>
           s.name.toLowerCase().includes(termLower) ||
           s.username.toLowerCase().includes(termLower) ||
           (s.email || '').toLowerCase().includes(termLower)
       )
-    : baseDirectory;
+    : [];
   const displayedScholars = term
     ? searchResults && searchResults.length > 0
       ? searchResults
       : localMatches
-    : baseDirectory;
+    : defaultDisplayList;
 
   // Duolingo-style Pre-Join-Aware Weekly & Monthly Streak + 10 Pro Telemetry Compute
   const weekCells = buildWeeklyStreakStrip(profile);
@@ -536,10 +574,6 @@ function ProfileContent() {
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-[9px] font-black text-emerald-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              {activeOnlineCount} ONLINE
-            </span>
             <span className="text-[10px] font-mono font-bold text-slate-400">
               {profile?.classLevel || 'CLASS 10 JAC'}
             </span>
@@ -547,7 +581,7 @@ function ProfileContent() {
         </div>
 
         <div className="flex items-center justify-between my-2">
-          {/* Custom DP with Rotating Golden Ring Frame */}
+          {/* Custom DP with Rotating Golden Ring Frame + Online/Offline Dot */}
           <div className="relative shrink-0 mr-3">
             <div
               onClick={() => {
@@ -571,6 +605,15 @@ function ProfileContent() {
               <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white border-2 border-slate-900 flex items-center justify-center shadow-[0_0_12px_rgba(239,68,68,0.8)] group-hover:scale-110 transition-transform">
                 <Camera className="w-3 h-3 text-white" />
               </div>
+              {/* Real-time Online/Offline Presence Dot */}
+              <div
+                className={`absolute -top-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-slate-900 ${
+                  profile?.isOnline
+                    ? 'bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.7)]'
+                    : 'bg-[#ef4444] shadow-[0_0_6px_rgba(239,68,68,0.5)]'
+                }`}
+                title={profile?.isOnline ? 'Online' : 'Offline'}
+              />
             </div>
           </div>
 
@@ -902,11 +945,6 @@ function ProfileContent() {
             <div className="text-xs font-black text-red-300">{profile?.duelWins ?? 0}</div>
             <div className="text-[8px] text-slate-400 uppercase font-bold">Duel Wins</div>
           </div>
-          <div className="p-2 rounded-xl bg-white/5 border border-white/10">
-            <Users className="w-3.5 h-3.5 text-sky-400 mx-auto mb-0.5" />
-            <div className="text-xs font-black text-sky-300">{activeOnlineCount}</div>
-            <div className="text-[8px] text-slate-400 uppercase font-bold">Online Now</div>
-          </div>
         </div>
 
         {/* Subject-Wise Mastery Progress across all 69 JAC Chapters */}
@@ -1091,6 +1129,19 @@ function ProfileContent() {
           </div>
         )}
 
+        {/* Duolingo-Style Pre-Search Section Header */}
+        {!term && (
+          <div className="mb-2.5 px-1 flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Suggested / Official Reference Accounts</span>
+            </span>
+            <span className="text-[9px] font-bold text-slate-400">
+              Admin &amp; Verified Faculty
+            </span>
+          </div>
+        )}
+
         {/* Scholars Cards with View Profile */}
         <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1">
           {displayedScholars.length === 0 ? (
@@ -1100,7 +1151,7 @@ function ProfileContent() {
                   ? 'Searching Firestore users directory...'
                   : term
                   ? `No registered scholar matched "@${term.replace(/^@+/, '')}".`
-                  : 'No scholars in directory yet. Invite classmates to sign up!'}
+                  : 'No official reference accounts found.'}
               </p>
             </div>
           ) : (
@@ -1120,14 +1171,25 @@ function ProfileContent() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <img
-                        src={s.photoURL}
-                        alt={s.name}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
-                        }}
-                        className="w-10 h-10 rounded-xl object-cover border border-white/15 shrink-0 bg-slate-900"
-                      />
+                      {/* Avatar with Individual Real-Time Presence Dot */}
+                      <div className="relative shrink-0">
+                        <img
+                          src={s.photoURL}
+                          alt={s.name}
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                          }}
+                          className="w-10 h-10 rounded-xl object-cover border border-white/15 shrink-0 bg-slate-900"
+                        />
+                        <span
+                          className={`absolute -top-1 -right-1 w-3 h-3 rounded-full border-2 border-slate-950 ${
+                            s.isOnline
+                              ? 'bg-[#22c55e] shadow-[0_0_8px_rgba(34,197,94,0.8)]'
+                              : 'bg-[#ef4444] shadow-[0_0_5px_rgba(239,68,68,0.6)]'
+                          }`}
+                          title={s.isOnline ? 'Online' : 'Offline'}
+                        />
+                      </div>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <p className="text-xs font-black text-white truncate">{s.name}</p>
@@ -1402,14 +1464,24 @@ function ProfileContent() {
                           }}
                           className="flex items-center gap-2.5 cursor-pointer min-w-0"
                         >
-                          <img
-                            src={f.photoURL}
-                            alt={f.name}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
-                            }}
-                            className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
-                          />
+                          <div className="relative shrink-0">
+                            <img
+                              src={f.photoURL}
+                              alt={f.name}
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                              }}
+                              className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900"
+                            />
+                            <span
+                              className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border border-slate-950 ${
+                                f.isOnline
+                                  ? 'bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.8)]'
+                                  : 'bg-[#ef4444] shadow-[0_0_4px_rgba(239,68,68,0.6)]'
+                              }`}
+                              title={f.isOnline ? 'Online' : 'Offline'}
+                            />
+                          </div>
                           <div className="min-w-0">
                             <p className="text-xs font-black text-white truncate">{f.name}</p>
                             <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>
@@ -1463,14 +1535,24 @@ function ProfileContent() {
                           }}
                           className="flex items-center gap-2.5 cursor-pointer min-w-0"
                         >
-                          <img
-                            src={f.photoURL}
-                            alt={f.name}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
-                            }}
-                            className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900 shrink-0"
-                          />
+                          <div className="relative shrink-0">
+                            <img
+                              src={f.photoURL}
+                              alt={f.name}
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                              }}
+                              className="w-9 h-9 rounded-xl object-cover border border-white/10 bg-slate-900"
+                            />
+                            <span
+                              className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border border-slate-950 ${
+                                f.isOnline
+                                  ? 'bg-[#22c55e] shadow-[0_0_6px_rgba(34,197,94,0.8)]'
+                                  : 'bg-[#ef4444] shadow-[0_0_4px_rgba(239,68,68,0.6)]'
+                              }`}
+                              title={f.isOnline ? 'Online' : 'Offline'}
+                            />
+                          </div>
                           <div className="min-w-0">
                             <p className="text-xs font-black text-white truncate">{f.name}</p>
                             <p className="text-[10px] text-amber-400 font-bold truncate">@{f.username} &bull; {f.xp} XP</p>

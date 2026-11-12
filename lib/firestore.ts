@@ -16,8 +16,9 @@ export function getLocalUserProfile(): UserProfile | null {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!raw) return null;
     const profile = JSON.parse(raw);
-    if (!profile.photoURL || profile.photoURL.includes('avatars/') || profile.photoURL.includes('custom_reference')) {
-      profile.photoURL = '/assets/profile_photos/IMG_20261109_001652.png';
+    // Only fix truly broken/missing photo paths — never override user-chosen DP
+    if (!profile.photoURL || profile.photoURL.includes('custom_reference')) {
+      profile.photoURL = '/assets/profile_photos/IMG_20261109_001512.png';
       saveLocalUserProfile(profile);
     }
     return profile;

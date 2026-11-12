@@ -68,7 +68,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Science Vanguard',
     gender: 'boy',
     role: "Letter 'K' Varsity Blue Jacket & Brown Hair",
-    src: '/assets/canonical_characters/kai.png'
+    src: '/assets/profile_photos/IMG_20261109_001512.png'
   },
   {
     id: 'dp_jax',
@@ -76,7 +76,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Tactical Speedster',
     gender: 'boy',
     role: 'Cyber Cyan Glowing Lines Hoodie & Headset',
-    src: '/assets/canonical_characters/jax.png'
+    src: '/assets/profile_photos/IMG_20261109_001527.png'
   },
   {
     id: 'dp_otis',
@@ -84,7 +84,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Scholar Sage',
     gender: 'boy',
     role: 'Tweed Blazer Suit, Bowtie, Glasses & Scroll',
-    src: '/assets/canonical_characters/otis.png'
+    src: '/assets/profile_photos/IMG_20261109_001555.png'
   },
   {
     id: 'dp_zane',
@@ -92,7 +92,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Cosmic Sorcerer',
     gender: 'boy',
     role: 'Galaxy Purple Robe, Golden Trim & Silver Hair',
-    src: '/assets/canonical_characters/zane.png'
+    src: '/assets/profile_photos/IMG_20261109_001625.png'
   },
   {
     id: 'dp_ryo',
@@ -100,7 +100,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Tactical Vanguard',
     gender: 'boy',
     role: "Green 'R' Varsity Jacket, Red Headband & Tablet",
-    src: '/assets/canonical_characters/ryo.png'
+    src: '/assets/profile_photos/IMG_20261109_001652.png'
   },
   {
     id: 'dp_elis',
@@ -108,7 +108,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Royal Scholar',
     gender: 'girl',
     role: 'Yellow Overalls, Blonde Buns, Book & Quill',
-    src: '/assets/canonical_characters/elis.png'
+    src: '/assets/profile_photos/IMG_20261109_001715.png'
   },
   {
     id: 'dp_nova',
@@ -116,7 +116,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Starlight Mage',
     gender: 'girl',
     role: 'Purple Cosmic Galaxy Hoodie & Star Wand',
-    src: '/assets/canonical_characters/nova.png'
+    src: '/assets/profile_photos/IMG_20261109_001739.png'
   },
   {
     id: 'dp_fay',
@@ -124,7 +124,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Nature Guardian',
     gender: 'girl',
     role: 'Woodland Green Dress, Braided Hair & Leaf Book',
-    src: '/assets/canonical_characters/fay.png'
+    src: '/assets/profile_photos/IMG_20261109_001805.png'
   },
   {
     id: 'dp_zara',
@@ -132,7 +132,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Speed Runner',
     gender: 'girl',
     role: 'Red Athletic Tracksuit Jacket & Neck Headphones',
-    src: '/assets/canonical_characters/zara.png'
+    src: '/assets/profile_photos/IMG_20261109_001833.png'
   },
   {
     id: 'dp_mia',
@@ -140,7 +140,7 @@ export const CLASSIC_PROFILE_PHOTOS: ClassicProfilePhoto[] = [
     character: 'Creative Artisan',
     gender: 'girl',
     role: 'Pastel Cardigan, Pink Anime Hair & Art Palette',
-    src: '/assets/canonical_characters/mia.png'
+    src: '/assets/profile_photos/IMG_20261109_001853.png'
   }
 ];
 

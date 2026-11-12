@@ -27,6 +27,7 @@ import {
   UserPlus,
   UserCheck,
   Lock,
+  KeyRound,
   ChevronDown,
   ChevronUp,
   Bell
@@ -50,6 +51,8 @@ import {
   fetchRecentPairDuels,
   fetchActiveScholarsCount,
   sendBuddyNudgeInCloud,
+  queueGlobalAutoMatch,
+  isUserOnline,
   DuelRoom
 } from '@/lib/socialService';
 import {
@@ -59,7 +62,7 @@ import {
   DuelHistorySlice,
   PairAntiFixReport,
 } from '@/lib/matchIntegrity';
-import { playClickSound } from '@/lib/audioEngine';
+import { playClickSound, playCorrectDing, playPop } from '@/lib/audioEngine';
 import { TactileButton } from '@/components/ui/TactileButton';
 import { triggerHaptic } from '@/lib/haptics';
 
@@ -116,6 +119,12 @@ function BattleHubContent() {
   const [followBusyMap, setFollowBusyMap] = useState<Record<string, boolean>>({});
   const [linkingNotice, setLinkingNotice] = useState<string | null>(null);
   const [copiedPin, setCopiedPin] = useState(false);
+
+  // Dedicated 4-Digit PIN Loader & True Online Matchmaking State
+  const [pinLoaderState, setPinLoaderState] = useState<
+    'idle' | 'waiting_for_guest' | 'validating_pin' | 'searching_global' | 'matched_ready'
+  >('idle');
+  const [loaderStatusText, setLoaderStatusText] = useState<string>('');
 
   const [isSearchingMatch, setIsSearchingMatch] = useState(false);
   const [matchedOpponent, setMatchedOpponent] = useState<BattleScholarCard | null>(null);
@@ -236,18 +245,28 @@ function BattleHubContent() {
     const unsub = subscribeDuelRoom(activeRoom.pin, (room) => {
       if (!room) return;
       setActiveRoom(room);
-      if (room.guestUid && room.hostUid === profile?.uid) {
+      if (room.guestUid && room.hostUid) {
+        const isHost = room.hostUid === profile?.uid;
+        const oppUid = isHost ? room.guestUid : room.hostUid;
+        const oppName = isHost ? room.guestName : room.hostName;
+        const oppPhoto = isHost ? room.guestPhoto : room.hostPhoto;
+        const oppUsername = isHost ? room.guestUsername : room.hostUsername;
+        const oppEmail = isHost ? room.guestEmailLower : room.hostEmailLower;
+        const oppXp = isHost ? room.guestXp : room.hostXp;
+
         setMatchedOpponent({
-          uid: room.guestUid,
-          name: room.guestName || 'Challenger',
-          username: room.guestUsername || 'challenger',
-          emailLower: room.guestEmailLower,
-          xp: room.guestXp || 0,
+          uid: oppUid || 'opp',
+          name: oppName || 'Challenger',
+          username: oppUsername || 'challenger',
+          emailLower: oppEmail,
+          xp: oppXp || 0,
           streak: 1,
-          photoURL: room.guestPhoto || '/assets/profile_photos/classic_character_1.png',
-          title: 'Joined via PIN',
+          photoURL: oppPhoto || '/assets/profile_photos/IMG_20261109_001512.png',
+          title: room.mode === 'global' ? 'Global Matched Opponent' : 'PIN Room Challenger',
           pin: room.pin
         });
+        setPinLoaderState('matched_ready');
+        playCorrectDing();
       }
     });
     return () => unsub();
@@ -264,7 +283,7 @@ function BattleHubContent() {
       streak: u.streak || 0,
       photoURL: u.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
       title: u.role || 'JAC Class 10 Scholar',
-      isOnline: u.isOnline,
+      isOnline: isUserOnline(u),
       isAnonymous: u.isAnonymous,
     }));
 
@@ -294,14 +313,18 @@ function BattleHubContent() {
     recentDuels,
   });
 
-  // Global Matchmaking Pro: Skill-bracket + 10-point anti-fixing check + live global room sync
+  // Global Auto Match Pro: True Real-Time Online Matchmaking Queue with 4-Digit Session Architecture
   const handleAutoMatch = async () => {
+    if (!profile?.uid) {
+      setRoomError('Please sign in first to queue for Global Auto Match Pro.');
+      return;
+    }
     playClickSound();
     triggerHaptic();
     setRoomError(null);
     setRoomSuccess(null);
-    setIsSearchingMatch(true);
-    setMatchedOpponent(null);
+    setPinLoaderState('searching_global');
+    setLoaderStatusText('Connecting to Global Online Matchmaking Queue...');
 
     try {
       const subjectFull =
@@ -315,123 +338,76 @@ function BattleHubContent() {
                 ? 'english'
                 : 'hindi';
 
-      // First check if another verified global waiting room matches cleanly (excluding self/same-email)
-      const selfEmail = (profile?.emailLower || profile?.email || '').trim().toLowerCase();
-      const openGlobalRoom = openRooms.find(
-        (r) =>
-          r.mode === 'global' &&
-          r.status === 'waiting' &&
-          r.hostUid !== profile?.uid &&
-          (!selfEmail || !r.hostEmailLower || r.hostEmailLower !== selfEmail)
-      );
-
-      if (openGlobalRoom && profile?.uid) {
-        const joined = await joinDuelRoomByPin(openGlobalRoom.pin, profile);
-        if (joined.ok && joined.room) {
-          setActiveRoom(joined.room);
-          setRoomCode(joined.room.pin);
-          setMatchedOpponent({
-            uid: joined.room.hostUid,
-            name: joined.room.hostName,
-            username: joined.room.hostUsername,
-            emailLower: joined.room.hostEmailLower,
-            xp: joined.room.hostXp,
-            streak: 1,
-            photoURL: joined.room.hostPhoto,
-            title: 'Global Matched Host',
-            pin: joined.room.pin,
-          });
-          setRoomSuccess(`Matched into live Global Room #${joined.room.pin} (Seed #${joined.room.questionSeed})!`);
-          setIsSearchingMatch(false);
-          return;
+      const { room, isHost } = await queueGlobalAutoMatch(
+        profile,
+        selectedSubjectId,
+        selectedSubjectMeta.name,
+        {
+          chapterId: selectedChapterId,
+          chapterName: `Chapter ${selectedChapterId}`,
         }
-      }
+      );
+      setActiveRoom(room);
+      setRoomCode(room.pin);
 
-      const best = findBestGlobalMatch({
-        selfProfile: profile,
-        scholars: dbScholars,
-        recentDuels,
-        subjectId: subjectFull,
-        chapterId: selectedChapterId,
-        strictBracket,
-      });
+      if (!isHost && room.hostUid) {
+        // Paired into an existing host's online room!
+        setMatchedOpponent({
+          uid: room.hostUid,
+          name: room.hostName,
+          username: room.hostUsername,
+          emailLower: room.hostEmailLower,
+          xp: room.hostXp,
+          streak: 1,
+          photoURL: room.hostPhoto || '/assets/profile_photos/IMG_20261109_001512.png',
+          title: 'Global Online Opponent',
+          pin: room.pin,
+        });
+        setPinLoaderState('matched_ready');
+        playCorrectDing();
+      } else {
+        // Host waiting in live global room with assigned 4-digit PIN
+        setLoaderStatusText(`Match Session PIN #${room.pin} Active • Awaiting Online Challenger...`);
 
-      if (!best) {
-        // Fallback to relaxed bracket if strict bracket had no close peer
-        const relaxed = strictBracket
-          ? findBestGlobalMatch({
+        // Resilient fallback pairing if queue has no peer within 10 seconds
+        setTimeout(() => {
+          setPinLoaderState((curr) => {
+            if (curr !== 'searching_global') return curr;
+            const best = findBestGlobalMatch({
               selfProfile: profile,
               scholars: dbScholars,
               recentDuels,
               subjectId: subjectFull,
               chapterId: selectedChapterId,
-              strictBracket: false,
-            })
-          : null;
-
-        if (!relaxed) {
-          setRoomError('No eligible verified scholars in bracket right now. Generate a 4-Digit PIN below to invite a friend!');
-          setIsSearchingMatch(false);
-          return;
-        }
-        let createdPin: string | undefined;
-        if (profile?.uid) {
-          const globalRoom = await createDuelRoom(profile, selectedSubjectId, selectedSubjectMeta.name, {
-            chapterId: selectedChapterId,
-            mode: 'global',
-            integrityScore: relaxed.integrityReport.integrityScore,
-            integrityStatus: relaxed.integrityReport.status,
-            integrityFlags: relaxed.integrityReport.flags,
+              strictBracket,
+            });
+            if (best) {
+              setMatchedOpponent({
+                uid: best.scholar.uid,
+                name: best.scholar.name || best.scholar.displayName || 'JAC Scholar',
+                username: best.scholar.username || normalizeUsername(best.scholar.name, best.scholar.uid),
+                emailLower: best.scholar.emailLower,
+                xp: best.scholar.xp || 0,
+                streak: best.scholar.streak || 0,
+                photoURL: best.scholar.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+                title: `${best.bracketLabel} • Verified`,
+                pin: room.pin,
+              });
+              playCorrectDing();
+              return 'matched_ready';
+            }
+            return curr;
           });
-          setActiveRoom(globalRoom);
-          setRoomCode(globalRoom.pin);
-          createdPin = globalRoom.pin;
-        }
-        setMatchedOpponent({
-          uid: relaxed.scholar.uid,
-          name: relaxed.scholar.name || relaxed.scholar.displayName || 'JAC Scholar',
-          username: relaxed.scholar.username || normalizeUsername(relaxed.scholar.name, relaxed.scholar.uid),
-          emailLower: relaxed.scholar.emailLower,
-          xp: relaxed.scholar.xp || 0,
-          streak: relaxed.scholar.streak || 0,
-          photoURL: relaxed.scholar.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-          title: `${relaxed.bracketLabel} • Verified`,
-          pin: createdPin,
-        });
-        setIsSearchingMatch(false);
-        return;
+        }, 10000);
       }
-
-      let createdPin: string | undefined;
-      if (profile?.uid) {
-        const globalRoom = await createDuelRoom(profile, selectedSubjectId, selectedSubjectMeta.name, {
-          chapterId: selectedChapterId,
-          mode: 'global',
-          integrityScore: best.integrityReport.integrityScore,
-          integrityStatus: best.integrityReport.status,
-          integrityFlags: best.integrityReport.flags,
-        });
-        setActiveRoom(globalRoom);
-        setRoomCode(globalRoom.pin);
-        createdPin = globalRoom.pin;
-      }
-
-      setMatchedOpponent({
-        uid: best.scholar.uid,
-        name: best.scholar.name || best.scholar.displayName || 'JAC Scholar',
-        username: best.scholar.username || normalizeUsername(best.scholar.name, best.scholar.uid),
-        emailLower: best.scholar.emailLower,
-        xp: best.scholar.xp || 0,
-        streak: best.scholar.streak || 0,
-        photoURL: best.scholar.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-        title: `${best.bracketLabel} • ${best.integrityReport.integrityScore}% Fair-Play`,
-        pin: createdPin,
-      });
-    } finally {
-      setIsSearchingMatch(false);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Global Matchmaking failed.';
+      setRoomError(msg);
+      setPinLoaderState('idle');
     }
   };
 
+  // Host Flow: Generate 4-Digit PIN & Enter Live PIN Loader Waiting State
   const handleCreatePinRoom = async (invitedFriend?: UserProfile) => {
     if (!profile?.uid) {
       setRoomError('Please sign in first to generate a cloud 4-digit PIN room.');
@@ -443,6 +419,9 @@ function BattleHubContent() {
     setRoomBusy(true);
     setRoomError(null);
     setRoomSuccess(null);
+    setPinLoaderState('waiting_for_guest');
+    setLoaderStatusText('Allocating Real-Time 4-Digit PIN Room...');
+
     try {
       const room = await createDuelRoom(profile, selectedSubjectId, selectedSubjectMeta.name, {
         chapterId: selectedChapterId,
@@ -453,24 +432,28 @@ function BattleHubContent() {
       });
       setRoomCode(room.pin);
       setActiveRoom(room);
+      setLoaderStatusText(`PIN #${room.pin} Active • Waiting for Opponent to Link...`);
+
       const inviteUrl = `https://jackquiz.vercel.app/battle?pin=${room.pin}`;
       navigator.clipboard?.writeText(inviteUrl);
       if (invitedFriend?.uid) {
         await sendBuddyNudgeInCloud(profile.uid, profile.name || 'Scholar', invitedFriend.uid);
-        setRoomSuccess(`4-Digit PIN #${room.pin} generated, invite link copied & ${invitedFriend.name} notified!`);
+        setRoomSuccess(`4-Digit PIN #${room.pin} generated & link copied! ${invitedFriend.name} notified.`);
       } else {
-        setRoomSuccess(`4-Digit PIN #${room.pin} generated! Invite link copied to clipboard.`);
+        setRoomSuccess(`4-Digit PIN #${room.pin} generated! Link copied to clipboard.`);
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unable to generate PIN room. Check connection.';
       setRoomError(msg);
+      setPinLoaderState('idle');
     } finally {
       setRoomBusy(false);
     }
   };
 
-  const handleJoinPinRoom = async () => {
-    const cleanPin = roomCode.replace(/\D/g, '').trim();
+  // Joiner Flow: Validate 4-Digit PIN, Trigger Loader & Link Online Room
+  const handleJoinPinRoom = async (pinInput?: string) => {
+    const cleanPin = (pinInput || roomCode).replace(/\D/g, '').trim();
     if (!profile?.uid) {
       setRoomError('Please sign in to join a cloud PIN room.');
       return;
@@ -485,28 +468,46 @@ function BattleHubContent() {
     setRoomBusy(true);
     setRoomError(null);
     setRoomSuccess(null);
+    setPinLoaderState('validating_pin');
+    setLoaderStatusText(`Validating 4-Digit PIN #${cleanPin} & Linking Online Room...`);
+
     try {
       const res = await joinDuelRoomByPin(cleanPin, profile);
       if (!res.ok || !res.room) {
-        setRoomError(res.error || 'Room not found.');
+        setRoomError(res.error || `No active duel room found for PIN #${cleanPin}.`);
+        setPinLoaderState('idle');
         return;
       }
       setActiveRoom(res.room);
-      setRoomSuccess(`Joined PIN Room #${res.room.pin}! Anti-Match-Fixing Shield Active.`);
+      setRoomCode(res.room.pin);
+      setRoomSuccess(`Linked to PIN Room #${res.room.pin}!`);
+
       const isHostSelf = res.room.hostUid === profile.uid;
-      if (!isHostSelf) {
-        setMatchedOpponent({
-          uid: res.room.hostUid,
-          name: res.room.hostName,
-          username: res.room.hostUsername,
-          emailLower: res.room.hostEmailLower,
-          xp: res.room.hostXp,
-          streak: 1,
-          photoURL: res.room.hostPhoto,
-          title: 'Room Host',
-          pin: res.room.pin
-        });
-      }
+      const oppUid = isHostSelf ? res.room.guestUid : res.room.hostUid;
+      const oppName = isHostSelf ? res.room.guestName : res.room.hostName;
+      const oppPhoto = isHostSelf ? res.room.guestPhoto : res.room.hostPhoto;
+      const oppUsername = isHostSelf ? res.room.guestUsername : res.room.hostUsername;
+      const oppEmail = isHostSelf ? res.room.guestEmailLower : res.room.hostEmailLower;
+      const oppXp = isHostSelf ? res.room.guestXp : res.room.hostXp;
+
+      setMatchedOpponent({
+        uid: oppUid || 'opp',
+        name: oppName || 'Room Host',
+        username: oppUsername || 'host',
+        emailLower: oppEmail,
+        xp: oppXp || 0,
+        streak: 1,
+        photoURL: oppPhoto || '/assets/profile_photos/IMG_20261109_001512.png',
+        title: isHostSelf ? 'Joined Guest' : 'Room Host',
+        pin: res.room.pin,
+      });
+
+      setPinLoaderState('matched_ready');
+      playCorrectDing();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error validating PIN room.';
+      setRoomError(msg);
+      setPinLoaderState('idle');
     } finally {
       setRoomBusy(false);
     }
@@ -683,6 +684,242 @@ function BattleHubContent() {
           🏆 3D Trophy Shelf
         </button>
       </div>
+
+      {/* DEDICATED 4-DIGIT PIN & GLOBAL AUTO MATCH PRO REAL-TIME LOADER OVERLAY */}
+      {pinLoaderState !== 'idle' && (
+        <div className="mb-4 p-5 rounded-3xl bg-gradient-to-br from-[#0c1424] via-[#121b2f] to-[#080d18] border-2 border-amber-400/60 shadow-[0_20px_50px_rgba(0,0,0,0.9)] relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          {/* Animated Background Ambience */}
+          <div className="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-16 -left-16 w-36 h-36 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          {/* STATE 1: WAITING FOR GUEST (HOST GENERATED 4-DIGIT PIN) */}
+          {pinLoaderState === 'waiting_for_guest' && activeRoom && (
+            <div className="space-y-4 text-center">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-[10px] font-black text-amber-300 uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  Live Host Room Active
+                </span>
+                <span className="text-[10px] font-bold text-slate-400">
+                  {selectedSubjectMeta.name} • Ch {selectedChapterId}
+                </span>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                  Share 4-Digit Room PIN
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Opponent can join by entering this 4-digit code in their Battle Tab.
+                </p>
+              </div>
+
+              {/* 4 Glowing PIN Digit Cards */}
+              <div className="flex items-center justify-center gap-2.5 py-2">
+                {activeRoom.pin.split('').map((digit, idx) => (
+                  <div
+                    key={idx}
+                    className="w-13 h-16 rounded-2xl bg-gradient-to-b from-amber-400/20 via-amber-500/10 to-black/60 border-2 border-amber-400/80 shadow-[0_0_20px_rgba(245,158,11,0.35)] flex items-center justify-center text-3xl font-black font-mono text-amber-300"
+                  >
+                    {digit}
+                  </div>
+                ))}
+              </div>
+
+              {/* Live Host & Guest Slot Indicator */}
+              <div className="grid grid-cols-2 gap-3 p-3 rounded-2xl bg-black/40 border border-white/10">
+                <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/5 border border-emerald-400/30">
+                  <div className="relative">
+                    <img
+                      src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                      alt={profile?.name || 'Host'}
+                      className="w-9 h-9 rounded-full object-cover border-2 border-emerald-400"
+                    />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#22c55e] border-2 border-[#0D1525] shadow-[0_0_8px_#22c55e]" />
+                  </div>
+                  <div className="text-left min-w-0">
+                    <div className="text-[11px] font-black text-white truncate">{profile?.name || 'You'} (Host)</div>
+                    <div className="text-[9px] text-emerald-400 font-bold">Online &bull; Ready</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/5 border border-dashed border-white/20">
+                  <div className="w-9 h-9 rounded-full border-2 border-dashed border-amber-400/60 bg-amber-500/10 flex items-center justify-center shrink-0">
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+                  </div>
+                  <div className="text-left min-w-0">
+                    <div className="text-[11px] font-black text-amber-200 truncate animate-pulse">Waiting for Guest...</div>
+                    <div className="text-[9px] text-slate-400">Listening to Cloud</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    triggerHaptic();
+                    navigator.clipboard?.writeText(`https://jackquiz.vercel.app/battle?pin=${activeRoom.pin}`);
+                    setCopiedPin(true);
+                    setTimeout(() => setCopiedPin(false), 2000);
+                  }}
+                  className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 font-black text-xs flex items-center justify-center gap-1.5 shadow-[0_3px_0_#92400E] active:translate-y-0.5 transition-all"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  <span>{copiedPin ? 'Copied Invite Link!' : 'Copy 4-Digit Invite Link'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setPinLoaderState('idle');
+                    setActiveRoom(null);
+                  }}
+                  className="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STATE 2: VALIDATING PIN */}
+          {pinLoaderState === 'validating_pin' && (
+            <div className="py-6 text-center space-y-3">
+              <div className="relative w-12 h-12 mx-auto">
+                <div className="w-12 h-12 rounded-full border-3 border-amber-500/20 border-t-amber-400 animate-spin" />
+                <KeyRound className="w-5 h-5 text-amber-400 absolute inset-0 m-auto" />
+              </div>
+              <h3 className="text-sm font-black text-white">Validating 4-Digit PIN...</h3>
+              <p className="text-[11px] text-slate-400 max-w-xs mx-auto">
+                {loaderStatusText || 'Connecting to host device and establishing synced duel room in Firestore cloud...'}
+              </p>
+            </div>
+          )}
+
+          {/* STATE 3: SEARCHING GLOBAL MATCH */}
+          {pinLoaderState === 'searching_global' && (
+            <div className="py-6 text-center space-y-3">
+              <div className="relative w-14 h-14 mx-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border border-emerald-400/30 animate-ping" />
+                <div className="w-12 h-12 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+                <Globe2 className="w-5 h-5 text-emerald-400 absolute inset-0 m-auto" />
+              </div>
+              <div>
+                <h3 className="text-sm font-black text-white uppercase tracking-wider">
+                  Global Auto Match Pro Active
+                </h3>
+                <p className="text-[11px] text-emerald-300 mt-0.5">
+                  Scanning live scholars in {selectedSubjectMeta.name} Ch {selectedChapterId}...
+                </p>
+                <p className="text-[10px] text-slate-400 mt-1">
+                  Fair ELO Bracket (±800 XP) &bull; Cloud Session #{activeRoom?.pin || 'SEARCH'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  setPinLoaderState('idle');
+                  setIsSearchingMatch(false);
+                }}
+                className="px-4 py-1.5 rounded-xl bg-white/10 text-slate-300 text-xs font-bold hover:text-white"
+              >
+                Cancel Search
+              </button>
+            </div>
+          )}
+
+          {/* STATE 4: MATCHED & READY (VS TRANSITION SCREEN) */}
+          {pinLoaderState === 'matched_ready' && matchedOpponent && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-[10px] font-black text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  Opponent Linked &bull; Room PIN #{activeRoom?.pin || matchedOpponent.pin}
+                </span>
+                <h3 className="text-base font-black text-white mt-1.5">Match Confirmed &mdash; Prepare for Duel!</h3>
+              </div>
+
+              {/* Side-by-Side VS Face-off Cards */}
+              <div className="grid grid-cols-2 gap-3 relative">
+                {/* Host Card */}
+                <div className="p-3 rounded-2xl bg-gradient-to-b from-white/10 to-black/40 border border-emerald-400/40 text-center">
+                  <div className="relative inline-block mx-auto mb-1.5">
+                    <img
+                      src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                      alt={profile?.name || 'You'}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)]"
+                    />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#22c55e] border-2 border-[#0D1525] shadow-[0_0_8px_#22c55e]" />
+                  </div>
+                  <div className="text-xs font-black text-white truncate">{profile?.name || 'You'}</div>
+                  <div className="text-[10px] text-emerald-400 font-bold">{profile?.xp || 0} XP</div>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                    Host (You)
+                  </span>
+                </div>
+
+                {/* VS Badge */}
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-amber-500 to-red-600 border-2 border-white flex items-center justify-center font-black text-[10px] text-white shadow-lg z-10">
+                  VS
+                </div>
+
+                {/* Opponent Card */}
+                <div className="p-3 rounded-2xl bg-gradient-to-b from-white/10 to-black/40 border border-amber-400/40 text-center">
+                  <div className="relative inline-block mx-auto mb-1.5">
+                    <img
+                      src={matchedOpponent.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                      alt={matchedOpponent.name}
+                      className="w-14 h-14 rounded-full object-cover border-2 border-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.4)]"
+                    />
+                    <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#22c55e] border-2 border-[#0D1525] shadow-[0_0_8px_#22c55e]" />
+                  </div>
+                  <div className="text-xs font-black text-white truncate">{matchedOpponent.name}</div>
+                  <div className="text-[10px] text-amber-300 font-bold">{matchedOpponent.xp || 0} XP</div>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">
+                    {matchedOpponent.title || 'Challenger'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Seed & Subject info */}
+              <div className="text-center text-[10px] text-slate-400 font-bold">
+                Subject: {selectedSubjectMeta.name} Ch {selectedChapterId} &bull; Synced Seed #{activeRoom?.questionSeed || currentAntiFixReport.seed}
+              </div>
+
+              {/* Launch Battle CTA */}
+              <div className="flex gap-2">
+                <Link
+                  href={`/quiz/${selectedSubjectId}/${chKey}/1?mode=duel&opponent=${encodeURIComponent(
+                    matchedOpponent.name
+                  )}&oppPhoto=${encodeURIComponent(matchedOpponent.photoURL)}&pin=${
+                    activeRoom?.pin || matchedOpponent.pin || ''
+                  }&seed=${activeRoom?.questionSeed || currentAntiFixReport.seed}`}
+                  className="flex-1"
+                >
+                  <TactileButton variant="emerald" fullWidth size="md" className="font-black text-xs py-3 shadow-[0_4px_0_#065F46]">
+                    ⚔️ Enter 1v1 Battle Arena
+                  </TactileButton>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setPinLoaderState('idle');
+                    setMatchedOpponent(null);
+                  }}
+                  className="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white text-xs font-bold"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* =========================================================================
           TAB 1: MATCHMAKING & BATTLE ENGINE
@@ -1016,7 +1253,7 @@ function BattleHubContent() {
                   variant="gold"
                   size="sm"
                   disabled={roomCode.trim().length !== 4 || roomBusy}
-                  onClick={handleJoinPinRoom}
+                  onClick={() => handleJoinPinRoom()}
                   className="font-black text-xs px-4"
                 >
                   {roomBusy ? 'Joining...' : 'Join PIN'}

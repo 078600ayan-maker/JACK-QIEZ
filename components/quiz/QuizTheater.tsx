@@ -64,6 +64,10 @@ export const QuizTheater: React.FC = () => {
   };
 
   const userLang = user.profile?.languagePreference || 'hi';
+  const isDuel = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('mode') === 'duel';
+  const opponentName = (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('opponent')) || 'Scholar Opponent';
+  const opponentPhoto = (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('oppPhoto')) || '/assets/profile_photos/IMG_20261109_001512.png';
+  const pinParam = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('pin');
 
   // Live dynamic language switch when user toggles [HINDI] / [ENGLISH] in Quiz Theater
   const prevLangRef = React.useRef(userLang);
@@ -367,6 +371,63 @@ export const QuizTheater: React.FC = () => {
               <BilingualLanguageToggle size="sm" />
             </div>
           </div>
+
+          {/* In-Game VS Screen / 1v1 Duel HUD Banner */}
+          {isDuel && (
+            <div className="mt-2 p-2 rounded-2xl bg-gradient-to-r from-emerald-950/70 via-black/80 to-blue-950/70 border border-emerald-500/40 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.6)]">
+              {/* Player 1 (Self) */}
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-emerald-400 bg-slate-900 shrink-0">
+                  <img
+                    src={user.profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                    alt={user.profile?.name || 'You'}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                    }}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#22c55e] border border-slate-950 shadow-[0_0_6px_rgba(34,197,94,0.8)]" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-black text-white truncate block">
+                    {user.profile?.name || 'You'}
+                  </span>
+                  <span className="text-[9px] font-mono font-bold text-emerald-300">
+                    {quiz.scoreCount} Score
+                  </span>
+                </div>
+              </div>
+
+              {/* Center VS Indicator */}
+              <div className="px-2.5 py-0.5 rounded-full bg-red-600/25 border border-red-500/50 text-[10px] font-black text-red-300 tracking-wider flex items-center gap-1 shadow-sm">
+                <span>⚔️ VS</span>
+                {pinParam && <span className="font-mono text-[9px] text-amber-300">#{pinParam}</span>}
+              </div>
+
+              {/* Player 2 (Opponent) */}
+              <div className="flex items-center gap-2 min-w-0 text-right justify-end">
+                <div className="min-w-0">
+                  <span className="text-[10px] font-black text-white truncate block">
+                    {opponentName}
+                  </span>
+                  <span className="text-[9px] font-mono font-bold text-blue-300">
+                    Live 1v1
+                  </span>
+                </div>
+                <div className="relative w-8 h-8 rounded-xl overflow-hidden border border-blue-400 bg-slate-900 shrink-0">
+                  <img
+                    src={opponentPhoto}
+                    alt={opponentName}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/assets/profile_photos/IMG_20261109_001512.png';
+                    }}
+                    className="w-full h-full object-cover"
+                  />
+                  <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#22c55e] border border-slate-950 shadow-[0_0_6px_rgba(34,197,94,0.8)]" />
+                </div>
+              </div>
+            </div>
+          )}
         </header>
       ) : (
         /* ZEN FOCUS MINIMAL HEADER */

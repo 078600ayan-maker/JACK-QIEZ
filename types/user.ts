@@ -90,4 +90,6 @@ export interface UserProfile {
   weeklyXp?: number;
   verificationTick?: 'green' | 'red' | 'black';
   isAdmin?: boolean;
+  isAdminPermitted?: boolean;
+  isFeaturedReference?: boolean;
 }

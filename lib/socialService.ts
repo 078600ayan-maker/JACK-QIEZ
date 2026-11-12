@@ -701,7 +701,7 @@ export async function joinDuelRoomByPin(
             guestUid: guest.uid,
             guestName: guest.name || guest.displayName || 'Challenger',
             guestUsername: guest.username || normalizeUsername(guest.name, guest.uid),
-            guestPhoto: guest.photoURL || '/assets/profile_photos/classic_character_1.png',
+            guestPhoto: guest.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
             guestXp: guest.xp || 0,
             guestEmailLower,
             guestReady: true,
@@ -858,6 +858,111 @@ export async function heartbeatUserPresence(uid: string): Promise<void> {
   } catch {
     // non-fatal heartbeat
   }
+}
+
+export async function setUserOffline(uid: string): Promise<void> {
+  if (!uid) return;
+  try {
+    await setDoc(
+      doc(db, 'users', uid),
+      { isOnline: false, lastSeenAt: new Date().toISOString() },
+      { merge: true }
+    );
+  } catch {
+    // non-fatal offline mark
+  }
+}
+
+export function isUserOnline(user?: { isOnline?: boolean; lastSeenAt?: string; updatedAt?: string } | null): boolean {
+  if (!user) return false;
+  if (user.isOnline) {
+    if (user.lastSeenAt) {
+      const diffMs = Date.now() - Date.parse(user.lastSeenAt);
+      if (!Number.isNaN(diffMs) && diffMs > 5 * 60 * 1000) {
+        return false;
+      }
+    }
+    return true;
+  }
+  if (user.lastSeenAt) {
+    const diffMs = Date.now() - Date.parse(user.lastSeenAt);
+    if (!Number.isNaN(diffMs) && diffMs <= 90 * 1000) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function subscribeUserPresence(
+  uid: string,
+  onUpdate: (isOnline: boolean, user?: UserProfile) => void
+): Unsubscribe {
+  return onSnapshot(doc(db, 'users', uid), (snap) => {
+    if (!snap.exists()) {
+      onUpdate(false);
+      return;
+    }
+    const data = snap.data() as UserProfile;
+    onUpdate(isUserOnline(data), data);
+  });
+}
+
+/**
+ * Global Auto Match Pro: True real-time matchmaking queue with 4-Digit room pairing.
+ * Checks for waiting global rooms first; if found, joins instantly; if none, creates
+ * a new global room and waits for an online peer with 4-digit session synchronization.
+ */
+export async function queueGlobalAutoMatch(
+  profile: UserProfile,
+  subjectId: string,
+  subjectName: string,
+  options?: {
+    chapterId?: number;
+    chapterName?: string;
+  }
+): Promise<{ room: DuelRoom; isHost: boolean }> {
+  const selfEmail = (profile?.emailLower || profile?.email || '').trim().toLowerCase();
+
+  try {
+    const q = query(
+      collection(db, 'duel_rooms'),
+      where('mode', '==', 'global'),
+      where('status', '==', 'waiting'),
+      limit(10)
+    );
+    const snap = await Promise.race([
+      getDocs(q),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1500)),
+    ]);
+
+    if (snap && !snap.empty) {
+      let candidate: DuelRoom | null = null;
+      snap.forEach((d) => {
+        if (candidate) return;
+        const r = d.data() as DuelRoom;
+        const rHostEmail = (r.hostEmailLower || '').trim().toLowerCase();
+        if (r.hostUid !== profile.uid && (!selfEmail || !rHostEmail || rHostEmail !== selfEmail)) {
+          candidate = r;
+        }
+      });
+
+      if (candidate) {
+        const joinRes = await joinDuelRoomByPin((candidate as DuelRoom).pin, profile);
+        if (joinRes.ok && joinRes.room) {
+          return { room: joinRes.room, isHost: false };
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('[socialService] queueGlobalAutoMatch error:', err);
+  }
+
+  const newRoom = await createDuelRoom(profile, subjectId, subjectName, {
+    chapterId: options?.chapterId ?? 1,
+    chapterName: options?.chapterName,
+    mode: 'global',
+  });
+  return { room: newRoom, isHost: true };
 }
 
 export async function fetchActiveScholarsCount(): Promise<number> {

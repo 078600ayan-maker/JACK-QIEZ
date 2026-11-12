@@ -15,7 +15,7 @@ import {
   saveLocalUserProfile,
   clearLocalUserProfile
 } from '@/lib/firestore';
-import { upsertUserInDirectory, heartbeatUserPresence } from '@/lib/socialService';
+import { upsertUserInDirectory, heartbeatUserPresence, setUserOffline } from '@/lib/socialService';
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -153,15 +153,39 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Keep live presence heartbeat synced every 60s for active scholar counts & battle invites
+  // Keep live presence heartbeat synced every 45s and on visibility changes
   const activeUid = useUserStore((s) => s.profile?.uid);
   useEffect(() => {
     if (!activeUid) return;
+
     void heartbeatUserPresence(activeUid);
-    const id = setInterval(() => {
+
+    const intervalId = setInterval(() => {
       void heartbeatUserPresence(activeUid);
-    }, 60000);
-    return () => clearInterval(id);
+    }, 45000);
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        void heartbeatUserPresence(activeUid);
+      } else {
+        void setUserOffline(activeUid);
+      }
+    };
+
+    const handleBeforeUnload = () => {
+      void setUserOffline(activeUid);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('pagehide', handleBeforeUnload);
+
+    return () => {
+      clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('pagehide', handleBeforeUnload);
+    };
   }, [activeUid]);
 
   // Don't render children or BottomDock until auth is confirmed
