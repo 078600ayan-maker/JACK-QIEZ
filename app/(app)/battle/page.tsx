@@ -207,7 +207,7 @@ function BattleHubContent() {
       } finally {
         if (!cancelled) setFriendSearching(false);
       }
-    }, 250);
+    }, 90);
     return () => {
       cancelled = true;
       clearTimeout(t);

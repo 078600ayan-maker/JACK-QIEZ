@@ -94,7 +94,7 @@ export default function OnboardingPage() {
         } catch {
           setUsernameStatus('available'); // Offline fallback
         }
-      }, 350);
+      }, 90);
       setUsernameTimer(timer);
     }
   };

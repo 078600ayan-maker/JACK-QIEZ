@@ -231,7 +231,7 @@ function ProfileContent() {
       } finally {
         if (!cancelled) setSearchingDb(false);
       }
-    }, 250);
+    }, 90);
 
     return () => {
       cancelled = true;

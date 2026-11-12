@@ -103,6 +103,15 @@ export default function LoginPage() {
           isOnline: true,
         });
         setProfile(merged);
+        if (
+          !remote.username ||
+          !remote.usernameLower ||
+          !remote.emailLower ||
+          !remote.nameLower ||
+          remote.isRealUser !== true
+        ) {
+          void upsertUserInDirectory(merged).catch(() => {});
+        }
         needsOnboarding =
           merged.onboardingComplete === false ||
           (!merged.onboardingComplete &&
@@ -110,6 +119,7 @@ export default function LoginPage() {
             Object.keys(merged.progress || {}).length <= 1);
       } else {
         setProfile(instantProfile);
+        void upsertUserInDirectory(instantProfile).catch(() => {});
         needsOnboarding = isFreshLocal && !instantProfile.onboardingComplete;
       }
     } catch {

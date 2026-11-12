@@ -101,6 +101,40 @@ function stripUndefined<T extends Record<string, unknown>>(obj: T): Partial<T> {
   return clean as Partial<T>;
 }
 
+let cachedDirectoryUsers: UserProfile[] = [];
+let cachedDirectoryUpdatedAt = 0;
+const DIRECTORY_CACHE_TTL_MS = 30_000;
+
+function normalizeDirectoryUser(raw: UserProfile, docId: string): UserProfile {
+  const uid = raw.uid || docId;
+  const cleanName = (raw.name || raw.displayName || raw.email?.split('@')[0] || 'JAC Scholar').trim();
+  const emailLower = (raw.emailLower || raw.email || '').trim().toLowerCase();
+  const username = raw.username || normalizeUsername(cleanName.split(' ')[0] || emailLower.split('@')[0], uid);
+  return {
+    ...raw,
+    uid,
+    name: cleanName,
+    displayName: raw.displayName || cleanName,
+    username,
+    usernameLower: (raw.usernameLower || username).toLowerCase(),
+    nameLower: (raw.nameLower || cleanName).toLowerCase(),
+    emailLower,
+  };
+}
+
+function updateDirectoryCache(users: UserProfile[]): void {
+  if (!users || users.length === 0) return;
+  const map = new Map<string, UserProfile>();
+  for (const u of cachedDirectoryUsers) {
+    if (u?.uid) map.set(u.uid, u);
+  }
+  for (const u of users) {
+    if (u?.uid) map.set(u.uid, normalizeDirectoryUser(u, u.uid));
+  }
+  cachedDirectoryUsers = Array.from(map.values());
+  cachedDirectoryUpdatedAt = Date.now();
+}
+
 /**
  * Ensures the signed-in user document exists and has normalized searchable fields
  * (`username`, `usernameLower`, `nameLower`, `followingUids`, `followersUids`, counts).
@@ -147,26 +181,47 @@ export async function upsertUserInDirectory(profile: UserProfile): Promise<UserP
       setDoc(doc(db, 'users', profile.uid), stripUndefined(payload as unknown as Record<string, unknown>), {
         merge: true,
       }),
-      new Promise<void>((resolve) => setTimeout(resolve, 1800)),
+      new Promise<void>((resolve) => setTimeout(resolve, 1500)),
     ]);
   } catch (err) {
-    console.error('[socialService] upsertUserInDirectory failed:', err);
+    // Fallback if live Firestore rules reject verificationTick/isAdmin on older docs
+    try {
+      const safePayload = stripUndefined(payload as unknown as Record<string, unknown>);
+      delete safePayload.verificationTick;
+      delete safePayload.isAdmin;
+      await Promise.race([
+        setDoc(doc(db, 'users', profile.uid), safePayload, { merge: true }),
+        new Promise<void>((resolve) => setTimeout(resolve, 1200)),
+      ]);
+    } catch {
+      console.error('[socialService] upsertUserInDirectory failed:', err);
+    }
   }
 
+  updateDirectoryCache([payload]);
   return payload;
 }
 
 /**
- * Checks whether a desired username is already claimed by another user UID.
+ * Ultra-fast username availability check (<1ms cache hit, <=700ms Firestore query).
  */
 export async function isUsernameAvailable(username: string, currentUid: string): Promise<boolean> {
   const clean = normalizeUsername(username, currentUid).toLowerCase();
   if (!clean) return false;
+
+  // Instant in-memory cache check
+  if (cachedDirectoryUsers.length > 0) {
+    const takenInCache = cachedDirectoryUsers.some(
+      (u) => u.uid !== currentUid && (u.usernameLower || u.username || '').toLowerCase() === clean
+    );
+    if (takenInCache) return false;
+  }
+
   try {
-    const q = query(collection(db, 'users'), where('usernameLower', '==', clean), limit(3));
+    const q = query(collection(db, 'users'), where('usernameLower', '==', clean), limit(2));
     const snap = await Promise.race([
       getDocs(q),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1800)),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 700)),
     ]);
     if (!snap) return true;
     for (const d of snap.docs) {
@@ -190,23 +245,61 @@ export async function searchUsersInDatabase(
   const term = rawTerm.trim().toLowerCase().replace(/^@+/, '');
   const resultsMap = new Map<string, UserProfile>();
 
+  const matchesTerm = (u: UserProfile): boolean => {
+    if (!term) return true;
+    const uname = (u.usernameLower || u.username || '').toLowerCase();
+    const name = (u.nameLower || u.name || u.displayName || '').toLowerCase();
+    const email = (u.emailLower || u.email || '').toLowerCase();
+    const emailLocal = email.split('@')[0] || '';
+    return (
+      uname.includes(term) ||
+      name.includes(term) ||
+      email.includes(term) ||
+      emailLocal.includes(term)
+    );
+  };
+
   try {
+    // Seed immediately from in-memory directory cache if available
+    for (const cached of cachedDirectoryUsers) {
+      if (matchesTerm(cached)) {
+        resultsMap.set(cached.uid, cached);
+      }
+    }
+
+    const cacheFresh =
+      cachedDirectoryUsers.length > 0 &&
+      Date.now() - cachedDirectoryUpdatedAt < DIRECTORY_CACHE_TTL_MS;
+    if (cacheFresh && resultsMap.size >= (term ? 5 : limitCount)) {
+      const cachedArr = Array.from(resultsMap.values()).sort((a, b) => (b.xp || 0) - (a.xp || 0));
+      return cachedArr.slice(0, limitCount);
+    }
+
     if (!term) {
-      const [topSnap, recentSnap] = await Promise.all([
-        getDocs(query(collection(db, 'users'), orderBy('xp', 'desc'), limit(limitCount))),
-        getDocs(query(collection(db, 'users'), limit(limitCount))),
+      const [topSnap, recentSnap] = await Promise.race([
+        Promise.all([
+          getDocs(query(collection(db, 'users'), orderBy('xp', 'desc'), limit(limitCount))).catch(() => null),
+          getDocs(query(collection(db, 'users'), limit(Math.max(limitCount, 120)))).catch(() => null),
+        ]),
+        new Promise<[null, null]>((resolve) => setTimeout(() => resolve([null, null]), 1200)),
       ]);
-      topSnap.forEach((docSnap) => {
-        const data = docSnap.data() as UserProfile;
-        resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+      const fetched: UserProfile[] = [];
+      topSnap?.forEach((docSnap) => {
+        const normalized = normalizeDirectoryUser(docSnap.data() as UserProfile, docSnap.id);
+        fetched.push(normalized);
+        resultsMap.set(normalized.uid, normalized);
       });
-      recentSnap.forEach((docSnap) => {
-        if (!resultsMap.has(docSnap.id)) {
-          const data = docSnap.data() as UserProfile;
-          resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+      recentSnap?.forEach((docSnap) => {
+        const normalized = normalizeDirectoryUser(docSnap.data() as UserProfile, docSnap.id);
+        fetched.push(normalized);
+        if (!resultsMap.has(normalized.uid)) {
+          resultsMap.set(normalized.uid, normalized);
         }
       });
-      return Array.from(resultsMap.values()).slice(0, limitCount);
+      if (fetched.length > 0) updateDirectoryCache(fetched);
+      return Array.from(resultsMap.values())
+        .sort((a, b) => (b.xp || 0) - (a.xp || 0))
+        .slice(0, limitCount);
     }
 
     const rawTrimmed = rawTerm.trim();
@@ -217,82 +310,64 @@ export async function searchUsersInDatabase(
       byUsernameSnap,
       byNameSnap,
       byEmailLowerSnap,
-    ] = await Promise.all([
-      getDocs(
-        query(
-          collection(db, 'users'),
-          where('emailLower', '==', term),
-          limit(10)
-        )
-      ).catch(() => null),
-      getDocs(
-        query(
-          collection(db, 'users'),
-          where('email', '==', rawTrimmed),
-          limit(10)
-        )
-      ).catch(() => null),
-      getDocs(
-        query(
-          collection(db, 'users'),
-          where('usernameLower', '>=', term),
-          where('usernameLower', '<=', endTerm),
-          limit(limitCount)
-        )
-      ).catch(() => null),
-      getDocs(
-        query(
-          collection(db, 'users'),
-          where('nameLower', '>=', term),
-          where('nameLower', '<=', endTerm),
-          limit(limitCount)
-        )
-      ).catch(() => null),
-      getDocs(
-        query(
-          collection(db, 'users'),
-          where('emailLower', '>=', term),
-          where('emailLower', '<=', endTerm),
-          limit(limitCount)
-        )
-      ).catch(() => null),
+      dirSnap,
+    ] = await Promise.race([
+      Promise.all([
+        getDocs(query(collection(db, 'users'), where('emailLower', '==', term), limit(10))).catch(() => null),
+        getDocs(query(collection(db, 'users'), where('email', '==', rawTrimmed), limit(10))).catch(() => null),
+        getDocs(
+          query(
+            collection(db, 'users'),
+            where('usernameLower', '>=', term),
+            where('usernameLower', '<=', endTerm),
+            limit(limitCount)
+          )
+        ).catch(() => null),
+        getDocs(
+          query(
+            collection(db, 'users'),
+            where('nameLower', '>=', term),
+            where('nameLower', '<=', endTerm),
+            limit(limitCount)
+          )
+        ).catch(() => null),
+        getDocs(
+          query(
+            collection(db, 'users'),
+            where('emailLower', '>=', term),
+            where('emailLower', '<=', endTerm),
+            limit(limitCount)
+          )
+        ).catch(() => null),
+        getDocs(query(collection(db, 'users'), limit(300))).catch(() => null),
+      ]),
+      new Promise<[null, null, null, null, null, null]>((resolve) =>
+        setTimeout(() => resolve([null, null, null, null, null, null]), 1200)
+      ),
     ]);
 
-    byExactEmailLowerSnap?.forEach((docSnap) => {
-      const data = docSnap.data() as UserProfile;
-      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
-    });
-    byExactEmailRawSnap?.forEach((docSnap) => {
-      const data = docSnap.data() as UserProfile;
-      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
-    });
-    byUsernameSnap?.forEach((docSnap) => {
-      const data = docSnap.data() as UserProfile;
-      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
-    });
-    byNameSnap?.forEach((docSnap) => {
-      const data = docSnap.data() as UserProfile;
-      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
-    });
-    byEmailLowerSnap?.forEach((docSnap) => {
-      const data = docSnap.data() as UserProfile;
-      resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
-    });
+    const addDoc = (docSnap: { id: string; data: () => unknown }) => {
+      const normalized = normalizeDirectoryUser(docSnap.data() as UserProfile, docSnap.id);
+      resultsMap.set(normalized.uid, normalized);
+      return normalized;
+    };
 
-    // Broad substring scan across up to 400 user docs (captures email-only sign-ins & legacy users missing *Lower fields)
-    if (resultsMap.size < 10 || term.includes('@')) {
-      const dirSnap = await getDocs(query(collection(db, 'users'), limit(400))).catch(() => null);
-      dirSnap?.forEach((docSnap) => {
-        if (resultsMap.has(docSnap.id)) return;
-        const data = docSnap.data() as UserProfile;
-        const u = (data.usernameLower || data.username || '').toLowerCase();
-        const n = (data.nameLower || data.name || data.displayName || '').toLowerCase();
-        const em = (data.emailLower || data.email || '').toLowerCase();
-        const emLocal = em.split('@')[0] || '';
-        if (u.includes(term) || n.includes(term) || em.includes(term) || emLocal.includes(term)) {
-          resultsMap.set(docSnap.id, { ...data, uid: data.uid || docSnap.id });
+    byExactEmailLowerSnap?.forEach(addDoc);
+    byExactEmailRawSnap?.forEach(addDoc);
+    byUsernameSnap?.forEach(addDoc);
+    byNameSnap?.forEach(addDoc);
+    byEmailLowerSnap?.forEach(addDoc);
+
+    if (dirSnap) {
+      const dirUsers: UserProfile[] = [];
+      dirSnap.forEach((docSnap) => {
+        const normalized = normalizeDirectoryUser(docSnap.data() as UserProfile, docSnap.id);
+        dirUsers.push(normalized);
+        if (!resultsMap.has(normalized.uid) && matchesTerm(normalized)) {
+          resultsMap.set(normalized.uid, normalized);
         }
       });
+      if (dirUsers.length > 0) updateDirectoryCache(dirUsers);
     }
 
     const arr = Array.from(resultsMap.values());
@@ -513,6 +588,7 @@ export function subscribeGlobalLeaderboard(
         const data = docSnap.data() as UserProfile;
         list.push({ ...data, uid: data.uid || docSnap.id });
       });
+      updateDirectoryCache(list);
       onUpdate(list);
     },
     (err) => {
@@ -541,19 +617,17 @@ export async function createDuelRoom(
 ): Promise<DuelRoom> {
   let chosenPin = Math.floor(1000 + Math.random() * 9000).toString();
 
-  // Retry up to 5 times to guarantee a unique unclaimed/non-active 4-digit PIN
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    const candidate = Math.floor(1000 + Math.random() * 9000).toString();
-    try {
-      const existingSnap = await getDoc(doc(db, 'duel_rooms', candidate));
-      if (!existingSnap.exists() || (existingSnap.data() as DuelRoom)?.status === 'finished') {
-        chosenPin = candidate;
-        break;
-      }
-    } catch {
-      chosenPin = candidate;
-      break;
+  // Single fast 600ms collision check (1 retry max) so 4-digit PIN generation is sub-second
+  try {
+    const existingSnap = await Promise.race([
+      getDoc(doc(db, 'duel_rooms', chosenPin)),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 600)),
+    ]);
+    if (existingSnap && existingSnap.exists() && (existingSnap.data() as DuelRoom)?.status !== 'finished') {
+      chosenPin = Math.floor(1000 + Math.random() * 9000).toString();
     }
+  } catch {
+    // Proceed with generated PIN
   }
 
   const now = new Date().toISOString();
@@ -582,7 +656,10 @@ export async function createDuelRoom(
     updatedAt: now,
   } as Record<string, unknown>) as unknown as DuelRoom;
 
-  await setDoc(doc(db, 'duel_rooms', chosenPin), room);
+  await Promise.race([
+    setDoc(doc(db, 'duel_rooms', chosenPin), room),
+    new Promise<void>((resolve) => setTimeout(resolve, 1000)),
+  ]);
   return room;
 }
 
@@ -600,7 +677,13 @@ export async function joinDuelRoomByPin(
 
   try {
     const roomRef = doc(db, 'duel_rooms', cleanPin);
-    const snap = await getDoc(roomRef);
+    const snap = await Promise.race([
+      getDoc(roomRef),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 1800)),
+    ]);
+    if (!snap) {
+      return { ok: false, error: 'Room lookup timed out. Please try again.' };
+    }
     if (!snap.exists()) {
       return { ok: false, error: `No active duel room found for PIN #${cleanPin}.` };
     }
@@ -628,20 +711,23 @@ export async function joinDuelRoomByPin(
     };
 
     if (!isHostRejoin) {
-      await updateDoc(
-        roomRef,
-        stripUndefined({
-          guestUid: updated.guestUid,
-          guestName: updated.guestName,
-          guestUsername: updated.guestUsername,
-          guestPhoto: updated.guestPhoto,
-          guestXp: updated.guestXp,
-          guestEmailLower: updated.guestEmailLower,
-          guestReady: true,
-          status: updated.status,
-          updatedAt: now,
-        } as Record<string, unknown>)
-      );
+      await Promise.race([
+        updateDoc(
+          roomRef,
+          stripUndefined({
+            guestUid: updated.guestUid,
+            guestName: updated.guestName,
+            guestUsername: updated.guestUsername,
+            guestPhoto: updated.guestPhoto,
+            guestXp: updated.guestXp,
+            guestEmailLower: updated.guestEmailLower,
+            guestReady: true,
+            status: updated.status,
+            updatedAt: now,
+          } as Record<string, unknown>)
+        ),
+        new Promise<void>((resolve) => setTimeout(resolve, 1500)),
+      ]);
     }
 
     return { ok: true, room: updated };
