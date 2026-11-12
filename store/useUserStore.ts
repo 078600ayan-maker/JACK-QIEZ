@@ -8,6 +8,7 @@ import {
   clearLocalUserProfile,
   syncProfileFields,
 } from '@/lib/firestore';
+import { upsertUserInDirectory } from '@/lib/socialService';
 import { setLanguagePreferenceInCloud } from '@/lib/firebaseAuthMultiplayer';
 
 interface UserState {
@@ -64,6 +65,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     saveLocalUserProfile(updated);
     set({ profile: updated });
     await syncProfileFields(profile.uid, partial);
+    void upsertUserInDirectory(updated).catch(() => {});
   },
 
   logoutUser: () => {
@@ -100,6 +102,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     saveLocalUserProfile(updated);
     set({ profile: updated });
     void syncProfileFields(profile.uid, { photoURL });
+    void upsertUserInDirectory(updated).catch(() => {});
   },
 
   recordLevelCompletion: async (data) => {

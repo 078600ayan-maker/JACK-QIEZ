@@ -35,6 +35,7 @@ import {
 import { useUserStore } from '@/store/useUserStore';
 import { VerificationTick } from '@/components/ui/VerificationTick';
 import { UserProfile } from '@/types/user';
+import { DualArenaHub } from '@/components/arena/DualArenaHub';
 import {
   subscribeGlobalLeaderboard,
   createDuelRoom,
@@ -91,7 +92,7 @@ const DUEL_SUBJECTS = [
 function BattleHubContent() {
   const searchParams = useSearchParams();
   const { profile, setProfile } = useUserStore();
-  const [activeTab, setActiveTab] = useState<'matchmaking' | 'social' | 'trophies'>('matchmaking');
+  const [activeTab, setActiveTab] = useState<'matchmaking' | 'arenas' | 'social' | 'trophies'>('matchmaking');
 
   // Real Firestore Battle State
   const [dbScholars, setDbScholars] = useState<UserProfile[]>([]);
@@ -664,6 +665,16 @@ function BattleHubContent() {
           ⚔️ Duel Hub
         </button>
         <button
+          onClick={() => { playClickSound(); setActiveTab('arenas'); }}
+          className={`flex-1 py-2 rounded-xl text-xs font-black transition-all ${
+            activeTab === 'arenas'
+              ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.5)]'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          🎮 Dual Arenas
+        </button>
+        <button
           onClick={() => { playClickSound(); setActiveTab('social'); }}
           className={`flex-1 py-2 rounded-xl text-xs font-black transition-all ${
             activeTab === 'social'
@@ -681,9 +692,16 @@ function BattleHubContent() {
               : 'text-slate-400 hover:text-white'
           }`}
         >
-          🏆 3D Trophy Shelf
+          🏆 Trophies
         </button>
       </div>
+
+      {/* DUAL ARENAS VIEW (STUDY FRIEND ARENA & FUN ARENA 5 2D GAMES) */}
+      {activeTab === 'arenas' && (
+        <div className="mb-4 animate-in fade-in zoom-in-95 duration-200">
+          <DualArenaHub />
+        </div>
+      )}
 
       {/* DEDICATED 4-DIGIT PIN & GLOBAL AUTO MATCH PRO REAL-TIME LOADER OVERLAY */}
       {pinLoaderState !== 'idle' && (

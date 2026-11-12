@@ -52,6 +52,7 @@ import {
   updateUserVerificationTickInCloud,
   isUserOnline,
 } from '@/lib/socialService';
+import { syncProfileFields } from '@/lib/firestore';
 import { VerificationTick } from '@/components/ui/VerificationTick';
 import {
   buildWeeklyStreakStrip,
@@ -365,6 +366,7 @@ function ProfileContent() {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editFirstName, setEditFirstName] = useState(profile?.firstName || '');
   const [editLastName, setEditLastName] = useState(profile?.lastName || '');
+  const [editEmail, setEditEmail] = useState(profile?.email || '');
   const [editAge, setEditAge] = useState(String(profile?.age || ''));
   const [editUsername, setEditUsername] = useState(profile?.username || '');
   const [editSaving, setEditSaving] = useState(false);
@@ -392,20 +394,42 @@ function ProfileContent() {
 
       const combinedName =
         `${editFirstName.trim()} ${editLastName.trim()}`.trim() || profile.name;
-      const updatedProfile = {
+      const cleanEmail = editEmail.trim() || profile.email;
+
+      const updatedProfile: UserProfile = {
         ...profile,
         firstName: editFirstName.trim(),
         lastName: editLastName.trim(),
         name: combinedName,
         displayName: combinedName,
         nameLower: combinedName.toLowerCase(),
+        email: cleanEmail,
+        emailLower: cleanEmail.toLowerCase(),
         age: parseInt(editAge, 10) || profile.age,
         username: cleanedUsername,
         usernameLower: cleanedUsername.toLowerCase(),
       };
+
       setProfile(updatedProfile);
       setEditModalOpen(false);
-      void upsertUserInDirectory(updatedProfile).catch(() => {});
+
+      // Soft-coded bidirectional sync: Firestore /users/{uid} document + public scholars directory
+      await syncProfileFields(profile.uid, {
+        firstName: updatedProfile.firstName,
+        lastName: updatedProfile.lastName,
+        name: updatedProfile.name,
+        displayName: updatedProfile.displayName,
+        nameLower: updatedProfile.nameLower,
+        email: updatedProfile.email,
+        emailLower: updatedProfile.emailLower,
+        age: updatedProfile.age,
+        username: updatedProfile.username,
+        usernameLower: updatedProfile.usernameLower,
+      });
+      await upsertUserInDirectory(updatedProfile);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Failed to save profile changes.';
+      setEditError(msg);
     } finally {
       setEditSaving(false);
     }
@@ -1846,6 +1870,16 @@ function ProfileContent() {
                   type="text"
                   value={editLastName}
                   onChange={(e) => setEditLastName(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">Email Address</label>
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="scholar@jackquiz.com"
                   className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition"
                 />
               </div>
