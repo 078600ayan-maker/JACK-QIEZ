@@ -549,9 +549,6 @@
         <div class="stat-pill p2" title="Player 2 Total Match Wins">🟥 P2 Wins: <span id="hud-p2-wins">0</span></div>
         <div class="stat-pill fps">⚡ <span id="hud-fps">60</span> FPS</div>
         <button class="btn btn-sm" id="btn-flip-global" title="Flip Player 2 UI 180° for Face-to-Face Tabletop Play">🔄 Tabletop Flip: OFF</button>
-        <button class="btn btn-sm" id="btn-bgm">🎵 BGM: OFF</button>
-        <button class="btn btn-sm" id="btn-sfx">🔊 SFX: ON</button>
-        <button class="btn btn-sm btn-cyan" id="btn-download-html">⬇️ Save HTML</button>
       </div>
     </header>
 
@@ -2421,17 +2418,17 @@
       showToast(AppState.flipP2 ? '🔄 Player 2 UI Flipped 180° for Tabletop Play!' : '🔄 Standard Upright UI Restored');
     });
 
-    document.getElementById('btn-sfx').addEventListener('click', () => {
+    document.getElementById('btn-sfx')?.addEventListener('click', () => {
       AppState.sfx = !AppState.sfx; saveState();
       if (AppState.sfx) Sound.click();
     });
 
-    document.getElementById('btn-bgm').addEventListener('click', () => {
+    document.getElementById('btn-bgm')?.addEventListener('click', () => {
       AppState.bgm = !AppState.bgm; saveState();
       Sound.click(); Sound.syncBGM();
     });
 
-    document.getElementById('btn-download-html').addEventListener('click', () => {
+    document.getElementById('btn-download-html')?.addEventListener('click', () => {
       Sound.click();
       const src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
       const blob = new Blob([src], { type: 'text/html;charset=utf-8' });
@@ -2472,4 +2469,6 @@
   </script>
 </body>
 </html>
+
+
 

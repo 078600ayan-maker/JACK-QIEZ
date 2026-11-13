@@ -35,7 +35,7 @@ import { ProgressReportModal } from '@/components/report/ProgressReportModal';
 import { LiveCallModal } from '@/components/ai-calling/LiveCallModal';
 import { BilingualLanguageToggle } from '@/components/ui/BilingualLanguageToggle';
 import { LiveMultiplayerComparison } from '@/components/multiplayer/LiveMultiplayerComparison';
-import { FreeFireStyleArenaLobby } from '@/components/arena/FreeFireStyleArenaLobby';
+import { DualArenaHeroSection } from '@/components/arena/DualArenaHeroSection';
 import { HardestWordsModule } from '@/components/modules/HardestWordsModule';
 import { HardestWordsLevel3Module } from '@/components/modules/HardestWordsLevel3Module';
 import { HardestWordsLevel4BossModule } from '@/components/modules/HardestWordsLevel4BossModule';
@@ -362,10 +362,10 @@ export default function HomeLobbyPage() {
       </section>
 
       {/* =========================================================================
-          PIXELVERSE ARENA: 4 GAMES WITH LOGOS & FREE FIRE STYLE 4-PIN LOBBY
+          DUAL ARENA ARCHITECTURE: STUDY FRIEND ARENA & FUN ARENA 2D
           ========================================================================= */}
       <section>
-        <FreeFireStyleArenaLobby />
+        <DualArenaHeroSection />
       </section>
 
       {/* =========================================================================
