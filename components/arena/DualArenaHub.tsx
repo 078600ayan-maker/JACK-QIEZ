@@ -303,6 +303,32 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
           </div>
 
           <div className="space-y-2">
+            {/* S+ TIER DUO ARENA 3D LAUNCHER (Voxel Air Hockey, Tank Blitz, Royal Carrom, Cannon Siege) */}
+            <div className="p-4 rounded-3xl bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-cyan-500/20 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(251,191,36,0.25)] space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-md">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  S+ TIER DUO ARENA 3D
+                </span>
+                <span className="text-[10px] font-black text-rose-300">2-PLAYER TABLETOP</span>
+              </div>
+              <div>
+                <h4 className="text-sm font-black text-white">PixelVerse Duo Arena 3D</h4>
+                <p className="text-[11px] text-slate-300 mt-0.5">
+                  Air Hockey, Tank Blitz, Royal Carrom &amp; Cannon Siege with 180° Flip Tabletop &amp; AI mode.
+                </p>
+              </div>
+              <a
+                href="/duo-arena.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-cyan-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-[0.98] transition-all"
+              >
+                <Gamepad2 className="w-4 h-4" />
+                <span>Launch 4-in-1 Duo Arena 3D</span>
+              </a>
+            </div>
+
             {[
               { id: 'whirlybird' as const, name: 'Whirlybird Race', tag: 'Vertical Platformer', icon: '🕊️', desc: 'Euler physics vertical bounce race. Reach the top first!' },
               { id: 'bomb_tiles' as const, name: 'Bomb Tiles Duel', tag: 'Minesweeper 10x10', icon: '💣', desc: 'Turn-based shared board. 15 hidden mines with BFS zero-cascade.' },

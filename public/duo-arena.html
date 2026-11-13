@@ -1,0 +1,2494 @@
+
+Here is your completely upgraded, self-contained **S+ Tier 2-Player Multiplayer Arcade** (`PixelVerse Duo Arena 3D`).
+
+All 4 games have been replaced with **4 distinct, deeply interactive 2-player multiplayer games** featuring **2.5D/3D beveled pixel-voxel graphics**, **sub-stepped 60 FPS physics**, **separate Player 1 (Cyan) & Player 2 (Crimson) UI consoles**, a **🔄 Tabletop 180° Flip toggle** (so two friends can sit face-to-face over one phone/tablet or side-by-side on a laptop), and an optional **🤖 vs AI** toggle for solo practice.
+
+### What’s Inside the 4 Upgraded Multiplayer Games:
+1. **🏒 Voxel Air Hockey 3D** — Real-time multi-touch mallet control, 4× sub-stepped elastic physics (zero puck tunneling), power-up pads (*Big Mallet*, *Turbo Puck*, *Freeze*), 3D goal cages, and shockwave sparks.
+2. **🛡️ Voxel Tank Blitz 3D** — Symmetrical 2.5D extruded voxel mazes, smooth wall-sliding collision, exact vector-reflected shell ricochets (up to 4 bounces), crate power-ups (*Triple Shot*, *Rapid Reload*, *Shield*), and dual P1/P2 firing consoles.
+3. **🎯 Royal Carrom 3D** — Authentic wooden voxel-carved tabletop board, 6× sub-stepped disc-to-disc & cushion restitution physics, slider bar + pull-back slingshot trajectory aiming, Queen + cover rules, and separate striker controls for P1 & P2.
+4. **💥 Voxel Cannon Siege 3D** — Turn-based destructible pixel-voxel mountains, wind physics, real-time crater carving + gravity settling, 4 tactical shells (*Standard*, *Cluster Mortar*, *Plasma Piercer*, *Mega Nuke*), and dedicated P1/P2 artillery decks.
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>PixelVerse Duo Arena 3D — 4-in-1 2P Voxel Physics Arcade</title>
+  <style>
+    /* =========================================================================
+       SECTION 1: ULTRA-POLISHED GLASSMORPHISM + 3D PIXEL NEON DESIGN SYSTEM
+       ========================================================================= */
+    :root {
+      --bg-deep: #050811;
+      --bg-panel: rgba(13, 20, 38, 0.78);
+      --bg-console: rgba(15, 23, 42, 0.88);
+      --border-glass: rgba(148, 163, 184, 0.22);
+      --p1-cyan: #38bdf8;
+      --p1-glow: rgba(56, 189, 248, 0.45);
+      --p2-rose: #fb7185;
+      --p2-glow: rgba(251, 113, 133, 0.45);
+      --neon-emerald: #34d399;
+      --neon-amber: #fbbf24;
+      --neon-violet: #a78bfa;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --shadow-glass: 0 14px 40px rgba(0, 0, 0, 0.65);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+      overflow-x: hidden;
+      touch-action: manipulation;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(56, 189, 248, 0.16), transparent 40%),
+        radial-gradient(circle at 88% 18%, rgba(251, 113, 133, 0.16), transparent 40%),
+        radial-gradient(circle at 50% 90%, rgba(52, 211, 153, 0.10), transparent 45%),
+        linear-gradient(180deg, #050811 0%, #0a1020 100%);
+      pointer-events: none;
+    }
+
+    .glass {
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      box-shadow: var(--shadow-glass);
+    }
+
+    /* Tactile 3D-Bevel Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-bottom: 3px solid rgba(0, 0, 0, 0.45);
+      background: linear-gradient(180deg, rgba(38, 52, 78, 0.92), rgba(22, 31, 50, 0.95));
+      color: var(--text-main);
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    @media (hover: hover) {
+      .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        border-color: var(--p1-cyan);
+        box-shadow: 0 0 14px rgba(56, 189, 248, 0.32);
+      }
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translateY(1px) scale(0.95);
+    }
+
+    .btn:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+      filter: grayscale(0.7);
+    }
+
+    .btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: var(--radius-sm); }
+    .btn-cyan { background: linear-gradient(180deg, #0284c7, #0369a1); border-color: rgba(56, 189, 248, 0.65); }
+    .btn-rose { background: linear-gradient(180deg, #e11d48, #be123c); border-color: rgba(251, 113, 133, 0.65); }
+    .btn-emerald { background: linear-gradient(180deg, #10b981, #059669); color: #022c22; border-color: rgba(52, 211, 153, 0.7); }
+    .btn-amber { background: linear-gradient(180deg, #f59e0b, #d97706); color: #271702; border-color: rgba(251, 191, 36, 0.75); }
+    .btn-active {
+      border-color: var(--neon-emerald) !important;
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.4) !important;
+      outline: 1px solid var(--neon-emerald);
+    }
+
+    /* App Container */
+    .app-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 10px 12px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Top HUD */
+    .top-bar {
+      border-radius: var(--radius-lg);
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #38bdf8, #a78bfa, #fb7185);
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+    }
+
+    .brand-title h1 {
+      font-size: 1.06rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #38bdf8, #f8fafc, #fb7185);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .hud-stats {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(8, 13, 26, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .stat-pill.p1 { color: var(--p1-cyan); border-color: rgba(56, 189, 248, 0.4); }
+    .stat-pill.p2 { color: var(--p2-rose); border-color: rgba(251, 113, 133, 0.4); }
+    .stat-pill.fps { color: var(--neon-emerald); font-family: monospace; }
+
+    /* Views & Transition */
+    .view-section {
+      display: none;
+      animation: fadeSlideIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .view-section.active { display: block; }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    #transition-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(5, 8, 17, 0.92);
+      backdrop-filter: blur(8px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease;
+    }
+    #transition-overlay.show { opacity: 1; pointer-events: all; }
+
+    .loader-spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid rgba(56, 189, 248, 0.2);
+      border-top-color: var(--p1-cyan);
+      border-right-color: var(--p2-rose);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* =========================================================================
+       LOBBY GRID & 3D PREVIEW CARDS
+       ========================================================================= */
+    .lobby-hero {
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-left: 4px solid var(--p1-cyan);
+      border-right: 4px solid var(--p2-rose);
+    }
+
+    .lobby-hero h2 { font-size: 1.2rem; margin-bottom: 4px; }
+    .lobby-hero p { font-size: 0.85rem; color: var(--text-muted); max-width: 720px; line-height: 1.45; }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 15px;
+    }
+
+    .game-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+
+    @media (hover: hover) {
+      .game-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(56, 189, 248, 0.5);
+        box-shadow: 0 16px 36px rgba(56, 189, 248, 0.18);
+      }
+    }
+
+    .card-preview {
+      width: 100%;
+      height: 138px;
+      background: #060a14;
+      border-bottom: 1px solid var(--border-glass);
+      display: block;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      background: rgba(5, 8, 17, 0.86);
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      color: var(--p1-cyan);
+    }
+
+    .card-body {
+      padding: 14px 15px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .card-body h3 { font-size: 1.06rem; }
+    .card-body p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.42; flex: 1; }
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.72rem;
+      color: var(--neon-amber);
+    }
+
+    /* =========================================================================
+       DUAL-PLAYER SPLIT CONSOLES & TABLETOP 180° FLIP SYSTEM
+       ========================================================================= */
+    .game-shell {
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .game-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-glass);
+    }
+
+    .game-title-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .game-title-area h2 { font-size: 1.08rem; }
+
+    .game-controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Arena Stack: P2 Console (Top) -> 3D Canvas -> P1 Console (Bottom) */
+    .arena-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .player-console {
+      width: 100%;
+      max-width: 740px;
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+      background: var(--bg-console);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .player-console.p1 {
+      border: 1.5px solid rgba(56, 189, 248, 0.45);
+      box-shadow: inset 0 0 18px rgba(56, 189, 248, 0.08);
+    }
+
+    .player-console.p2 {
+      border: 1.5px solid rgba(251, 113, 133, 0.45);
+      box-shadow: inset 0 0 18px rgba(251, 113, 133, 0.08);
+    }
+
+    /* Face-to-Face Tabletop 180-Degree Flip for Player 2! */
+    .tabletop-flipped .player-console.p2 {
+      transform: rotate(180deg);
+    }
+
+    .player-console.turn-active.p1 {
+      border-color: #38bdf8;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.32);
+    }
+    .player-console.turn-active.p2 {
+      border-color: #fb7185;
+      box-shadow: 0 0 20px rgba(251, 113, 133, 0.32);
+    }
+    .player-console.turn-locked {
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    .console-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .console-score {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      background: rgba(5, 8, 17, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .console-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Canvas Stage */
+    .canvas-stage {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    canvas.game-canvas {
+      border-radius: 14px;
+      background: #060a14;
+      border: 2px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.75);
+      max-width: 100%;
+      touch-action: none;
+      display: block;
+    }
+
+    /* Compact Touch Controls for Tank Blitz */
+    .tank-pad {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pad-key {
+      width: 40px;
+      height: 38px;
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-bottom: 3px solid rgba(0, 0, 0, 0.5);
+      background: rgba(30, 41, 59, 0.95);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      touch-action: none;
+    }
+    .pad-key:active { transform: scale(0.92); background: rgba(56, 189, 248, 0.35); }
+
+    /* Sliders for Carrom & Cannon */
+    input[type="range"].neon-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.25);
+      outline: none;
+      width: 130px;
+    }
+    input[type="range"].neon-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fbbf24;
+      border: 2px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(251, 191, 36, 0.6);
+    }
+
+    /* Toast & Shake */
+    #toast {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(10, 16, 32, 0.96);
+      border: 1px solid var(--p1-cyan);
+      color: #f8fafc;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 9000;
+      text-align: center;
+      max-width: 92vw;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .screen-shake { animation: screenShake 0.26s ease; }
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      20% { transform: translate(-5px, 3px); }
+      40% { transform: translate(5px, -3px); }
+      60% { transform: translate(-4px, -2px); }
+      80% { transform: translate(4px, 2px); }
+    }
+
+    @media (max-width: 600px) {
+      .app-container { padding: 8px 8px 20px; }
+      .pad-key { width: 36px; height: 35px; font-size: 0.85rem; }
+      input[type="range"].neon-slider { width: 105px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="transition-overlay">
+    <div class="loader-spinner"></div>
+    <div id="transition-label" style="font-weight:700; color:#38bdf8;">Booting 3D Voxel Engine...</div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="app-container" id="app-root">
+    <!-- =======================================================================
+         GLOBAL ARENA HUD BAR
+         ======================================================================= -->
+    <header class="top-bar glass">
+      <div class="brand-group">
+        <div class="brand-logo">⚔️</div>
+        <div class="brand-title">
+          <h1>PixelVerse Duo Arena 3D</h1>
+          <span>2-Player Voxel Physics • Separate Dual UI • 60 FPS</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-pill p1" title="Player 1 Total Match Wins">🟦 P1 Wins: <span id="hud-p1-wins">0</span></div>
+        <div class="stat-pill p2" title="Player 2 Total Match Wins">🟥 P2 Wins: <span id="hud-p2-wins">0</span></div>
+        <div class="stat-pill fps">⚡ <span id="hud-fps">60</span> FPS</div>
+        <button class="btn btn-sm" id="btn-flip-global" title="Flip Player 2 UI 180° for Face-to-Face Tabletop Play">🔄 Tabletop Flip: OFF</button>
+        <button class="btn btn-sm" id="btn-bgm">🎵 BGM: OFF</button>
+        <button class="btn btn-sm" id="btn-sfx">🔊 SFX: ON</button>
+        <button class="btn btn-sm btn-cyan" id="btn-download-html">⬇️ Save HTML</button>
+      </div>
+    </header>
+
+    <!-- =======================================================================
+         VIEW 0: MULTIPLAYER ARENA LOBBY
+         ======================================================================= -->
+    <main id="view-lobby" class="view-section active">
+      <section class="lobby-hero glass">
+        <div>
+          <h2>🎮 S+ Tier 2-Player Multiplayer Collection</h2>
+          <p>
+            Designed for <strong>two friends playing together</strong>! Every game gives <strong>Player 1 (Cyan)</strong> and <strong>Player 2 (Crimson)</strong> their own dedicated UI console, live buffs, and controls. Tap <strong>🔄 Tabletop Flip</strong> in the top bar when placing a phone/tablet between two players so Player 2’s UI faces them directly — or toggle <strong>🤖 vs AI</strong> for solo play!
+          </p>
+        </div>
+      </section>
+
+      <section class="games-grid">
+        <!-- Game 1 Card -->
+        <article class="game-card glass">
+          <canvas class="card-preview" id="prev-hockey" width="320" height="138"></canvas>
+          <span class="card-badge">2P Real-Time • Multi-Touch</span>
+          <div class="card-body">
+            <h3>🏒 Voxel Air Hockey 3D</h3>
+            <p>Sub-stepped elastic puck physics on a 3D beveled ice rink! Simultaneous multi-touch mallets, power-up orbs (Big Mallet, Turbo, Freeze), and laser goals.</p>
+            <div class="card-tags"><span>First to 7 Goals</span><span>•</span><span>WASD vs Arrows / Touch</span></div>
+            <button class="btn btn-cyan" data-launch="hockey">▶ Play Air Hockey 3D</button>
+          </div>
+        </article>
+
+        <!-- Game 2 Card -->
+        <article class="game-card glass">
+          <canvas class="card-preview" id="prev-tank" width="320" height="138"></canvas>
+          <span class="card-badge">2P Maze Combat • Ricochet</span>
+          <div class="card-body">
+            <h3>🛡️ Voxel Tank Blitz 3D</h3>
+            <p>2.5D extruded voxel mazes with true vector-reflected bouncing shells, smooth corner sliding, Triple-Shot &amp; Shield crates, and explosive voxel shrapnel.</p>
+            <div class="card-tags"><span>First to 5 Kills</span><span>•</span><span>Dual Arcade Consoles</span></div>
+            <button class="btn btn-rose" data-launch="tank">▶ Play Tank Blitz 3D</button>
+          </div>
+        </article>
+
+        <!-- Game 3 Card -->
+        <article class="game-card glass">
+          <canvas class="card-preview" id="prev-carrom" width="320" height="138"></canvas>
+          <span class="card-badge">2P Tabletop Board • Physics</span>
+          <div class="card-body">
+            <h3>🎯 Royal Carrom 3D</h3>
+            <p>Ultra-polished 3D wooden pixel board! Position your striker via your own slider rail, pull back to sling-aim with trajectory preview, pocket coins &amp; cover the Queen.</p>
+            <div class="card-tags"><span>Authentic Disc Physics</span><span>•</span><span>Separate Turn Rails</span></div>
+            <button class="btn btn-amber" data-launch="carrom">▶ Play Royal Carrom 3D</button>
+          </div>
+        </article>
+
+        <!-- Game 4 Card -->
+        <article class="game-card glass">
+          <canvas class="card-preview" id="prev-cannon" width="320" height="138"></canvas>
+          <span class="card-badge">2P Strategy • Destructible 3D</span>
+          <div class="card-body">
+            <h3>💥 Voxel Cannon Siege 3D</h3>
+            <p>Turn-based artillery duel across destructible pixel-voxel mountains! Dial in angle &amp; power on your command deck, counter live wind, and fire Cluster &amp; Nuke warheads.</p>
+            <div class="card-tags"><span>Destructible Terrain</span><span>•</span><span>4 Tactical Weapons</span></div>
+            <button class="btn btn-emerald" data-launch="cannon">▶ Play Cannon Siege 3D</button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- =======================================================================
+         VIEW 1: GAME 1 — VOXEL AIR HOCKEY 3D
+         ======================================================================= -->
+    <section id="view-hockey" class="view-section">
+      <div class="game-shell glass">
+        <div class="game-header">
+          <div class="game-title-area">
+            <button class="btn btn-sm" data-back>← Lobby</button>
+            <h2>🏒 Voxel Air Hockey 3D</h2>
+          </div>
+          <div class="game-controls-bar">
+            <button class="btn btn-sm btn-active" id="hk-mode-2p">👥 2P Multi-Touch</button>
+            <button class="btn btn-sm" id="hk-mode-ai">🤖 1P vs AI</button>
+            <button class="btn btn-sm btn-cyan" id="hk-restart">🔄 Restart</button>
+          </div>
+        </div>
+
+        <div class="arena-stack">
+          <!-- P2 Dedicated Console -->
+          <div class="player-console p2" id="hk-p2-console">
+            <div class="console-badge" style="color:var(--p2-rose);">
+              <span>🟥 PLAYER 2</span>
+              <span class="console-score">Goals: <strong id="hk-s2">0</strong> / 7</span>
+              <span id="hk-b2" style="font-size:0.75rem; color:#fbbf24;"></span>
+            </div>
+            <div style="font-size:0.76rem; color:var(--text-muted);">Drag Top Rink Half • or Arrow Keys</div>
+          </div>
+
+          <div class="canvas-stage">
+            <canvas id="c-hockey" class="game-canvas" width="440" height="620"></canvas>
+          </div>
+
+          <!-- P1 Dedicated Console -->
+          <div class="player-console p1" id="hk-p1-console">
+            <div class="console-badge" style="color:var(--p1-cyan);">
+              <span>🟦 PLAYER 1</span>
+              <span class="console-score">Goals: <strong id="hk-s1">0</strong> / 7</span>
+              <span id="hk-b1" style="font-size:0.75rem; color:#fbbf24;"></span>
+            </div>
+            <div style="font-size:0.76rem; color:var(--text-muted);">Drag Bottom Rink Half • or W A S D</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         VIEW 2: GAME 2 — VOXEL TANK BLITZ 3D
+         ======================================================================= -->
+    <section id="view-tank" class="view-section">
+      <div class="game-shell glass">
+        <div class="game-header">
+          <div class="game-title-area">
+            <button class="btn btn-sm" data-back>← Lobby</button>
+            <h2>🛡️ Voxel Tank Blitz 3D</h2>
+          </div>
+          <div class="game-controls-bar">
+            <button class="btn btn-sm btn-active" id="tk-mode-2p">👥 2P Local</button>
+            <button class="btn btn-sm" id="tk-mode-ai">🤖 1P vs AI</button>
+            <button class="btn btn-sm btn-rose" id="tk-restart">🔄 New Maze</button>
+          </div>
+        </div>
+
+        <div class="arena-stack">
+          <!-- P2 Dedicated Tank Console -->
+          <div class="player-console p2">
+            <div class="console-badge" style="color:var(--p2-rose);">
+              <span>🟥 P2 TANK</span>
+              <span class="console-score">Kills: <strong id="tk-s2">0</strong> / 5</span>
+              <span id="tk-b2" style="font-size:0.75rem; color:#fbbf24;"></span>
+            </div>
+            <div class="console-actions">
+              <div class="tank-pad">
+                <button class="pad-key" data-tk="p2:left">↺</button>
+                <button class="pad-key" data-tk="p2:fwd">▲</button>
+                <button class="pad-key" data-tk="p2:back">▼</button>
+                <button class="pad-key" data-tk="p2:right">↻</button>
+              </div>
+              <button class="btn btn-sm btn-rose" data-tk="p2:fire">🔥 FIRE</button>
+            </div>
+          </div>
+
+          <div class="canvas-stage">
+            <canvas id="c-tank" class="game-canvas" width="680" height="460"></canvas>
+          </div>
+
+          <!-- P1 Dedicated Tank Console -->
+          <div class="player-console p1">
+            <div class="console-badge" style="color:var(--p1-cyan);">
+              <span>🟦 P1 TANK</span>
+              <span class="console-score">Kills: <strong id="tk-s1">0</strong> / 5</span>
+              <span id="tk-b1" style="font-size:0.75rem; color:#fbbf24;"></span>
+            </div>
+            <div class="console-actions">
+              <div class="tank-pad">
+                <button class="pad-key" data-tk="p1:left">↺</button>
+                <button class="pad-key" data-tk="p1:fwd">▲</button>
+                <button class="pad-key" data-tk="p1:back">▼</button>
+                <button class="pad-key" data-tk="p1:right">↻</button>
+              </div>
+              <button class="btn btn-sm btn-cyan" data-tk="p1:fire">🔥 FIRE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         VIEW 3: GAME 3 — ROYAL CARROM 3D (VOXEL TABLETOP BOARD)
+         ======================================================================= -->
+    <section id="view-carrom" class="view-section">
+      <div class="game-shell glass">
+        <div class="game-header">
+          <div class="game-title-area">
+            <button class="btn btn-sm" data-back>← Lobby</button>
+            <h2>🎯 Royal Carrom 3D</h2>
+          </div>
+          <div class="game-controls-bar">
+            <button class="btn btn-sm btn-active" id="cr-mode-2p">👥 2P Local</button>
+            <button class="btn btn-sm" id="cr-mode-ai">🤖 1P vs AI</button>
+            <button class="btn btn-sm btn-amber" id="cr-restart">🔄 Reset Board</button>
+          </div>
+        </div>
+
+        <div class="arena-stack">
+          <!-- P2 Carrom Console (Black Coins) -->
+          <div class="player-console p2" id="cr-p2-console">
+            <div class="console-badge" style="color:var(--p2-rose);">
+              <span>⚫ P2 (BLACK)</span>
+              <span class="console-score">Pts: <strong id="cr-s2">0</strong></span>
+              <span id="cr-q2" style="font-size:0.75rem; color:#fbbf24;"></span>
+            </div>
+            <div class="console-actions">
+              <span style="font-size:0.75rem; color:var(--text-muted);">Striker Pos:</span>
+              <input type="range" class="neon-slider" id="cr-slide-2" min="-150" max="150" value="0" />
+              <span style="font-size:0.74rem; color:#34d399;">Pull Striker to Shoot!</span>
+            </div>
+          </div>
+
+          <div class="canvas-stage">
+            <canvas id="c-carrom" class="game-canvas" width="540" height="540"></canvas>
+          </div>
+
+          <!-- P1 Carrom Console (White Coins) -->
+          <div class="player-console p1" id="cr-p1-console">
+            <div class="console-badge" style="color:var(--p1-cyan);">
+              <span>⚪ P1 (WHITE)</span>
+              <span class="console-score">Pts: <strong id="cr-s1">0</strong></span>
+              <span id="cr-q1" style="font-size:0.75rem; color:#fbbf24;"></span>
+            </div>
+            <div class="console-actions">
+              <span style="font-size:0.75rem; color:var(--text-muted);">Striker Pos:</span>
+              <input type="range" class="neon-slider" id="cr-slide-1" min="-150" max="150" value="0" />
+              <span style="font-size:0.74rem; color:#34d399;">Pull Striker to Shoot!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         VIEW 4: GAME 4 — VOXEL CANNON SIEGE 3D
+         ======================================================================= -->
+    <section id="view-cannon" class="view-section">
+      <div class="game-shell glass">
+        <div class="game-header">
+          <div class="game-title-area">
+            <button class="btn btn-sm" data-back>← Lobby</button>
+            <h2>💥 Voxel Cannon Siege 3D</h2>
+          </div>
+          <div class="game-controls-bar">
+            <span class="stat-pill" id="cn-wind-pill" style="color:#fbbf24;">💨 Wind: 0</span>
+            <button class="btn btn-sm btn-active" id="cn-mode-2p">👥 2P Local</button>
+            <button class="btn btn-sm" id="cn-mode-ai">🤖 1P vs AI</button>
+            <button class="btn btn-sm btn-emerald" id="cn-restart">🔄 New Terrain</button>
+          </div>
+        </div>
+
+        <div class="arena-stack">
+          <!-- P2 Artillery Console -->
+          <div class="player-console p2" id="cn-p2-console">
+            <div class="console-badge" style="color:var(--p2-rose);">
+              <span>🟥 P2 FORT</span>
+              <span class="console-score">HP: <strong id="cn-hp2">100</strong>%</span>
+            </div>
+            <div class="console-actions">
+              <label style="font-size:0.75rem;">Ang <strong id="cn-ang2-lbl">135°</strong>
+                <input type="range" class="neon-slider" id="cn-ang2" min="95" max="175" value="135" style="width:90px;" />
+              </label>
+              <label style="font-size:0.75rem;">Pwr <strong id="cn-pwr2-lbl">65%</strong>
+                <input type="range" class="neon-slider" id="cn-pwr2" min="20" max="100" value="65" style="width:90px;" />
+              </label>
+              <select class="btn btn-sm" id="cn-wpn2">
+                <option value="std">💣 Shell (∞)</option>
+                <option value="cluster">🎆 Cluster (2)</option>
+                <option value="plasma">⚡ Plasma (2)</option>
+                <option value="nuke">☢️ Nuke (1)</option>
+              </select>
+              <button class="btn btn-sm btn-rose" id="cn-fire2">🚀 LAUNCH</button>
+            </div>
+          </div>
+
+          <div class="canvas-stage">
+            <canvas id="c-cannon" class="game-canvas" width="720" height="420"></canvas>
+          </div>
+
+          <!-- P1 Artillery Console -->
+          <div class="player-console p1" id="cn-p1-console">
+            <div class="console-badge" style="color:var(--p1-cyan);">
+              <span>🟦 P1 FORT</span>
+              <span class="console-score">HP: <strong id="cn-hp1">100</strong>%</span>
+            </div>
+            <div class="console-actions">
+              <label style="font-size:0.75rem;">Ang <strong id="cn-ang1-lbl">45°</strong>
+                <input type="range" class="neon-slider" id="cn-ang1" min="5" max="85" value="45" style="width:90px;" />
+              </label>
+              <label style="font-size:0.75rem;">Pwr <strong id="cn-pwr1-lbl">65%</strong>
+                <input type="range" class="neon-slider" id="cn-pwr1" min="20" max="100" value="65" style="width:90px;" />
+              </label>
+              <select class="btn btn-sm" id="cn-wpn1">
+                <option value="std">💣 Shell (∞)</option>
+                <option value="cluster">🎆 Cluster (2)</option>
+                <option value="plasma">⚡ Plasma (2)</option>
+                <option value="nuke">☢️ Nuke (1)</option>
+              </select>
+              <button class="btn btn-sm btn-cyan" id="cn-fire1">🚀 LAUNCH</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    /* =========================================================================
+       SECTION 2: GLOBAL STATE, TABLETOP FLIP, HAPTICS & WEB AUDIO SYNTH
+       ========================================================================= */
+    const STORAGE_KEY = 'pixelverse_duo_arena_3d_v1';
+    let AppState = (() => {
+      const def = { p1Wins: 0, p2Wins: 0, sfx: true, bgm: false, flipP2: false };
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? { ...def, ...JSON.parse(raw) } : def;
+      } catch { return def; }
+    })();
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(AppState)); } catch {}
+      syncGlobalHUD();
+    }
+
+    function syncGlobalHUD() {
+      document.getElementById('hud-p1-wins').textContent = AppState.p1Wins;
+      document.getElementById('hud-p2-wins').textContent = AppState.p2Wins;
+
+      const sfxBtn = document.getElementById('btn-sfx');
+      sfxBtn.textContent = AppState.sfx ? '🔊 SFX: ON' : '🔇 SFX: OFF';
+      sfxBtn.classList.toggle('btn-active', AppState.sfx);
+
+      const bgmBtn = document.getElementById('btn-bgm');
+      bgmBtn.textContent = AppState.bgm ? '🎵 BGM: ON' : '🎵 BGM: OFF';
+      bgmBtn.classList.toggle('btn-active', AppState.bgm);
+
+      const flipBtn = document.getElementById('btn-flip-global');
+      flipBtn.textContent = AppState.flipP2 ? '🔄 Tabletop Flip: ON' : '🔄 Tabletop Flip: OFF';
+      flipBtn.classList.toggle('btn-active', AppState.flipP2);
+      document.getElementById('app-root').classList.toggle('tabletop-flipped', AppState.flipP2);
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.remove('show'), 2500);
+    }
+
+    function haptic(ms = 16) {
+      if (navigator.vibrate) { try { navigator.vibrate(ms); } catch {} }
+    }
+
+    function triggerShake() {
+      const r = document.getElementById('app-root');
+      r.classList.remove('screen-shake');
+      void r.offsetWidth;
+      r.classList.add('screen-shake');
+    }
+
+    function recordWinner(player) {
+      if (player === 1) AppState.p1Wins++;
+      else if (player === 2) AppState.p2Wins++;
+      saveState();
+    }
+
+    /* Web Audio API Procedural Synthesizer */
+    const Sound = (() => {
+      let ctx = null, bgmTimer = null, step = 0;
+      function getCtx() {
+        if (!ctx) {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) ctx = new AC();
+        }
+        if (ctx && ctx.state === 'suspended') ctx.resume().catch(() => {});
+        return ctx;
+      }
+      function tone(f, dur = 0.09, type = 'triangle', vol = 0.11, endF = null, delay = 0) {
+        if (!AppState.sfx) return;
+        const c = getCtx(); if (!c) return;
+        const t = c.currentTime + delay;
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = type; o.frequency.setValueAtTime(f, t);
+        if (endF) o.frequency.exponentialRampToValueAtTime(Math.max(20, endF), t + dur);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.linearRampToValueAtTime(vol, t + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.connect(g); g.connect(c.destination);
+        o.start(t); o.stop(t + dur + 0.02);
+      }
+      function noise(dur = 0.18, vol = 0.18, cutoff = 700) {
+        if (!AppState.sfx) return;
+        const c = getCtx(); if (!c) return;
+        const len = Math.floor(c.sampleRate * dur);
+        const buf = c.createBuffer(1, len, c.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / len);
+        const src = c.createBufferSource(); src.buffer = buf;
+        const flt = c.createBiquadFilter(); flt.type = 'lowpass'; flt.frequency.value = cutoff;
+        const g = c.createGain(); g.gain.setValueAtTime(vol, c.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + dur);
+        src.connect(flt); flt.connect(g); g.connect(c.destination);
+        src.start();
+      }
+      const scale = [261.63, 311.13, 392.00, 466.16, 392.00, 311.13, 293.66, 392.00];
+      function syncBGM() {
+        if (bgmTimer) { clearInterval(bgmTimer); bgmTimer = null; }
+        if (!AppState.bgm) return;
+        bgmTimer = setInterval(() => {
+          if (!AppState.bgm) return;
+          const c = getCtx(); if (!c) return;
+          const t = c.currentTime, f = scale[step++ % scale.length] * 0.5;
+          const o = c.createOscillator(), g = c.createGain();
+          o.type = 'triangle'; o.frequency.setValueAtTime(f, t);
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.linearRampToValueAtTime(0.032, t + 0.025);
+          g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+          o.connect(g); g.connect(c.destination);
+          o.start(t); o.stop(t + 0.27);
+        }, 290);
+      }
+      return {
+        click: () => tone(620, 0.05, 'triangle', 0.09, 840),
+        clack: (pitch = 520) => tone(pitch, 0.055, 'triangle', 0.13, pitch * 0.65),
+        bounce: (pitch = 420) => tone(pitch, 0.06, 'square', 0.08, pitch * 1.18),
+        shoot: () => { noise(0.09, 0.16, 1200); tone(320, 0.11, 'sawtooth', 0.11, 90); },
+        pocket: () => { tone(523, 0.07, 'sine', 0.12, 784); tone(784, 0.11, 'triangle', 0.1, null, 0.06); },
+        powerup: () => { tone(587, 0.08, 'sine', 0.11, null, 0); tone(880, 0.14, 'sine', 0.11, null, 0.07); },
+        goal: () => { [440, 554, 659, 880].forEach((f, i) => tone(f, 0.14, 'square', 0.08, null, i * 0.06)); },
+        boom: () => { noise(0.38, 0.26, 360); tone(140, 0.34, 'sawtooth', 0.16, 36); },
+        win: () => { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, 0.18, 'triangle', 0.13, null, i * 0.09)); },
+        syncBGM
+      };
+    })();
+
+    /* Shared Canvas Hi-DPI Helper & 3D Voxel Drawing Helpers */
+    function setupHiDPI(canvas, logicalW, logicalH, maxCssW = 680, maxCssH = 540) {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const scale = Math.min((window.innerWidth - 34) / logicalW, maxCssW / logicalW, maxCssH / logicalH, 1.15);
+      canvas.style.width = Math.floor(logicalW * scale) + 'px';
+      canvas.style.height = Math.floor(logicalH * scale) + 'px';
+      canvas.width = Math.floor(logicalW * dpr);
+      canvas.height = Math.floor(logicalH * dpr);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return ctx;
+    }
+
+    // Draw a crisp 2.5D extruded voxel block
+    function drawVoxelBox(ctx, x, y, w, h, depth, topCol, frontCol, borderCol) {
+      // Drop shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.fillRect(x + 4, y + depth + 4, w, h);
+      // Front extruded face
+      ctx.fillStyle = frontCol;
+      ctx.fillRect(x, y + h, w, depth);
+      // Top beveled face
+      ctx.fillStyle = topCol;
+      ctx.fillRect(x, y, w, h);
+      // Top highlight pixel edge
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      ctx.fillRect(x, y, w, 2);
+      ctx.fillRect(x, y, 2, h);
+      if (borderCol) {
+        ctx.strokeStyle = borderCol;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+      }
+    }
+
+    // Draw a 3D stacked voxel disc / cylinder
+    function drawVoxelDisc(ctx, cx, cy, r, height, topCol, sideCol, rimCol) {
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.beginPath();
+      ctx.ellipse(cx + 3, cy + height + 3, r, r * 0.92, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = sideCol;
+      ctx.beginPath();
+      ctx.arc(cx, cy + height, r, 0, Math.PI);
+      ctx.lineTo(cx - r, cy);
+      ctx.arc(cx, cy, r, Math.PI, 0, true);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = topCol;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = rimCol;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r - 1.5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Specular pixel highlight
+      ctx.fillStyle = 'rgba(255,255,255,0.4)';
+      ctx.beginPath();
+      ctx.arc(cx - r * 0.3, cy - r * 0.3, Math.max(2, r * 0.22), 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    /* =========================================================================
+       SECTION 3: GAME 1 — VOXEL AIR HOCKEY 3D (Sub-stepped Elastic Physics)
+       ========================================================================= */
+    const AirHockey3D = (() => {
+      const canvas = document.getElementById('c-hockey');
+      const W = 440, H = 620;
+      const WALL = 16, GOAL_W = 144;
+      const WIN_GOALS = 7;
+      let ctx = canvas.getContext('2d');
+      let vsAI = false, matchOver = false, pauseGoal = 0;
+      let p1, p2, puck, orb = null, orbTimer = 4;
+      let trail = [], sparks = [], rings = [];
+      const pointers = new Map();
+      const keys = {};
+
+      function resize() { ctx = setupHiDPI(canvas, W, H, 440, 580); }
+
+      function resetEntities(serveTo = 1) {
+        p1 = { x: W / 2, y: H - 90, vx: 0, vy: 0, r: 27, baseR: 27, score: p1 ? p1.score : 0, buff: null, buffT: 0 };
+        p2 = { x: W / 2, y: 90, vx: 0, vy: 0, r: 27, baseR: 27, score: p2 ? p2.score : 0, buff: null, buffT: 0 };
+        puck = { x: W / 2, y: H / 2 + (serveTo === 1 ? 45 : -45), vx: 0, vy: 0, r: 16 };
+        trail = [];
+      }
+
+      function init(ai = vsAI) {
+        vsAI = ai;
+        matchOver = false;
+        pauseGoal = 0;
+        p1 = { score: 0 }; p2 = { score: 0 };
+        orb = null; orbTimer = 3.5;
+        sparks = []; rings = [];
+        pointers.clear();
+        resetEntities(Math.random() < 0.5 ? 1 : -1);
+        document.getElementById('hk-mode-2p').classList.toggle('btn-active', !vsAI);
+        document.getElementById('hk-mode-ai').classList.toggle('btn-active', vsAI);
+        resize();
+        syncHUD();
+      }
+
+      function syncHUD() {
+        document.getElementById('hk-s1').textContent = p1.score;
+        document.getElementById('hk-s2').textContent = p2.score;
+        document.getElementById('hk-b1').textContent = p1.buff ? `[${p1.buff}]` : '';
+        document.getElementById('hk-b2').textContent = p2.buff ? `[${p2.buff}]` : '';
+      }
+
+      function emitSparks(x, y, col, n = 16) {
+        rings.push({ x, y, r: 8, maxR: 52, col, life: 0.35 });
+        for (let i = 0; i < n; i++) {
+          if (sparks.length > 130) sparks.shift();
+          const a = Math.random() * Math.PI * 2, s = 80 + Math.random() * 240;
+          sparks.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0.4, col });
+        }
+      }
+
+      // Multi-touch simultaneous mallet dragging
+      function toLocal(clientX, clientY) {
+        const r = canvas.getBoundingClientRect();
+        return { x: ((clientX - r.left) / r.width) * W, y: ((clientY - r.top) / r.height) * H };
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        const pt = toLocal(e.clientX, e.clientY);
+        const owner = pt.y >= H / 2 ? 1 : (vsAI ? 0 : 2);
+        if (owner) {
+          pointers.set(e.pointerId, { owner, x: pt.x, y: pt.y });
+          canvas.setPointerCapture(e.pointerId);
+        }
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        const rec = pointers.get(e.pointerId);
+        if (!rec) return;
+        const pt = toLocal(e.clientX, e.clientY);
+        rec.x = pt.x; rec.y = pt.y;
+      });
+      canvas.addEventListener('pointerup', (e) => pointers.delete(e.pointerId));
+      canvas.addEventListener('pointercancel', (e) => pointers.delete(e.pointerId));
+
+      window.addEventListener('keydown', (e) => {
+        if (!document.getElementById('view-hockey').classList.contains('active')) return;
+        const k = e.key.toLowerCase();
+        if (['arrowup','arrowdown','arrowleft','arrowright'].includes(k)) e.preventDefault();
+        keys[k] = true;
+      });
+      window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+      document.getElementById('hk-mode-2p').addEventListener('click', () => { Sound.click(); init(false); });
+      document.getElementById('hk-mode-ai').addEventListener('click', () => { Sound.click(); init(true); });
+      document.getElementById('hk-restart').addEventListener('click', () => { Sound.click(); init(vsAI); });
+
+      function clampMallet(m, isBottom) {
+        const minX = WALL + m.r, maxX = W - WALL - m.r;
+        const minY = isBottom ? H / 2 + m.r + 2 : WALL + m.r;
+        const maxY = isBottom ? H - WALL - m.r : H / 2 - m.r - 2;
+        m.x = Math.max(minX, Math.min(maxX, m.x));
+        m.y = Math.max(minY, Math.min(maxY, m.y));
+      }
+
+      function resolveMalletPuck(m) {
+        const dx = puck.x - m.x, dy = puck.y - m.y;
+        const dist = Math.hypot(dx, dy);
+        const minDist = puck.r + m.r;
+        if (dist < minDist && dist > 0.0001) {
+          const nx = dx / dist, ny = dy / dist;
+          puck.x = m.x + nx * (minDist + 0.5);
+          puck.y = m.y + ny * (minDist + 0.5);
+          const relVx = puck.vx - m.vx, relVy = puck.vy - m.vy;
+          const sepVel = relVx * nx + relVy * ny;
+          if (sepVel < 0) {
+            const boost = m.buff === 'TURBO' ? 1.28 : 1.04;
+            const imp = -(1 + 0.88) * sepVel * boost;
+            puck.vx += nx * imp + m.vx * 0.25;
+            puck.vy += ny * imp + m.vy * 0.25;
+            const spd = Math.hypot(puck.vx, puck.vy);
+            if (spd > 980) { puck.vx = (puck.vx / spd) * 980; puck.vy = (puck.vy / spd) * 980; }
+            Sound.clack(540 + Math.min(260, spd * 0.25));
+            haptic(14);
+            emitSparks(puck.x - nx * puck.r, puck.y - ny * puck.r, m === p1 ? '#38bdf8' : '#fb7185', 10);
+          }
+        }
+      }
+
+      function update(dt) {
+        if (!p1) return;
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const s = sparks[i]; s.x += s.vx * dt; s.y += s.vy * dt; s.life -= dt;
+          if (s.life <= 0) sparks.splice(i, 1);
+        }
+        for (let i = rings.length - 1; i >= 0; i--) {
+          rings[i].life -= dt;
+          if (rings[i].life <= 0) rings.splice(i, 1);
+        }
+
+        if (matchOver) { render(); return; }
+        if (pauseGoal > 0) { pauseGoal -= dt; render(); return; }
+
+        // Powerup buff timers
+        [p1, p2].forEach(m => {
+          if (m.buffT > 0) {
+            m.buffT -= dt;
+            if (m.buffT <= 0) { m.buff = null; m.r = m.baseR; syncHUD(); }
+          }
+        });
+
+        // Mallet movement via Touch or Keyboard
+        const prev1x = p1.x, prev1y = p1.y;
+        const prev2x = p2.x, prev2y = p2.y;
+        const kSpeed = 480;
+
+        let t1 = null, t2 = null;
+        for (const rec of pointers.values()) {
+          if (rec.owner === 1) t1 = rec;
+          if (rec.owner === 2) t2 = rec;
+        }
+
+        if (t1) {
+          p1.x += (t1.x - p1.x) * Math.min(1, dt * 26);
+          p1.y += (t1.y - p1.y) * Math.min(1, dt * 26);
+        } else {
+          let kx = (keys['d'] ? 1 : 0) - (keys['a'] ? 1 : 0);
+          let ky = (keys['s'] ? 1 : 0) - (keys['w'] ? 1 : 0);
+          const sp = p1.buff === 'FROZEN' ? kSpeed * 0.45 : kSpeed;
+          p1.x += kx * sp * dt; p1.y += ky * sp * dt;
+        }
+        clampMallet(p1, true);
+        p1.vx = (p1.x - prev1x) / dt; p1.vy = (p1.y - prev1y) / dt;
+
+        if (vsAI) {
+          const targetX = puck.y < H * 0.6 ? puck.x : W / 2;
+          const targetY = puck.y < H * 0.48 ? Math.max(58, puck.y - 16) : 86;
+          const aiSpd = p2.buff === 'FROZEN' ? 180 : 390;
+          const dx = targetX - p2.x, dy = targetY - p2.y, d = Math.hypot(dx, dy);
+          if (d > 2) { p2.x += (dx / d) * Math.min(d, aiSpd * dt); p2.y += (dy / d) * Math.min(d, aiSpd * dt); }
+        } else if (t2) {
+          p2.x += (t2.x - p2.x) * Math.min(1, dt * 26);
+          p2.y += (t2.y - p2.y) * Math.min(1, dt * 26);
+        } else {
+          let kx = (keys['arrowright'] ? 1 : 0) - (keys['arrowleft'] ? 1 : 0);
+          let ky = (keys['arrowdown'] ? 1 : 0) - (keys['arrowup'] ? 1 : 0);
+          const sp = p2.buff === 'FROZEN' ? kSpeed * 0.45 : kSpeed;
+          p2.x += kx * sp * dt; p2.y += ky * sp * dt;
+        }
+        clampMallet(p2, false);
+        p2.vx = (p2.x - prev2x) / dt; p2.vy = (p2.y - prev2y) / dt;
+
+        // Power-up orb spawn
+        if (!orb) {
+          orbTimer -= dt;
+          if (orbTimer <= 0) {
+            const types = ['BIG', 'TURBO', 'FREEZE'];
+            orb = { x: 80 + Math.random() * (W - 160), y: H / 2 + (Math.random() * 140 - 70), r: 15, type: types[(Math.random() * 3) | 0] };
+          }
+        } else if (Math.hypot(puck.x - orb.x, puck.y - orb.y) < puck.r + orb.r) {
+          const owner = puck.vy < 0 ? p1 : p2;
+          const opp = owner === p1 ? p2 : p1;
+          if (orb.type === 'BIG') { owner.r = 39; owner.buff = 'BIG'; owner.buffT = 7; }
+          else if (orb.type === 'TURBO') { owner.buff = 'TURBO'; owner.buffT = 7; }
+          else { opp.buff = 'FROZEN'; opp.buffT = 4.5; }
+          Sound.powerup();
+          emitSparks(orb.x, orb.y, '#fbbf24', 18);
+          orb = null; orbTimer = 7;
+          syncHUD();
+        }
+
+        // 4 Sub-stepped Physics Simulation (Zero Tunneling!)
+        const SUB = 4;
+        const sdt = dt / SUB;
+        const gLeft = (W - GOAL_W) / 2, gRight = (W + GOAL_W) / 2;
+
+        for (let s = 0; s < SUB; s++) {
+          puck.x += puck.vx * sdt;
+          puck.y += puck.vy * sdt;
+          puck.vx *= Math.pow(0.985, sdt * 60);
+          puck.vy *= Math.pow(0.985, sdt * 60);
+
+          if (puck.x - puck.r < WALL) { puck.x = WALL + puck.r; puck.vx = Math.abs(puck.vx) * 0.92; Sound.bounce(360); }
+          if (puck.x + puck.r > W - WALL) { puck.x = W - WALL - puck.r; puck.vx = -Math.abs(puck.vx) * 0.92; Sound.bounce(360); }
+
+          // Top / Bottom walls with goal gate openings
+          const inGoalX = puck.x > gLeft + puck.r * 0.4 && puck.x < gRight - puck.r * 0.4;
+          if (!inGoalX) {
+            if (puck.y - puck.r < WALL) { puck.y = WALL + puck.r; puck.vy = Math.abs(puck.vy) * 0.92; Sound.bounce(360); }
+            if (puck.y + puck.r > H - WALL) { puck.y = H - WALL - puck.r; puck.vy = -Math.abs(puck.vy) * 0.92; Sound.bounce(360); }
+          } else {
+            if (puck.y < -6) {
+              // Goal for P1!
+              p1.score++;
+              Sound.goal(); triggerShake(); haptic(55);
+              emitSparks(puck.x, 12, '#38bdf8', 32);
+              syncHUD();
+              if (p1.score >= WIN_GOALS) {
+                matchOver = true; Sound.win(); recordWinner(1);
+                showToast('🏆 🟦 PLAYER 1 WINS AIR HOCKEY 3D!');
+              } else { pauseGoal = 0.85; resetEntities(-1); }
+              break;
+            }
+            if (puck.y > H + 6) {
+              // Goal for P2!
+              p2.score++;
+              Sound.goal(); triggerShake(); haptic(55);
+              emitSparks(puck.x, H - 12, '#fb7185', 32);
+              syncHUD();
+              if (p2.score >= WIN_GOALS) {
+                matchOver = true; Sound.win(); recordWinner(2);
+                showToast(`🏆 ${vsAI ? '🤖 AI' : '🟥 PLAYER 2'} WINS AIR HOCKEY 3D!`);
+              } else { pauseGoal = 0.85; resetEntities(1); }
+              break;
+            }
+          }
+
+          resolveMalletPuck(p1);
+          resolveMalletPuck(p2);
+        }
+
+        trail.push({ x: puck.x, y: puck.y });
+        if (trail.length > 12) trail.shift();
+        render();
+      }
+
+      function render() {
+        // 3D Pixel Ice Surface
+        ctx.fillStyle = '#071124';
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.07)';
+        ctx.lineWidth = 1;
+        for (let x = WALL; x < W - WALL; x += 24) {
+          ctx.beginPath(); ctx.moveTo(x, WALL); ctx.lineTo(x, H - WALL); ctx.stroke();
+        }
+        for (let y = WALL; y < H - WALL; y += 24) {
+          ctx.beginPath(); ctx.moveTo(WALL, y); ctx.lineTo(W - WALL, y); ctx.stroke();
+        }
+
+        // Center divider & face-off circle
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(WALL, H / 2); ctx.lineTo(W - WALL, H / 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(W / 2, H / 2, 58, 0, Math.PI * 2); ctx.stroke();
+
+        // 3D Voxel Rink Frame
+        const gLeft = (W - GOAL_W) / 2, gRight = (W + GOAL_W) / 2;
+        drawVoxelBox(ctx, 0, 0, WALL, H, 6, '#334155', '#1e293b', '#475569');
+        drawVoxelBox(ctx, W - WALL, 0, WALL, H, 6, '#334155', '#1e293b', '#475569');
+        drawVoxelBox(ctx, WALL, 0, gLeft - WALL, WALL, 6, '#fb7185', '#9f1239');
+        drawVoxelBox(ctx, gRight, 0, W - WALL - gRight, WALL, 6, '#fb7185', '#9f1239');
+        drawVoxelBox(ctx, WALL, H - WALL, gLeft - WALL, WALL, 6, '#38bdf8', '#075985');
+        drawVoxelBox(ctx, gRight, H - WALL, W - WALL - gRight, WALL, 6, '#38bdf8', '#075985');
+
+        // Neon Goal Lasers
+        ctx.fillStyle = 'rgba(251, 113, 133, 0.32)'; ctx.fillRect(gLeft, 0, GOAL_W, 8);
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.32)'; ctx.fillRect(gLeft, H - 8, GOAL_W, 8);
+
+        // Power-up Orb
+        if (orb) {
+          const icons = { BIG: '🛡️', TURBO: '⚡', FREEZE: '❄️' };
+          ctx.save();
+          ctx.shadowColor = '#fbbf24'; ctx.shadowBlur = 14;
+          ctx.fillStyle = 'rgba(251, 191, 36, 0.22)';
+          ctx.beginPath(); ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2); ctx.fill();
+          ctx.font = '18px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(icons[orb.type], orb.x, orb.y + 1);
+          ctx.restore();
+        }
+
+        // Puck Trail & 3D Puck
+        for (let i = 0; i < trail.length; i++) {
+          ctx.fillStyle = `rgba(52, 211, 153, ${((i + 1) / trail.length) * 0.28})`;
+          ctx.beginPath(); ctx.arc(trail[i].x, trail[i].y, puck.r * ((i + 1) / trail.length), 0, Math.PI * 2); ctx.fill();
+        }
+        drawVoxelDisc(ctx, puck.x, puck.y, puck.r, 6, '#34d399', '#047857', '#a7f3d0');
+
+        // 3D Mallets
+        drawVoxelDisc(ctx, p2.x, p2.y, p2.r, 9, p2.buff === 'FROZEN' ? '#93c5fd' : '#fb7185', '#9f1239', '#fecdd3');
+        drawVoxelDisc(ctx, p1.x, p1.y, p1.r, 9, p1.buff === 'FROZEN' ? '#93c5fd' : '#38bdf8', '#0369a1', '#bae6fd');
+
+        // Shockwave Rings & Sparks
+        rings.forEach(r => {
+          const t = r.life / 0.35;
+          ctx.strokeStyle = r.col; ctx.globalAlpha = t; ctx.lineWidth = 2.5;
+          ctx.beginPath(); ctx.arc(r.x, r.y, r.maxR * (1 - t) + 6, 0, Math.PI * 2); ctx.stroke();
+        });
+        sparks.forEach(s => {
+          ctx.globalAlpha = Math.max(0, s.life / 0.4); ctx.fillStyle = s.col;
+          ctx.fillRect(s.x - 2, s.y - 2, 4, 4);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      window.addEventListener('resize', () => {
+        if (document.getElementById('view-hockey').classList.contains('active')) resize();
+      });
+
+      return { init, update };
+    })();
+
+    /* =========================================================================
+       SECTION 4: GAME 2 — VOXEL TANK BLITZ 3D (2.5D Extruded Maze & Ricochets)
+       ========================================================================= */
+    const TankBlitz3D = (() => {
+      const canvas = document.getElementById('c-tank');
+      const W = 680, H = 460;
+      const COLS = 17, ROWS = 11, CELL = 40;
+      const WIN_KILLS = 5;
+      let ctx = canvas.getContext('2d');
+      let vsAI = false, matchOver = false, roundDelay = 0;
+      let maze = [], p1, p2, shells = [], crates = [], particles = [], crateTimer = 5;
+      const hold = { p1: {}, p2: {} }, keys = {};
+
+      function resize() { ctx = setupHiDPI(canvas, W, H, 680, 440); }
+
+      function generateMaze() {
+        maze = Array.from({ length: ROWS }, () => new Uint8Array(COLS));
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (r === 0 || r === ROWS - 1 || c === 0 || c === COLS - 1) maze[r][c] = 1;
+          }
+        }
+        // Symmetrical tactical pillars & blocks (always open paths!)
+        const blocks = [
+          [2,3],[2,4],[4,2],[6,2],[3,6],[5,5],[7,4],[8,2],
+          [2,8],[4,7],[6,8],[8,5]
+        ];
+        blocks.forEach(([r, c]) => {
+          if (Math.random() < 0.78) {
+            maze[r][c] = 1;
+            maze[ROWS - 1 - r][COLS - 1 - c] = 1;
+          }
+        });
+        // Keep spawn corners clear
+        maze[1][1] = 0; maze[1][2] = 0; maze[2][1] = 0;
+        maze[ROWS-2][COLS-2] = 0; maze[ROWS-2][COLS-3] = 0; maze[ROWS-3][COLS-2] = 0;
+      }
+
+      function spawnTanks(resetScores = false) {
+        generateMaze();
+        const s1 = resetScores ? 0 : (p1 ? p1.kills : 0);
+        const s2 = resetScores ? 0 : (p2 ? p2.kills : 0);
+        p1 = { x: 60, y: 60, ang: 0, r: 13, kills: s1, cd: 0, buff: null, buffT: 0, shield: false, col: '#38bdf8', dark: '#0369a1' };
+        p2 = { x: W - 60, y: H - 60, ang: Math.PI, r: 13, kills: s2, cd: 0, buff: null, buffT: 0, shield: false, col: '#fb7185', dark: '#9f1239' };
+        shells = []; crates = []; crateTimer = 4;
+        roundDelay = 0.5;
+        syncHUD();
+      }
+
+      function init(ai = vsAI) {
+        vsAI = ai; matchOver = false; particles = [];
+        document.getElementById('tk-mode-2p').classList.toggle('btn-active', !vsAI);
+        document.getElementById('tk-mode-ai').classList.toggle('btn-active', vsAI);
+        resize();
+        spawnTanks(true);
+      }
+
+      function syncHUD() {
+        document.getElementById('tk-s1').textContent = p1.kills;
+        document.getElementById('tk-s2').textContent = p2.kills;
+        document.getElementById('tk-b1').textContent = p1.shield ? '[🛡️ SHIELD]' : (p1.buff ? `[${p1.buff}]` : '');
+        document.getElementById('tk-b2').textContent = p2.shield ? '[🛡️ SHIELD]' : (p2.buff ? `[${p2.buff}]` : '');
+      }
+
+      function fireTank(t, ownerId) {
+        if (!t || t.cd > 0 || roundDelay > 0 || matchOver) return;
+        const count = t.buff === 'TRIPLE' ? 3 : 1;
+        t.cd = t.buff === 'RAPID' ? 0.22 : 0.48;
+        Sound.shoot();
+        for (let i = 0; i < count; i++) {
+          const spread = count === 3 ? (i - 1) * 0.22 : 0;
+          const a = t.ang + spread;
+          shells.push({
+            x: t.x + Math.cos(a) * 18,
+            y: t.y + Math.sin(a) * 18,
+            vx: Math.cos(a) * 320,
+            vy: Math.sin(a) * 320,
+            bounces: 4,
+            owner: ownerId,
+            grace: 0.14
+          });
+        }
+      }
+
+      // Bind Console Touch Buttons
+      document.querySelectorAll('[data-tk]').forEach(btn => {
+        const [pl, act] = btn.dataset.tk.split(':');
+        btn.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          if (act === 'fire') fireTank(pl === 'p1' ? p1 : p2, pl === 'p1' ? 1 : 2);
+          else hold[pl][act] = true;
+        });
+        const stop = () => { if (act !== 'fire') hold[pl][act] = false; };
+        btn.addEventListener('pointerup', stop);
+        btn.addEventListener('pointerleave', stop);
+        btn.addEventListener('pointercancel', stop);
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (!document.getElementById('view-tank').classList.contains('active')) return;
+        const k = e.key.toLowerCase();
+        if (['arrowup','arrowdown','arrowleft','arrowright',' '].includes(k)) e.preventDefault();
+        if (!keys[k]) {
+          if (k === ' ' || k === 'f') fireTank(p1, 1);
+          if (k === 'enter' || k === 'm') fireTank(p2, 2);
+        }
+        keys[k] = true;
+      });
+      window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+      document.getElementById('tk-mode-2p').addEventListener('click', () => { Sound.click(); init(false); });
+      document.getElementById('tk-mode-ai').addEventListener('click', () => { Sound.click(); init(true); });
+      document.getElementById('tk-restart').addEventListener('click', () => { Sound.click(); init(vsAI); });
+
+      function collidesWall(cx, cy, r) {
+        const c0 = Math.max(0, Math.floor((cx - r) / CELL));
+        const c1 = Math.min(COLS - 1, Math.floor((cx + r) / CELL));
+        const r0 = Math.max(0, Math.floor((cy - r) / CELL));
+        const r1 = Math.min(ROWS - 1, Math.floor((cy + r) / CELL));
+        for (let rr = r0; rr <= r1; rr++) {
+          for (let cc = c0; cc <= c1; cc++) {
+            if (maze[rr][cc]) {
+              const rx = Math.max(cc * CELL, Math.min(cx, (cc + 1) * CELL));
+              const ry = Math.max(rr * CELL, Math.min(cy, (rr + 1) * CELL));
+              if (Math.hypot(cx - rx, cy - ry) < r) return true;
+            }
+          }
+        }
+        return false;
+      }
+
+      function moveTank(t, fwd, rot, dt) {
+        t.ang += rot * 3.1 * dt;
+        const step = fwd * 145 * dt;
+        const nx = t.x + Math.cos(t.ang) * step;
+        if (!collidesWall(nx, t.y, t.r)) t.x = nx;
+        const ny = t.y + Math.sin(t.ang) * step;
+        if (!collidesWall(t.x, ny, t.r)) t.y = ny;
+      }
+
+      function explode(x, y, col, count = 26) {
+        for (let i = 0; i < count; i++) {
+          if (particles.length > 140) particles.shift();
+          const a = Math.random() * Math.PI * 2, s = 50 + Math.random() * 210;
+          particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: 0.5, col, sz: 3 + Math.random() * 4 });
+        }
+      }
+
+      function hitTank(victim, attackerId) {
+        if (victim.shield) {
+          victim.shield = false;
+          Sound.powerup();
+          explode(victim.x, victim.y, '#34d399', 16);
+          syncHUD();
+          return;
+        }
+        Sound.boom(); triggerShake(); haptic(55);
+        explode(victim.x, victim.y, victim.col, 36);
+        if (attackerId === 1) p1.kills++; else p2.kills++;
+        syncHUD();
+        if (p1.kills >= WIN_KILLS || p2.kills >= WIN_KILLS) {
+          matchOver = true; Sound.win();
+          const w = p1.kills >= WIN_KILLS ? 1 : 2;
+          recordWinner(w);
+          showToast(`🏆 ${w === 1 ? '🟦 P1 TANK' : (vsAI ? '🤖 AI TANK' : '🟥 P2 TANK')} WINS TANK BLITZ!`);
+        } else {
+          roundDelay = 1.1;
+          setTimeout(() => { if (!matchOver) spawnTanks(false); }, 950);
+        }
+      }
+
+      function update(dt) {
+        if (!p1) return;
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+
+        if (matchOver || roundDelay > 0) {
+          if (roundDelay > 0) roundDelay -= dt;
+          render(); return;
+        }
+
+        [p1, p2].forEach(t => {
+          if (t.cd > 0) t.cd -= dt;
+          if (t.buffT > 0) { t.buffT -= dt; if (t.buffT <= 0) { t.buff = null; syncHUD(); } }
+        });
+
+        // P1 Input
+        const fwd1 = ((keys['w'] || hold.p1.fwd) ? 1 : 0) - ((keys['s'] || hold.p1.back) ? 1 : 0);
+        const rot1 = ((keys['d'] || hold.p1.right) ? 1 : 0) - ((keys['a'] || hold.p1.left) ? 1 : 0);
+        moveTank(p1, fwd1, rot1, dt);
+
+        // P2 or Smart AI Input
+        if (vsAI) {
+          const dx = p1.x - p2.x, dy = p1.y - p2.y;
+          const targetAng = Math.atan2(dy, dx);
+          let diff = ((targetAng - p2.ang + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+          const rotAI = Math.sign(diff) * Math.min(1, Math.abs(diff) * 2);
+          const blocked = collidesWall(p2.x + Math.cos(p2.ang) * 24, p2.y + Math.sin(p2.ang) * 24, p2.r);
+          moveTank(p2, blocked ? -0.6 : 0.75, blocked ? 1 : rotAI, dt);
+          if (Math.abs(diff) < 0.35 && Math.random() < 0.05) fireTank(p2, 2);
+        } else {
+          const fwd2 = ((keys['arrowup'] || hold.p2.fwd) ? 1 : 0) - ((keys['arrowdown'] || hold.p2.back) ? 1 : 0);
+          const rot2 = ((keys['arrowright'] || hold.p2.right) ? 1 : 0) - ((keys['arrowleft'] || hold.p2.left) ? 1 : 0);
+          moveTank(p2, fwd2, rot2, dt);
+        }
+
+        // Crate spawning & collection
+        crateTimer -= dt;
+        if (crateTimer <= 0 && crates.length < 2) {
+          crateTimer = 6.5;
+          let r, c;
+          do { r = (Math.random() * (ROWS - 2) + 1) | 0; c = (Math.random() * (COLS - 2) + 1) | 0; } while (maze[r][c]);
+          const types = ['TRIPLE', 'RAPID', 'SHIELD'];
+          crates.push({ x: c * CELL + CELL / 2, y: r * CELL + CELL / 2, type: types[(Math.random() * 3) | 0] });
+        }
+        for (let i = crates.length - 1; i >= 0; i--) {
+          const cr = crates[i];
+          [p1, p2].forEach(t => {
+            if (Math.hypot(t.x - cr.x, t.y - cr.y) < t.r + 13) {
+              if (cr.type === 'SHIELD') t.shield = true;
+              else { t.buff = cr.type; t.buffT = 8; }
+              Sound.powerup(); syncHUD();
+              crates.splice(i, 1);
+            }
+          });
+        }
+
+        // Shells with exact axis-aligned wall ricochet
+        for (let i = shells.length - 1; i >= 0; i--) {
+          const s = shells[i];
+          if (s.grace > 0) s.grace -= dt;
+          const nx = s.x + s.vx * dt;
+          if (collidesWall(nx, s.y, 4)) {
+            s.vx = -s.vx; s.bounces--; Sound.bounce(680); explode(s.x, s.y, '#fbbf24', 5);
+          } else s.x = nx;
+
+          const ny = s.y + s.vy * dt;
+          if (collidesWall(s.x, ny, 4)) {
+            s.vy = -s.vy; s.bounces--; Sound.bounce(680); explode(s.x, s.y, '#fbbf24', 5);
+          } else s.y = ny;
+
+          if (s.bounces < 0) { shells.splice(i, 1); continue; }
+
+          if ((s.owner !== 1 || s.grace <= 0) && Math.hypot(s.x - p1.x, s.y - p1.y) < p1.r + 4) {
+            shells.splice(i, 1); hitTank(p1, 2); break;
+          }
+          if ((s.owner !== 2 || s.grace <= 0) && Math.hypot(s.x - p2.x, s.y - p2.y) < p2.r + 4) {
+            shells.splice(i, 1); hitTank(p2, 1); break;
+          }
+        }
+
+        render();
+      }
+
+      function drawTank(t) {
+        ctx.save();
+        ctx.translate(t.x, t.y);
+        ctx.rotate(t.ang);
+        // Shadow & 3D Treads
+        ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.fillRect(-14, -11, 28, 26);
+        ctx.fillStyle = '#1e293b'; ctx.fillRect(-14, -13, 28, 6); ctx.fillRect(-14, 7, 28, 6);
+        // Extruded Hull + Beveled Top
+        ctx.fillStyle = t.dark; ctx.fillRect(-12, -8, 24, 19);
+        ctx.fillStyle = t.col; ctx.fillRect(-12, -10, 24, 18);
+        // Turret & Barrel
+        ctx.fillStyle = '#f8fafc'; ctx.fillRect(0, -3, 19, 6);
+        ctx.fillStyle = t.dark; ctx.fillRect(-6, -6, 12, 12);
+        ctx.restore();
+
+        if (t.shield) {
+          ctx.strokeStyle = '#34d399'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(t.x, t.y, t.r + 5, 0, Math.PI * 2); ctx.stroke();
+        }
+      }
+
+      function render() {
+        ctx.fillStyle = '#09101f';
+        ctx.fillRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(148,163,184,0.06)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= W; x += CELL) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+        for (let y = 0; y <= H; y += CELL) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+        // 2.5D Extruded Voxel Maze Walls
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (maze[r][c]) {
+              drawVoxelBox(ctx, c * CELL + 1, r * CELL + 1, CELL - 2, CELL - 8, 8, '#334155', '#1e293b', '#475569');
+            }
+          }
+        }
+
+        // Crates
+        const icons = { TRIPLE: '🔱', RAPID: '⚡', SHIELD: '🛡️' };
+        crates.forEach(cr => {
+          drawVoxelBox(ctx, cr.x - 11, cr.y - 13, 22, 18, 5, '#d97706', '#92400e', '#fbbf24');
+          ctx.font = '13px sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+          ctx.fillText(icons[cr.type], cr.x, cr.y - 4);
+        });
+
+        drawTank(p1);
+        drawTank(p2);
+
+        shells.forEach(s => {
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath(); ctx.arc(s.x, s.y, 4.5, 0, Math.PI * 2); ctx.fill();
+        });
+
+        particles.forEach(p => {
+          ctx.globalAlpha = Math.max(0, p.life / 0.5);
+          ctx.fillStyle = p.col;
+          ctx.fillRect(p.x - p.sz / 2, p.y - p.sz / 2, p.sz, p.sz);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      window.addEventListener('resize', () => {
+        if (document.getElementById('view-tank').classList.contains('active')) resize();
+      });
+
+      return { init, update };
+    })();
+
+    /* =========================================================================
+       SECTION 5: GAME 3 — ROYAL CARROM 3D (6x Sub-Stepped Tabletop Physics)
+       ========================================================================= */
+    const Carrom3D = (() => {
+      const canvas = document.getElementById('c-carrom');
+      const S = 540, RIM = 38, POCKET_R = 23;
+      let ctx = canvas.getContext('2d');
+      let vsAI = false, turn = 1, phase = 'AIM', matchOver = false; // AIM | MOVING
+      let discs = [], striker = null, dragAim = null;
+      let scores = { p1: 0, p2: 0 }, queenState = { owner: 0, covered: false };
+      let pocketedThisTurn = [];
+      let sparks = [];
+
+      const POCKETS = [
+        { x: RIM + 18, y: RIM + 18 },
+        { x: S - RIM - 18, y: RIM + 18 },
+        { x: RIM + 18, y: S - RIM - 18 },
+        { x: S - RIM - 18, y: S - RIM - 18 }
+      ];
+
+      function resize() { ctx = setupHiDPI(canvas, S, S, 520, 520); }
+
+      function setupBoard() {
+        discs = [];
+        const cx = S / 2, cy = S / 2;
+        // Queen at exact center
+        discs.push({ x: cx, y: cy, vx: 0, vy: 0, r: 12.5, type: 'Q' });
+        // Inner ring (6 alternating) & Outer ring (12 alternating)
+        for (let i = 0; i < 6; i++) {
+          const a = (Math.PI / 3) * i;
+          discs.push({ x: cx + Math.cos(a) * 27, y: cy + Math.sin(a) * 27, vx: 0, vy: 0, r: 12.5, type: i % 2 === 0 ? 'W' : 'B' });
+        }
+        for (let i = 0; i < 12; i++) {
+          const a = (Math.PI / 6) * i;
+          discs.push({ x: cx + Math.cos(a) * 53, y: cy + Math.sin(a) * 53, vx: 0, vy: 0, r: 12.5, type: i % 2 === 0 ? 'W' : 'B' });
+        }
+      }
+
+      function placeStriker(offsetX = 0) {
+        const y = turn === 1 ? S - RIM - 76 : RIM + 76;
+        striker = { x: S / 2 + offsetX, y, vx: 0, vy: 0, r: 16.5, type: 'S' };
+      }
+
+      function isStrikerClear() {
+        return !discs.some(d => Math.hypot(d.x - striker.x, d.y - striker.y) < d.r + striker.r + 1);
+      }
+
+      function init(ai = vsAI) {
+        vsAI = ai; turn = 1; phase = 'AIM'; matchOver = false;
+        scores = { p1: 0, p2: 0 };
+        queenState = { owner: 0, covered: false };
+        pocketedThisTurn = []; sparks = []; dragAim = null;
+        document.getElementById('cr-mode-2p').classList.toggle('btn-active', !vsAI);
+        document.getElementById('cr-mode-ai').classList.toggle('btn-active', vsAI);
+        document.getElementById('cr-slide-1').value = 0;
+        document.getElementById('cr-slide-2').value = 0;
+        setupBoard();
+        placeStriker(0);
+        resize();
+        syncHUD();
+      }
+
+      function syncHUD() {
+        document.getElementById('cr-s1').textContent = scores.p1;
+        document.getElementById('cr-s2').textContent = scores.p2;
+        document.getElementById('cr-q1').textContent = queenState.owner === 1 ? (queenState.covered ? '👑 COVERED (+3)' : '👑 COVER NOW!') : '';
+        document.getElementById('cr-q2').textContent = queenState.owner === 2 ? (queenState.covered ? '👑 COVERED (+3)' : '👑 COVER NOW!') : '';
+
+        const c1 = document.getElementById('cr-p1-console');
+        const c2 = document.getElementById('cr-p2-console');
+        c1.classList.toggle('turn-active', turn === 1 && !matchOver);
+        c1.classList.toggle('turn-locked', turn !== 1 || phase !== 'AIM' || matchOver);
+        c2.classList.toggle('turn-active', turn === 2 && !matchOver);
+        c2.classList.toggle('turn-locked', turn !== 2 || phase !== 'AIM' || vsAI || matchOver);
+      }
+
+      // Sliders for positioning Striker
+      document.getElementById('cr-slide-1').addEventListener('input', (e) => {
+        if (turn === 1 && phase === 'AIM') placeStriker(Number(e.target.value));
+      });
+      document.getElementById('cr-slide-2').addEventListener('input', (e) => {
+        if (turn === 2 && phase === 'AIM') placeStriker(Number(e.target.value));
+      });
+
+      function toBoard(cx, cy) {
+        const r = canvas.getBoundingClientRect();
+        return { x: ((cx - r.left) / r.width) * S, y: ((cy - r.top) / r.height) * S };
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        if (phase !== 'AIM' || matchOver || (vsAI && turn === 2)) return;
+        const pt = toBoard(e.clientX, e.clientY);
+        if (Math.hypot(pt.x - striker.x, pt.y - striker.y) <= 44) {
+          if (!isStrikerClear()) { showToast('⚠️ Slide striker to a clear spot first!'); return; }
+          dragAim = { x: pt.x, y: pt.y };
+          canvas.setPointerCapture(e.pointerId);
+        }
+      });
+
+      canvas.addEventListener('pointermove', (e) => {
+        if (!dragAim) return;
+        const pt = toBoard(e.clientX, e.clientY);
+        dragAim.x = pt.x; dragAim.y = pt.y;
+      });
+
+      canvas.addEventListener('pointerup', () => {
+        if (!dragAim) return;
+        const dx = striker.x - dragAim.x, dy = striker.y - dragAim.y;
+        const dist = Math.hypot(dx, dy);
+        dragAim = null;
+        if (dist > 14) {
+          const pwr = Math.min(130, dist) * 9.5;
+          striker.vx = (dx / dist) * pwr;
+          striker.vy = (dy / dist) * pwr;
+          phase = 'MOVING';
+          pocketedThisTurn = [];
+          Sound.clack(420);
+          syncHUD();
+        }
+      });
+
+      document.getElementById('cr-mode-2p').addEventListener('click', () => { Sound.click(); init(false); });
+      document.getElementById('cr-mode-ai').addEventListener('click', () => { Sound.click(); init(true); });
+      document.getElementById('cr-restart').addEventListener('click', () => { Sound.click(); init(vsAI); });
+
+      function endTurn() {
+        let extraTurn = false;
+        let strikerFoul = pocketedThisTurn.includes('S');
+        const myCol = turn === 1 ? 'W' : 'B';
+
+        if (strikerFoul) {
+          showToast('🚫 Striker Pocketed! Foul — Turn Passes.');
+          // Return 1 coin if available
+          if ((turn === 1 && scores.p1 > 0) || (turn === 2 && scores.p2 > 0)) {
+            if (turn === 1) scores.p1--; else scores.p2--;
+            discs.push({ x: S / 2 + (Math.random() * 16 - 8), y: S / 2, vx: 0, vy: 0, r: 12.5, type: myCol });
+          }
+        } else {
+          if (pocketedThisTurn.includes('Q')) {
+            queenState = { owner: turn, covered: false };
+            extraTurn = true;
+            showToast('👑 Queen Pocketed! Pocket your coin to cover!');
+          }
+          if (pocketedThisTurn.includes(myCol)) {
+            extraTurn = true;
+            if (queenState.owner === turn && !queenState.covered) {
+              queenState.covered = true;
+              if (turn === 1) scores.p1 += 3; else scores.p2 += 3;
+              showToast('👑✨ QUEEN COVERED! +3 Bonus Points!');
+            }
+          } else if (queenState.owner === turn && !queenState.covered && !pocketedThisTurn.includes('Q')) {
+            // Failed to cover queen -> returns to center
+            queenState = { owner: 0, covered: false };
+            discs.push({ x: S / 2, y: S / 2, vx: 0, vy: 0, r: 12.5, type: 'Q' });
+            showToast('👑 Queen not covered — returned to center!');
+          }
+        }
+
+        // Check win condition (all White or all Black cleared)
+        const whitesLeft = discs.filter(d => d.type === 'W').length;
+        const blacksLeft = discs.filter(d => d.type === 'B').length;
+        if (whitesLeft === 0 || blacksLeft === 0) {
+          matchOver = true;
+          const winner = scores.p1 > scores.p2 ? 1 : (scores.p2 > scores.p1 ? 2 : (whitesLeft === 0 ? 1 : 2));
+          Sound.win(); recordWinner(winner);
+          showToast(`🏆 ${winner === 1 ? '⚪ P1 (WHITE)' : (vsAI ? '🤖 AI (BLACK)' : '⚫ P2 (BLACK)')} WINS CARROM 3D!`);
+          syncHUD(); return;
+        }
+
+        if (!extraTurn) turn = turn === 1 ? 2 : 1;
+        phase = 'AIM';
+        const slider = document.getElementById(turn === 1 ? 'cr-slide-1' : 'cr-slide-2');
+        placeStriker(Number(slider.value));
+        syncHUD();
+
+        // AI Shot
+        if (vsAI && turn === 2 && !matchOver) {
+          setTimeout(() => {
+            if (phase !== 'AIM' || turn !== 2 || matchOver) return;
+            const targets = discs.filter(d => d.type === 'B' || d.type === 'Q');
+            const tgt = targets[(Math.random() * targets.length) | 0] || { x: S / 2, y: S / 2 };
+            for (let off = -140; off <= 140; off += 35) {
+              placeStriker(off);
+              if (isStrikerClear()) break;
+            }
+            const dx = tgt.x - striker.x, dy = tgt.y - striker.y;
+            const d = Math.hypot(dx, dy) || 1;
+            const spd = 720 + Math.random() * 280;
+            striker.vx = (dx / d) * spd; striker.vy = (dy / d) * spd;
+            phase = 'MOVING'; pocketedThisTurn = [];
+            Sound.clack(420); syncHUD();
+          }, 700);
+        }
+      }
+
+      function update(dt) {
+        if (!striker) return;
+        for (let i = sparks.length - 1; i >= 0; i--) {
+          const sp = sparks[i]; sp.x += sp.vx * dt; sp.y += sp.vy * dt; sp.life -= dt;
+          if (sp.life <= 0) sparks.splice(i, 1);
+        }
+
+        if (phase === 'MOVING') {
+          const all = pocketedThisTurn.includes('S') ? [...discs] : [...discs, striker];
+          const SUB = 6, sdt = dt / SUB;
+          let moving = false;
+
+          for (let step = 0; step < SUB; step++) {
+            for (let i = 0; i < all.length; i++) {
+              const a = all[i];
+              a.x += a.vx * sdt; a.y += a.vy * sdt;
+              const damp = Math.exp(-2.35 * sdt);
+              a.vx *= damp; a.vy *= damp;
+
+              // Cushion bounces
+              if (a.x - a.r < RIM) { a.x = RIM + a.r; a.vx = Math.abs(a.vx) * 0.82; }
+              if (a.x + a.r > S - RIM) { a.x = S - RIM - a.r; a.vx = -Math.abs(a.vx) * 0.82; }
+              if (a.y - a.r < RIM) { a.y = RIM + a.r; a.vy = Math.abs(a.vy) * 0.82; }
+              if (a.y + a.r > S - RIM) { a.y = S - RIM - a.r; a.vy = -Math.abs(a.vy) * 0.82; }
+            }
+
+            // Disc-disc elastic collisions
+            for (let i = 0; i < all.length; i++) {
+              for (let j = i + 1; j < all.length; j++) {
+                const a = all[i], b = all[j];
+                const dx = b.x - a.x, dy = b.y - a.y;
+                const dist = Math.hypot(dx, dy), minD = a.r + b.r;
+                if (dist < minD && dist > 0.0001) {
+                  const nx = dx / dist, ny = dy / dist;
+                  const overlap = (minD - dist) * 0.5;
+                  a.x -= nx * overlap; a.y -= ny * overlap;
+                  b.x += nx * overlap; b.y += ny * overlap;
+
+                  const rvx = b.vx - a.vx, rvy = b.vy - a.vy;
+                  const vn = rvx * nx + rvy * ny;
+                  if (vn < 0) {
+                    const ma = a.type === 'S' ? 2.1 : 1.0, mb = b.type === 'S' ? 2.1 : 1.0;
+                    const imp = -(1 + 0.89) * vn / (1 / ma + 1 / mb);
+                    a.vx -= (imp / ma) * nx; a.vy -= (imp / ma) * ny;
+                    b.vx += (imp / mb) * nx; b.vy += (imp / mb) * ny;
+                    if (Math.abs(vn) > 35) Sound.clack(480 + Math.min(280, Math.abs(vn) * 0.4));
+                  }
+                }
+              }
+            }
+          }
+
+          // Check Pockets
+          for (let i = discs.length - 1; i >= 0; i--) {
+            const d = discs[i];
+            if (POCKETS.some(p => Math.hypot(d.x - p.x, d.y - p.y) < POCKET_R)) {
+              pocketedThisTurn.push(d.type);
+              if (d.type === 'W') scores.p1++;
+              else if (d.type === 'B') scores.p2++;
+              Sound.pocket(); haptic(20);
+              for (let k = 0; k < 12; k++) {
+                const a = Math.random() * Math.PI * 2, spd = 50 + Math.random() * 120;
+                sparks.push({ x: d.x, y: d.y, vx: Math.cos(a) * spd, vy: Math.sin(a) * spd, life: 0.35, col: '#fbbf24' });
+              }
+              discs.splice(i, 1);
+              syncHUD();
+            }
+          }
+          if (!pocketedThisTurn.includes('S') && POCKETS.some(p => Math.hypot(striker.x - p.x, striker.y - p.y) < POCKET_R)) {
+            pocketedThisTurn.push('S');
+            striker.vx = 0; striker.vy = 0;
+            Sound.boom();
+          }
+
+          for (const a of all) {
+            if (Math.hypot(a.vx, a.vy) > 9) moving = true;
+            else { a.vx = 0; a.vy = 0; }
+          }
+          if (!moving) endTurn();
+        }
+        render();
+      }
+
+      function render() {
+        // 3D Rosewood Voxel Frame
+        drawVoxelBox(ctx, 0, 0, S, S, 0, '#451a03', '#270e02', '#78350f');
+        // Playing surface
+        ctx.fillStyle = '#f3d5a5';
+        ctx.fillRect(RIM, RIM, S - RIM * 2, S - RIM * 2);
+        ctx.strokeStyle = '#78350f'; ctx.lineWidth = 2;
+        ctx.strokeRect(RIM, RIM, S - RIM * 2, S - RIM * 2);
+
+        // Center lotus rosette & baselines
+        ctx.strokeStyle = '#b91c1c'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(S / 2, S / 2, 66, 0, Math.PI * 2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(S / 2, S / 2, 16, 0, Math.PI * 2); ctx.stroke();
+        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.5;
+        // Baselines
+        [RIM + 76, S - RIM - 76].forEach(by => {
+          ctx.beginPath(); ctx.moveTo(S / 2 - 150, by - 12); ctx.lineTo(S / 2 + 150, by - 12); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(S / 2 - 150, by + 12); ctx.lineTo(S / 2 + 150, by + 12); ctx.stroke();
+          ctx.fillStyle = '#dc2626';
+          ctx.beginPath(); ctx.arc(S / 2 - 150, by, 10, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(S / 2 + 150, by, 10, 0, Math.PI * 2); ctx.fill();
+        });
+
+        // 4 Deep 3D Pockets
+        POCKETS.forEach(p => {
+          ctx.fillStyle = '#09090b';
+          ctx.beginPath(); ctx.arc(p.x, p.y, POCKET_R, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#78350f'; ctx.lineWidth = 3; ctx.stroke();
+        });
+
+        // 3D Stacked Carrom Coins
+        discs.forEach(d => {
+          if (d.type === 'W') drawVoxelDisc(ctx, d.x, d.y, d.r, 4, '#f8fafc', '#cbd5e1', '#94a3b8');
+          else if (d.type === 'B') drawVoxelDisc(ctx, d.x, d.y, d.r, 4, '#334155', '#0f172a', '#64748b');
+          else drawVoxelDisc(ctx, d.x, d.y, d.r, 4, '#f43f5e', '#9f1239', '#fecdd3');
+        });
+
+        // Striker & Aiming Sling
+        if (!pocketedThisTurn.includes('S')) {
+          const ok = phase !== 'AIM' || isStrikerClear();
+          drawVoxelDisc(ctx, striker.x, striker.y, striker.r, 5, ok ? '#fbbf24' : '#ef4444', '#b45309', '#fef08a');
+        }
+
+        if (dragAim) {
+          const dx = striker.x - dragAim.x, dy = striker.y - dragAim.y;
+          const dist = Math.min(130, Math.hypot(dx, dy));
+          if (dist > 14) {
+            const nx = dx / Math.hypot(dx, dy), ny = dy / Math.hypot(dx, dy);
+            ctx.save();
+            ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3; ctx.setLineDash([6, 6]);
+            ctx.beginPath(); ctx.moveTo(striker.x, striker.y);
+            ctx.lineTo(striker.x + nx * dist * 2.1, striker.y + ny * dist * 2.1);
+            ctx.stroke();
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.7)'; ctx.setLineDash([]);
+            ctx.beginPath(); ctx.arc(striker.x, striker.y, dist * 0.7, 0, Math.PI * 2); ctx.stroke();
+            ctx.restore();
+          }
+        }
+
+        sparks.forEach(s => {
+          ctx.globalAlpha = Math.max(0, s.life / 0.35); ctx.fillStyle = s.col;
+          ctx.fillRect(s.x - 2, s.y - 2, 4, 4);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      window.addEventListener('resize', () => {
+        if (document.getElementById('view-carrom').classList.contains('active')) resize();
+      });
+
+      return { init, update };
+    })();
+
+    /* =========================================================================
+       SECTION 6: GAME 4 — VOXEL CANNON SIEGE 3D (Destructible Pixel Terrain)
+       ========================================================================= */
+    const CannonSiege3D = (() => {
+      const canvas = document.getElementById('c-cannon');
+      const W = 720, H = 420;
+      const BLOCK = 4; // 4px crisp pixel-voxel columns for super fast crater carving!
+      const COLS = W / BLOCK;
+      let ctx = canvas.getContext('2d');
+      let vsAI = false, turn = 1, matchOver = false, wind = 0;
+      let heightMap = new Float32Array(COLS);
+      let fort1, fort2, projectiles = [], particles = [], floatTexts = [];
+
+      function resize() { ctx = setupHiDPI(canvas, W, H, 720, 420); }
+
+      function generateTerrain() {
+        const base = H * 0.65;
+        const p1 = Math.random() * 6, p2 = Math.random() * 6;
+        for (let i = 0; i < COLS; i++) {
+          const x = i / COLS;
+          const ridge = Math.sin(x * Math.PI) * -95; // Central mountain peak
+          const hills = Math.sin(x * 8 + p1) * 24 + Math.cos(x * 15 + p2) * 10;
+          heightMap[i] = Math.max(130, Math.min(H - 36, base + ridge + hills));
+        }
+        // Flatten fort pads
+        for (let i = 14; i <= 26; i++) heightMap[i] = heightMap[20];
+        for (let i = COLS - 27; i <= COLS - 15; i++) heightMap[i] = heightMap[COLS - 21];
+      }
+
+      function init(ai = vsAI) {
+        vsAI = ai; turn = 1; matchOver = false;
+        projectiles = []; particles = []; floatTexts = [];
+        generateTerrain();
+        fort1 = { x: 20 * BLOCK, y: heightMap[20], hp: 100, ang: 45, pwr: 65, ammo: { std: 99, cluster: 2, plasma: 2, nuke: 1 } };
+        fort2 = { x: (COLS - 21) * BLOCK, y: heightMap[COLS - 21], hp: 100, ang: 135, pwr: 65, ammo: { std: 99, cluster: 2, plasma: 2, nuke: 1 } };
+        wind = Math.round((Math.random() * 2 - 1) * 90);
+        document.getElementById('cn-mode-2p').classList.toggle('btn-active', !vsAI);
+        document.getElementById('cn-mode-ai').classList.toggle('btn-active', vsAI);
+        resize();
+        syncHUD();
+      }
+
+      function syncHUD() {
+        document.getElementById('cn-hp1').textContent = Math.max(0, Math.round(fort1.hp));
+        document.getElementById('cn-hp2').textContent = Math.max(0, Math.round(fort2.hp));
+        const arrow = wind > 5 ? '→' : (wind < -5 ? '←' : '•');
+        document.getElementById('cn-wind-pill').textContent = `💨 Wind: ${arrow} ${Math.abs(wind)}`;
+
+        const busy = projectiles.length > 0 || matchOver;
+        const c1 = document.getElementById('cn-p1-console');
+        const c2 = document.getElementById('cn-p2-console');
+        c1.classList.toggle('turn-active', turn === 1 && !busy);
+        c1.classList.toggle('turn-locked', turn !== 1 || busy);
+        c2.classList.toggle('turn-active', turn === 2 && !busy);
+        c2.classList.toggle('turn-locked', turn !== 2 || busy || vsAI);
+      }
+
+      // Bind Sliders & Launchers
+      ['1', '2'].forEach(id => {
+        const angEl = document.getElementById('cn-ang' + id);
+        const pwrEl = document.getElementById('cn-pwr' + id);
+        angEl.addEventListener('input', () => {
+          const f = id === '1' ? fort1 : fort2;
+          f.ang = Number(angEl.value);
+          document.getElementById('cn-ang' + id + '-lbl').textContent = f.ang + '°';
+        });
+        pwrEl.addEventListener('input', () => {
+          const f = id === '1' ? fort1 : fort2;
+          f.pwr = Number(pwrEl.value);
+          document.getElementById('cn-pwr' + id + '-lbl').textContent = f.pwr + '%';
+        });
+        document.getElementById('cn-fire' + id).addEventListener('click', () => launchShot(Number(id)));
+      });
+
+      function launchShot(player) {
+        if (turn !== player || projectiles.length > 0 || matchOver) return;
+        const f = player === 1 ? fort1 : fort2;
+        const sel = document.getElementById('cn-wpn' + player);
+        let wpn = sel.value;
+        if (f.ammo[wpn] <= 0) { wpn = 'std'; sel.value = 'std'; showToast('Out of special ammo — switched to Standard Shell!'); }
+        if (wpn !== 'std') f.ammo[wpn]--;
+
+        const rad = (-f.ang * Math.PI) / 180;
+        const speed = (wpn === 'plasma' ? 7.6 : 6.1) * f.pwr + 90;
+        projectiles.push({
+          x: f.x + Math.cos(rad) * 20,
+          y: f.y - 12 + Math.sin(rad) * 20,
+          vx: Math.cos(rad) * speed,
+          vy: Math.sin(rad) * speed,
+          wpn, splitDone: false, owner: player
+        });
+        Sound.shoot();
+        syncHUD();
+      }
+
+      function carveCrater(cx, cy, rad, dmgBase) {
+        Sound.boom(); triggerShake(); haptic(45);
+        const cStart = Math.max(0, Math.floor((cx - rad) / BLOCK));
+        const cEnd = Math.min(COLS - 1, Math.floor((cx + rad) / BLOCK));
+        for (let c = cStart; c <= cEnd; c++) {
+          const dx = (c * BLOCK + BLOCK / 2) - cx;
+          const chord = Math.sqrt(Math.max(0, rad * rad - dx * dx));
+          const craterBottom = cy + chord;
+          if (heightMap[c] < craterBottom) {
+            heightMap[c] = Math.min(H - 12, Math.max(heightMap[c], craterBottom));
+          }
+        }
+        // Spawn voxel terrain debris
+        for (let i = 0; i < 28; i++) {
+          const a = Math.random() * Math.PI * 2, s = 60 + Math.random() * 220;
+          particles.push({ x: cx, y: cy, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 80, life: 0.65, col: i % 2 ? '#f97316' : '#854d0e' });
+        }
+
+        // Splash damage to both forts
+        [fort1, fort2].forEach((f, idx) => {
+          const d = Math.hypot(f.x - cx, (f.y - 10) - cy);
+          if (d < rad + 22) {
+            const dmg = Math.round(dmgBase * Math.max(0.25, 1 - d / (rad + 26)));
+            f.hp = Math.max(0, f.hp - dmg);
+            floatTexts.push({ x: f.x, y: f.y - 28, txt: `-${dmg}`, life: 1.1, col: idx === 0 ? '#38bdf8' : '#fb7185' });
+          }
+          // Snap fort onto newly carved ground!
+          const col = Math.max(0, Math.min(COLS - 1, Math.floor(f.x / BLOCK)));
+          f.y = heightMap[col];
+        });
+      }
+
+      function nextTurn() {
+        if (fort1.hp <= 0 || fort2.hp <= 0) {
+          matchOver = true; Sound.win();
+          const w = fort1.hp > 0 ? 1 : 2;
+          recordWinner(w);
+          showToast(`🏆 ${w === 1 ? '🟦 P1 FORTRESS' : (vsAI ? '🤖 AI FORTRESS' : '🟥 P2 FORTRESS')} WINS SIEGE 3D!`);
+          syncHUD(); return;
+        }
+        turn = turn === 1 ? 2 : 1;
+        wind = Math.round((Math.random() * 2 - 1) * 95);
+        syncHUD();
+
+        if (vsAI && turn === 2 && !matchOver) {
+          setTimeout(() => {
+            if (turn !== 2 || matchOver) return;
+            fort2.ang = 122 + Math.round(Math.random() * 26);
+            fort2.pwr = 52 + Math.round(Math.random() * 28);
+            document.getElementById('cn-ang2').value = fort2.ang;
+            document.getElementById('cn-ang2-lbl').textContent = fort2.ang + '°';
+            document.getElementById('cn-pwr2').value = fort2.pwr;
+            document.getElementById('cn-pwr2-lbl').textContent = fort2.pwr + '%';
+            launchShot(2);
+          }, 750);
+        }
+      }
+
+      document.getElementById('cn-mode-2p').addEventListener('click', () => { Sound.click(); init(false); });
+      document.getElementById('cn-mode-ai').addEventListener('click', () => { Sound.click(); init(true); });
+      document.getElementById('cn-restart').addEventListener('click', () => { Sound.click(); init(vsAI); });
+
+      function update(dt) {
+        if (!fort1) return;
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i]; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 320 * dt; p.life -= dt;
+          if (p.life <= 0) particles.splice(i, 1);
+        }
+        for (let i = floatTexts.length - 1; i >= 0; i--) {
+          floatTexts[i].y -= 26 * dt; floatTexts[i].life -= dt;
+          if (floatTexts[i].life <= 0) floatTexts.splice(i, 1);
+        }
+
+        if (projectiles.length > 0) {
+          let turnEnded = false;
+          for (let i = projectiles.length - 1; i >= 0; i--) {
+            const pr = projectiles[i];
+            const windFactor = pr.wpn === 'plasma' ? 0.25 : 1.0;
+            pr.vx += wind * windFactor * dt;
+            pr.vy += 360 * dt; // Gravity
+            pr.x += pr.vx * dt;
+            pr.y += pr.vy * dt;
+
+            // Cluster Mortar splits near apex!
+            if (pr.wpn === 'cluster' && !pr.splitDone && pr.vy > 10) {
+              pr.splitDone = true;
+              [-85, 85].forEach(dvx => {
+                projectiles.push({ x: pr.x, y: pr.y, vx: pr.vx + dvx, vy: pr.vy - 30, wpn: 'mini', splitDone: true, owner: pr.owner });
+              });
+              Sound.powerup();
+            }
+
+            if (pr.x < -30 || pr.x > W + 30 || pr.y > H + 20) {
+              projectiles.splice(i, 1);
+              if (projectiles.length === 0) turnEnded = true;
+              continue;
+            }
+
+            const col = Math.floor(pr.x / BLOCK);
+            const hitTerrain = col >= 0 && col < COLS && pr.y >= heightMap[col];
+            const hitFort1 = Math.hypot(pr.x - fort1.x, pr.y - (fort1.y - 10)) < 18;
+            const hitFort2 = Math.hypot(pr.x - fort2.x, pr.y - (fort2.y - 10)) < 18;
+
+            if (hitTerrain || hitFort1 || hitFort2) {
+              const rad = pr.wpn === 'nuke' ? 54 : (pr.wpn === 'mini' ? 22 : (pr.wpn === 'plasma' ? 26 : 32));
+              const dmg = pr.wpn === 'nuke' ? 52 : (pr.wpn === 'plasma' ? 42 : (pr.wpn === 'mini' ? 22 : 30));
+              carveCrater(pr.x, pr.y, rad, dmg);
+              projectiles.splice(i, 1);
+              if (projectiles.length === 0) turnEnded = true;
+            }
+          }
+          if (turnEnded) nextTurn();
+        }
+        render();
+      }
+
+      function drawFort(f, col, dark) {
+        const rad = (-f.ang * Math.PI) / 180;
+        ctx.save();
+        // Cannon barrel
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(f.x, f.y - 11); ctx.lineTo(f.x + Math.cos(rad) * 22, f.y - 11 + Math.sin(rad) * 22); ctx.stroke();
+        // 3D Voxel Fortress Base
+        drawVoxelBox(ctx, f.x - 14, f.y - 16, 28, 12, 5, col, dark, '#f8fafc');
+        // HP Bar
+        ctx.fillStyle = '#0f172a'; ctx.fillRect(f.x - 18, f.y - 30, 36, 5);
+        ctx.fillStyle = f.hp > 40 ? '#34d399' : '#ef4444';
+        ctx.fillRect(f.x - 18, f.y - 30, 36 * (f.hp / 100), 5);
+        ctx.restore();
+      }
+
+      function render() {
+        // Sky gradient + pixel stars
+        const sky = ctx.createLinearGradient(0, 0, 0, H);
+        sky.addColorStop(0, '#050814'); sky.addColorStop(1, '#1e1b4b');
+        ctx.fillStyle = sky; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        for (let i = 0; i < 28; i++) ctx.fillRect((i * 97) % W, (i * 53) % (H * 0.55), 2, 2);
+
+        // 3D-Shaded Pixel Voxel Terrain Columns
+        for (let c = 0; c < COLS; c++) {
+          const y = Math.floor(heightMap[c]);
+          const x = c * BLOCK;
+          ctx.fillStyle = '#1e293b'; ctx.fillRect(x, y + 18, BLOCK, H - y);
+          ctx.fillStyle = '#78350f'; ctx.fillRect(x, y + 5, BLOCK, 13);
+          ctx.fillStyle = '#22c55e'; ctx.fillRect(x, y, BLOCK, 5);
+        }
+
+        drawFort(fort1, '#38bdf8', '#0369a1');
+        drawFort(fort2, '#fb7185', '#9f1239');
+
+        projectiles.forEach(pr => {
+          ctx.fillStyle = pr.wpn === 'plasma' ? '#38bdf8' : (pr.wpn === 'nuke' ? '#f43f5e' : '#fbbf24');
+          ctx.beginPath(); ctx.arc(pr.x, pr.y, pr.wpn === 'nuke' ? 6 : 4.5, 0, Math.PI * 2); ctx.fill();
+        });
+
+        particles.forEach(p => {
+          ctx.globalAlpha = Math.max(0, p.life / 0.65); ctx.fillStyle = p.col;
+          ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+        });
+        ctx.globalAlpha = 1;
+
+        floatTexts.forEach(ft => {
+          ctx.globalAlpha = Math.max(0, ft.life); ctx.fillStyle = ft.col;
+          ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(ft.txt, ft.x, ft.y);
+        });
+        ctx.globalAlpha = 1;
+      }
+
+      window.addEventListener('resize', () => {
+        if (document.getElementById('view-cannon').classList.contains('active')) resize();
+      });
+
+      return { init, update };
+    })();
+
+    /* =========================================================================
+       SECTION 7: LOBBY 3D PREVIEWS, VIEW ROUTING & 60 FPS MASTER LOOP
+       ========================================================================= */
+    let activeView = 'lobby';
+
+    function renderLobbyPreviews() {
+      // 1. Air Hockey 3D Preview
+      const h = document.getElementById('prev-hockey').getContext('2d');
+      h.fillStyle = '#071124'; h.fillRect(0, 0, 320, 138);
+      h.strokeStyle = 'rgba(148,163,184,0.3)'; h.lineWidth = 2;
+      h.beginPath(); h.moveTo(160, 0); h.lineTo(160, 138); h.stroke();
+      h.beginPath(); h.arc(160, 69, 32, 0, Math.PI * 2); h.stroke();
+      drawVoxelDisc(h, 64, 69, 20, 6, '#38bdf8', '#0369a1', '#bae6fd');
+      drawVoxelDisc(h, 256, 69, 20, 6, '#fb7185', '#9f1239', '#fecdd3');
+      drawVoxelDisc(h, 165, 66, 12, 4, '#34d399', '#047857', '#a7f3d0');
+
+      // 2. Tank Blitz 3D Preview
+      const t = document.getElementById('prev-tank').getContext('2d');
+      t.fillStyle = '#09101f'; t.fillRect(0, 0, 320, 138);
+      drawVoxelBox(t, 120, 22, 32, 30, 8, '#334155', '#1e293b', '#475569');
+      drawVoxelBox(t, 170, 74, 32, 30, 8, '#334155', '#1e293b', '#475569');
+      t.fillStyle = '#38bdf8'; t.fillRect(46, 56, 26, 20); t.fillStyle = '#fff'; t.fillRect(62, 63, 18, 5);
+      t.fillStyle = '#fb7185'; t.fillRect(244, 56, 26, 20); t.fillStyle = '#fff'; t.fillRect(236, 63, 18, 5);
+      t.fillStyle = '#fbbf24'; t.beginPath(); t.arc(156, 66, 4, 0, Math.PI * 2); t.fill();
+
+      // 3. Royal Carrom 3D Preview
+      const c = document.getElementById('prev-carrom').getContext('2d');
+      c.fillStyle = '#451a03'; c.fillRect(0, 0, 320, 138);
+      c.fillStyle = '#f3d5a5'; c.fillRect(18, 12, 284, 114);
+      c.fillStyle = '#09090b';
+      [[30,24],[290,24],[30,114],[290,114]].forEach(([x,y]) => { c.beginPath(); c.arc(x,y,10,0,Math.PI*2); c.fill(); });
+      drawVoxelDisc(c, 160, 69, 11, 3, '#f43f5e', '#9f1239', '#fecdd3');
+      drawVoxelDisc(c, 136, 69, 11, 3, '#f8fafc', '#cbd5e1', '#94a3b8');
+      drawVoxelDisc(c, 184, 69, 11, 3, '#334155', '#0f172a', '#64748b');
+      drawVoxelDisc(c, 160, 102, 13, 4, '#fbbf24', '#b45309', '#fef08a');
+
+      // 4. Cannon Siege 3D Preview
+      const n = document.getElementById('prev-cannon').getContext('2d');
+      n.fillStyle = '#0f172a'; n.fillRect(0, 0, 320, 138);
+      for (let x = 0; x < 320; x += 6) {
+        const y = 92 - Math.sin((x / 320) * Math.PI) * 42;
+        n.fillStyle = '#78350f'; n.fillRect(x, y, 6, 138 - y);
+        n.fillStyle = '#22c55e'; n.fillRect(x, y, 6, 4);
+      }
+      drawVoxelBox(n, 38, 76, 24, 12, 4, '#38bdf8', '#0369a1', '#fff');
+      drawVoxelBox(n, 258, 76, 24, 12, 4, '#fb7185', '#9f1239', '#fff');
+      n.strokeStyle = 'rgba(251,191,36,0.75)'; n.setLineDash([5, 5]); n.lineWidth = 2;
+      n.beginPath(); n.moveTo(54, 72); n.quadraticCurveTo(160, 8, 266, 72); n.stroke();
+    }
+
+    function switchView(target) {
+      const ov = document.getElementById('transition-overlay');
+      const lbl = document.getElementById('transition-label');
+      const names = {
+        lobby: 'Returning to Duo Arena Lobby...',
+        hockey: 'Loading Voxel Air Hockey 3D...',
+        tank: 'Generating 2.5D Voxel Maze...',
+        carrom: 'Polishing Royal Carrom 3D Board...',
+        cannon: 'Sculpting Destructible Voxel Peaks...'
+      };
+      lbl.textContent = names[target] || 'Loading...';
+      ov.classList.add('show');
+
+      setTimeout(() => {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.getElementById('view-' + target).classList.add('active');
+        activeView = target;
+
+        if (target === 'hockey') AirHockey3D.init();
+        if (target === 'tank') TankBlitz3D.init();
+        if (target === 'carrom') Carrom3D.init();
+        if (target === 'cannon') CannonSiege3D.init();
+
+        setTimeout(() => ov.classList.remove('show'), 140);
+      }, 160);
+    }
+
+    document.querySelectorAll('[data-launch]').forEach(b => {
+      b.addEventListener('click', () => { Sound.click(); switchView(b.dataset.launch); });
+    });
+    document.querySelectorAll('[data-back]').forEach(b => {
+      b.addEventListener('click', () => { Sound.click(); switchView('lobby'); });
+    });
+
+    document.getElementById('btn-flip-global').addEventListener('click', () => {
+      AppState.flipP2 = !AppState.flipP2;
+      saveState(); Sound.click();
+      showToast(AppState.flipP2 ? '🔄 Player 2 UI Flipped 180° for Tabletop Play!' : '🔄 Standard Upright UI Restored');
+    });
+
+    document.getElementById('btn-sfx').addEventListener('click', () => {
+      AppState.sfx = !AppState.sfx; saveState();
+      if (AppState.sfx) Sound.click();
+    });
+
+    document.getElementById('btn-bgm').addEventListener('click', () => {
+      AppState.bgm = !AppState.bgm; saveState();
+      Sound.click(); Sound.syncBGM();
+    });
+
+    document.getElementById('btn-download-html').addEventListener('click', () => {
+      Sound.click();
+      const src = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([src], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'pixelverse-duo-arena-3d.html';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+      showToast('⬇️ Saved pixelverse-duo-arena-3d.html (100% Offline)');
+    });
+
+    /* Capped 60 FPS Master Loop */
+    let lastT = performance.now(), fpsCount = 0, fpsClock = 0;
+    const FRAME_MS = 1000 / 60;
+
+    function masterLoop(now) {
+      requestAnimationFrame(masterLoop);
+      const raw = now - lastT;
+      if (raw < FRAME_MS - 1.5) return;
+      const dt = Math.min(raw / 1000, 0.05);
+      lastT = now;
+
+      fpsCount++; fpsClock += raw;
+      if (fpsClock >= 1000) {
+        document.getElementById('hud-fps').textContent = Math.min(60, fpsCount);
+        fpsCount = 0; fpsClock = 0;
+      }
+
+      if (activeView === 'hockey') AirHockey3D.update(dt);
+      else if (activeView === 'tank') TankBlitz3D.update(dt);
+      else if (activeView === 'carrom') Carrom3D.update(dt);
+      else if (activeView === 'cannon') CannonSiege3D.update(dt);
+    }
+
+    syncGlobalHUD();
+    renderLobbyPreviews();
+    requestAnimationFrame(masterLoop);
+  </script>
+</body>
+</html>
+```
+
+### How to Play With a Friend:
+- **On a Phone or Tablet (Face-to-Face):** Place the device flat on a table between you and your friend, and tap **🔄 Tabletop Flip** in the top bar. Player 2’s entire UI console & touch controls automatically rotate **180°** to face them!
+- **On a Laptop / Desktop:** Leave **Tabletop Flip OFF** and play side-by-side using **WASD + Space/F** (Player 1) vs **Arrow Keys + Enter/M** (Player 2), or mouse/touch drag in Air Hockey, Carrom, and Cannon Siege.
+- **Save Offline:** Click **⬇️ Save HTML** in the top-right to download the complete standalone `.html` file.
