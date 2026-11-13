@@ -944,6 +944,11 @@ function BattleHubContent() {
           ========================================================================= */}
       {activeTab === 'matchmaking' && (
         <div className="space-y-4">
+          {/* DUAL ARENA HUB (INLINED INSIDE DUEL HUB) */}
+          <div className="mb-2">
+            <DualArenaHub />
+          </div>
+
           {/* 0. DEDICATED ANTI-MATCH-FIXING & INTEGRITY ENGINE (ABOVE GLOBAL & FRIEND LOBBIES) */}
           <div className="p-4 rounded-3xl bg-gradient-to-br from-[#10242A] via-[#131D30] to-[#0D1322] border border-cyan-400/35 shadow-[0_10px_28px_rgba(6,182,212,0.12)]">
             <div className="flex items-center justify-between mb-2">

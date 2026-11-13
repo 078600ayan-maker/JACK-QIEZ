@@ -302,63 +302,81 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
             </p>
           </div>
 
-          <div className="space-y-2">
-            {/* S+ TIER DUO ARENA 3D LAUNCHER (Voxel Air Hockey, Tank Blitz, Royal Carrom, Cannon Siege) */}
-            <div className="p-4 rounded-3xl bg-gradient-to-r from-amber-500/20 via-rose-500/20 to-cyan-500/20 border-2 border-amber-400/80 shadow-[0_0_25px_rgba(251,191,36,0.25)] space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 shadow-md">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  S+ TIER DUO ARENA 3D
-                </span>
-                <span className="text-[10px] font-black text-rose-300">2-PLAYER TABLETOP</span>
-              </div>
-              <div>
-                <h4 className="text-sm font-black text-white">PixelVerse Duo Arena 3D</h4>
-                <p className="text-[11px] text-slate-300 mt-0.5">
-                  Air Hockey, Tank Blitz, Royal Carrom &amp; Cannon Siege with 180° Flip Tabletop &amp; AI mode.
-                </p>
-              </div>
+          <div className="space-y-3">
+            {/* 4 MODERN MULTIPLAYER VOXEL GAMES (CARROM, TANK BLITZ, AIR HOCKEY, CANNON SIEGE) */}
+            {[
+              {
+                id: 'carrom',
+                name: 'Royal Carrom 3D',
+                tag: '2-Player Tabletop',
+                icon: '🎯',
+                bgGradient: 'from-amber-950/60 to-yellow-950/30',
+                borderColor: 'border-amber-400/40',
+                accentColor: 'text-amber-300',
+                desc: 'Wooden voxel board, striker pull-back slingshot trajectory aiming & Queen cover rules.'
+              },
+              {
+                id: 'tank',
+                name: 'Voxel Tank Blitz 3D',
+                tag: '2-Player Battle',
+                icon: '🛡️',
+                bgGradient: 'from-emerald-950/60 to-teal-950/30',
+                borderColor: 'border-emerald-400/40',
+                accentColor: 'text-emerald-300',
+                desc: 'Extruded voxel mazes, vector-reflected ricochet shells & dual P1/P2 firing consoles.'
+              },
+              {
+                id: 'hockey',
+                name: 'Voxel Air Hockey 3D',
+                tag: 'Fast Pace Sports',
+                icon: '🏒',
+                bgGradient: 'from-cyan-950/60 to-blue-950/30',
+                borderColor: 'border-cyan-400/40',
+                accentColor: 'text-cyan-300',
+                desc: 'Multi-touch mallet control, 4x elastic collision physics & power-up freeze pads.'
+              },
+              {
+                id: 'cannon',
+                name: 'Voxel Cannon Siege 3D',
+                tag: 'Artillery Duel',
+                icon: '💥',
+                bgGradient: 'from-rose-950/60 to-red-950/30',
+                borderColor: 'border-rose-400/40',
+                accentColor: 'text-rose-300',
+                desc: 'Turn-based destructible voxel terrain, wind physics, cluster mortars & plasma piercers.'
+              }
+            ].map((game) => (
               <a
-                href="/duo-arena.html"
+                key={game.id}
+                href={`/duo-arena.html#${game.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-rose-500 to-cyan-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-[0.98] transition-all"
+                className={`w-full p-3.5 rounded-2xl bg-gradient-to-r ${game.bgGradient} border ${game.borderColor} flex items-center justify-between text-left transition-all cursor-pointer group shadow-lg hover:scale-[1.02] active:scale-[0.98] block`}
               >
-                <Gamepad2 className="w-4 h-4" />
-                <span>Launch 4-in-1 Duo Arena 3D</span>
-              </a>
-            </div>
-
-            {[
-              { id: 'whirlybird' as const, name: 'Whirlybird Race', tag: 'Vertical Platformer', icon: '🕊️', desc: 'Euler physics vertical bounce race. Reach the top first!' },
-              { id: 'bomb_tiles' as const, name: 'Bomb Tiles Duel', tag: 'Minesweeper 10x10', icon: '💣', desc: 'Turn-based shared board. 15 hidden mines with BFS zero-cascade.' },
-              { id: 'cricket' as const, name: 'Cricket Duel', tag: 'Trajectory & Timing', icon: '🏏', desc: 'Bowl spin vectors vs batter timing windows. Hit 6s and 4s!' },
-              { id: 'snake' as const, name: 'Snake Duel', tag: 'Parallel 20x20 Grid', icon: '🐍', desc: 'Shared PRNG food sequence. Avoid collisions on 100ms ticks.' },
-              { id: 'marble' as const, name: 'Marble Tiles', tag: 'Tactical 6x6 Grid', icon: '🔮', desc: 'A* pathfinding line pattern challenge with smooth interpolation.' },
-            ].map((game) => (
-              <button
-                key={game.id}
-                onClick={() => setFunGame(game.id)}
-                className="w-full p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/60 flex items-center justify-between text-left transition-all cursor-pointer group shadow-md"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl p-2 rounded-xl bg-black/40 border border-white/10">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <span className="text-3xl p-2 rounded-2xl bg-black/50 border border-white/10 shrink-0 shadow-inner">
                     {game.icon}
                   </span>
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-xs font-black text-white group-hover:text-cyan-300 transition-colors">
+                      <h4 className="text-xs font-black text-white group-hover:text-amber-300 transition-colors truncate">
                         {game.name}
                       </h4>
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold">
+                      <span className={`text-[9px] px-2 py-0.5 rounded-full bg-white/10 ${game.accentColor} font-black border border-white/10 shrink-0`}>
                         {game.tag}
                       </span>
                     </div>
-                    <p className="text-[10px] text-slate-400 mt-0.5">{game.desc}</p>
+                    <p className="text-[10px] text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                      {game.desc}
+                    </p>
                   </div>
                 </div>
-                <span className="text-slate-400 group-hover:text-cyan-400 text-xs font-black">▶</span>
-              </button>
+                <div className="text-right shrink-0 pl-2">
+                  <span className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black uppercase tracking-wider shadow-md group-hover:brightness-110">
+                    Play ▶
+                  </span>
+                </div>
+              </a>
             ))}
           </div>
         </div>

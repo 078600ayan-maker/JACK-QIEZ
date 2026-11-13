@@ -16,11 +16,6 @@ export function getLocalUserProfile(): UserProfile | null {
     const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (!raw) return null;
     const profile = JSON.parse(raw);
-    // Only fix truly broken/missing photo paths — never override user-chosen DP
-    if (!profile.photoURL || profile.photoURL.includes('custom_reference')) {
-      profile.photoURL = '/assets/profile_photos/IMG_20261109_001512.png';
-      saveLocalUserProfile(profile);
-    }
     return profile;
   } catch {
     return null;
@@ -146,6 +141,7 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
         uid,
         name: remoteData.name || remoteData.displayName || displayName || 'Royal Scholar',
         emailLower: (remoteData.emailLower || remoteData.email || email || '').trim().toLowerCase(),
+        photoURL: remoteData.photoURL || local?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
         followersUids: mergedFollowers,
         followingUids: mergedFollowing,
         followersCount: Math.max(mergedFollowers.length, remoteData.followersCount ?? 0),
