@@ -379,6 +379,8 @@ export const StreakDashboardModal: React.FC<StreakDashboardModalProps> = ({
                                   ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-slate-950 border-white font-black shadow-[0_0_12px_rgba(245,158,11,0.7)]'
                                   : cell.status === 'active'
                                   ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                                  : cell.status === 'frozen'
+                                  ? 'bg-cyan-500/20 border-cyan-400/40 text-cyan-300 shadow-[0_0_8px_rgba(56,189,248,0.3)]'
                                   : cell.status === 'pre_join'
                                   ? 'bg-slate-900/60 border-white/5 text-slate-600 line-through opacity-60'
                                   : cell.status === 'missed'
@@ -392,6 +394,8 @@ export const StreakDashboardModal: React.FC<StreakDashboardModalProps> = ({
                                   ? '🔥'
                                   : cell.status === 'active'
                                   ? '✓'
+                                  : cell.status === 'frozen'
+                                  ? '❄️'
                                   : cell.status === 'pre_join'
                                   ? '—'
                                   : cell.status === 'missed'
@@ -427,6 +431,8 @@ export const StreakDashboardModal: React.FC<StreakDashboardModalProps> = ({
                                     ? 'bg-gradient-to-tr from-amber-500 to-orange-500 text-black shadow-[0_0_10px_#F59E0B] font-black scale-105 border border-white'
                                     : cell.status === 'active'
                                     ? 'bg-emerald-500/80 text-white'
+                                    : cell.status === 'frozen'
+                                    ? 'bg-cyan-500/70 text-white border border-cyan-300/60 shadow-[0_0_6px_rgba(56,189,248,0.5)]'
                                     : cell.status === 'pre_join'
                                     ? 'bg-slate-900/50 border border-white/5 text-slate-600 line-through opacity-55'
                                     : cell.status === 'missed'
@@ -435,7 +441,7 @@ export const StreakDashboardModal: React.FC<StreakDashboardModalProps> = ({
                                 }
                               `}
                             >
-                              {cell.isToday ? '🔥' : cell.status === 'pre_join' ? `/${cell.dayNum}` : cell.status === 'missed' ? '✕' : cell.dayNum}
+                              {cell.isToday ? '🔥' : cell.status === 'active' ? '🔥' : cell.status === 'frozen' ? '❄️' : cell.status === 'pre_join' ? `/${cell.dayNum}` : cell.status === 'missed' ? '✕' : cell.dayNum}
                             </div>
                           ))}
                         </div>

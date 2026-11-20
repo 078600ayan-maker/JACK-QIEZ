@@ -92,4 +92,15 @@ export interface UserProfile {
   isAdmin?: boolean;
   isAdminPermitted?: boolean;
   isFeaturedReference?: boolean;
+  liveCallingEnabled?: boolean;
+  instagramUsername?: string;
+  youtubeChannel?: string;
+  telegramUsername?: string;
+  githubUsername?: string;
+  discordTag?: string;
+  twitterHandle?: string;
+  bioStatus?: string;
+  favoriteSubject?: string;
+  dreamCareer?: string;
+  studyQuote?: string;
 }

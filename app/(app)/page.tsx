@@ -18,7 +18,8 @@ import {
   WifiOff,
   Palette,
   ArrowRight,
-  PhoneCall
+  PhoneCall,
+  MessageCircle
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import { Manifest, SubjectMeta } from '@/types/manifest';
@@ -41,6 +42,11 @@ import { HardestWordsLevel3Module } from '@/components/modules/HardestWordsLevel
 import { HardestWordsLevel4BossModule } from '@/components/modules/HardestWordsLevel4BossModule';
 import { HardestWordsLevel5EliteModule } from '@/components/modules/HardestWordsLevel5EliteModule';
 import { HardestWordsLevel6FinalBossModule } from '@/components/modules/HardestWordsLevel6FinalBossModule';
+import { DirectMessageModal } from '@/components/chat/DirectMessageModal';
+import {
+  subscribeUserMessages,
+  ChatMessage
+} from '@/lib/socialService';
 import {
   playClickSound,
   toggleLofiAmbient,
@@ -65,6 +71,18 @@ export default function HomeLobbyPage() {
   const [loading, setLoading] = useState(true);
   const [avatarAnim, setAvatarAnim] = useState<AvatarAnimationState>('idle');
   const [activeHardWordLevel, setActiveHardWordLevel] = useState<number | null>(null);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Subscribe to live unread direct messages for notification dot
+  useEffect(() => {
+    if (!profile?.uid) return;
+    const unsub = subscribeUserMessages(profile.uid, (msgs: ChatMessage[]) => {
+      const unread = msgs.filter((m) => !m.read).length;
+      setUnreadCount(unread);
+    });
+    return () => unsub();
+  }, [profile?.uid]);
 
   const userName = profile?.name ? profile.name.split(' ')[0] : 'Scholar';
   const userXp = profile?.xp ?? 280;
@@ -200,18 +218,40 @@ export default function HomeLobbyPage() {
 
           {/* Right: Quick Action Controls & Compact 60s Speed Drill */}
           <div className="flex items-center gap-1.5 shrink-0">
-            {/* Live AI Voice Call Button (Sleek Micro-Pill) */}
+            {/* Direct Message / Instagram Chat Button with Live Red/Green Indicator */}
             <button
               onClick={() => {
                 playClickSound();
-                setCallModalOpen(true);
+                setChatModalOpen(true);
               }}
-              title="Call Delhi Study Buddy"
-              className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-black text-[10px] shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              title="Direct Messages & Study Chat"
+              className="relative p-1.5 rounded-xl bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-black shadow-[0_0_12px_rgba(244,114,182,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
-              <PhoneCall className="w-3 h-3 text-emerald-400 animate-bounce" />
-              <span>Call Buddy</span>
+              <MessageCircle className="w-3.5 h-3.5 text-pink-400" />
+              {/* Red-Green Dot Pop-up */}
+              <span
+                className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border border-black ${
+                  unreadCount > 0
+                    ? 'bg-rose-500 animate-ping shadow-[0_0_8px_#f43f5e]'
+                    : 'bg-emerald-400 shadow-[0_0_6px_#34d399]'
+                }`}
+              />
             </button>
+
+            {/* Live AI Voice Call Button (Admin Gated: Only visible if admin enables liveCallingEnabled or user isAdmin) */}
+            {(profile?.isAdmin || profile?.liveCallingEnabled) && (
+              <button
+                onClick={() => {
+                  playClickSound();
+                  setCallModalOpen(true);
+                }}
+                title="Call Delhi Study Buddy"
+                className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-black text-[10px] shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              >
+                <PhoneCall className="w-3 h-3 text-emerald-400 animate-bounce" />
+                <span>Call Buddy</span>
+              </button>
+            )}
 
             {/* Glowing 60s Rapid Drill Button (Sleek Micro-Pill) */}
             <button
@@ -526,6 +566,12 @@ export default function HomeLobbyPage() {
         onClose={() => setCallModalOpen(false)}
         studentName={userName}
         currentSubject="Science & Mathematics"
+      />
+
+      {/* Direct Messages & Friend Chat Modal (Instagram Style) */}
+      <DirectMessageModal
+        isOpen={chatModalOpen}
+        onClose={() => setChatModalOpen(false)}
       />
 
       {/* 60s Speed Drill Modal */}

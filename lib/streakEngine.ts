@@ -1,6 +1,6 @@
 import { UserProfile } from '@/types/user';
 
-export type DayCellStatus = 'pre_join' | 'active' | 'missed' | 'upcoming';
+export type DayCellStatus = 'pre_join' | 'active' | 'frozen' | 'missed' | 'upcoming';
 
 export interface WeeklyDayCell {
   label: string; // Mon..Sun
@@ -105,18 +105,39 @@ export function getResolvedActiveDates(
 
 /**
  * Duolingo-style consecutive streak calculator from activeDates backwards from today.
+ * If user missed days without freeze, streak resets to 1 (or 0 if not active today).
+ * Supports streakFreezes to protect consecutive learning.
  */
 export function calculateConsecutiveStreak(
   activeDates: Set<string>,
-  now: Date = new Date()
+  now: Date = new Date(),
+  streakFreezes: number = 0
 ): number {
-  let count = 0;
+  const todayKey = toLocalDateKey(now);
   const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  while (activeDates.has(toLocalDateKey(cursor))) {
-    count += 1;
+  
+  // If today isn't active yet, start checking from yesterday
+  if (!activeDates.has(todayKey)) {
     cursor.setDate(cursor.getDate() - 1);
   }
-  return Math.max(1, count);
+
+  let count = 0;
+  let remainingFreezes = streakFreezes;
+
+  while (true) {
+    const key = toLocalDateKey(cursor);
+    if (activeDates.has(key)) {
+      count += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    } else if (remainingFreezes > 0 && count > 0) {
+      remainingFreezes -= 1;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return activeDates.has(todayKey) ? Math.max(1, count) : count;
 }
 
 /**
@@ -132,7 +153,8 @@ export function markTodayActiveOnProfile(
   activeSet.add(todayKey);
 
   const sortedDates = Array.from(activeSet).sort();
-  const computedStreak = calculateConsecutiveStreak(activeSet, now);
+  const freezes = profile.streakFreezes ?? 1;
+  const computedStreak = calculateConsecutiveStreak(activeSet, now, freezes);
   const longestStreak = Math.max(profile.longestStreak || 1, computedStreak, profile.streak || 1);
 
   return {
@@ -143,18 +165,16 @@ export function markTodayActiveOnProfile(
     streak: computedStreak,
     currentStreak: computedStreak,
     longestStreak,
-    streakFreezes: profile.streakFreezes ?? 1,
-    streakShieldActive: (profile.streakFreezes ?? 1) > 0,
+    streakFreezes: freezes,
+    streakShieldActive: freezes > 0,
   };
 }
 
 /**
  * Builds the 7-day Monday -> Sunday strip following strict Duolingo pre-join rules:
  * - Days strictly before `joinDateKey` are marked `'pre_join'` (crossed out / inactive)
- *   e.g. Join on Saturday -> Mon..Fri are all `'pre_join'`, Sat starts active!
- *   e.g. Join on Sunday -> Mon..Sat are all `'pre_join'`, Sun starts active!
- * - Days from `joinDateKey` up to today: `'active'` 🔥 if active, else `'missed'` ✕
- * - Days after today: `'upcoming'`
+ * - Days between join and today: 'active' if in activeDates, 'frozen' if shielded, else 'missed'
+ * - Days after today: 'upcoming'
  */
 export function buildWeeklyStreakStrip(
   profile: UserProfile | null,
@@ -164,6 +184,7 @@ export function buildWeeklyStreakStrip(
   const todayKey = toLocalDateKey(now);
   const joinKey = getEffectiveJoinDateKey(profile, now);
   const activeDates = getResolvedActiveDates(profile, now);
+  const hasShield = (profile?.streakFreezes ?? 1) > 0 || profile?.streakShieldActive;
 
   // Compute Monday of current week (0=Mon .. 6=Sun)
   const jsDay = now.getDay();
@@ -182,6 +203,8 @@ export function buildWeeklyStreakStrip(
       status = 'upcoming';
     } else if (activeDates.has(dateKey) || isToday) {
       status = 'active';
+    } else if (hasShield && !isToday) {
+      status = 'frozen';
     } else {
       status = 'missed';
     }
@@ -211,6 +234,7 @@ export function buildMonthlyStreakMatrix(
   const todayKey = toLocalDateKey(now);
   const joinKey = getEffectiveJoinDateKey(profile, now);
   const activeDates = getResolvedActiveDates(profile, now);
+  const hasShield = (profile?.streakFreezes ?? 1) > 0 || profile?.streakShieldActive;
 
   const cells: MonthlyDayCell[] = [];
   for (let dayNum = 1; dayNum <= daysInMonth; dayNum += 1) {
@@ -225,6 +249,8 @@ export function buildMonthlyStreakMatrix(
       status = 'upcoming';
     } else if (activeDates.has(dateKey) || isToday) {
       status = 'active';
+    } else if (hasShield && !isToday && dateKey >= joinKey) {
+      status = 'frozen';
     } else {
       status = 'missed';
     }

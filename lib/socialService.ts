@@ -1183,3 +1183,86 @@ export async function updateUserVerificationTickInCloud(
     return false;
   }
 }
+
+export interface ChatMessage {
+  id: string;
+  senderUid: string;
+  senderName: string;
+  senderPhoto: string;
+  senderUsername: string;
+  recipientUid: string;
+  text: string;
+  photoDataUrl?: string;
+  createdAt: string;
+  read: boolean;
+}
+
+export function subscribeUserMessages(
+  currentUid: string,
+  onUpdate: (messages: ChatMessage[]) => void
+): Unsubscribe {
+  if (!currentUid) return () => {};
+  try {
+    const q = query(
+      collection(db, 'direct_messages'),
+      where('recipientUid', '==', currentUid),
+      orderBy('createdAt', 'desc'),
+      limit(50)
+    );
+    return onSnapshot(
+      q,
+      (snap) => {
+        const msgs: ChatMessage[] = [];
+        snap.forEach((docSnap) => {
+          msgs.push({ id: docSnap.id, ...(docSnap.data() as Omit<ChatMessage, 'id'>) });
+        });
+        onUpdate(msgs);
+      },
+      (err) => {
+        console.warn('subscribeUserMessages fallback:', err);
+        onUpdate([]);
+      }
+    );
+  } catch (err) {
+    console.warn('subscribeUserMessages setup failed:', err);
+    return () => {};
+  }
+}
+
+export async function sendDirectMessageInCloud(
+  sender: UserProfile,
+  recipientUid: string,
+  text: string,
+  photoDataUrl?: string
+): Promise<boolean> {
+  if (!sender.uid || !recipientUid || (!text.trim() && !photoDataUrl)) return false;
+  try {
+    const msgId = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const msgData: ChatMessage = {
+      id: msgId,
+      senderUid: sender.uid,
+      senderName: sender.name || sender.displayName || 'Scholar',
+      senderPhoto: sender.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+      senderUsername: sender.username || 'scholar',
+      recipientUid,
+      text: text.trim(),
+      photoDataUrl: photoDataUrl || undefined,
+      createdAt: new Date().toISOString(),
+      read: false,
+    };
+    await setDoc(doc(db, 'direct_messages', msgId), msgData);
+    return true;
+  } catch (err) {
+    console.error('sendDirectMessageInCloud failed:', err);
+    return false;
+  }
+}
+
+export async function markDirectMessageAsRead(messageId: string): Promise<void> {
+  if (!messageId) return;
+  try {
+    await updateDoc(doc(db, 'direct_messages', messageId), { read: true });
+  } catch (err) {
+    console.warn('markDirectMessageAsRead failed:', err);
+  }
+}

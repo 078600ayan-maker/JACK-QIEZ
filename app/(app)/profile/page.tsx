@@ -33,8 +33,10 @@ import {
   Zap,
   Shield,
   BookOpen,
-  Activity
+  Activity,
+  MessageCircle
 } from 'lucide-react';
+import { DirectMessageModal } from '@/components/chat/DirectMessageModal';
 import { signOut } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useUserStore } from '@/store/useUserStore';
@@ -369,6 +371,24 @@ function ProfileContent() {
   const [editEmail, setEditEmail] = useState(profile?.email || '');
   const [editAge, setEditAge] = useState(String(profile?.age || ''));
   const [editUsername, setEditUsername] = useState(profile?.username || '');
+  const [editBio, setEditBio] = useState(profile?.bio || '');
+  const [editInstagram, setEditInstagram] = useState(profile?.instagramUsername || '');
+  const [editYoutube, setEditYoutube] = useState(profile?.youtubeChannel || '');
+  const [editTelegram, setEditTelegram] = useState(profile?.telegramUsername || '');
+  const [editGithub, setEditGithub] = useState(profile?.githubUsername || '');
+  const [editDiscord, setEditDiscord] = useState(profile?.discordTag || '');
+  const [editTwitter, setEditTwitter] = useState(profile?.twitterHandle || '');
+  const [editBioStatus, setEditBioStatus] = useState(profile?.bioStatus || '');
+  const [editFavoriteSubject, setEditFavoriteSubject] = useState(profile?.favoriteSubject || 'Science');
+  const [editDreamCareer, setEditDreamCareer] = useState(profile?.dreamCareer || '');
+  const [editStudyQuote, setEditStudyQuote] = useState(profile?.studyQuote || '');
+  const [chatTargetUser, setChatTargetUser] = useState<{
+    uid: string;
+    name: string;
+    username: string;
+    photoURL: string;
+  } | null>(null);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState('');
 
@@ -408,6 +428,17 @@ function ProfileContent() {
         age: parseInt(editAge, 10) || profile.age,
         username: cleanedUsername,
         usernameLower: cleanedUsername.toLowerCase(),
+        bio: editBio.trim() || profile.bio,
+        instagramUsername: editInstagram.trim().replace(/^@+/, ''),
+        youtubeChannel: editYoutube.trim(),
+        telegramUsername: editTelegram.trim().replace(/^@+/, ''),
+        githubUsername: editGithub.trim().replace(/^@+/, ''),
+        discordTag: editDiscord.trim(),
+        twitterHandle: editTwitter.trim().replace(/^@+/, ''),
+        bioStatus: editBioStatus.trim(),
+        favoriteSubject: editFavoriteSubject.trim(),
+        dreamCareer: editDreamCareer.trim(),
+        studyQuote: editStudyQuote.trim(),
       };
 
       setProfile(updatedProfile);
@@ -425,6 +456,17 @@ function ProfileContent() {
         age: updatedProfile.age,
         username: updatedProfile.username,
         usernameLower: updatedProfile.usernameLower,
+        bio: updatedProfile.bio,
+        instagramUsername: updatedProfile.instagramUsername,
+        youtubeChannel: updatedProfile.youtubeChannel,
+        telegramUsername: updatedProfile.telegramUsername,
+        githubUsername: updatedProfile.githubUsername,
+        discordTag: updatedProfile.discordTag,
+        twitterHandle: updatedProfile.twitterHandle,
+        bioStatus: updatedProfile.bioStatus,
+        favoriteSubject: updatedProfile.favoriteSubject,
+        dreamCareer: updatedProfile.dreamCareer,
+        studyQuote: updatedProfile.studyQuote,
       });
       await upsertUserInDirectory(updatedProfile);
     } catch (err: unknown) {
@@ -743,6 +785,18 @@ function ProfileContent() {
               setEditLastName(profile?.lastName || name.split(' ').slice(1).join(' ') || '');
               setEditAge(String(profile?.age || ''));
               setEditUsername(profile?.username || '');
+              setEditEmail(profile?.email || '');
+              setEditBio(profile?.bio || '');
+              setEditInstagram(profile?.instagramUsername || '');
+              setEditYoutube(profile?.youtubeChannel || '');
+              setEditTelegram(profile?.telegramUsername || '');
+              setEditGithub(profile?.githubUsername || '');
+              setEditDiscord(profile?.discordTag || '');
+              setEditTwitter(profile?.twitterHandle || '');
+              setEditBioStatus(profile?.bioStatus || '');
+              setEditFavoriteSubject(profile?.favoriteSubject || 'Science');
+              setEditDreamCareer(profile?.dreamCareer || '');
+              setEditStudyQuote(profile?.studyQuote || '');
               setEditModalOpen(true);
             }}
             className="flex-1 py-2 px-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-xs font-black flex items-center justify-center gap-1.5 transition-all active:scale-95"
@@ -1629,6 +1683,24 @@ function ProfileContent() {
                     )}
                   </button>
 
+                  <button
+                    onClick={() => {
+                      playClickSound();
+                      setChatTargetUser({
+                        uid: inspectedScholar.uid,
+                        name: inspectedScholar.name,
+                        username: inspectedScholar.username,
+                        photoURL: inspectedScholar.photoURL,
+                      });
+                      setChatModalOpen(true);
+                      setInspectedScholar(null);
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 text-white text-center font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[0_3px_0_#831843] active:translate-y-0.5 transition-all cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>💬 Chat &amp; Send Photo (Instagram DM)</span>
+                  </button>
+
                   <Link
                     href={`/quiz/sci/sci_ch01/1?mode=duel&opponent=${encodeURIComponent(inspectedScholar.name)}`}
                     onClick={() => {
@@ -1897,14 +1969,139 @@ function ProfileContent() {
                 </select>
               </div>
               <div>
-                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">@Username</label>
+                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">@Username (always lowercase)</label>
                 <div className="relative">
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 font-black text-sm">@</span>
                   <input
                     type="text"
                     value={editUsername}
                     onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ''))}
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-8 pr-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition"
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-8 pr-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition lowercase"
+                  />
+                </div>
+              </div>
+
+              {/* 10 Detailed Social & Scholastic Profiles */}
+              <div className="pt-2 border-t border-white/10 space-y-3">
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
+                  🌟 Scholar Bio &amp; Social Links
+                </span>
+
+                <div>
+                  <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">Bio / About You</label>
+                  <textarea
+                    rows={2}
+                    value={editBio}
+                    onChange={(e) => setEditBio(e.target.value)}
+                    placeholder="Class 10 JAC Topper in making..."
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500/50 transition"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">📸 Instagram</label>
+                    <input
+                      type="text"
+                      value={editInstagram}
+                      onChange={(e) => setEditInstagram(e.target.value)}
+                      placeholder="@your_insta"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">▶️ YouTube</label>
+                    <input
+                      type="text"
+                      value={editYoutube}
+                      onChange={(e) => setEditYoutube(e.target.value)}
+                      placeholder="Channel link / handle"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">✈️ Telegram</label>
+                    <input
+                      type="text"
+                      value={editTelegram}
+                      onChange={(e) => setEditTelegram(e.target.value)}
+                      placeholder="@telegram_id"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">🐙 GitHub</label>
+                    <input
+                      type="text"
+                      value={editGithub}
+                      onChange={(e) => setEditGithub(e.target.value)}
+                      placeholder="github_username"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">💬 Discord</label>
+                    <input
+                      type="text"
+                      value={editDiscord}
+                      onChange={(e) => setEditDiscord(e.target.value)}
+                      placeholder="user#1234"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">🐦 Twitter / X</label>
+                    <input
+                      type="text"
+                      value={editTwitter}
+                      onChange={(e) => setEditTwitter(e.target.value)}
+                      placeholder="@handle"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">🎯 Favorite Subject</label>
+                    <select
+                      value={editFavoriteSubject}
+                      onChange={(e) => setEditFavoriteSubject(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    >
+                      <option value="Science" className="bg-[#0F172A]">Science (विज्ञान)</option>
+                      <option value="Math" className="bg-[#0F172A]">Mathematics (गणित)</option>
+                      <option value="Social Science" className="bg-[#0F172A]">Social Science (सामाजिक)</option>
+                      <option value="Hindi" className="bg-[#0F172A]">Hindi (हिंदी)</option>
+                      <option value="English" className="bg-[#0F172A]">English (अंग्रेजी)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">🚀 Dream Career</label>
+                    <input
+                      type="text"
+                      value={editDreamCareer}
+                      onChange={(e) => setEditDreamCareer(e.target.value)}
+                      placeholder="Doctor / IITian / UPSC"
+                      className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">💡 Study Quote / Motto</label>
+                  <input
+                    type="text"
+                    value={editStudyQuote}
+                    onChange={(e) => setEditStudyQuote(e.target.value)}
+                    placeholder="Never stop learning..."
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
                   />
                 </div>
               </div>
@@ -2052,6 +2249,16 @@ function ProfileContent() {
           </div>
         </div>
       )}
+
+      {/* Direct Message Modal (Instagram Style DM) */}
+      <DirectMessageModal
+        isOpen={chatModalOpen}
+        onClose={() => {
+          setChatModalOpen(false);
+          setChatTargetUser(null);
+        }}
+        targetUser={chatTargetUser}
+      />
     </div>
   );
 }

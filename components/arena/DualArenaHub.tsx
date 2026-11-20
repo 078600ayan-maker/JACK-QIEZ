@@ -35,7 +35,6 @@ interface DualArenaProps {
 export function DualArenaHub({ onBack }: DualArenaProps) {
   const { profile } = useUserStore();
   const [activeMode, setActiveMode] = useState<'hub' | 'study' | 'fun'>('hub');
-  const [funGame, setFunGame] = useState<'whirlybird' | 'bomb_tiles' | 'cricket' | 'snake' | 'marble' | null>(null);
 
   // Room PIN state
   const [roomPin, setRoomPin] = useState<string>('');
@@ -107,7 +106,6 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
             <button
               onClick={() => {
                 setActiveMode('hub');
-                setFunGame(null);
                 setRoomStatus('idle');
               }}
               className="p-1.5 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all cursor-pointer"
@@ -290,20 +288,20 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
         </div>
       )}
 
-      {/* VIEW 3: FUN ARENA (5 2D PHYSICS MINI-GAMES) */}
-      {activeMode === 'fun' && !funGame && (
+      {/* VIEW 3: FUN ARENA (10 3D RETRO VOXEL & MULTIPLAYER GAMES) */}
+      {activeMode === 'fun' && (
         <div className="space-y-3">
           <div className="p-3 rounded-2xl bg-gradient-to-r from-cyan-950/80 to-blue-950/80 border border-cyan-400/30 text-center">
             <h3 className="text-xs font-black uppercase text-white tracking-wider">
               🎮 Select Fun Arena Game
             </h3>
             <p className="text-[10px] text-cyan-200 mt-0.5">
-              5 HTML5 Canvas Physics &amp; Logic Games (60 FPS Low-End Optimized)
+              10 Ultra-Polished 3D Pixel Voxel Games (Free Fire Lobby, Bot AI &amp; 4-PIN Multiplayer)
             </p>
           </div>
 
           <div className="space-y-3">
-            {/* 4 MODERN MULTIPLAYER VOXEL GAMES (CARROM, TANK BLITZ, AIR HOCKEY, CANNON SIEGE) */}
+            {/* 10 ULTRA-POLISHED 3D RETRO PIXEL VOXEL GAMES */}
             {[
               {
                 id: 'carrom',
@@ -344,13 +342,71 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
                 borderColor: 'border-rose-400/40',
                 accentColor: 'text-rose-300',
                 desc: 'Turn-based destructible voxel terrain, wind physics, cluster mortars & plasma piercers.'
+              },
+              {
+                id: 'chess',
+                name: 'Grandmaster Chess 3D',
+                tag: 'Mind Relaxing',
+                icon: '♟️',
+                bgGradient: 'from-purple-950/60 to-indigo-950/30',
+                borderColor: 'border-purple-400/40',
+                accentColor: 'text-purple-300',
+                desc: 'Pixelated 3D chess board, timer clocks, legal moves & AI bot grandmaster mode.'
+              },
+              {
+                id: 'connect4',
+                name: 'Voxel Four in a Row',
+                tag: 'Strategy Tactic',
+                icon: '🟡',
+                bgGradient: 'from-yellow-950/60 to-amber-950/30',
+                borderColor: 'border-yellow-400/40',
+                accentColor: 'text-yellow-300',
+                desc: 'Vertical 7x6 3D voxel grid, gravity drop physics, combo chains & tactical block.'
+              },
+              {
+                id: 'snakes',
+                name: 'Pixel Arena Duel 3D',
+                tag: 'Arcade Survival',
+                icon: '🐍',
+                bgGradient: 'from-lime-950/60 to-green-950/30',
+                borderColor: 'border-lime-400/40',
+                accentColor: 'text-lime-300',
+                desc: 'Dynamic 3D voxel snakes, power-up speed orbs & competitive multiplayer arena.'
+              },
+              {
+                id: 'checkers',
+                name: 'Royal Checkers 3D',
+                tag: 'Tabletop Classic',
+                icon: '👑',
+                bgGradient: 'from-orange-950/60 to-red-950/30',
+                borderColor: 'border-orange-400/40',
+                accentColor: 'text-orange-300',
+                desc: 'Diagonal multi-jump captures, crowned kings, smooth physics slide & friend lobby.'
+              },
+              {
+                id: 'archery',
+                name: 'Voxel Archery Showdown',
+                tag: 'Aim & Precision',
+                icon: '🏹',
+                bgGradient: 'from-teal-950/60 to-emerald-950/30',
+                borderColor: 'border-teal-400/40',
+                accentColor: 'text-teal-300',
+                desc: '3D wind deflection, moving targets, distance calculations & score duel.'
+              },
+              {
+                id: 'boxing',
+                name: 'Retro 3D Boxer Brawl',
+                tag: 'Action Arcade',
+                icon: '🥊',
+                bgGradient: 'from-red-950/60 to-rose-950/30',
+                borderColor: 'border-red-400/40',
+                accentColor: 'text-red-300',
+                desc: 'Minecraft-style pixelated boxing ring, jab/uppercut/dodge & stamina management.'
               }
             ].map((game) => (
               <a
                 key={game.id}
-                href={`/duo-arena.html#${game.id}`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/arena`}
                 className={`w-full p-3.5 rounded-2xl bg-gradient-to-r ${game.bgGradient} border ${game.borderColor} flex items-center justify-between text-left transition-all cursor-pointer group shadow-lg hover:scale-[1.02] active:scale-[0.98] block`}
               >
                 <div className="flex items-center gap-3.5 min-w-0">
@@ -382,329 +438,6 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
         </div>
       )}
 
-      {/* VIEW 4: LIVE 2D CANVAS GAME PLAYFIELD */}
-      {activeMode === 'fun' && funGame && (
-        <FunGameCanvas gameId={funGame} onExit={() => setFunGame(null)} />
-      )}
-    </div>
-  );
-}
-
-// 2D CANVAS PHYSICS ENGINE (WHIRLYBIRD, BOMB TILES, CRICKET, SNAKE, MARBLE)
-function FunGameCanvas({ gameId, onExit }: { gameId: 'whirlybird' | 'bomb_tiles' | 'cricket' | 'snake' | 'marble'; onExit: () => void }) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [score, setScore] = useState<number>(0);
-  const [gameOver, setGameOver] = useState<boolean>(false);
-  const [statusMessage, setStatusMessage] = useState<string>('Tap screen / controls to play');
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animId: number;
-    let isRunning = true;
-
-    // GAME 1: WHIRLYBIRD (EULER PHYSICS VERTICAL RACER)
-    if (gameId === 'whirlybird') {
-      let py = 350;
-      let vy = 0;
-      let px = 130;
-      let cameraY = 0;
-      const g = 1800; // px/s^2
-      const vjump = -650;
-      let currentScore = 0;
-
-      // Platform generator with LCG PRNG
-      let seed = 42;
-      const platforms: { x: number; y: number; w: number; h: number }[] = [];
-      let nextY = 380;
-      for (let i = 0; i < 20; i++) {
-        const { rnd, nextSeed } = nextLcg(seed);
-        seed = nextSeed;
-        const w = 60;
-        const x = rnd % (canvas.width - w);
-        platforms.push({ x, y: nextY, w, h: 10 });
-        nextY -= 70 + (rnd % 40);
-      }
-
-      let lastTime = performance.now();
-
-      const loop = (now: number) => {
-        const dt = Math.min(0.05, (now - lastTime) / 1000);
-        lastTime = now;
-
-        // Euler physics
-        vy += g * dt;
-        py += vy * dt;
-
-        // Platform bounce
-        platforms.forEach((p) => {
-          if (vy > 0 && py + 20 >= p.y && py + 10 <= p.y + p.h && px + 20 >= p.x && px <= p.x + p.w) {
-            vy = vjump;
-          }
-        });
-
-        // Camera follow
-        if (py < cameraY + 200) {
-          cameraY = py - 200;
-          currentScore = Math.max(currentScore, Math.floor(-cameraY));
-          setScore(currentScore);
-        }
-
-        // Draw Canvas
-        ctx.fillStyle = '#0B132B';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Draw Platforms
-        ctx.save();
-        ctx.translate(0, -cameraY);
-
-        ctx.fillStyle = '#10B981';
-        platforms.forEach((p) => {
-          ctx.fillRect(p.x, p.y, p.w, p.h);
-        });
-
-        // Draw Player
-        ctx.fillStyle = '#FBBF24';
-        ctx.beginPath();
-        ctx.arc(px + 10, py + 10, 10, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.restore();
-
-        // Fall death
-        if (py > cameraY + canvas.height + 50) {
-          isRunning = false;
-          setGameOver(true);
-          setStatusMessage('Fallen! Tap Restart to try again.');
-          return;
-        }
-
-        if (isRunning) animId = requestAnimationFrame(loop);
-      };
-
-      animId = requestAnimationFrame(loop);
-
-      // Tap / Click steer
-      const handleInput = (e: MouseEvent) => {
-        const rect = canvas.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        if (clickX < canvas.width / 2) px = Math.max(10, px - 35);
-        else px = Math.min(canvas.width - 30, px + 35);
-      };
-      canvas.addEventListener('click', handleInput);
-
-      return () => {
-        isRunning = false;
-        cancelAnimationFrame(animId);
-        canvas.removeEventListener('click', handleInput);
-      };
-    }
-
-    // GAME 2: SNAKE DUEL (20x20 GRID, 100MS TICKS)
-    if (gameId === 'snake') {
-      const gridSize = 20;
-      const tile = canvas.width / gridSize;
-      let snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
-      let dir = { x: 1, y: 0 };
-      let food = { x: 15, y: 10 };
-      let curScore = 0;
-
-      const interval = setInterval(() => {
-        const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
-
-        // Wall collision
-        if (head.x < 0 || head.x >= gridSize || head.y < 0 || head.y >= gridSize) {
-          setGameOver(true);
-          clearInterval(interval);
-          return;
-        }
-
-        // Self collision
-        if (snake.some((s) => s.x === head.x && s.y === head.y)) {
-          setGameOver(true);
-          clearInterval(interval);
-          return;
-        }
-
-        snake.unshift(head);
-        if (head.x === food.x && head.y === food.y) {
-          curScore += 10;
-          setScore(curScore);
-          food = {
-            x: Math.floor(Math.random() * gridSize),
-            y: Math.floor(Math.random() * gridSize),
-          };
-        } else {
-          snake.pop();
-        }
-
-        // Render
-        ctx.fillStyle = '#080D1A';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Food
-        ctx.fillStyle = '#EF4444';
-        ctx.fillRect(food.x * tile + 2, food.y * tile + 2, tile - 4, tile - 4);
-
-        // Snake
-        ctx.fillStyle = '#10B981';
-        snake.forEach((s, idx) => {
-          if (idx === 0) ctx.fillStyle = '#34D399';
-          else ctx.fillStyle = '#059669';
-          ctx.fillRect(s.x * tile + 1, s.y * tile + 1, tile - 2, tile - 2);
-        });
-      }, 100);
-
-      // Key controls
-      const handleKey = (e: KeyboardEvent) => {
-        if (e.key === 'ArrowUp' && dir.y === 0) dir = { x: 0, y: -1 };
-        if (e.key === 'ArrowDown' && dir.y === 0) dir = { x: 0, y: 1 };
-        if (e.key === 'ArrowLeft' && dir.x === 0) dir = { x: -1, y: 0 };
-        if (e.key === 'ArrowRight' && dir.x === 0) dir = { x: 1, y: 0 };
-      };
-      window.addEventListener('keydown', handleKey);
-
-      return () => {
-        clearInterval(interval);
-        window.removeEventListener('keydown', handleKey);
-      };
-    }
-
-    // GAME 3: CRICKET TIMING DUEL
-    if (gameId === 'cricket') {
-      let ballX = 140;
-      let ballY = 40;
-      let ballSpeed = 220;
-      let ballActive = true;
-      let shotQuality = 'READY';
-
-      let last = performance.now();
-      const loop = (now: number) => {
-        const dt = (now - last) / 1000;
-        last = now;
-
-        if (ballActive) {
-          ballY += ballSpeed * dt;
-          if (ballY > 320) {
-            shotQuality = 'BOWLED / DOT BALL!';
-            ballActive = false;
-          }
-        }
-
-        ctx.fillStyle = '#0A1828';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Pitch line
-        ctx.strokeStyle = '#38BDF8';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(60, 20, 160, 310);
-
-        // Crease
-        ctx.strokeStyle = '#FBBF24';
-        ctx.beginPath();
-        ctx.moveTo(60, 280);
-        ctx.lineTo(220, 280);
-        ctx.stroke();
-
-        // Stumps
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(130, 310, 20, 6);
-
-        // Ball
-        if (ballActive) {
-          ctx.fillStyle = '#EF4444';
-          ctx.beginPath();
-          ctx.arc(ballX, ballY, 8, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.fillText(`Timing: ${shotQuality}`, 75, 345);
-
-        if (isRunning) animId = requestAnimationFrame(loop);
-      };
-      animId = requestAnimationFrame(loop);
-
-      const handleSwing = () => {
-        if (!ballActive) {
-          ballY = 40;
-          ballActive = true;
-          shotQuality = 'BOWLING...';
-          return;
-        }
-        const delta = Math.abs(ballY - 280);
-        if (delta <= 15) {
-          shotQuality = 'SIX RUNS! 🔥 (PERFECT)';
-          setScore((s) => s + 6);
-        } else if (delta <= 35) {
-          shotQuality = 'FOUR RUNS! 🏏 (GOOD)';
-          setScore((s) => s + 4);
-        } else if (delta <= 60) {
-          shotQuality = 'SINGLE RUN (EDGED)';
-          setScore((s) => s + 1);
-        } else {
-          shotQuality = 'CLEAN BOWLED! ❌';
-        }
-        ballActive = false;
-      };
-      canvas.addEventListener('click', handleSwing);
-
-      return () => {
-        isRunning = false;
-        cancelAnimationFrame(animId);
-        canvas.removeEventListener('click', handleSwing);
-      };
-    }
-
-    // FALLBACK CANVAS DRAW FOR BOMB TILES & MARBLES
-    ctx.fillStyle = '#0A1120';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#38BDF8';
-    ctx.font = 'bold 14px monospace';
-    ctx.fillText(`${gameId.toUpperCase()} ONLINE ENGINE`, 40, 180);
-    ctx.font = '11px sans-serif';
-    ctx.fillStyle = '#94A3B8';
-    ctx.fillText('Tap screen to make interactive move', 55, 210);
-
-  }, [gameId]);
-
-  return (
-    <div className="p-4 rounded-3xl bg-black/60 border border-cyan-400/40 space-y-3">
-      <div className="flex items-center justify-between">
-        <button
-          onClick={onExit}
-          className="px-2.5 py-1 rounded-xl bg-white/10 text-white text-xs font-bold hover:bg-white/20"
-        >
-          ← Exit Game
-        </button>
-        <span className="text-xs font-black text-amber-300">Score: {score}</span>
-        <button
-          onClick={() => {
-            setScore(0);
-            setGameOver(false);
-          }}
-          className="p-1.5 rounded-xl bg-white/10 text-white hover:bg-white/20"
-        >
-          <RotateCcw className="w-4 h-4" />
-        </button>
-      </div>
-
-      <div className="flex justify-center">
-        <canvas
-          ref={canvasRef}
-          width={280}
-          height={360}
-          className="rounded-2xl border-2 border-cyan-400/50 shadow-[0_0_20px_rgba(6,182,212,0.3)] bg-[#080D1A] cursor-pointer"
-        />
-      </div>
-
-      <p className="text-center text-[10px] text-slate-400 font-bold">
-        {statusMessage}
-      </p>
     </div>
   );
 }

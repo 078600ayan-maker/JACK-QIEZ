@@ -475,18 +475,20 @@ export const QuizTheater: React.FC = () => {
               <span className="text-[8.5px] font-black leading-none mt-0.5">50:50</span>
             </button>
 
-            {/* Live AI Call Lifeline */}
-            <button
-              onClick={() => {
-                playClickSound();
-                setCallModalOpen(true);
-              }}
-              title="Call Delhi Study Buddy"
-              className="w-10 h-10 rounded-2xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-400/50 flex flex-col items-center justify-center text-emerald-200 shadow-[0_4px_12px_rgba(16,185,129,0.35)] transition-all active:scale-95 cursor-pointer"
-            >
-              <PhoneCall className="w-3.5 h-3.5 text-emerald-400 animate-bounce" />
-              <span className="text-[8.5px] font-black leading-none mt-0.5">Call</span>
-            </button>
+            {/* Live AI Call Lifeline (Admin-Gated) */}
+            {(user.profile?.isAdmin || user.profile?.liveCallingEnabled) && (
+              <button
+                onClick={() => {
+                  playClickSound();
+                  setCallModalOpen(true);
+                }}
+                title="Call Delhi Study Buddy"
+                className="w-10 h-10 rounded-2xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-400/50 flex flex-col items-center justify-center text-emerald-200 shadow-[0_4px_12px_rgba(16,185,129,0.35)] transition-all active:scale-95 cursor-pointer"
+              >
+                <PhoneCall className="w-3.5 h-3.5 text-emerald-400 animate-bounce" />
+                <span className="text-[8.5px] font-black leading-none mt-0.5">Call</span>
+              </button>
+            )}
           </aside>
         )}
 
