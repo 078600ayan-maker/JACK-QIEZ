@@ -253,6 +253,18 @@ export default function HomeLobbyPage() {
               </button>
             )}
 
+            {/* AI Study Studio Pill (20 Secret Presets & Multi-Provider Backend) */}
+            <Link
+              href="/ai-study"
+              onClick={() => playClickSound()}
+              title="AI Study Studio & 20 Secret Modes"
+              className="flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 border border-violet-400/50 text-white font-black text-[10px] shadow-[0_0_12px_rgba(139,92,246,0.35)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3 h-3 text-violet-200 animate-pulse" />
+              <span>AI Studio</span>
+              <span className="hidden sm:inline-block px-1 py-0.2 rounded bg-white/20 text-[7px] font-mono font-black">20 MODES</span>
+            </Link>
+
             {/* Glowing 60s Rapid Drill Button (Sleek Micro-Pill) */}
             <button
               onClick={() => {
@@ -338,6 +350,44 @@ export default function HomeLobbyPage() {
           </a>
         </div>
       </div>
+
+      {/* =========================================================================
+          AI STUDY LAB & 20 SECRET PRESETS BANNER (MULTI-PROVIDER BACKEND)
+          ========================================================================= */}
+      <Link
+        href="/ai-study"
+        onClick={() => playClickSound()}
+        className="group relative block p-3.5 rounded-2xl bg-gradient-to-r from-violet-950/80 via-indigo-950/90 to-purple-950/80 border-2 border-violet-500/40 hover:border-violet-400 shadow-[0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_12px_32px_rgba(139,92,246,0.4)] transition-all overflow-hidden"
+      >
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-violet-500/20 rounded-full blur-2xl group-hover:bg-violet-500/30 transition-all pointer-events-none" />
+        <div className="relative z-10 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-violet-600/30 border border-violet-400/50 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(139,92,246,0.5)] shrink-0 group-hover:scale-110 transition-transform">
+              ⚡
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-wider text-violet-300">
+                  JAC 10th AI Study Lab
+                </span>
+                <span className="px-1.5 py-0.2 rounded-full bg-violet-500/30 border border-violet-400/40 text-[8px] font-mono font-black text-violet-200">
+                  20 PRESETS
+                </span>
+              </div>
+              <h4 className="text-xs font-black text-white group-hover:text-violet-200 transition-colors">
+                ELI5, Feynman, Exam Simulator & Multi-AI Failover
+              </h4>
+              <p className="text-[10px] text-slate-300">
+                5 depth levels • 5 regional tones • Gemini, Groq, Mistral vault
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black shadow-[0_2px_8px_rgba(139,92,246,0.5)] group-hover:translate-x-0.5 transition-all">
+            <span>Launch</span>
+            <ArrowRight className="w-3 h-3" />
+          </div>
+        </div>
+      </Link>
 
       {/* =========================================================================
           2. 3D OCTOPUS BOT & COMPANION HERO ENGINE (DUOLINGO EMOTIONS • 60 FPS)
