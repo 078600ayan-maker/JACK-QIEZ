@@ -2412,7 +2412,7 @@
       b.addEventListener('click', () => { Sound.click(); switchView('lobby'); });
     });
 
-    document.getElementById('btn-flip-global').addEventListener('click', () => {
+    document.getElementById('btn-flip-global')?.addEventListener('click', () => {
       AppState.flipP2 = !AppState.flipP2;
       saveState(); Sound.click();
       showToast(AppState.flipP2 ? '🔄 Player 2 UI Flipped 180° for Tabletop Play!' : '🔄 Standard Upright UI Restored');
@@ -2469,6 +2469,7 @@
   </script>
 </body>
 </html>
+
 
 
 
