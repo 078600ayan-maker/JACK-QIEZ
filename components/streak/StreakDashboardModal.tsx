@@ -29,7 +29,7 @@ export const StreakDashboardModal: React.FC<StreakDashboardModalProps> = ({
     { id: '2', name: 'Ellis Kumar', days: 33, avatar: '⛏️', lessons: 28, xp: 2900, questions: 88, reminded: false },
     { id: '3', name: 'Stephen Hansda', days: 11, avatar: '🕶️', lessons: 14, xp: 1200, questions: 42, reminded: true }
   ]);
-  const [activeTab, setActiveTab] = useState<'streak' | 'buddy'>('buddy');
+  const [activeTab, setActiveTab] = useState<'streak' | 'buddy'>('streak');
 
   if (!isOpen) return null;
 

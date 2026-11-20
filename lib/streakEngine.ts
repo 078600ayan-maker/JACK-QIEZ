@@ -184,7 +184,7 @@ export function buildWeeklyStreakStrip(
   const todayKey = toLocalDateKey(now);
   const joinKey = getEffectiveJoinDateKey(profile, now);
   const activeDates = getResolvedActiveDates(profile, now);
-  const hasShield = (profile?.streakFreezes ?? 1) > 0 || profile?.streakShieldActive;
+  let availableFreezes = (profile?.streakFreezes ?? 1);
 
   // Compute Monday of current week (0=Mon .. 6=Sun)
   const jsDay = now.getDay();
@@ -203,8 +203,9 @@ export function buildWeeklyStreakStrip(
       status = 'upcoming';
     } else if (activeDates.has(dateKey) || isToday) {
       status = 'active';
-    } else if (hasShield && !isToday) {
+    } else if (availableFreezes > 0 && !isToday) {
       status = 'frozen';
+      availableFreezes -= 1;
     } else {
       status = 'missed';
     }
@@ -234,7 +235,7 @@ export function buildMonthlyStreakMatrix(
   const todayKey = toLocalDateKey(now);
   const joinKey = getEffectiveJoinDateKey(profile, now);
   const activeDates = getResolvedActiveDates(profile, now);
-  const hasShield = (profile?.streakFreezes ?? 1) > 0 || profile?.streakShieldActive;
+  let availableFreezes = (profile?.streakFreezes ?? 1);
 
   const cells: MonthlyDayCell[] = [];
   for (let dayNum = 1; dayNum <= daysInMonth; dayNum += 1) {
@@ -249,8 +250,9 @@ export function buildMonthlyStreakMatrix(
       status = 'upcoming';
     } else if (activeDates.has(dateKey) || isToday) {
       status = 'active';
-    } else if (hasShield && !isToday && dateKey >= joinKey) {
+    } else if (availableFreezes > 0 && !isToday && dateKey >= joinKey) {
       status = 'frozen';
+      availableFreezes -= 1;
     } else {
       status = 'missed';
     }

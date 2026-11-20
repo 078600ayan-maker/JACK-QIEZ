@@ -27,19 +27,28 @@ export async function POST(req: NextRequest) {
       tone = 'hinglish',
       subject,
       chapter,
-      imageDataUrl
+      imageDataUrl,
+      requestedProvider = 'auto'
     } = body;
 
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json({ error: 'Prompt is required.' }, { status: 400 });
     }
 
-    const slots = buildSlotsWithRuntimeKeys();
+    let slots = buildSlotsWithRuntimeKeys();
     if (!slots || slots.length === 0) {
       return NextResponse.json(
         { error: 'No active AI providers available in vault. Check server configuration.' },
         { status: 503 }
       );
+    }
+
+    // If user selected a specific provider, prioritize those slots first
+    if (requestedProvider && requestedProvider !== 'auto') {
+      slots = [
+        ...slots.filter((s) => s.provider === requestedProvider),
+        ...slots.filter((s) => s.provider !== requestedProvider),
+      ];
     }
 
     const toneInstruction =
@@ -163,7 +172,10 @@ RULES:
 
           if (res.ok) {
             const data = await res.json();
-            const reply = data?.choices?.[0]?.message?.content;
+            const reply =
+              data?.choices?.[0]?.message?.content ||
+              data?.message?.content?.[0]?.text ||
+              data?.candidates?.[0]?.content?.parts?.[0]?.text;
             if (reply) {
               reportKeySuccess(slot.index);
               return NextResponse.json({

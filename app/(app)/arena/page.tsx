@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
   Gamepad2,
@@ -142,8 +143,11 @@ const GAMES: GameInfo[] = [
   },
 ];
 
-export default function ArenaPage() {
+function ArenaContent() {
   const { profile } = useUserStore();
+  const searchParams = useSearchParams();
+  const gameParam = searchParams.get('game');
+
   const [activeGame, setActiveGame] = useState<GameInfo | null>(null);
   const [playMode, setPlayMode] = useState<'bot' | 'friend' | null>(null);
   const [botDiff, setBotDiff] = useState<'easy' | 'normal' | 'hard'>('normal');
@@ -154,6 +158,17 @@ export default function ArenaPage() {
   const [copied, setCopied] = useState<boolean>(false);
   const [opponent, setOpponent] = useState<{ name: string; photoURL: string; xp: number } | null>(null);
   const [gameStarted, setGameStarted] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (gameParam) {
+      const match = GAMES.find((g) => g.id === gameParam);
+      if (match) {
+        setActiveGame(match);
+        setPlayMode('bot');
+        setGameStarted(true);
+      }
+    }
+  }, [gameParam]);
 
   // Host PIN generation
   const handleHost = async (game: GameInfo) => {
@@ -505,11 +520,7 @@ export default function ArenaPage() {
             onClick={() => {
               setActiveGame(game);
               setPlayMode('bot');
-              setOpponent({
-                name: 'OctoBot AI (NORMAL)',
-                photoURL: '/assets/profile_photos/IMG_20261109_001712.png',
-                xp: 500,
-              });
+              setGameStarted(true);
             }}
             className={`p-4 rounded-3xl bg-gradient-to-r ${game.bgGradient} border-2 ${game.borderColor} shadow-xl flex items-center justify-between transition-all cursor-pointer group hover:scale-[1.01] active:scale-[0.98]`}
           >
@@ -538,12 +549,26 @@ export default function ArenaPage() {
               </span>
               <span className="text-[8px] font-black text-cyan-300 flex items-center gap-0.5">
                 <Bot className="w-2.5 h-2.5" />
-                <span>AI + PIN</span>
+                <span>Instant Play</span>
               </span>
             </div>
           </div>
         ))}
       </div>
     </div>
+  );
+}
+
+export default function ArenaPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#070B14] flex items-center justify-center text-amber-400 font-black tracking-widest uppercase text-xs">
+          Loading Arena...
+        </div>
+      }
+    >
+      <ArenaContent />
+    </Suspense>
   );
 }

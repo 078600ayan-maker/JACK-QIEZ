@@ -406,7 +406,7 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
             ].map((game) => (
               <a
                 key={game.id}
-                href={`/arena`}
+                href={`/arena?game=${game.id}`}
                 className={`w-full p-3.5 rounded-2xl bg-gradient-to-r ${game.bgGradient} border ${game.borderColor} flex items-center justify-between text-left transition-all cursor-pointer group shadow-lg hover:scale-[1.02] active:scale-[0.98] block`}
               >
                 <div className="flex items-center gap-3.5 min-w-0">

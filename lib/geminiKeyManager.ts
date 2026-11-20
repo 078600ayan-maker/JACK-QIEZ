@@ -34,12 +34,12 @@ export interface ProviderSlot {
 const PROVIDER_DEFAULTS: Record<AIProviderKind, { endpoint: string; model: string; label: string }> = {
   gemini: {
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models',
-    model: 'gemini-3.8-flash',
+    model: 'gemini-2.5-flash',
     label: 'Google Gemini',
   },
   groq: {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
-    model: 'llama-3.1-8b-instant',
+    model: 'llama-3.3-70b-versatile',
     label: 'Groq LPU',
   },
   openrouter: {
@@ -78,8 +78,8 @@ const PROVIDER_DEFAULTS: Record<AIProviderKind, { endpoint: string; model: strin
     label: 'Fireworks AI',
   },
   cohere: {
-    endpoint: 'https://api.cohere.ai/compatibility/v1/chat/completions',
-    model: 'command-a-03-2025',
+    endpoint: 'https://api.cohere.com/v2/chat',
+    model: 'command-r-plus-08-2024',
     label: 'Cohere',
   },
   zhipu: {

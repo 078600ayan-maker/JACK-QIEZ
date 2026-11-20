@@ -42,8 +42,21 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
   const [inputText, setInputText] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
+  const [activePartner, setActivePartner] = useState<{
+    uid: string;
+    name: string;
+    username: string;
+    photoURL: string;
+  } | null>(targetUser || null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (targetUser) {
+      setActivePartner(targetUser);
+    }
+  }, [targetUser]);
 
   useEffect(() => {
     if (!profile?.uid) return;
@@ -57,15 +70,15 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, selectedPhoto]);
+  }, [messages, selectedPhoto, activePartner]);
 
   if (!isOpen) return null;
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Photo must be less than 2MB');
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Photo must be less than 5MB');
       return;
     }
     const reader = new FileReader();
@@ -77,15 +90,26 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
     reader.readAsDataURL(file);
   };
 
+  const currentChatUser =
+    activePartner ||
+    (targetUser
+      ? targetUser
+      : {
+          uid: 'ayan_study_creator',
+          name: 'Ayan Ali (Jack Quiz Lead)',
+          username: 'ayan_maker',
+          photoURL: '/assets/profile_photos/IMG_20261109_001512.png',
+        });
+
   const handleSend = async () => {
-    if (!profile || !targetUser?.uid) return;
+    if (!profile) return;
     if (!inputText.trim() && !selectedPhoto) return;
     setSending(true);
     playPop();
     try {
       const ok = await sendDirectMessageInCloud(
         profile,
-        targetUser.uid,
+        currentChatUser.uid,
         inputText,
         selectedPhoto || undefined
       );
@@ -98,11 +122,11 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
     }
   };
 
-  // Filter messages between current user and target user
+  // Filter messages between current user and active partner
   const conversation = messages.filter(
     (m) =>
-      (m.senderUid === profile?.uid && m.recipientUid === targetUser?.uid) ||
-      (m.senderUid === targetUser?.uid && m.recipientUid === profile?.uid)
+      (m.senderUid === profile?.uid && m.recipientUid === currentChatUser.uid) ||
+      (m.senderUid === currentChatUser.uid && m.recipientUid === profile?.uid)
   );
 
   return (
@@ -117,19 +141,19 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
             >
               <ArrowLeft className="w-4 h-4" />
             </button>
-            {targetUser ? (
+            {currentChatUser ? (
               <div className="flex items-center gap-2 min-w-0">
                 <div className="relative shrink-0">
                   <img
-                    src={targetUser.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
-                    alt={targetUser.name}
+                    src={currentChatUser.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                    alt={currentChatUser.name}
                     className="w-9 h-9 rounded-full object-cover border border-pink-400"
                   />
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#22c55e] border border-black shadow-[0_0_5px_#22c55e]" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xs font-black text-white truncate">{targetUser.name}</h3>
-                  <p className="text-[10px] text-pink-300 font-bold truncate">@{targetUser.username}</p>
+                  <h3 className="text-xs font-black text-white truncate">{currentChatUser.name}</h3>
+                  <p className="text-[10px] text-pink-300 font-bold truncate">@{currentChatUser.username}</p>
                 </div>
               </div>
             ) : (
@@ -150,13 +174,13 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
 
         {/* Message Feed Container */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
-          {targetUser ? (
+          {currentChatUser ? (
             conversation.length === 0 ? (
               <div className="text-center py-12 space-y-2">
                 <div className="w-12 h-12 rounded-2xl bg-pink-500/20 text-pink-400 border border-pink-400/40 mx-auto flex items-center justify-center">
                   <MessageCircle className="w-6 h-6" />
                 </div>
-                <h4 className="text-xs font-black text-white">Say hello to {targetUser.name}!</h4>
+                <h4 className="text-xs font-black text-white">Say hello to {currentChatUser.name}!</h4>
                 <p className="text-[10px] text-slate-400 max-w-[240px] mx-auto">
                   Start an authentic study conversation, share notes &amp; photos like Instagram.
                 </p>
@@ -268,8 +292,8 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
           </div>
         )}
 
-        {/* Input Bar (Only if targetUser is selected) */}
-        {targetUser && (
+        {/* Input Bar (Always active for selected chat companion) */}
+        {currentChatUser && (
           <div className="p-3 bg-black/50 border-t border-white/10 flex items-center gap-2 shrink-0">
             <input
               type="file"

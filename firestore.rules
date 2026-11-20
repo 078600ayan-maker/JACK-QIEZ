@@ -61,5 +61,11 @@ service cloud.firestore {
         request.auth.uid == resource.data.userA || request.auth.uid == resource.data.userB
       );
     }
+
+    match /direct_messages/{msgId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && request.resource.data.senderUid == request.auth.uid;
+      allow update: if isAuth();
+    }
   }
 }

@@ -53,6 +53,7 @@ export default function AIStudyPage() {
   const [selectedTone, setSelectedTone] = useState<LanguageTone>('hinglish');
   const [selectedSubject, setSelectedSubject] = useState(STUDY_SUBJECTS[0]);
   const [selectedChapter, setSelectedChapter] = useState(STUDY_SUBJECTS[0].chapters[0]);
+  const [selectedProvider, setSelectedProvider] = useState<string>('auto');
 
   // Chat conversation state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -121,7 +122,8 @@ export default function AIStudyPage() {
           tone: selectedTone,
           subject: selectedSubject.name,
           chapter: selectedChapter.name,
-          imageDataUrl: currentImg || undefined
+          imageDataUrl: currentImg || undefined,
+          requestedProvider: selectedProvider
         })
       });
 
@@ -305,6 +307,50 @@ export default function AIStudyPage() {
           </div>
         </div>
 
+        {/* 4. AI Provider & Model Selector */}
+        <div className="p-4 rounded-3xl bg-black/40 border border-violet-500/30 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-wider text-violet-300 block">
+              4. AI Engine &amp; Model Selection:
+            </span>
+            <span className="text-[9px] px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 font-mono font-bold border border-violet-400/30">
+              MULTI-VAULT
+            </span>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { id: 'auto', label: 'Auto (Failover)', badge: 'SMART', icon: '⚡' },
+              { id: 'openrouter', label: 'OpenRouter GPT', badge: 'TOP', icon: '🌐' },
+              { id: 'cohere', label: 'Cohere R+', badge: 'REASONING', icon: '🧠' },
+              { id: 'llm7', label: 'LLM7 Nemo', badge: 'SPEED', icon: '🚀' },
+              { id: 'gemini', label: 'Google Gemini', badge: 'VISION', icon: '✨' },
+              { id: 'groq', label: 'Groq LPU', badge: 'INSTANT', icon: '⚡' },
+            ].map((prov) => (
+              <button
+                key={prov.id}
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  setSelectedProvider(prov.id);
+                }}
+                className={`p-2 rounded-2xl border text-center transition cursor-pointer flex flex-col items-center justify-center ${
+                  selectedProvider === prov.id
+                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-violet-400 font-black shadow-lg shadow-violet-500/25 scale-[1.02]'
+                    : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'
+                }`}
+              >
+                <div className="flex items-center gap-1">
+                  <span className="text-xs">{prov.icon}</span>
+                  <span className="text-[9px] font-black truncate">{prov.label}</span>
+                </div>
+                <span className="text-[7px] font-mono px-1 rounded bg-black/30 mt-1 uppercase text-slate-300">
+                  {prov.badge}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Start Button */}
         <button
           onClick={handleStartExperience}
@@ -344,12 +390,31 @@ export default function AIStudyPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => setViewStep('catalog')}
-            className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-[10px] font-black"
-          >
-            Library
-          </button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <select
+              value={selectedProvider}
+              onChange={(e) => {
+                playClickSound();
+                setSelectedProvider(e.target.value);
+              }}
+              className="py-1 px-2 rounded-xl bg-violet-600/30 border border-violet-400/50 text-violet-200 text-[10px] font-black focus:outline-none cursor-pointer"
+              title="Switch Active AI Engine"
+            >
+              <option value="auto" className="bg-[#0C1525]">⚡ Auto Failover</option>
+              <option value="openrouter" className="bg-[#0C1525]">🌐 OpenRouter GPT</option>
+              <option value="cohere" className="bg-[#0C1525]">🧠 Cohere R+</option>
+              <option value="llm7" className="bg-[#0C1525]">🚀 LLM7 Nemo</option>
+              <option value="gemini" className="bg-[#0C1525]">✨ Google Gemini</option>
+              <option value="groq" className="bg-[#0C1525]">⚡ Groq LPU</option>
+            </select>
+
+            <button
+              onClick={() => setViewStep('catalog')}
+              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-[10px] font-black"
+            >
+              Library
+            </button>
+          </div>
         </div>
 
         {/* Message Feed */}
