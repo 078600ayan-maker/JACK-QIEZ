@@ -34,6 +34,8 @@ import { SpeedDrillModal } from '@/components/home/SpeedDrillModal';
 import { StreakDashboardModal } from '@/components/streak/StreakDashboardModal';
 import { ProgressReportModal } from '@/components/report/ProgressReportModal';
 import { LiveCallModal } from '@/components/ai-calling/LiveCallModal';
+import { AICompanionHubModal } from '@/components/ai/AICompanionHubModal';
+import { StudyMediumModal } from '@/components/home/StudyMediumModal';
 import { BilingualLanguageToggle } from '@/components/ui/BilingualLanguageToggle';
 import { LiveMultiplayerComparison } from '@/components/multiplayer/LiveMultiplayerComparison';
 import { DualArenaHeroSection } from '@/components/arena/DualArenaHeroSection';
@@ -61,6 +63,9 @@ export default function HomeLobbyPage() {
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [drillOpen, setDrillOpen] = useState(false);
   const [callModalOpen, setCallModalOpen] = useState(false);
+  const [aiHubOpen, setAiHubOpen] = useState(false);
+  const [mediumModalOpen, setMediumModalOpen] = useState(false);
+  const [mediumTarget, setMediumTarget] = useState<'notes' | 'practice' | null>(null);
   const [streakModalOpen, setStreakModalOpen] = useState(false);
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
@@ -238,32 +243,19 @@ export default function HomeLobbyPage() {
               />
             </button>
 
-            {/* Live AI Voice Call Button (Admin Gated: Only visible if admin enables liveCallingEnabled or user isAdmin) */}
-            {(profile?.isAdmin || profile?.liveCallingEnabled) && (
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setCallModalOpen(true);
-                }}
-                title="Call Delhi Study Buddy"
-                className="flex items-center gap-1 py-1 px-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/50 text-emerald-300 font-black text-[10px] shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
-              >
-                <PhoneCall className="w-3 h-3 text-emerald-400 animate-bounce" />
-                <span>Call Buddy</span>
-              </button>
-            )}
-
-            {/* AI Study Studio Pill (20 Secret Presets & Multi-Provider Backend) */}
-            <Link
-              href="/ai-study"
-              onClick={() => playClickSound()}
-              title="AI Study Studio & 20 Secret Modes"
-              className="flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 border border-violet-400/50 text-white font-black text-[10px] shadow-[0_0_12px_rgba(139,92,246,0.35)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            {/* AI Companion Hub (Chat & Live Voice Calling with Daily Limit) */}
+            <button
+              onClick={() => {
+                playClickSound();
+                setAiHubOpen(true);
+              }}
+              title="AI Study Studio & Live Voice Call"
+              className="flex items-center gap-1.5 py-1 px-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-emerald-600 hover:brightness-110 border border-violet-400/50 text-white font-black text-[10px] shadow-[0_0_12px_rgba(139,92,246,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
             >
               <Sparkles className="w-3 h-3 text-violet-200 animate-pulse" />
-              <span>AI Studio</span>
-              <span className="hidden sm:inline-block px-1 py-0.2 rounded bg-white/20 text-[7px] font-mono font-black">20 MODES</span>
-            </Link>
+              <span>AI Buddy</span>
+              <span className="hidden sm:inline-block px-1 py-0.2 rounded bg-white/20 text-[7px] font-mono font-black">CHAT & CALL</span>
+            </button>
 
             {/* Glowing 60s Rapid Drill Button (Sleek Micro-Pill) */}
             <button
@@ -352,12 +344,14 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* =========================================================================
-          AI STUDY LAB & 20 SECRET PRESETS BANNER (MULTI-PROVIDER BACKEND)
+          AI STUDY LAB & LIVE VOICE CALLING GATEWAY (DAILY LIMIT ENABLED)
           ========================================================================= */}
-      <Link
-        href="/ai-study"
-        onClick={() => playClickSound()}
-        className="group relative block p-3.5 rounded-2xl bg-gradient-to-r from-violet-950/80 via-indigo-950/90 to-purple-950/80 border-2 border-violet-500/40 hover:border-violet-400 shadow-[0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_12px_32px_rgba(139,92,246,0.4)] transition-all overflow-hidden"
+      <button
+        onClick={() => {
+          playClickSound();
+          setAiHubOpen(true);
+        }}
+        className="w-full text-left group relative block p-3.5 rounded-2xl bg-gradient-to-r from-violet-950/80 via-indigo-950/90 to-purple-950/80 border-2 border-violet-500/40 hover:border-violet-400 shadow-[0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_12px_32px_rgba(139,92,246,0.4)] transition-all overflow-hidden cursor-pointer active:scale-[0.99]"
       >
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-violet-500/20 rounded-full blur-2xl group-hover:bg-violet-500/30 transition-all pointer-events-none" />
         <div className="relative z-10 flex items-center justify-between gap-3">
@@ -368,26 +362,99 @@ export default function HomeLobbyPage() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-black uppercase tracking-wider text-violet-300">
-                  JAC 10th AI Study Lab
+                  JAC 10th AI Companion Hub
                 </span>
                 <span className="px-1.5 py-0.2 rounded-full bg-violet-500/30 border border-violet-400/40 text-[8px] font-mono font-black text-violet-200">
-                  20 PRESETS
+                  CHAT &amp; LIVE CALL
                 </span>
               </div>
               <h4 className="text-xs font-black text-white group-hover:text-violet-200 transition-colors">
-                ELI5, Feynman, Exam Simulator & Multi-AI Failover
+                AI Study Chat &bull; 1-on-1 Delhi Buddy Live Voice Call
               </h4>
               <p className="text-[10px] text-slate-300">
-                5 depth levels • 5 regional tones • Gemini, Groq, Mistral vault
+                20 Secret Presets • 5 Regional Tones • Real-time Speech Audio
               </p>
             </div>
           </div>
           <div className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-[10px] font-black shadow-[0_2px_8px_rgba(139,92,246,0.5)] group-hover:translate-x-0.5 transition-all">
-            <span>Launch</span>
+            <span>Open AI</span>
             <ArrowRight className="w-3 h-3" />
           </div>
         </div>
-      </Link>
+      </button>
+
+      {/* =========================================================================
+          HOMEPAGE NOTES & PRACTICE PAPERS WITH BILINGUAL MEDIUM SWITCHER
+          ========================================================================= */}
+      <section className="grid grid-cols-2 gap-2.5">
+        {/* Card 1: 📖 Revision Notes & Formulas */}
+        <button
+          onClick={() => {
+            playClickSound();
+            setMediumTarget('notes');
+            setMediumModalOpen(true);
+          }}
+          className="p-3.5 rounded-2xl bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#0A0E18] border-2 border-amber-400/40 hover:border-amber-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(245,158,11,0.15)] text-left transition-all active:scale-95 cursor-pointer group flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <BookOpen className="w-4 h-4 text-amber-400" />
+              </div>
+              <span className="text-[8px] font-mono font-black text-amber-300 px-1.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30">
+                69 CH
+              </span>
+            </div>
+            <h4 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-200 transition-colors leading-tight">
+              रिवीजन नोट्स
+            </h4>
+            <span className="text-[9px] text-amber-300/90 font-bold block mt-0.5">
+              Formula &amp; Revision Notes
+            </span>
+            <p className="text-[9px] text-slate-400 mt-1 line-clamp-2">
+              हिंदी व English माध्यम सूत्र बैंक, परिभाषाएं व महत्वपूर्ण टॉपिक्स
+            </p>
+          </div>
+          <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10 text-[9px] font-black text-amber-400">
+            <span>माध्यम चुनें</span>
+            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </button>
+
+        {/* Card 2: 📝 Practice Sets & Chapter Quizzes */}
+        <button
+          onClick={() => {
+            playClickSound();
+            setMediumTarget('practice');
+            setMediumModalOpen(true);
+          }}
+          className="p-3.5 rounded-2xl bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#0A0E18] border-2 border-emerald-400/40 hover:border-emerald-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(16,185,129,0.15)] text-left transition-all active:scale-95 cursor-pointer group flex flex-col justify-between"
+        >
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Zap className="w-4 h-4 text-emerald-400" />
+              </div>
+              <span className="text-[8px] font-mono font-black text-emerald-300 px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30">
+                JAC 2026
+              </span>
+            </div>
+            <h4 className="text-xs sm:text-sm font-black text-white group-hover:text-emerald-200 transition-colors leading-tight">
+              अभ्यास प्रश्न पत्र
+            </h4>
+            <span className="text-[9px] text-emerald-300/90 font-bold block mt-0.5">
+              Practice Papers &amp; Quizzes
+            </span>
+            <p className="text-[9px] text-slate-400 mt-1 line-clamp-2">
+              चैप्टरवाइज बोर्ड अभ्यास सेट, स्पीड ड्रिल व मॉक टेस्ट
+            </p>
+          </div>
+          <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10 text-[9px] font-black text-emerald-400">
+            <span>माध्यम चुनें</span>
+            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+          </div>
+        </button>
+      </section>
 
       {/* =========================================================================
           2. 3D OCTOPUS BOT & COMPANION HERO ENGINE (DUOLINGO EMOTIONS • 60 FPS)
@@ -640,6 +707,23 @@ export default function HomeLobbyPage() {
       <ProgressReportModal
         isOpen={reportModalOpen}
         onClose={() => setReportModalOpen(false)}
+      />
+
+      {/* AI Companion Hub Modal (Chat vs Live Calling + Daily Limit) */}
+      <AICompanionHubModal
+        isOpen={aiHubOpen}
+        onClose={() => setAiHubOpen(false)}
+        onOpenLiveCall={() => setCallModalOpen(true)}
+      />
+
+      {/* Bilingual Medium Switcher Modal (Hindi / English for Notes & Practice Papers) */}
+      <StudyMediumModal
+        isOpen={mediumModalOpen}
+        targetType={mediumTarget}
+        onClose={() => {
+          setMediumModalOpen(false);
+          setMediumTarget(null);
+        }}
       />
 
       {/* Hardest Words Interactive Vocabulary Modals (Parts 1 to 6) */}

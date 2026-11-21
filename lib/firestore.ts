@@ -1,6 +1,8 @@
 import { collection, doc, getDoc, getDocs, limit, query, setDoc, where } from 'firebase/firestore';
-import { db } from './firebase';
+import { updateProfile } from 'firebase/auth';
+import { db, auth } from './firebase';
 import { UserProfile, SpacedMistakeItem, SpeedDrillRecord } from '@/types/user';
+import { getUserCurrentOreTier } from '@/types/ranking';
 import {
   normalizeUsername,
   upsertUserInDirectory,
@@ -9,11 +11,22 @@ import {
 import { markTodayActiveOnProfile, toLocalDateKey } from './streakEngine';
 
 const LOCAL_STORAGE_KEY = 'sbr_user_profile';
+const PERMANENT_BACKUP_KEY = 'sbr_permanent_user_profile';
+
+export function stripUndefinedFields<T extends Record<string, any>>(obj: T): Partial<T> {
+  const clean: Record<string, any> = {};
+  for (const [k, v] of Object.entries(obj)) {
+    if (v !== undefined && !Number.isNaN(v)) {
+      clean[k] = v;
+    }
+  }
+  return clean as Partial<T>;
+}
 
 export function getLocalUserProfile(): UserProfile | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const raw = localStorage.getItem(LOCAL_STORAGE_KEY) || localStorage.getItem(PERMANENT_BACKUP_KEY);
     if (!raw) return null;
     const profile = JSON.parse(raw);
     return profile;
@@ -25,7 +38,9 @@ export function getLocalUserProfile(): UserProfile | null {
 export function saveLocalUserProfile(profile: UserProfile): void {
   if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(profile));
+    const str = JSON.stringify(profile);
+    localStorage.setItem(LOCAL_STORAGE_KEY, str);
+    localStorage.setItem(PERMANENT_BACKUP_KEY, str);
   } catch {
     // Ignore storage errors
   }
@@ -35,6 +50,7 @@ export function clearLocalUserProfile(): void {
   if (typeof window === 'undefined') return;
   try {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
+    // Keep PERMANENT_BACKUP_KEY intact for seamless recovery if user logs back in
   } catch {
     // Ignore storage errors
   }
@@ -135,13 +151,34 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
         new Set([...(remoteData.followingUids || []), ...relations.followingUids])
       );
 
+      const resolvedName = remoteData.name || remoteData.displayName || local?.name || displayName || 'Royal Scholar';
+      const resolvedUsername = remoteData.username || local?.username || normalizeUsername(resolvedName, uid);
+
       const merged: UserProfile = markTodayActiveOnProfile({
-        ...createDefaultProfile(uid, remoteData.name || displayName, remoteData.email || email),
+        ...createDefaultProfile(uid, resolvedName, remoteData.email || email),
         ...remoteData,
         uid,
-        name: remoteData.name || remoteData.displayName || displayName || 'Royal Scholar',
-        emailLower: (remoteData.emailLower || remoteData.email || email || '').trim().toLowerCase(),
+        name: resolvedName,
+        displayName: remoteData.displayName || resolvedName,
+        username: resolvedUsername,
+        usernameLower: (remoteData.usernameLower || resolvedUsername).toLowerCase(),
+        nameLower: (remoteData.nameLower || resolvedName).toLowerCase(),
+        firstName: remoteData.firstName || local?.firstName || resolvedName.split(' ')[0],
+        lastName: remoteData.lastName || local?.lastName || resolvedName.split(' ').slice(1).join(' '),
+        age: remoteData.age || local?.age,
+        bio: remoteData.bio || local?.bio,
+        instagramUsername: remoteData.instagramUsername || local?.instagramUsername,
+        youtubeChannel: remoteData.youtubeChannel || local?.youtubeChannel,
+        telegramUsername: remoteData.telegramUsername || local?.telegramUsername,
+        githubUsername: remoteData.githubUsername || local?.githubUsername,
+        discordTag: remoteData.discordTag || local?.discordTag,
+        twitterHandle: remoteData.twitterHandle || local?.twitterHandle,
+        bioStatus: remoteData.bioStatus || local?.bioStatus,
+        favoriteSubject: remoteData.favoriteSubject || local?.favoriteSubject || 'Science',
+        dreamCareer: remoteData.dreamCareer || local?.dreamCareer,
+        studyQuote: remoteData.studyQuote || local?.studyQuote,
         photoURL: remoteData.photoURL || local?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+        emailLower: (remoteData.emailLower || remoteData.email || email || '').trim().toLowerCase(),
         followersUids: mergedFollowers,
         followingUids: mergedFollowing,
         followersCount: Math.max(mergedFollowers.length, remoteData.followersCount ?? 0),
@@ -180,19 +217,33 @@ export async function fetchUserProfile(uid: string, displayName?: string, email?
   return newProfile;
 }
 
-export async function syncProfileFields(uid: string, partial: Partial<UserProfile>): Promise<void> {
-  if (!uid) return;
+export async function syncProfileFields(uid: string, partial: Partial<UserProfile>): Promise<boolean> {
+  if (!uid) return false;
   try {
-    await setDoc(
-      doc(db, 'users', uid),
-      {
-        ...partial,
-        updatedAt: new Date().toISOString(),
-      },
-      { merge: true }
-    );
+    const cleanData = stripUndefinedFields({
+      ...partial,
+      updatedAt: new Date().toISOString(),
+    });
+
+    // Also update Firebase Auth user profile if currentUser matches uid
+    if (auth.currentUser && auth.currentUser.uid === uid) {
+      const authUpdates: { displayName?: string; photoURL?: string } = {};
+      if (cleanData.name || cleanData.displayName) {
+        authUpdates.displayName = (cleanData.displayName || cleanData.name) as string;
+      }
+      if (cleanData.photoURL) {
+        authUpdates.photoURL = cleanData.photoURL as string;
+      }
+      if (Object.keys(authUpdates).length > 0) {
+        void updateProfile(auth.currentUser, authUpdates).catch(() => {});
+      }
+    }
+
+    await setDoc(doc(db, 'users', uid), cleanData, { merge: true });
+    return true;
   } catch (err) {
-    console.warn('Firestore partial sync failed:', err);
+    console.error('[Firestore] syncProfileFields critical error:', err);
+    return false;
   }
 }
 
@@ -226,8 +277,11 @@ export async function syncOnLevelComplete(
     updates.scorePercent
   );
 
-  // Update XP
+  // Update XP & Dynamic Rank Level
   profile.xp = (profile.xp || 0) + updates.earnedXp;
+  const currentTier = getUserCurrentOreTier(profile.xp);
+  profile.oreRank = currentTier.name;
+  profile.oreRankScore = profile.xp;
 
   // Update Hearts
   profile.hearts = updates.remainingHearts;
@@ -271,8 +325,11 @@ export async function syncSpeedDrillToFirebase(
     profile.drillHistory = profile.drillHistory.slice(0, 50);
   }
 
-  // Award XP
+  // Award XP & Dynamic Rank Level
   profile.xp = (profile.xp || 0) + drillData.earnedXp;
+  const drillTier = getUserCurrentOreTier(profile.xp);
+  profile.oreRank = drillTier.name;
+  profile.oreRankScore = profile.xp;
 
   // Update Streak (Duolingo local-date activeDates tracking)
   profile = markTodayActiveOnProfile(profile);

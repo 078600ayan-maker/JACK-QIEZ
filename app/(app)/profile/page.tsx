@@ -62,6 +62,7 @@ import {
   getDuolingoStreakLevel,
   getEffectiveJoinDateKey,
 } from '@/lib/streakEngine';
+import { DuolingoStreakCalendar } from '@/components/streak/DuolingoStreakCalendar';
 import { computeSelfTrustScore } from '@/lib/matchIntegrity';
 import { CrownBadge } from '@/components/ui/CrownBadge';
 import { TactileButton } from '@/components/ui/TactileButton';
@@ -442,9 +443,8 @@ function ProfileContent() {
       };
 
       setProfile(updatedProfile);
-      setEditModalOpen(false);
 
-      // Soft-coded bidirectional sync: Firestore /users/{uid} document + public scholars directory
+      // 1. Permanent Firestore Cloud Sync with undefined stripping
       await syncProfileFields(profile.uid, {
         firstName: updatedProfile.firstName,
         lastName: updatedProfile.lastName,
@@ -468,8 +468,13 @@ function ProfileContent() {
         dreamCareer: updatedProfile.dreamCareer,
         studyQuote: updatedProfile.studyQuote,
       });
+
+      // 2. Directory Index Sync
       await upsertUserInDirectory(updatedProfile);
-      await upsertUserInDirectory(updatedProfile);
+
+      // 3. Play success audio & close modal
+      playCorrectDing();
+      setEditModalOpen(false);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to save profile changes.';
       setEditError(msg);
@@ -883,107 +888,9 @@ function ProfileContent() {
 
 
       {/* =========================================================================
-          DUOLINGO-STYLE PRE-JOIN-AWARE 7-DAY & 30-DAY STREAK ALGORITHM + LEVELS
+          100% AUTHENTIC DUOLINGO STREAK CALENDAR & GOAL (MATCHING UPLOADED SCREENSHOT)
           ========================================================================= */}
-      <div className="p-4 rounded-3xl bg-[rgba(30,41,59,0.72)] backdrop-blur-xl border border-amber-500/25 mb-4 shadow-[0_8px_24px_rgba(0,0,0,0.45)]">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
-            <span className="text-xs font-black uppercase tracking-wider text-white">
-              {streakLevel.badgeEmoji} {streakLevel.title} &bull; {streak}d Streak
-            </span>
-          </div>
-          <span className="text-[10px] font-black text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
-            Joined {effectiveJoinDate}
-          </span>
-        </div>
-
-        {/* Duolingo Streak Level Progress Bar */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
-            <span>
-              Level {streakLevel.level} • Longest: {Math.max(streak, profile?.longestStreak || 1)}d • Freeze: {profile?.streakFreezes ?? 1} 🛡️
-            </span>
-            <span className="text-amber-300 font-bold">Goal: {streakLevel.nextMilestone}d</span>
-          </div>
-          <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
-            <div
-              className="h-full rounded-full bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-300 transition-all"
-              style={{ width: `${Math.max(8, streakLevel.progressPercent)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* 7-Day Week Strip (Mon - Sun): Days prior to joinedAt are strictly crossed out */}
-        <div className="grid grid-cols-7 gap-1.5 mb-3">
-          {weekCells.map((cell) => (
-            <div
-              key={cell.dateKey}
-              title={`${cell.label} (${cell.dateKey}): ${cell.status.replace('_', ' ')}`}
-              className={`py-2 rounded-xl flex flex-col items-center justify-center transition-all border ${
-                cell.isToday
-                  ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-slate-950 border-white shadow-[0_0_12px_rgba(245,158,11,0.65)] scale-105'
-                  : cell.status === 'active'
-                  ? 'bg-gradient-to-b from-orange-500/80 to-amber-500/60 border-orange-400/60 text-white shadow-[0_0_8px_rgba(249,115,22,0.4)]'
-                  : cell.status === 'frozen'
-                  ? 'bg-blue-900/50 border-blue-400/50 text-blue-300 shadow-[0_0_8px_rgba(96,165,250,0.3)]'
-                  : cell.status === 'pre_join'
-                  ? 'bg-slate-950/60 border-white/5 text-slate-600 opacity-40'
-                  : cell.status === 'missed'
-                  ? 'bg-red-950/40 border-red-500/30 text-red-400'
-                  : 'bg-white/5 border-white/5 text-slate-500'
-              }`}
-            >
-              <span className="text-[9px] font-bold uppercase">{cell.label}</span>
-              <span className="text-sm mt-0.5 font-black">
-                {cell.isToday
-                  ? '🔥'
-                  : cell.status === 'active'
-                  ? '🔥'
-                  : cell.status === 'frozen'
-                  ? '❄️'
-                  : cell.status === 'pre_join'
-                  ? '—'
-                  : cell.status === 'missed'
-                  ? '✕'
-                  : '·'}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* 30-Day Calendar Matrix: Dates before joinedAt (e.g. 1-24 if joined 25th) are crossed out */}
-        <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-1.5">
-          <span>Monthly 30-Day Radar</span>
-          <span className="text-amber-300">{activeDaysThisMonth} Active Days This Month</span>
-        </div>
-        <div className="grid grid-cols-10 gap-1.5 pt-0.5">
-          {monthCells.map((cell) => (
-            <div
-              key={cell.dayNum}
-              className={`
-                aspect-square rounded-lg flex items-center justify-center text-[8px] font-black transition-all
-                ${
-                  cell.isToday
-                    ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-300 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.9)] scale-110 border border-white'
-                    : cell.status === 'active'
-                    ? 'bg-gradient-to-b from-orange-500/80 to-amber-500/60 text-white border border-orange-400/50 shadow-[0_0_6px_rgba(249,115,22,0.35)]'
-                    : cell.status === 'frozen'
-                    ? 'bg-blue-900/60 border border-blue-400/50 text-blue-300'
-                    : cell.status === 'pre_join'
-                    ? 'bg-slate-950/60 border border-white/5 text-slate-600 opacity-40'
-                    : cell.status === 'missed'
-                    ? 'bg-red-950/40 border border-red-500/20 text-red-400/70'
-                    : 'bg-white/5 border border-white/5 text-slate-600'
-                }
-              `}
-              title={`${cell.dateKey} (${cell.status.replace('_', ' ')})`}
-            >
-              {cell.isToday ? '🔥' : cell.status === 'active' ? '🔥' : cell.status === 'frozen' ? '❄️' : cell.status === 'pre_join' ? `—` : cell.status === 'missed' ? '✕' : cell.dayNum}
-            </div>
-          ))}
-        </div>
-      </div>
+      <DuolingoStreakCalendar profile={profile} className="mb-4" />
 
       {/* =========================================================================
           10-POINT PRO SCHOLAR PROFILE DASHBOARD (MASTERY, TELEMETRY, OUTFIT, SHARE)

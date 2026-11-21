@@ -18,8 +18,10 @@ import {
   HelpCircle,
   Copy,
   ThumbsUp,
-  Volume2
+  Volume2,
+  PhoneCall
 } from 'lucide-react';
+import { LiveCallModal } from '@/components/ai-calling/LiveCallModal';
 import {
   AI_PRESETS,
   AIPreset,
@@ -61,6 +63,7 @@ export default function AIStudyPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [activeProviderLabel, setActiveProviderLabel] = useState<string>('Google Gemini & Multi-Provider');
+  const [liveCallOpen, setLiveCallOpen] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
@@ -409,8 +412,20 @@ export default function AIStudyPage() {
             </select>
 
             <button
+              onClick={() => {
+                playClickSound();
+                setLiveCallOpen(true);
+              }}
+              className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black flex items-center gap-1 shadow-[0_0_8px_rgba(16,185,129,0.3)] transition active:scale-95 cursor-pointer"
+              title="Switch to 1-on-1 Live Voice Call"
+            >
+              <PhoneCall className="w-3 h-3 animate-pulse" />
+              <span>Call</span>
+            </button>
+
+            <button
               onClick={() => setViewStep('catalog')}
-              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-[10px] font-black"
+              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-[10px] font-black cursor-pointer"
             >
               Library
             </button>
@@ -509,6 +524,14 @@ export default function AIStudyPage() {
             <Send className="w-4 h-4" />
           </button>
         </div>
+
+        {/* Live Call Modal from Chat View */}
+        <LiveCallModal
+          isOpen={liveCallOpen}
+          onClose={() => setLiveCallOpen(false)}
+          studentName={profile?.name?.split(' ')[0] || 'Scholar'}
+          currentSubject={`${selectedSubject.name} - ${selectedChapter.name}`}
+        />
       </div>
     );
   }
@@ -529,9 +552,22 @@ export default function AIStudyPage() {
           <Bot className="w-5 h-5 text-cyan-400" />
           <h1 className="text-sm font-black uppercase tracking-wider text-white">AI Study Workspace</h1>
         </div>
-        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-black border border-amber-400/40">
-          20 MODES
-        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => {
+              playClickSound();
+              setLiveCallOpen(true);
+            }}
+            className="flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black shadow-[0_0_10px_rgba(16,185,129,0.35)] cursor-pointer active:scale-95 transition-all"
+            title="Switch to 1-on-1 Live Voice Call"
+          >
+            <PhoneCall className="w-3 h-3 text-white animate-pulse" />
+            <span>Live Call</span>
+          </button>
+          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-black border border-amber-400/40">
+            20 MODES
+          </span>
+        </div>
       </div>
 
       <div className="text-center py-1">
@@ -575,6 +611,14 @@ export default function AIStudyPage() {
           </div>
         ))}
       </div>
+
+      {/* Live Call Modal from Catalog View */}
+      <LiveCallModal
+        isOpen={liveCallOpen}
+        onClose={() => setLiveCallOpen(false)}
+        studentName={profile?.name?.split(' ')[0] || 'Scholar'}
+        currentSubject={`${selectedSubject.name} - ${selectedChapter.name}`}
+      />
     </div>
   );
 }

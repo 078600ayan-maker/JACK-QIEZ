@@ -44,7 +44,7 @@ const PROVIDER_DEFAULTS: Record<AIProviderKind, { endpoint: string; model: strin
   },
   openrouter: {
     endpoint: 'https://openrouter.ai/api/v1/chat/completions',
-    model: 'openrouter/auto',
+    model: 'google/gemini-2.0-flash-lite-preview:free',
     label: 'OpenRouter',
   },
   openai: {
@@ -131,10 +131,10 @@ function _buildVaultKeys(): string[] {
   // Each key is split into provider + parts, joined at runtime
   const _r = (parts: string[]) => parts.join('');
   return [
-    _r(['openrouter:', 'sk-or-v1-b09f11f8e273aa45eabac2ad58df0a0043c4534f', '486f81d3a8e537bdf82208df']),
     _r(['groq:', 'gsk_XXb4I8LFsuTwyQJJj3CYWGdyb3FYbVj93ok', 'xAoPrLrD6jB8OV7oz']),
-    _r(['gemini:', 'AIzaSyA0Vbvd5SPHhvvQno91vah', 'MGDbjXXO_pNU']),
     _r(['mistral:', 'mstrl_Zb5eFHrzeqRaXSeg08eRhyAg', 'KhyBwfdN_2LAWyD']),
+    _r(['openrouter:', 'sk-or-v1-b09f11f8e273aa45eabac2ad58df0a0043c4534f', '486f81d3a8e537bdf82208df']),
+    _r(['gemini:', 'AIzaSyA0Vbvd5SPHhvvQno91vah', 'MGDbjXXO_pNU']),
     _r(['cohere:', 'cohere_wTRDKRBj0aAbWhaiGnncMnHv', 'q402Uidm2Is0YPXg0pkIpb']),
     _r(['zhipu:', 'e7c5b44a0456473d9aef34312a92a4fe', '.OLsgUfttHIvSw36T']),
     _r(['kilo:', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbnYiOiJwcm9kdWN0aW9uIiwia2lsb1VzZXJJZCI6IjM4OGY4NGVjLTc5Y2YtNGMyNS1iNzUxLTNhZGQwMjY', '4NDc4NCIsImFwaVRva2VuUGVwcGVyIjoiZmM0MDBkNTUtYmNkNC00NWIwLWEyNGUtMmY1NWMwMmU4ODRjIiwidmVyc2lvbiI6MywiaWF0IjoxNzkzODA0NTA4LCJleHAiOjE5NTE0ODQ1MDh9.a0VhYQVuCLKAyn7ZFc1OfvD1GXdFaQ9aCwn_vZ8vYME']),
