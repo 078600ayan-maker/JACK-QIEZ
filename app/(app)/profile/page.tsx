@@ -469,6 +469,7 @@ function ProfileContent() {
         studyQuote: updatedProfile.studyQuote,
       });
       await upsertUserInDirectory(updatedProfile);
+      await upsertUserInDirectory(updatedProfile);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to save profile changes.';
       setEditError(msg);
@@ -923,25 +924,29 @@ function ProfileContent() {
                 cell.isToday
                   ? 'bg-gradient-to-b from-amber-500 to-orange-500 text-slate-950 border-white shadow-[0_0_12px_rgba(245,158,11,0.65)] scale-105'
                   : cell.status === 'active'
-                  ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
+                  ? 'bg-gradient-to-b from-orange-500/80 to-amber-500/60 border-orange-400/60 text-white shadow-[0_0_8px_rgba(249,115,22,0.4)]'
+                  : cell.status === 'frozen'
+                  ? 'bg-blue-900/50 border-blue-400/50 text-blue-300 shadow-[0_0_8px_rgba(96,165,250,0.3)]'
                   : cell.status === 'pre_join'
-                  ? 'bg-slate-950/60 border-white/5 text-slate-600 line-through opacity-55'
+                  ? 'bg-slate-950/60 border-white/5 text-slate-600 opacity-40'
                   : cell.status === 'missed'
                   ? 'bg-red-950/40 border-red-500/30 text-red-400'
                   : 'bg-white/5 border-white/5 text-slate-500'
               }`}
             >
               <span className="text-[9px] font-bold uppercase">{cell.label}</span>
-              <span className="text-xs mt-0.5 font-black">
+              <span className="text-sm mt-0.5 font-black">
                 {cell.isToday
                   ? '🔥'
                   : cell.status === 'active'
-                  ? '✓'
+                  ? '🔥'
+                  : cell.status === 'frozen'
+                  ? '❄️'
                   : cell.status === 'pre_join'
-                  ? '✕'
+                  ? '—'
                   : cell.status === 'missed'
-                  ? '!'
-                  : '•'}
+                  ? '✕'
+                  : '·'}
               </span>
             </div>
           ))}
@@ -962,17 +967,19 @@ function ProfileContent() {
                   cell.isToday
                     ? 'bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-300 text-slate-950 shadow-[0_0_15px_rgba(245,158,11,0.9)] scale-110 border border-white'
                     : cell.status === 'active'
-                    ? 'bg-emerald-500/80 text-white'
+                    ? 'bg-gradient-to-b from-orange-500/80 to-amber-500/60 text-white border border-orange-400/50 shadow-[0_0_6px_rgba(249,115,22,0.35)]'
+                    : cell.status === 'frozen'
+                    ? 'bg-blue-900/60 border border-blue-400/50 text-blue-300'
                     : cell.status === 'pre_join'
-                    ? 'bg-slate-950/60 border border-white/5 text-slate-600 line-through opacity-50'
+                    ? 'bg-slate-950/60 border border-white/5 text-slate-600 opacity-40'
                     : cell.status === 'missed'
-                    ? 'bg-red-950/40 border border-red-500/20 text-red-400/70 line-through'
+                    ? 'bg-red-950/40 border border-red-500/20 text-red-400/70'
                     : 'bg-white/5 border border-white/5 text-slate-600'
                 }
               `}
               title={`${cell.dateKey} (${cell.status.replace('_', ' ')})`}
             >
-              {cell.isToday ? '🔥' : cell.status === 'pre_join' ? `/${cell.dayNum}` : cell.status === 'missed' ? '✕' : cell.dayNum}
+              {cell.isToday ? '🔥' : cell.status === 'active' ? '🔥' : cell.status === 'frozen' ? '❄️' : cell.status === 'pre_join' ? `—` : cell.status === 'missed' ? '✕' : cell.dayNum}
             </div>
           ))}
         </div>
