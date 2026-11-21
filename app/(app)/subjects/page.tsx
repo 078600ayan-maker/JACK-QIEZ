@@ -326,7 +326,7 @@ export const DEEP_SUBJECTS: SubjectData[] = [
 
 export default function SubjectsPage() {
   const router = useRouter();
-  const { profile, setActiveSubjectId } = useUserStore();
+  const { profile, setActiveSubjectId, setLanguagePreference } = useUserStore();
   const [selectedSubject, setSelectedSubject] = useState<SubjectData | null>(null);
   const [offlineToggles, setOfflineToggles] = useState<Record<string, boolean>>({
     math_algebra: true,
@@ -342,6 +342,7 @@ export default function SubjectsPage() {
   });
 
   const streakDays = profile?.streak || 7;
+  const [langModalTarget, setLangModalTarget] = useState<{ subjectId: string; chId: string } | null>(null);
   const avatarPreset = profile?.customAvatar?.preset || 'steve';
 
   const handleToggleOffline = (partId: string) => {
@@ -360,8 +361,20 @@ export default function SubjectsPage() {
 
   const handleStartChapterQuiz = (subjectId: string, chId: string) => {
     playClickSound();
-    setActiveSubjectId(subjectId === 'science' ? 'sci' : subjectId);
-    router.push(`/quiz/${subjectId === 'science' ? 'sci' : subjectId}/${chId}/1`);
+    setLangModalTarget({ subjectId, chId });
+  };
+
+  const handleSelectLanguageAndLaunchQuiz = async (lang: 'hi' | 'en') => {
+    if (!langModalTarget) return;
+    playClickSound();
+    if (setLanguagePreference) {
+      await setLanguagePreference(lang);
+    }
+    const sId = langModalTarget.subjectId === 'science' ? 'sci' : langModalTarget.subjectId;
+    const cId = langModalTarget.chId;
+    setLangModalTarget(null);
+    setActiveSubjectId(sId);
+    router.push(`/quiz/${sId}/${cId}/1`);
   };
 
   return (
@@ -600,6 +613,69 @@ export default function SubjectsPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          LANGUAGE SELECTION PROMPT MODAL (HINDI MEDIUM VS ENGLISH MEDIUM)
+          ========================================================================= */}
+      {langModalTarget && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-fade-in select-none"
+          onClick={(e) => { if (e.target === e.currentTarget) setLangModalTarget(null); }}
+        >
+          <div className="relative w-full max-w-[390px] rounded-3xl bg-gradient-to-b from-[#18233C] via-[#0F172A] to-[#0B101D] border-2 border-amber-500/50 p-6 shadow-2xl text-center animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/30 to-amber-300/10 text-amber-300 border border-amber-400/40 mx-auto flex items-center justify-center text-2xl mb-3 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+              🌐
+            </div>
+            
+            <h3 className="text-lg font-black text-white">माध्यम चुनें / Select Medium</h3>
+            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              इस चैप्टर के प्रैक्टिस सेट के लिए अपनी पसंदीदा भाषा चुनें:
+            </p>
+
+            <div className="mt-5 space-y-3">
+              {/* Hindi Medium Option */}
+              <button
+                type="button"
+                onClick={() => handleSelectLanguageAndLaunchQuiz('hi')}
+                className="w-full p-4 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 hover:brightness-110 text-slate-950 font-black text-sm flex items-center justify-between shadow-[0_4px_14px_rgba(245,158,11,0.4)] transition active:scale-95 cursor-pointer group"
+              >
+                <div className="flex items-center gap-3 text-left">
+                  <span className="text-2xl group-hover:scale-110 transition-transform">🇮🇳</span>
+                  <div>
+                    <div className="font-black text-sm text-slate-950">हिंदी माध्यम (Hindi Medium)</div>
+                    <div className="text-[10px] text-slate-900 font-bold">100% शुद्ध NCERT हिंदी प्रश्न व व्याख्या</div>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-slate-950 group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              {/* English Medium Option */}
+              <button
+                type="button"
+                onClick={() => handleSelectLanguageAndLaunchQuiz('en')}
+                className="w-full p-4 rounded-2xl bg-gradient-to-r from-teal-500 via-emerald-400 to-cyan-500 hover:brightness-110 text-slate-950 font-black text-sm flex items-center justify-between shadow-[0_4px_14px_rgba(16,185,129,0.4)] transition active:scale-95 cursor-pointer group"
+              >
+                <div className="flex items-center gap-3 text-left">
+                  <span className="text-2xl group-hover:scale-110 transition-transform">🇬🇧</span>
+                  <div>
+                    <div className="font-black text-sm text-slate-950">English Medium</div>
+                    <div className="text-[10px] text-slate-900 font-bold">Class 10 NCERT English MCQs &amp; Solutions</div>
+                  </div>
+                </div>
+                <ArrowRight className="w-5 h-5 text-slate-950 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setLangModalTarget(null)}
+              className="mt-4 text-xs font-bold text-slate-400 hover:text-white transition cursor-pointer"
+            >
+              ✕ Cancel / वापस जाएं
+            </button>
           </div>
         </div>
       )}

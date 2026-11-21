@@ -68,12 +68,13 @@ const RARITY_PERKS: Record<string, { tier: 'netherite' | 'diamond' | 'emerald' |
 
 export default function VaultPage() {
   const router = useRouter();
-  const { profile, updateCustomAvatar, updateProfilePhoto } = useUserStore();
+  const { profile, updateCustomAvatar, updateProfilePhoto, setLanguagePreference } = useUserStore();
 
   const [activeMainTab, setActiveMainTab] = useState<'avatar' | 'mistakes' | 'formulas'>('avatar');
   const [activeSubTab, setActiveSubTab] = useState<'bundles' | 'characters'>('characters');
   const [bundleGender, setBundleGender] = useState<'boy' | 'girl'>(profile?.customAvatar?.gender || 'boy');
   const [characterFilter, setCharacterFilter] = useState<'all' | 'boy' | 'girl'>('all');
+  const [notesMedium, setNotesMedium] = useState<'hi' | 'en'>(profile?.languagePreference ?? 'hi');
   const [formulaFilter, setFormulaFilter] = useState<'All' | 'Math' | 'Science' | 'Hindi & English Tips'>('All');
   const [formulaSearch, setFormulaSearch] = useState('');
   const [activeLeitnerBox, setActiveLeitnerBox] = useState<number>(1);
@@ -729,6 +730,47 @@ export default function VaultPage() {
               onChange={(e) => setFormulaSearch(e.target.value)}
               className="px-3 py-1.5 rounded-xl bg-black/60 border border-white/15 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 w-full sm:w-64"
             />
+          </div>
+
+          {/* Notes Medium Switcher: Hindi Medium vs English Medium */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2.5 rounded-2xl bg-[#16213A]/90 border border-amber-500/30 gap-2">
+            <span className="text-[11px] font-black text-amber-300 uppercase tracking-wider pl-1">
+              माध्यम चुनें / Select Notes Medium:
+            </span>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  setNotesMedium('hi');
+                  if (setLanguagePreference) setLanguagePreference('hi');
+                }}
+                className={`py-1.5 px-3 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-1 ${
+                  notesMedium === 'hi'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-slate-950 shadow-md shadow-amber-500/30'
+                    : 'text-slate-400 hover:text-white bg-white/5'
+                }`}
+              >
+                <span>🇮🇳</span>
+                <span>हिंदी माध्यम (Hindi Notes)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  playClickSound();
+                  setNotesMedium('en');
+                  if (setLanguagePreference) setLanguagePreference('en');
+                }}
+                className={`py-1.5 px-3 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-1 ${
+                  notesMedium === 'en'
+                    ? 'bg-gradient-to-r from-teal-500 to-emerald-400 text-slate-950 shadow-md shadow-emerald-500/30'
+                    : 'text-slate-400 hover:text-white bg-white/5'
+                }`}
+              >
+                <span>🇬🇧</span>
+                <span>English Medium</span>
+              </button>
+            </div>
           </div>
 
           {/* Category Pills */}

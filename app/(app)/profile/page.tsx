@@ -776,8 +776,8 @@ function ProfileContent() {
           </div>
         </div>
 
-        {/* Action Button Row: Follow Status & Edit Profile */}
-        <div className="mt-3 flex gap-2">
+        {/* Action Button Row: Edit Profile, Change DP & Direct Messages */}
+        <div className="mt-3 grid grid-cols-3 gap-2">
           <button
             onClick={() => {
               playClickSound();
@@ -813,6 +813,17 @@ function ProfileContent() {
           >
             <Camera className="w-3.5 h-3.5" />
             <span>Change DP</span>
+          </button>
+          <button
+            onClick={() => {
+              playClickSound();
+              setChatTargetUser(null);
+              setChatModalOpen(true);
+            }}
+            className="py-2 px-2.5 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-purple-600 hover:brightness-110 text-white text-xs font-black flex items-center justify-center gap-1 shadow-[0_2px_0_#831843] transition-all active:scale-95 cursor-pointer"
+          >
+            <MessageCircle className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">DMs / Chat</span>
           </button>
         </div>
       </div>
@@ -1906,95 +1917,137 @@ function ProfileContent() {
         </div>
       )}
 
-      {/* Edit Profile Modal */}
+      {/* Edit Profile Modal (Fully Responsive with Pinned Save & Smooth Scrolling) */}
       {editModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl">
-          <div className="relative w-full max-w-[420px] rounded-3xl bg-gradient-to-b from-[#16213A] to-[#0A0E18] border-2 border-amber-500/40 p-5 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
-              <h3 className="text-sm font-black text-white">⚙️ Edit Profile</h3>
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl overflow-hidden animate-fade-in"
+          onClick={(e) => { if (e.target === e.currentTarget) { setEditModalOpen(false); setEditError(''); } }}
+        >
+          <div className="relative w-full max-w-[460px] max-h-[88dvh] sm:max-h-[85vh] flex flex-col rounded-3xl bg-gradient-to-b from-[#16213A] to-[#0A0E18] border-2 border-amber-500/40 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Pinned Sticky Header */}
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/10 shrink-0 bg-[#16213A]/95 backdrop-blur-md">
+              <div>
+                <h3 className="text-sm sm:text-base font-black text-white flex items-center gap-2">
+                  <span>⚙️</span>
+                  <span>Edit Student Profile</span>
+                </h3>
+                <p className="text-[10px] text-amber-300/90 font-medium">
+                  Update first name, last name, username &amp; scholar links
+                </p>
+              </div>
               <button
+                type="button"
                 onClick={() => { setEditModalOpen(false); setEditError(''); }}
-                className="w-8 h-8 rounded-full bg-white/10 text-slate-300 hover:text-white flex items-center justify-center"
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition cursor-pointer"
+                aria-label="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {editError && (
-              <div className="mb-3 p-2.5 rounded-xl bg-red-500/20 border border-red-400/40 text-xs font-bold text-red-200">
-                {editError}
-              </div>
-            )}
+            {/* Scrollable Form Body */}
+            <div 
+              className="flex-1 overflow-y-auto overscroll-contain px-4 py-3.5 sm:px-5 sm:py-4 space-y-3.5 custom-scrollbar"
+              style={{ WebkitOverflowScrolling: 'touch' }}
+            >
+              {editError && (
+                <div className="p-2.5 rounded-xl bg-red-500/20 border border-red-400/40 text-xs font-bold text-red-200">
+                  {editError}
+                </div>
+              )}
 
-            <div className="space-y-3">
-              <div>
-                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">First Name</label>
-                <input
-                  type="text"
-                  value={editFirstName}
-                  onChange={(e) => setEditFirstName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">Last Name</label>
-                <input
-                  type="text"
-                  value={editLastName}
-                  onChange={(e) => setEditLastName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">Email Address</label>
-                <input
-                  type="email"
-                  value={editEmail}
-                  onChange={(e) => setEditEmail(e.target.value)}
-                  placeholder="scholar@jackquiz.com"
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition"
-                />
-              </div>
-              <div>
-                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">Age</label>
-                <select
-                  value={editAge}
-                  onChange={(e) => setEditAge(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition appearance-none cursor-pointer"
-                >
-                  <option value="" className="bg-[#0F172A]">Select age</option>
-                  {Array.from({ length: 8 }, (_, i) => i + 13).map((a) => (
-                    <option key={a} value={a} className="bg-[#0F172A]">{a} years old</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">@Username (always lowercase)</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 font-black text-sm">@</span>
+              {/* First Name & Last Name (Responsive 2-column grid) */}
+              <div className="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">
+                    First Name <span className="text-amber-400">*</span>
+                  </label>
                   <input
                     type="text"
-                    value={editUsername}
-                    onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ''))}
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-8 pr-4 py-3 text-sm focus:outline-none focus:border-amber-500/50 transition lowercase"
+                    value={editFirstName}
+                    onChange={(e) => setEditFirstName(e.target.value)}
+                    placeholder="First Name"
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:border-amber-500/60 transition"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editLastName}
+                    onChange={(e) => setEditLastName(e.target.value)}
+                    placeholder="Last Name"
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:border-amber-500/60 transition"
                   />
                 </div>
               </div>
 
-              {/* 10 Detailed Social & Scholastic Profiles */}
+              {/* Email Address & Age */}
+              <div className="grid grid-cols-2 gap-2.5">
+                <div>
+                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    placeholder="scholar@jackquiz.com"
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-amber-500/60 transition"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">
+                    Age
+                  </label>
+                  <select
+                    value={editAge}
+                    onChange={(e) => setEditAge(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-amber-500/60 transition appearance-none cursor-pointer"
+                  >
+                    <option value="" className="bg-[#0F172A]">Select age</option>
+                    {Array.from({ length: 8 }, (_, i) => i + 13).map((a) => (
+                      <option key={a} value={a} className="bg-[#0F172A]">{a} years old</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* @Username */}
+              <div>
+                <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">
+                  @Username (always lowercase)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-amber-400 font-black text-xs">@</span>
+                  <input
+                    type="text"
+                    value={editUsername}
+                    onChange={(e) => setEditUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, ''))}
+                    placeholder="username"
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl pl-8 pr-3.5 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:border-amber-500/60 transition lowercase"
+                  />
+                </div>
+              </div>
+
+              {/* Scholar Bio & Social Links */}
               <div className="pt-2 border-t border-white/10 space-y-3">
                 <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 block">
                   🌟 Scholar Bio &amp; Social Links
                 </span>
 
                 <div>
-                  <label className="text-[11px] font-black text-slate-300 uppercase tracking-wider mb-1.5 block">Bio / About You</label>
+                  <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">
+                    Bio / About You
+                  </label>
                   <textarea
                     rows={2}
                     value={editBio}
                     onChange={(e) => setEditBio(e.target.value)}
-                    placeholder="Class 10 JAC Topper in making..."
-                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-amber-500/50 transition"
+                    placeholder="JAC Class 10 Board Scholar aiming for 95%+..."
+                    className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/60 transition resize-none"
                   />
                 </div>
 
@@ -2005,7 +2058,7 @@ function ProfileContent() {
                       type="text"
                       value={editInstagram}
                       onChange={(e) => setEditInstagram(e.target.value)}
-                      placeholder="@your_insta"
+                      placeholder="@ayan_ali"
                       className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
                     />
                   </div>
@@ -2015,7 +2068,7 @@ function ProfileContent() {
                       type="text"
                       value={editYoutube}
                       onChange={(e) => setEditYoutube(e.target.value)}
-                      placeholder="Channel link / handle"
+                      placeholder="@jack_quiz"
                       className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
                     />
                   </div>
@@ -2028,17 +2081,17 @@ function ProfileContent() {
                       type="text"
                       value={editTelegram}
                       onChange={(e) => setEditTelegram(e.target.value)}
-                      placeholder="@telegram_id"
+                      placeholder="@jack_notes"
                       className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">🐙 GitHub</label>
+                    <label className="text-[10px] font-black text-slate-300 uppercase tracking-wider mb-1 block">💻 GitHub</label>
                     <input
                       type="text"
                       value={editGithub}
                       onChange={(e) => setEditGithub(e.target.value)}
-                      placeholder="github_username"
+                      placeholder="username"
                       className="w-full bg-white/5 border border-white/10 text-white rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-500/50"
                     />
                   </div>
@@ -2107,13 +2160,34 @@ function ProfileContent() {
               </div>
             </div>
 
-            <button
-              onClick={handleSaveProfile}
-              disabled={editSaving}
-              className="mt-4 w-full py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_4px_0_#92400E] active:translate-y-1 active:shadow-none disabled:opacity-50 transition-all"
-            >
-              {editSaving ? 'Saving...' : '✓ Save Changes'}
-            </button>
+            {/* Pinned Sticky Footer - ALWAYS VISIBLE with Save Changes */}
+            <div className="p-3.5 sm:p-4 border-t border-white/10 shrink-0 bg-[#0A0E18]/95 backdrop-blur-md flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() => { setEditModalOpen(false); setEditError(''); }}
+                className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white font-bold text-xs transition cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveProfile}
+                disabled={editSaving}
+                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_3px_12px_rgba(245,158,11,0.4)] hover:brightness-110 active:translate-y-0.5 disabled:opacity-50 transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                {editSaving ? (
+                  <>
+                    <span className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                    <span>Saving Changes...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>✓</span>
+                    <span>Save Profile Changes</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}
