@@ -1191,6 +1191,9 @@ export interface ChatMessage {
   senderPhoto: string;
   senderUsername: string;
   recipientUid: string;
+  recipientName?: string;
+  recipientPhoto?: string;
+  recipientUsername?: string;
   text: string;
   photoDataUrl?: string;
   createdAt: string;
@@ -1313,7 +1316,10 @@ export async function sendDirectMessageInCloud(
   sender: UserProfile,
   recipientUid: string,
   text: string,
-  photoDataUrl?: string
+  photoDataUrl?: string,
+  recipientName?: string,
+  recipientPhoto?: string,
+  recipientUsername?: string
 ): Promise<boolean> {
   if (!sender.uid || !recipientUid || (!text.trim() && !photoDataUrl)) return false;
   const msgId = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
@@ -1324,6 +1330,9 @@ export async function sendDirectMessageInCloud(
     senderPhoto: sender.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
     senderUsername: sender.username || 'scholar',
     recipientUid,
+    recipientName: recipientName || undefined,
+    recipientPhoto: recipientPhoto || undefined,
+    recipientUsername: recipientUsername || undefined,
     text: text.trim(),
     photoDataUrl: photoDataUrl || undefined,
     createdAt: new Date().toISOString(),

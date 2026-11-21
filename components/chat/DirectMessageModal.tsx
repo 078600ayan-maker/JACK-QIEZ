@@ -133,9 +133,15 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
       if (!existing) {
         threadMap.set(partnerUid, {
           partnerUid,
-          partnerName: isIncoming ? msg.senderName : 'You → ' + (msg.recipientUid || '?'),
-          partnerUsername: isIncoming ? (msg.senderUsername || '') : '',
-          partnerPhoto: isIncoming ? (msg.senderPhoto || '') : (profile.photoURL || ''),
+          partnerName: isIncoming
+            ? (msg.senderName || 'Scholar')
+            : (msg.recipientName || 'Scholar ' + partnerUid.slice(0, 5)),
+          partnerUsername: isIncoming
+            ? (msg.senderUsername || '')
+            : (msg.recipientUsername || ''),
+          partnerPhoto: isIncoming
+            ? (msg.senderPhoto || '/assets/profile_photos/IMG_20261109_001512.png')
+            : (msg.recipientPhoto || '/assets/profile_photos/IMG_20261109_001512.png'),
           lastMessage: msg,
           unreadCount: isIncoming && !msg.read ? 1 : 0,
           messages: [msg],
@@ -144,8 +150,15 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
         existing.messages.push(msg);
         if (msg.createdAt > existing.lastMessage.createdAt) {
           existing.lastMessage = msg;
-          if (isIncoming) existing.partnerName = msg.senderName;
-          if (isIncoming) existing.partnerPhoto = msg.senderPhoto || existing.partnerPhoto;
+          if (isIncoming && msg.senderName) existing.partnerName = msg.senderName;
+          if (isIncoming && msg.senderPhoto) existing.partnerPhoto = msg.senderPhoto;
+          if (isIncoming && msg.senderUsername) existing.partnerUsername = msg.senderUsername;
+          if (!isIncoming && msg.recipientName && (!existing.partnerName || existing.partnerName.startsWith('Scholar '))) {
+            existing.partnerName = msg.recipientName;
+          }
+          if (!isIncoming && msg.recipientPhoto && (!existing.partnerPhoto || existing.partnerPhoto.includes('IMG_20261109_001512'))) {
+            existing.partnerPhoto = msg.recipientPhoto;
+          }
         }
         if (isIncoming && !msg.read) existing.unreadCount += 1;
       }
@@ -216,6 +229,9 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
       senderPhoto: profile.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
       senderUsername: profile.username || 'scholar',
       recipientUid: activeThread.partnerUid,
+      recipientName: activeThread.partnerName,
+      recipientPhoto: activeThread.partnerPhoto,
+      recipientUsername: activeThread.partnerUsername,
       text: textToSend,
       photoDataUrl: mediaToSend?.type === 'photo' ? mediaToSend.url : undefined,
       createdAt: new Date().toISOString(),
@@ -239,7 +255,10 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
         profile,
         activeThread.partnerUid,
         textToSend,
-        mediaToSend?.type === 'photo' ? mediaToSend.url : undefined
+        mediaToSend?.type === 'photo' ? mediaToSend.url : undefined,
+        activeThread.partnerName,
+        activeThread.partnerPhoto,
+        activeThread.partnerUsername
       );
     } catch (err) {
       console.warn('[DirectMessageModal] send failed:', err);
@@ -419,12 +438,26 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                   </p>
                 </div>
               ) : (
-                activeThread.messages.map((msg) => {
+                activeThread.messages.map((msg, index) => {
                   const isMine = msg.senderUid === profile?.uid;
+                  const isFirstInCluster = index === 0 || activeThread.messages[index - 1]?.senderUid !== msg.senderUid;
+                  const isLastInCluster = index === activeThread.messages.length - 1 || activeThread.messages[index + 1]?.senderUid !== msg.senderUid;
+                  const clusterMarginClass = isFirstInCluster ? (index === 0 ? 'mt-1' : 'mt-3.5') : 'mt-1';
+
                   return isMine ? (
-                    /* ── OUTGOING MESSAGE: RIGHT ALIGNED WITH SENDER'S AVATAR ── */
-                    <div key={msg.id} className="flex justify-end items-end gap-2 my-1">
-                      <div className="max-w-[78%] rounded-2xl rounded-br-xs p-3 text-xs leading-relaxed space-y-1.5 shadow-md bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 text-white">
+                    /* ── OUTGOING MESSAGE: RIGHT ALIGNED (WHATSAPP/INSTAGRAM RECALIBRATED) ── */
+                    <div key={msg.id} className={`flex justify-end items-end gap-2 ${clusterMarginClass}`}>
+                      <div
+                        className={`relative max-w-[78%] sm:max-w-[72%] p-3 text-xs leading-relaxed space-y-1.5 shadow-md bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 text-white ${
+                          isFirstInCluster && isLastInCluster
+                            ? 'rounded-2xl rounded-br-xs'
+                            : isFirstInCluster
+                            ? 'rounded-2xl rounded-br-md'
+                            : isLastInCluster
+                            ? 'rounded-2xl rounded-tr-md rounded-br-xs'
+                            : 'rounded-2xl rounded-r-md'
+                        }`}
+                      >
                         {msg.photoDataUrl && (
                           <div
                             onClick={() => setPreviewImage(msg.photoDataUrl!)}
@@ -440,7 +473,7 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                         )}
                         {msg.text && (
                           <div className="flex items-start justify-between gap-1.5 group/msg">
-                            <p className="font-semibold break-words flex-1">{msg.text}</p>
+                            <p className="font-semibold break-words flex-1 select-text">{msg.text}</p>
                             <button
                               onClick={() => handleCopyText(msg.text, msg.id)}
                               className="opacity-70 hover:opacity-100 transition p-0.5 text-white/80 hover:text-white shrink-0 cursor-pointer"
@@ -454,35 +487,57 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                             </button>
                           </div>
                         )}
-                        <div className="flex items-center justify-end gap-1 text-[8px] text-white/80 pt-0.5">
+                        <div className="flex items-center justify-end gap-1 text-[8px] text-white/80 pt-0.5 select-none">
                           <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <CheckCheck className="w-3.5 h-3.5 text-emerald-300" />
                         </div>
                       </div>
-                      {/* Sender Avatar */}
-                      <img
-                        src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
-                        alt="You"
-                        onClick={() => setPreviewImage(profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png')}
-                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-pink-400 shrink-0 cursor-pointer shadow-sm hover:scale-105 active:scale-95 transition-all"
-                        title="Click to view full photo"
-                      />
+
+                      {/* Recalibrated Avatar Column (Flush right alignment) */}
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 flex items-center justify-center">
+                        {isLastInCluster ? (
+                          <img
+                            src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                            alt="You"
+                            onClick={() => setPreviewImage(profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png')}
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-pink-400 cursor-pointer shadow-sm hover:scale-105 active:scale-95 transition-all"
+                            title="Click to view full photo"
+                          />
+                        ) : null}
+                      </div>
                     </div>
                   ) : (
-                    /* ── INCOMING MESSAGE: LEFT ALIGNED WITH PARTNER'S AVATAR ── */
-                    <div key={msg.id} className="flex justify-start items-end gap-2 my-1">
-                      {/* Partner Avatar */}
-                      <img
-                        src={activeThread.partnerPhoto || '/assets/profile_photos/IMG_20261109_001512.png'}
-                        alt={activeThread.partnerName}
-                        onClick={() => setPreviewImage(activeThread.partnerPhoto || '/assets/profile_photos/IMG_20261109_001512.png')}
-                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-cyan-400 shrink-0 cursor-pointer shadow-sm hover:scale-105 active:scale-95 transition-all"
-                        title="Click to view full photo"
-                      />
-                      <div className="max-w-[78%] rounded-2xl rounded-bl-xs p-3 text-xs leading-relaxed space-y-1.5 shadow-md bg-[#16213A] border border-white/10 text-white">
-                        <span className="text-[9px] font-black text-cyan-300 block">
-                          {activeThread.partnerName}
-                        </span>
+                    /* ── INCOMING MESSAGE: LEFT ALIGNED (WHATSAPP/INSTAGRAM RECALIBRATED) ── */
+                    <div key={msg.id} className={`flex justify-start items-end gap-2 ${clusterMarginClass}`}>
+                      {/* Recalibrated Avatar Column (Flush left alignment) */}
+                      <div className="w-7 h-7 sm:w-8 sm:h-8 shrink-0 flex items-center justify-center">
+                        {isLastInCluster ? (
+                          <img
+                            src={activeThread.partnerPhoto || '/assets/profile_photos/IMG_20261109_001512.png'}
+                            alt={activeThread.partnerName}
+                            onClick={() => setPreviewImage(activeThread.partnerPhoto || '/assets/profile_photos/IMG_20261109_001512.png')}
+                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-cyan-400 cursor-pointer shadow-sm hover:scale-105 active:scale-95 transition-all"
+                            title="Click to view full photo"
+                          />
+                        ) : null}
+                      </div>
+
+                      <div
+                        className={`relative max-w-[78%] sm:max-w-[72%] p-3 text-xs leading-relaxed space-y-1.5 shadow-md bg-[#16213A] border border-white/10 text-white ${
+                          isFirstInCluster && isLastInCluster
+                            ? 'rounded-2xl rounded-bl-xs'
+                            : isFirstInCluster
+                            ? 'rounded-2xl rounded-bl-md'
+                            : isLastInCluster
+                            ? 'rounded-2xl rounded-tl-md rounded-bl-xs'
+                            : 'rounded-2xl rounded-l-md'
+                        }`}
+                      >
+                        {isFirstInCluster && (
+                          <span className="text-[9px] font-black text-cyan-300 block">
+                            {activeThread.partnerName}
+                          </span>
+                        )}
                         {msg.photoDataUrl && (
                           <div
                             onClick={() => setPreviewImage(msg.photoDataUrl!)}
@@ -498,7 +553,7 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                         )}
                         {msg.text && (
                           <div className="flex items-start justify-between gap-1.5 group/msg">
-                            <p className="font-semibold break-words flex-1">{msg.text}</p>
+                            <p className="font-semibold break-words flex-1 select-text">{msg.text}</p>
                             <button
                               onClick={() => handleCopyText(msg.text, msg.id)}
                               className="opacity-70 hover:opacity-100 transition p-0.5 text-slate-400 hover:text-white shrink-0 cursor-pointer"
@@ -512,7 +567,7 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                             </button>
                           </div>
                         )}
-                        <div className="flex items-center justify-end gap-1 text-[8px] text-slate-400 pt-0.5">
+                        <div className="flex items-center justify-end gap-1 text-[8px] text-slate-400 pt-0.5 select-none">
                           <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       </div>
