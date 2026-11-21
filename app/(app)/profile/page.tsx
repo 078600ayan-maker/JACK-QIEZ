@@ -34,7 +34,8 @@ import {
   Shield,
   BookOpen,
   Activity,
-  MessageCircle
+  MessageCircle,
+  Maximize2
 } from 'lucide-react';
 import { DirectMessageModal } from '@/components/chat/DirectMessageModal';
 import { signOut } from 'firebase/auth';
@@ -367,6 +368,7 @@ function ProfileContent() {
 
   // Edit Profile modal
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [previewDpOpen, setPreviewDpOpen] = useState(false);
   const [editFirstName, setEditFirstName] = useState(profile?.firstName || '');
   const [editLastName, setEditLastName] = useState(profile?.lastName || '');
   const [editEmail, setEditEmail] = useState(profile?.email || '');
@@ -674,8 +676,28 @@ function ProfileContent() {
                 />
               </div>
               {/* Floating Red Camera/Edit Button */}
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white border-2 border-slate-900 flex items-center justify-center shadow-[0_0_12px_rgba(239,68,68,0.8)] group-hover:scale-110 transition-transform">
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playClickSound();
+                  setDpModalOpen(true);
+                }}
+                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-red-600 hover:bg-red-500 text-white border-2 border-slate-900 flex items-center justify-center shadow-[0_0_12px_rgba(239,68,68,0.8)] group-hover:scale-110 transition-transform cursor-pointer"
+                title="Change Photo"
+              >
                 <Camera className="w-3 h-3 text-white" />
+              </div>
+              {/* Floating Zoom / Enlarge Button */}
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playClickSound();
+                  setPreviewDpOpen(true);
+                }}
+                className="absolute -bottom-1 -left-1 w-6 h-6 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 border-2 border-slate-900 flex items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.8)] group-hover:scale-110 transition-transform cursor-pointer"
+                title="View Full Photo"
+              >
+                <Maximize2 className="w-3 h-3 text-slate-950 font-black" />
               </div>
               {/* Real-time Online/Offline Presence Dot */}
               <div
@@ -2247,6 +2269,34 @@ function ProfileContent() {
         }}
         targetUser={chatTargetUser}
       />
+
+      {/* Full-Screen DP Preview Lightbox */}
+      {previewDpOpen && (
+        <div
+          onClick={() => setPreviewDpOpen(false)}
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 cursor-pointer animate-in fade-in zoom-in-95"
+        >
+          <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPreviewDpOpen(false)}
+              className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center text-sm font-black cursor-pointer shadow-lg transition"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="relative max-w-sm max-h-[85vh] rounded-3xl overflow-hidden border-2 border-amber-400 shadow-[0_0_50px_rgba(245,158,11,0.4)] bg-slate-900 p-2">
+            <img
+              src={photoURL}
+              alt={name}
+              className="w-full h-full max-h-[75vh] object-contain rounded-2xl mx-auto"
+            />
+          </div>
+          <p className="text-xs text-amber-300 mt-3 font-black tracking-wide">
+            {name} &bull; Tap anywhere to close
+          </p>
+        </div>
+      )}
     </div>
   );
 }

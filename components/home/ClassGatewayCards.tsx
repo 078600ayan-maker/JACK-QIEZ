@@ -18,6 +18,8 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [resourceModalOpen, setResourceModalOpen] = useState(false);
   const [resourceMode, setResourceMode] = useState<'notes' | 'practice'>('notes');
+  const [mediumChoiceTarget, setMediumChoiceTarget] = useState<'notes' | 'practice' | null>(null);
+  const [selectedMedium, setSelectedMedium] = useState<'hi' | 'en'>('hi');
   const { profile } = useUserStore();
 
   const handleOpenSubject = (sub: SubjectMeta) => {
@@ -149,8 +151,7 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
         <button
           onClick={() => {
             playClickSound();
-            setResourceMode('notes');
-            setResourceModalOpen(true);
+            setMediumChoiceTarget('notes');
           }}
           className="group relative flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl bg-gradient-to-b from-[#1C253D] via-[#141B2D] to-[#0E1424] border-2 border-amber-400/40 hover:border-amber-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(245,158,11,0.15)] active:scale-[0.98] transition-all cursor-pointer"
         >
@@ -162,7 +163,7 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
               📄 Notes
             </span>
             <span className="text-[9px] font-bold text-amber-300 block truncate">
-              Chapter-wise PDFs
+              हिंदी / English Medium
             </span>
           </div>
         </button>
@@ -171,8 +172,7 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
         <button
           onClick={() => {
             playClickSound();
-            setResourceMode('practice');
-            setResourceModalOpen(true);
+            setMediumChoiceTarget('practice');
           }}
           className="group relative flex items-center justify-center gap-2.5 py-3.5 px-3 rounded-2xl bg-gradient-to-b from-[#1C253D] via-[#141B2D] to-[#0E1424] border-2 border-blue-400/40 hover:border-blue-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(59,130,246,0.15)] active:scale-[0.98] transition-all cursor-pointer"
         >
@@ -184,7 +184,7 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
               ✍️ Practice
             </span>
             <span className="text-[9px] font-bold text-blue-300 block truncate">
-              Question Bank
+              हिंदी / English Bank
             </span>
           </div>
         </button>
@@ -251,8 +251,101 @@ export const ClassGatewayCards: React.FC<ClassGatewayCardsProps> = ({ subjects }
       <StudyResourceModal
         isOpen={resourceModalOpen}
         mode={resourceMode}
+        initialMedium={selectedMedium}
         onClose={() => setResourceModalOpen(false)}
       />
+
+      {/* Medium Choice Prompt Modal for Notes & Practice Papers */}
+      {mediumChoiceTarget && (
+        <div 
+          onClick={(e) => { if (e.target === e.currentTarget) setMediumChoiceTarget(null); }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl select-none animate-in fade-in zoom-in-95"
+        >
+          <div className="relative w-full max-w-[420px] rounded-3xl bg-gradient-to-b from-[#18233C] via-[#0F172A] to-[#0A0E18] border-2 border-amber-400/50 shadow-2xl p-5 text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-black text-white leading-tight">
+                    {mediumChoiceTarget === 'notes' ? 'रिवीजन नोट्स & फॉर्मूला' : 'अभ्यास प्रश्न पत्र & क्विज'}
+                  </h3>
+                  <p className="text-[10px] text-amber-300 font-bold">
+                    माध्यम चुनें / Select Study Medium
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setMediumChoiceTarget(null)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-400 hover:text-white flex items-center justify-center transition cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300 mb-4 leading-relaxed">
+              आप किस माध्यम के {mediumChoiceTarget === 'notes' ? 'नोट्स' : 'अभ्यास प्रश्न पत्र'} देखना चाहते हैं?
+            </p>
+
+            <div className="space-y-3">
+              {/* Option 1: Hindi Medium */}
+              <button
+                onClick={() => {
+                  playClickSound();
+                  setSelectedMedium('hi');
+                  setResourceMode(mediumChoiceTarget);
+                  setMediumChoiceTarget(null);
+                  setResourceModalOpen(true);
+                }}
+                className="w-full text-left p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/20 via-orange-500/10 to-transparent border-2 border-amber-400/50 hover:border-amber-400 transition-all cursor-pointer active:scale-[0.98] group flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl p-2 rounded-xl bg-amber-500/20 border border-amber-400/30">
+                    🇮🇳
+                  </span>
+                  <div>
+                    <h4 className="text-sm font-black text-white group-hover:text-amber-300 transition-colors">
+                      हिंदी माध्यम (Hindi Medium)
+                    </h4>
+                    <p className="text-[10px] text-slate-300 mt-0.5">
+                      JAC 10th NCERT शुद्ध हिंदी नोट्स, सूत्र बैंक व मॉडल पेपर्स
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform shrink-0" />
+              </button>
+
+              {/* Option 2: English Medium */}
+              <button
+                onClick={() => {
+                  playClickSound();
+                  setSelectedMedium('en');
+                  setResourceMode(mediumChoiceTarget);
+                  setMediumChoiceTarget(null);
+                  setResourceModalOpen(true);
+                }}
+                className="w-full text-left p-3.5 rounded-2xl bg-gradient-to-r from-blue-500/20 via-cyan-500/10 to-transparent border-2 border-blue-400/50 hover:border-blue-400 transition-all cursor-pointer active:scale-[0.98] group flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl p-2 rounded-xl bg-blue-500/20 border border-blue-400/30">
+                    🇬🇧
+                  </span>
+                  <div>
+                    <h4 className="text-sm font-black text-white group-hover:text-cyan-300 transition-colors">
+                      English Medium
+                    </h4>
+                    <p className="text-[10px] text-slate-300 mt-0.5">
+                      Complete Class 10 NCERT English Notes &amp; Question Bank
+                    </p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-cyan-400 group-hover:translate-x-1 transition-transform shrink-0" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -45,6 +45,12 @@ interface ChatMessage {
 
 export default function AIStudyPage() {
   const { profile } = useUserStore();
+  const isAdminOrAuthorized = Boolean(
+    profile?.isAdmin ||
+    profile?.hasLiveCallAccess ||
+    profile?.email?.toLowerCase().includes('pcpcpql4') ||
+    profile?.email?.toLowerCase().includes('ayan')
+  );
 
   // Navigation steps: 'catalog' -> 'confirm' -> 'chat'
   const [viewStep, setViewStep] = useState<'catalog' | 'confirm' | 'chat'>('catalog');
@@ -411,17 +417,19 @@ export default function AIStudyPage() {
               <option value="groq" className="bg-[#0C1525]">⚡ Groq LPU</option>
             </select>
 
-            <button
-              onClick={() => {
-                playClickSound();
-                setLiveCallOpen(true);
-              }}
-              className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black flex items-center gap-1 shadow-[0_0_8px_rgba(16,185,129,0.3)] transition active:scale-95 cursor-pointer"
-              title="Switch to 1-on-1 Live Voice Call"
-            >
-              <PhoneCall className="w-3 h-3 animate-pulse" />
-              <span>Call</span>
-            </button>
+            {isAdminOrAuthorized && (
+              <button
+                onClick={() => {
+                  playClickSound();
+                  setLiveCallOpen(true);
+                }}
+                className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black flex items-center gap-1 shadow-[0_0_8px_rgba(16,185,129,0.3)] transition active:scale-95 cursor-pointer"
+                title="Switch to 1-on-1 Live Voice Call"
+              >
+                <PhoneCall className="w-3 h-3 animate-pulse" />
+                <span>Call</span>
+              </button>
+            )}
 
             <button
               onClick={() => setViewStep('catalog')}
@@ -553,17 +561,19 @@ export default function AIStudyPage() {
           <h1 className="text-sm font-black uppercase tracking-wider text-white">AI Study Workspace</h1>
         </div>
         <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => {
-              playClickSound();
-              setLiveCallOpen(true);
-            }}
-            className="flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black shadow-[0_0_10px_rgba(16,185,129,0.35)] cursor-pointer active:scale-95 transition-all"
-            title="Switch to 1-on-1 Live Voice Call"
-          >
-            <PhoneCall className="w-3 h-3 text-white animate-pulse" />
-            <span>Live Call</span>
-          </button>
+          {isAdminOrAuthorized && (
+            <button
+              onClick={() => {
+                playClickSound();
+                setLiveCallOpen(true);
+              }}
+              className="flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black shadow-[0_0_10px_rgba(16,185,129,0.35)] cursor-pointer active:scale-95 transition-all"
+              title="Switch to 1-on-1 Live Voice Call"
+            >
+              <PhoneCall className="w-3 h-3 text-white animate-pulse" />
+              <span>Live Call</span>
+            </button>
+          )}
           <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-black border border-amber-400/40">
             20 MODES
           </span>

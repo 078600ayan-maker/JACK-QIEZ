@@ -93,6 +93,7 @@ export interface UserProfile {
   isAdminPermitted?: boolean;
   isFeaturedReference?: boolean;
   liveCallingEnabled?: boolean;
+  hasLiveCallAccess?: boolean;
   instagramUsername?: string;
   youtubeChannel?: string;
   telegramUsername?: string;

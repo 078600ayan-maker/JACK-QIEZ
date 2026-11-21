@@ -27,6 +27,7 @@ import { playClickSound, playPop, playCorrectDing } from '@/lib/audioEngine';
 interface StudyResourceModalProps {
   isOpen: boolean;
   mode: 'notes' | 'practice';
+  initialMedium?: 'hi' | 'en';
   onClose: () => void;
 }
 
@@ -67,12 +68,20 @@ const FIVE_CORE_SUBJECTS: SubjectDef[] = CLASS_10_MASTER_SYLLABUS.map((sub) => (
 export const StudyResourceModal: React.FC<StudyResourceModalProps> = ({
   isOpen,
   mode,
+  initialMedium = 'hi',
   onClose
 }) => {
+  // Medium selection: 'hi' (Hindi Medium) vs 'en' (English Medium)
+  const [medium, setMedium] = useState<'hi' | 'en'>(initialMedium);
+
   // Navigation level: 'subjects' -> 'chapters' -> 'resources'
   const [level, setLevel] = useState<'subjects' | 'chapters' | 'resources'>('subjects');
   const [activeSubject, setActiveSubject] = useState<SubjectDef | null>(null);
   const [activeChapter, setActiveChapter] = useState<ChapterDef | null>(null);
+
+  useEffect(() => {
+    if (initialMedium) setMedium(initialMedium);
+  }, [initialMedium]);
 
   // Resources state (Strict Read/Practice-Only for Standard Users)
   const [resources, setResources] = useState<ChapterResourceItem[]>([]);
@@ -157,25 +166,61 @@ export const StudyResourceModal: React.FC<StudyResourceModalProps> = ({
 
               <div>
                 <h3 className="text-sm sm:text-base font-black text-white leading-tight">
-                  {isNotes ? 'Chapter-wise Study Notes' : 'Practice Questions Bank'}
+                  {isNotes ? (medium === 'hi' ? 'रिवीजन नोट्स' : 'Revision Notes') : (medium === 'hi' ? 'अभ्यास प्रश्न पत्र' : 'Practice Question Bank')}
                 </h3>
                 <p className="text-[10px] sm:text-[11px] font-bold text-amber-300/80">
-                  {level === 'subjects' && '5 Core Subjects • Class 10 NCERT'}
-                  {level === 'chapters' && `${activeSubject?.title} (${activeSubject?.hindiTitle})`}
-                  {level === 'resources' && `${activeChapter?.title}`}
+                  {level === 'subjects' && (medium === 'hi' ? '5 मुख्य विषय • NCERT हिंदी माध्यम' : '5 Core Subjects • NCERT English Medium')}
+                  {level === 'chapters' && (medium === 'hi' ? `${activeSubject?.hindiTitle || activeSubject?.title}` : `${activeSubject?.title}`)}
+                  {level === 'resources' && (medium === 'hi' ? `${activeChapter?.hindiTitle || activeChapter?.title}` : `${activeChapter?.title}`)}
                 </p>
               </div>
             </div>
 
-            <button
-              onClick={() => {
-                playClickSound();
-                onClose();
-              }}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
-            >
-              <X className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Medium Switcher Toggle */}
+              <div className="flex items-center gap-0.5 bg-black/50 border border-white/10 rounded-xl p-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setMedium('hi');
+                  }}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-black transition cursor-pointer ${
+                    medium === 'hi'
+                      ? 'bg-amber-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Switch to Hindi Medium"
+                >
+                  🇮🇳 हिंदी
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    playClickSound();
+                    setMedium('en');
+                  }}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-black transition cursor-pointer ${
+                    medium === 'en'
+                      ? 'bg-amber-500 text-slate-950 shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                  title="Switch to English Medium"
+                >
+                  🇬🇧 Eng
+                </button>
+              </div>
+
+              <button
+                onClick={() => {
+                  playClickSound();
+                  onClose();
+                }}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* =========================================================================

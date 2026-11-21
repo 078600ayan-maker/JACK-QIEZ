@@ -222,17 +222,17 @@ export default function HomeLobbyPage() {
           </Link>
 
           {/* Right: Quick Action Controls & Compact 60s Speed Drill */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            {/* Direct Message / Instagram Chat Button with Live Red/Green Indicator */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Direct Message / Instagram Chat Button with Live Indicator */}
             <button
               onClick={() => {
                 playClickSound();
                 setChatModalOpen(true);
               }}
               title="Direct Messages & Study Chat"
-              className="relative p-1.5 rounded-xl bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 font-black shadow-[0_0_12px_rgba(244,114,182,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              className="relative p-2 rounded-xl bg-pink-500/20 hover:bg-pink-500/30 border border-pink-400/40 text-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.25)] hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center justify-center shrink-0"
             >
-              <MessageCircle className="w-3.5 h-3.5 text-pink-400" />
+              <MessageCircle className="w-4 h-4 text-pink-400" />
               {/* Red-Green Dot Pop-up */}
               <span
                 className={`absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full border border-black ${
@@ -243,18 +243,17 @@ export default function HomeLobbyPage() {
               />
             </button>
 
-            {/* AI Companion Hub (Chat & Live Voice Calling with Daily Limit) */}
+            {/* AI Companion Hub (AI Study Studio) */}
             <button
               onClick={() => {
                 playClickSound();
                 setAiHubOpen(true);
               }}
-              title="AI Study Studio & Live Voice Call"
-              className="flex items-center gap-1.5 py-1 px-2.5 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-emerald-600 hover:brightness-110 border border-violet-400/50 text-white font-black text-[10px] shadow-[0_0_12px_rgba(139,92,246,0.4)] hover:scale-105 active:scale-95 transition-all cursor-pointer"
+              title="AI Study Studio"
+              className="flex items-center gap-1.5 py-1.5 px-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:brightness-110 border border-violet-400/50 text-white font-black text-xs shadow-[0_0_12px_rgba(139,92,246,0.35)] hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
             >
-              <Sparkles className="w-3 h-3 text-violet-200 animate-pulse" />
+              <Sparkles className="w-3.5 h-3.5 text-violet-200" />
               <span>AI Buddy</span>
-              <span className="hidden sm:inline-block px-1 py-0.2 rounded bg-white/20 text-[7px] font-mono font-black">CHAT & CALL</span>
             </button>
 
             {/* Glowing 60s Rapid Drill Button (Sleek Micro-Pill) */}
@@ -263,10 +262,10 @@ export default function HomeLobbyPage() {
                 playClickSound();
                 setDrillOpen(true);
               }}
-              className="group relative flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black font-black text-[10px] shadow-[0_3px_0_#B45309,0_0_15px_rgba(245,158,11,0.4)] hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#B45309] transition-all cursor-pointer"
+              className="group relative flex items-center gap-1.5 py-1.5 px-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-black font-black text-xs shadow-[0_2px_0_#B45309,0_0_12px_rgba(245,158,11,0.35)] hover:brightness-110 active:translate-y-0.5 transition-all cursor-pointer shrink-0"
             >
-              <Zap className="w-3 h-3 fill-black text-black group-hover:scale-110 transition-transform" />
-              <span className="uppercase tracking-tight">60s Drill</span>
+              <Zap className="w-3.5 h-3.5 fill-black text-black group-hover:scale-110 transition-transform" />
+              <span className="uppercase tracking-tight">60s</span>
             </button>
           </div>
         </div>
@@ -344,7 +343,7 @@ export default function HomeLobbyPage() {
       </div>
 
       {/* =========================================================================
-          AI STUDY LAB & LIVE VOICE CALLING GATEWAY (DAILY LIMIT ENABLED)
+          AI STUDY LAB & PEDAGOGICAL ASSISTANT GATEWAY
           ========================================================================= */}
       <button
         onClick={() => {
@@ -365,14 +364,14 @@ export default function HomeLobbyPage() {
                   JAC 10th AI Companion Hub
                 </span>
                 <span className="px-1.5 py-0.2 rounded-full bg-violet-500/30 border border-violet-400/40 text-[8px] font-mono font-black text-violet-200">
-                  CHAT &amp; LIVE CALL
+                  STUDY BOT
                 </span>
               </div>
               <h4 className="text-xs font-black text-white group-hover:text-violet-200 transition-colors">
-                AI Study Chat &bull; 1-on-1 Delhi Buddy Live Voice Call
+                AI Study Chat &bull; 20 Pedagogical Modes &amp; Fast Solutions
               </h4>
               <p className="text-[10px] text-slate-300">
-                20 Secret Presets • 5 Regional Tones • Real-time Speech Audio
+                ELI5/ELI12 • Socratic • Exam Simulator • Step-by-Step Proofs
               </p>
             </div>
           </div>
@@ -382,79 +381,6 @@ export default function HomeLobbyPage() {
           </div>
         </div>
       </button>
-
-      {/* =========================================================================
-          HOMEPAGE NOTES & PRACTICE PAPERS WITH BILINGUAL MEDIUM SWITCHER
-          ========================================================================= */}
-      <section className="grid grid-cols-2 gap-2.5">
-        {/* Card 1: 📖 Revision Notes & Formulas */}
-        <button
-          onClick={() => {
-            playClickSound();
-            setMediumTarget('notes');
-            setMediumModalOpen(true);
-          }}
-          className="p-3.5 rounded-2xl bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#0A0E18] border-2 border-amber-400/40 hover:border-amber-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(245,158,11,0.15)] text-left transition-all active:scale-95 cursor-pointer group flex flex-col justify-between"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <BookOpen className="w-4 h-4 text-amber-400" />
-              </div>
-              <span className="text-[8px] font-mono font-black text-amber-300 px-1.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30">
-                69 CH
-              </span>
-            </div>
-            <h4 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-200 transition-colors leading-tight">
-              रिवीजन नोट्स
-            </h4>
-            <span className="text-[9px] text-amber-300/90 font-bold block mt-0.5">
-              Formula &amp; Revision Notes
-            </span>
-            <p className="text-[9px] text-slate-400 mt-1 line-clamp-2">
-              हिंदी व English माध्यम सूत्र बैंक, परिभाषाएं व महत्वपूर्ण टॉपिक्स
-            </p>
-          </div>
-          <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10 text-[9px] font-black text-amber-400">
-            <span>माध्यम चुनें</span>
-            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-          </div>
-        </button>
-
-        {/* Card 2: 📝 Practice Sets & Chapter Quizzes */}
-        <button
-          onClick={() => {
-            playClickSound();
-            setMediumTarget('practice');
-            setMediumModalOpen(true);
-          }}
-          className="p-3.5 rounded-2xl bg-gradient-to-br from-[#1E293B] via-[#0F172A] to-[#0A0E18] border-2 border-emerald-400/40 hover:border-emerald-400 shadow-[0_8px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(16,185,129,0.15)] text-left transition-all active:scale-95 cursor-pointer group flex flex-col justify-between"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Zap className="w-4 h-4 text-emerald-400" />
-              </div>
-              <span className="text-[8px] font-mono font-black text-emerald-300 px-1.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30">
-                JAC 2026
-              </span>
-            </div>
-            <h4 className="text-xs sm:text-sm font-black text-white group-hover:text-emerald-200 transition-colors leading-tight">
-              अभ्यास प्रश्न पत्र
-            </h4>
-            <span className="text-[9px] text-emerald-300/90 font-bold block mt-0.5">
-              Practice Papers &amp; Quizzes
-            </span>
-            <p className="text-[9px] text-slate-400 mt-1 line-clamp-2">
-              चैप्टरवाइज बोर्ड अभ्यास सेट, स्पीड ड्रिल व मॉक टेस्ट
-            </p>
-          </div>
-          <div className="mt-3 flex items-center justify-between pt-2 border-t border-white/10 text-[9px] font-black text-emerald-400">
-            <span>माध्यम चुनें</span>
-            <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-          </div>
-        </button>
-      </section>
 
       {/* =========================================================================
           2. 3D OCTOPUS BOT & COMPANION HERO ENGINE (DUOLINGO EMOTIONS • 60 FPS)

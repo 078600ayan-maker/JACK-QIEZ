@@ -120,6 +120,7 @@ RULES:
 
           const res = await fetch(endpoint, {
             method: 'POST',
+            signal: AbortSignal.timeout(3500),
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               contents: [{ role: 'user', parts }],
@@ -158,6 +159,7 @@ RULES:
 
           const res = await fetch(slot.endpoint, {
             method: 'POST',
+            signal: AbortSignal.timeout(3500),
             headers: {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${slot.key}`,

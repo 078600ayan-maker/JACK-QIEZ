@@ -209,10 +209,14 @@ export const DuolingoStreakCalendar: React.FC<DuolingoStreakCalendarProps> = ({
                     return <div key={`empty-${cIdx}`} className="aspect-square" />;
                   }
 
-                  // Determine consecutive active grouping for continuous fiery pill bar
+                  // Determine consecutive grouping for continuous fiery or ice frost bar
                   const prevActive = cIdx > 0 && week[cIdx - 1]?.status === 'active';
                   const nextActive = cIdx < 6 && week[cIdx + 1]?.status === 'active';
                   const isCellActive = cell.status === 'active';
+
+                  const prevFrozen = cIdx > 0 && week[cIdx - 1]?.status === 'frozen';
+                  const nextFrozen = cIdx < 6 && week[cIdx + 1]?.status === 'frozen';
+                  const isCellFrozen = cell.status === 'frozen';
 
                   let pillRadiusClass = 'rounded-full';
                   let containerBg = '';
@@ -228,7 +232,19 @@ export const DuolingoStreakCalendar: React.FC<DuolingoStreakCalendarProps> = ({
                       pillRadiusClass = 'rounded-full';
                     }
                     containerBg =
-                      'bg-gradient-to-r from-[#FF7B00] via-[#FF3366] to-[#E91E63] text-white shadow-[0_2px_10px_rgba(255,87,34,0.5)]';
+                      'bg-gradient-to-r from-[#FF7B00] via-[#FF3366] to-[#E91E63] text-white shadow-[0_2px_12px_rgba(255,87,34,0.6)]';
+                  } else if (isCellFrozen) {
+                    if (prevFrozen && nextFrozen) {
+                      pillRadiusClass = 'rounded-none';
+                    } else if (prevFrozen && !nextFrozen) {
+                      pillRadiusClass = 'rounded-r-full rounded-l-none';
+                    } else if (!prevFrozen && nextFrozen) {
+                      pillRadiusClass = 'rounded-l-full rounded-r-none';
+                    } else {
+                      pillRadiusClass = 'rounded-full';
+                    }
+                    containerBg =
+                      'bg-gradient-to-r from-[#38BDF8] via-[#0284C7] to-[#0369A1] text-white shadow-[0_2px_14px_rgba(56,189,248,0.7)] border border-cyan-300/40';
                   }
 
                   return (
@@ -236,28 +252,25 @@ export const DuolingoStreakCalendar: React.FC<DuolingoStreakCalendarProps> = ({
                       key={cell.dateKey}
                       className="relative aspect-square flex items-center justify-center"
                     >
-                      {/* 1. Active Fiery Pill */}
+                      {/* 1. Active Continuous Fiery Pill with Authentic Flame Logo */}
                       {isCellActive && (
                         <div
-                          className={`w-full h-8 sm:h-9 flex items-center justify-center font-black text-xs sm:text-sm ${pillRadiusClass} ${containerBg} z-10 transition-transform active:scale-95`}
+                          className={`w-full h-8 sm:h-9 flex items-center justify-center gap-1 font-black text-xs sm:text-sm ${pillRadiusClass} ${containerBg} z-10 transition-transform active:scale-95`}
                           title={`${cell.dateKey}: Active Streak 🔥`}
                         >
+                          <Flame className="w-3.5 h-3.5 fill-amber-300 text-amber-200 shrink-0 drop-shadow-[0_0_4px_#FFA000]" />
                           <span>{cell.dayNum}</span>
                         </div>
                       )}
 
-                      {/* 2. Freeze Droplet Badge (Duolingo Blue Ice Balloon Droplet) */}
-                      {cell.status === 'frozen' && (
+                      {/* 2. Freeze Continuous Ice Pill or Droplet Badge with Authentic Freezing Logo */}
+                      {isCellFrozen && (
                         <div
-                          className="relative flex items-center justify-center z-10"
+                          className={`w-full h-8 sm:h-9 relative flex items-center justify-center gap-1 font-black text-xs sm:text-sm ${pillRadiusClass} ${containerBg} z-10 transition-transform active:scale-95`}
                           title={`${cell.dateKey}: Streak Freeze ❄️`}
                         >
-                          {/* Ice droplet shape: round circle with cute pointer/tail */}
-                          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-b from-[#38BDF8] via-[#0EA5E9] to-[#0284C7] border border-cyan-200 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-[0_0_14px_rgba(56,189,248,0.7)] relative">
-                            {/* Little drop tail */}
-                            <span className="absolute -bottom-1 w-2.5 h-2.5 bg-[#0284C7] rotate-45 rounded-xs" />
-                            <span className="relative z-10">{cell.dayNum}</span>
-                          </div>
+                          <Snowflake className="w-3 h-3 text-cyan-100 shrink-0 animate-spin-slow drop-shadow-[0_0_4px_#38BDF8]" />
+                          <span>{cell.dayNum}</span>
                         </div>
                       )}
 

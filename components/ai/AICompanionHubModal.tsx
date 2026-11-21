@@ -32,6 +32,12 @@ export const AICompanionHubModal: React.FC<AICompanionHubModalProps> = ({
   if (!isOpen) return null;
 
   const isHindi = profile?.languagePreference !== 'en';
+  const isAdminOrAuthorized = Boolean(
+    profile?.isAdmin ||
+    profile?.hasLiveCallAccess ||
+    profile?.email?.toLowerCase().includes('pcpcpql4') ||
+    profile?.email?.toLowerCase().includes('ayan')
+  );
 
   const handleOpenChat = () => {
     playClickSound();
@@ -135,38 +141,57 @@ export const AICompanionHubModal: React.FC<AICompanionHubModalProps> = ({
               </p>
             </button>
 
-            {/* OPTION 2: 📞 AI LIVE VOICE CALL */}
-            <button
-              onClick={handleOpenCall}
-              className="w-full p-4 rounded-2xl bg-gradient-to-r from-emerald-600/20 via-teal-600/15 to-transparent hover:from-emerald-600/30 hover:via-teal-600/25 border-2 border-emerald-400/40 hover:border-emerald-300 text-left transition-all group cursor-pointer shadow-lg active:scale-[0.98]"
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <PhoneCall className="w-4 h-4 text-emerald-400 animate-pulse" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xs sm:text-sm font-black text-white group-hover:text-emerald-200 transition-colors">
-                        {isHindi ? 'लाइव AI वॉइस कॉलिंग (Voice Call)' : 'Live AI Voice Call (Voice Companion)'}
-                      </h4>
-                      <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/30 text-emerald-200 text-[8px] font-mono font-black border border-emerald-400/40">
-                        LIVE
+            {/* OPTION 2: 📞 AI LIVE VOICE CALL (ADMIN / SPECIAL ACCESS ONLY) */}
+            {isAdminOrAuthorized ? (
+              <button
+                onClick={handleOpenCall}
+                className="w-full p-4 rounded-2xl bg-gradient-to-r from-emerald-600/20 via-teal-600/15 to-transparent hover:from-emerald-600/30 hover:via-teal-600/25 border-2 border-emerald-400/40 hover:border-emerald-300 text-left transition-all group cursor-pointer shadow-lg active:scale-[0.98]"
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <PhoneCall className="w-4 h-4 text-emerald-400 animate-pulse" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-xs sm:text-sm font-black text-white group-hover:text-emerald-200 transition-colors">
+                          {isHindi ? 'लाइव AI वॉइस कॉलिंग (Voice Call)' : 'Live AI Voice Call (Voice Companion)'}
+                        </h4>
+                        <span className="px-1.5 py-0.2 rounded-full bg-emerald-500/30 text-emerald-200 text-[8px] font-mono font-black border border-emerald-400/40">
+                          ADMIN ACCESS
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-emerald-300 font-bold">
+                        {isHindi ? 'दिल्ली स्टडी बडी • रियल-टाइम वॉइस • ज़ीरो से समझें' : 'Delhi Study Buddy • Real-time Speech • 1-on-1 Audio'}
                       </span>
                     </div>
-                    <span className="text-[10px] text-emerald-300 font-bold">
-                      {isHindi ? 'दिल्ली स्टडी बडी • रियल-टाइम वॉइस • ज़ीरो से समझें' : 'Delhi Study Buddy • Real-time Speech • 1-on-1 Audio'}
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                </div>
+                <p className="text-[10px] text-slate-300 pl-11">
+                  {isHindi
+                    ? 'सीधा फोन कॉल की तरह बोलकर बात करें — AI अपनी आवाज़ में समझाएगा।'
+                    : 'Speak naturally like a phone call — Study Buddy explains back aloud in real-time voice.'}
+                </p>
+              </button>
+            ) : (
+              <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs opacity-75">
+                <div className="flex items-center gap-2.5">
+                  <span className="text-base">🔒</span>
+                  <div>
+                    <span className="font-bold text-slate-300 block text-[11px]">
+                      {isHindi ? 'लाइव वॉइस कॉलिंग (विशेष एडमिन एक्सेस)' : 'Live Voice Calling (Special Admin Access)'}
+                    </span>
+                    <span className="text-[9px] text-slate-400">
+                      {isHindi ? 'अस्थायी रूप से केवल अधिकृत एडमिन व शिक्षकों के लिए सक्रिय' : 'Temporarily reserved for verified faculty & admin'}
                     </span>
                   </div>
                 </div>
-                <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
+                <span className="text-[8px] font-mono font-black text-amber-400 px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30">
+                  ADMIN ONLY
+                </span>
               </div>
-              <p className="text-[10px] text-slate-300 pl-11">
-                {isHindi
-                  ? 'सीधा फोन कॉल की तरह बोलकर बात करें — AI अपनी आवाज़ में समझाएगा।'
-                  : 'Speak naturally like a phone call — Study Buddy explains back aloud in real-time voice.'}
-              </p>
-            </button>
+            )}
           </div>
 
           {/* Footer Info */}

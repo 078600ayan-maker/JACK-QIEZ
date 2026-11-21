@@ -54,6 +54,7 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
   const [sending, setSending] = useState(false);
   const [activeThread, setActiveThread] = useState<ConversationThread | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
@@ -373,20 +374,16 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
               ) : (
                 activeThread.messages.map((msg) => {
                   const isMine = msg.senderUid === profile?.uid;
-                  return (
-                    <div
-                      key={msg.id}
-                      className={`flex flex-col ${isMine ? 'items-end' : 'items-start'}`}
-                    >
-                      <div
-                        className={`max-w-[78%] rounded-2xl p-3 text-xs leading-relaxed space-y-1.5 shadow-md ${
-                          isMine
-                            ? 'bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-br-sm'
-                            : 'bg-white/10 border border-white/10 text-white rounded-bl-sm'
-                        }`}
-                      >
+                  return isMine ? (
+                    /* ── OUTGOING MESSAGE: RIGHT ALIGNED WITH SENDER'S AVATAR ── */
+                    <div key={msg.id} className="flex justify-end items-end gap-2 my-1">
+                      <div className="max-w-[78%] rounded-2xl rounded-br-xs p-3 text-xs leading-relaxed space-y-1.5 shadow-md bg-gradient-to-r from-pink-600 via-rose-600 to-purple-600 text-white">
                         {msg.photoDataUrl && (
-                          <div className="rounded-xl overflow-hidden border border-white/20 max-h-56">
+                          <div
+                            onClick={() => setPreviewImage(msg.photoDataUrl!)}
+                            className="rounded-xl overflow-hidden border border-white/20 max-h-56 cursor-pointer hover:opacity-95 transition"
+                            title="Click to view full photo"
+                          >
                             <img
                               src={msg.photoDataUrl}
                               alt="Attachment"
@@ -395,9 +392,51 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                           </div>
                         )}
                         {msg.text && <p className="font-semibold break-words">{msg.text}</p>}
-                        <div className="flex items-center justify-end gap-1 text-[8px] text-white/70">
+                        <div className="flex items-center justify-end gap-1 text-[8px] text-white/80 pt-0.5">
                           <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                          {isMine && <CheckCheck className="w-3 h-3 text-emerald-300" />}
+                          <CheckCheck className="w-3.5 h-3.5 text-emerald-300" />
+                        </div>
+                      </div>
+                      {/* Sender Avatar */}
+                      <img
+                        src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
+                        alt="You"
+                        onClick={() => setPreviewImage(profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png')}
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-pink-400 shrink-0 cursor-pointer shadow-sm hover:scale-105 active:scale-95 transition-all"
+                        title="Click to view full photo"
+                      />
+                    </div>
+                  ) : (
+                    /* ── INCOMING MESSAGE: LEFT ALIGNED WITH PARTNER'S AVATAR ── */
+                    <div key={msg.id} className="flex justify-start items-end gap-2 my-1">
+                      {/* Partner Avatar */}
+                      <img
+                        src={activeThread.partnerPhoto || '/assets/profile_photos/IMG_20261109_001512.png'}
+                        alt={activeThread.partnerName}
+                        onClick={() => setPreviewImage(activeThread.partnerPhoto || '/assets/profile_photos/IMG_20261109_001512.png')}
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-cyan-400 shrink-0 cursor-pointer shadow-sm hover:scale-105 active:scale-95 transition-all"
+                        title="Click to view full photo"
+                      />
+                      <div className="max-w-[78%] rounded-2xl rounded-bl-xs p-3 text-xs leading-relaxed space-y-1.5 shadow-md bg-[#16213A] border border-white/10 text-white">
+                        <span className="text-[9px] font-black text-cyan-300 block">
+                          {activeThread.partnerName}
+                        </span>
+                        {msg.photoDataUrl && (
+                          <div
+                            onClick={() => setPreviewImage(msg.photoDataUrl!)}
+                            className="rounded-xl overflow-hidden border border-white/20 max-h-56 cursor-pointer hover:opacity-95 transition"
+                            title="Click to view full photo"
+                          >
+                            <img
+                              src={msg.photoDataUrl}
+                              alt="Attachment"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+                        {msg.text && <p className="font-semibold break-words">{msg.text}</p>}
+                        <div className="flex items-center justify-end gap-1 text-[8px] text-slate-400 pt-0.5">
+                          <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                       </div>
                     </div>
@@ -485,6 +524,32 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
               </button>
             </div>
           </>
+        )}
+
+        {/* ── FULL-SCREEN ENLARGED PHOTO PREVIEW LIGHTBOX MODAL ── */}
+        {previewImage && (
+          <div
+            onClick={() => setPreviewImage(null)}
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 cursor-pointer animate-in fade-in zoom-in-95 duration-200"
+          >
+            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 text-white flex items-center justify-center text-sm font-black cursor-pointer shadow-lg transition"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="relative max-w-lg max-h-[85vh] rounded-3xl overflow-hidden border-2 border-white/20 shadow-2xl bg-black/50 p-2">
+              <img
+                src={previewImage}
+                alt="Enlarged view"
+                className="w-full h-full max-h-[78vh] object-contain rounded-2xl mx-auto"
+              />
+            </div>
+            <p className="text-xs text-slate-300 mt-3 font-semibold">Tap anywhere to close</p>
+          </div>
         )}
       </div>
     </div>
