@@ -196,11 +196,11 @@ export default function HomeLobbyPage() {
           <Link
             href="/profile"
             onClick={() => playClickSound()}
-            className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
+            className="flex items-center gap-2 min-w-0 flex-1 group cursor-pointer"
             title="Open Student Profile & Follow Status"
           >
             <div
-              className="relative w-11 h-11 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0 border-2 border-amber-400 bg-slate-900 p-0.5 group-hover:scale-105 active:scale-95 transition-all"
+              className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-2xl overflow-hidden shadow-[0_0_15px_rgba(245,158,11,0.5)] shrink-0 border-2 border-amber-400 bg-slate-900 p-0.5 group-hover:scale-105 active:scale-95 transition-all"
             >
               <img
                 src={profile?.photoURL || '/assets/profile_photos/IMG_20261109_001512.png'}
@@ -211,18 +211,18 @@ export default function HomeLobbyPage() {
                 className="w-full h-full object-cover rounded-xl"
               />
             </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider group-hover:text-amber-300 transition-colors">
+            <div className="min-w-0 flex-1">
+              <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 block uppercase tracking-wider group-hover:text-amber-300 transition-colors">
                 Welcome back,
               </span>
-              <h2 className="text-sm font-black text-white group-hover:text-amber-300 truncate leading-tight transition-colors">
+              <h2 className="text-xs sm:text-sm font-black text-white group-hover:text-amber-300 truncate leading-tight transition-colors">
                 {userName}! 👋
               </h2>
             </div>
           </Link>
 
           {/* Right: Quick Action Controls & Compact 60s Speed Drill */}
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Direct Message / Instagram Chat Button with Live Indicator */}
             <button
               onClick={() => {
@@ -244,17 +244,15 @@ export default function HomeLobbyPage() {
             </button>
 
             {/* AI Companion Hub (AI Study Studio) */}
-            <button
-              onClick={() => {
-                playClickSound();
-                setAiHubOpen(true);
-              }}
+            <Link
+              href="/ai-study"
+              onClick={() => playClickSound()}
               title="AI Study Studio"
               className="flex items-center gap-1.5 py-1.5 px-3 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 hover:brightness-110 border border-violet-400/50 text-white font-black text-xs shadow-[0_0_12px_rgba(139,92,246,0.35)] hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5 text-violet-200" />
               <span>AI Buddy</span>
-            </button>
+            </Link>
 
             {/* Glowing 60s Rapid Drill Button (Sleek Micro-Pill) */}
             <button
@@ -345,11 +343,9 @@ export default function HomeLobbyPage() {
       {/* =========================================================================
           AI STUDY LAB & PEDAGOGICAL ASSISTANT GATEWAY
           ========================================================================= */}
-      <button
-        onClick={() => {
-          playClickSound();
-          setAiHubOpen(true);
-        }}
+      <Link
+        href="/ai-study"
+        onClick={() => playClickSound()}
         className="w-full text-left group relative block p-3.5 rounded-2xl bg-gradient-to-r from-violet-950/80 via-indigo-950/90 to-purple-950/80 border-2 border-violet-500/40 hover:border-violet-400 shadow-[0_8px_24px_rgba(139,92,246,0.25)] hover:shadow-[0_12px_32px_rgba(139,92,246,0.4)] transition-all overflow-hidden cursor-pointer active:scale-[0.99]"
       >
         <div className="absolute -top-12 -right-12 w-32 h-32 bg-violet-500/20 rounded-full blur-2xl group-hover:bg-violet-500/30 transition-all pointer-events-none" />
@@ -380,7 +376,7 @@ export default function HomeLobbyPage() {
             <ArrowRight className="w-3 h-3" />
           </div>
         </div>
-      </button>
+      </Link>
 
       {/* =========================================================================
           2. 3D OCTOPUS BOT & COMPANION HERO ENGINE (DUOLINGO EMOTIONS • 60 FPS)

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
   buildSlotsWithRuntimeKeys,
+  detectProviderFromRaw,
   getProviderLabel,
   getServerPoolSummary,
   reportKeyFailure,
@@ -28,7 +29,8 @@ export async function POST(req: NextRequest) {
       subject,
       chapter,
       imageDataUrl,
-      requestedProvider = 'auto'
+      requestedProvider = 'auto',
+      customApiKey,
     } = body;
 
     if (!prompt || typeof prompt !== 'string') {
@@ -43,11 +45,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // If user selected a specific provider, prioritize those slots first
+    // If user provided a custom API key, insert it with top priority
+    if (customApiKey && typeof customApiKey === 'string' && customApiKey.trim().length > 10) {
+      const { provider, key } = detectProviderFromRaw(customApiKey.trim());
+      slots.unshift({
+        key,
+        provider,
+        model: provider === 'groq' ? 'llama-3.3-70b-versatile' : provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini',
+        endpoint: provider === 'groq' ? 'https://api.groq.com/openai/v1/chat/completions' : provider === 'gemini' ? 'https://generativelanguage.googleapis.com/v1beta/models' : 'https://api.openai.com/v1/chat/completions',
+        index: -1,
+        failsCount: 0,
+        lastUsed: 0,
+        cooldownUntil: 0,
+      });
+    }
+
+    // If user selected a specific provider, prioritize those slots first.
+    // Otherwise, AUTO mode prioritizes ultra-fast Groq LPU (~300ms) first, then Mistral, then Gemini!
     if (requestedProvider && requestedProvider !== 'auto') {
       slots = [
         ...slots.filter((s) => s.provider === requestedProvider),
         ...slots.filter((s) => s.provider !== requestedProvider),
+      ];
+    } else {
+      slots = [
+        ...slots.filter((s) => s.provider === 'groq'),
+        ...slots.filter((s) => s.provider === 'mistral'),
+        ...slots.filter((s) => s.provider === 'gemini'),
+        ...slots.filter((s) => !['groq', 'mistral', 'gemini'].includes(s.provider)),
       ];
     }
 

@@ -95,26 +95,16 @@ export const DuolingoStreakCalendar: React.FC<DuolingoStreakCalendarProps> = ({
       const colIndex = dateObj.getDay();
 
       let status: DayCellStatus = 'upcoming';
-      if (dateKey < joinKey) {
-        status = 'pre_join';
-      } else if (dateKey > todayKey) {
+      if (dateKey > todayKey) {
         status = 'upcoming';
-      } else if (activeDates.has(dateKey) || isToday) {
+      } else if (activeDates.has(dateKey) || (isToday && profile?.lastActive === todayKey)) {
         status = 'active';
       } else {
-        status = 'missed';
+        // Any day that was not completed is FROZEN with 3D Ice badge
+        status = 'frozen';
       }
 
       daysList.push({ dayNum: d, dateKey, isToday, status, colIndex });
-    }
-
-    // 2. Apply freeze budget backwards from today for any missed days
-    let freezeBudget = totalFreezes;
-    for (let i = daysList.length - 1; i >= 0; i--) {
-      if (daysList[i].status === 'missed' && freezeBudget > 0) {
-        daysList[i].status = 'frozen';
-        freezeBudget -= 1;
-      }
     }
 
     // 3. Group into 7-column week rows (with empty pad before day 1)
@@ -244,7 +234,7 @@ export const DuolingoStreakCalendar: React.FC<DuolingoStreakCalendarProps> = ({
                       pillRadiusClass = 'rounded-full';
                     }
                     containerBg =
-                      'bg-gradient-to-r from-[#38BDF8] via-[#0284C7] to-[#0369A1] text-white shadow-[0_2px_14px_rgba(56,189,248,0.7)] border border-cyan-300/40';
+                      'bg-gradient-to-br from-[#7DD3FC] via-[#0284C7] to-[#0369A1] text-white shadow-[0_4px_14px_rgba(56,189,248,0.7),inset_0_1px_2px_rgba(255,255,255,0.7)] border-2 border-cyan-200/80';
                   }
 
                   return (

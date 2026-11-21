@@ -62,6 +62,7 @@ export default function AIStudyPage() {
   const [selectedSubject, setSelectedSubject] = useState(STUDY_SUBJECTS[0]);
   const [selectedChapter, setSelectedChapter] = useState(STUDY_SUBJECTS[0].chapters[0]);
   const [selectedProvider, setSelectedProvider] = useState<string>('auto');
+  const [customKey, setCustomKey] = useState<string>('');
 
   // Chat conversation state
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -73,6 +74,13 @@ export default function AIStudyPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('jack_user_custom_ai_key') || '';
+      setCustomKey(saved);
+    }
+  }, []);
 
   useEffect(() => {
     if (chatScrollRef.current) {
@@ -132,7 +140,8 @@ export default function AIStudyPage() {
           subject: selectedSubject.name,
           chapter: selectedChapter.name,
           imageDataUrl: currentImg || undefined,
-          requestedProvider: selectedProvider
+          requestedProvider: selectedProvider,
+          customApiKey: customKey.trim() || undefined,
         })
       });
 
@@ -328,12 +337,12 @@ export default function AIStudyPage() {
           </div>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { id: 'auto', label: 'Auto (Failover)', badge: 'SMART', icon: '⚡' },
+              { id: 'auto', label: 'Auto (Groq Fast)', badge: 'SMART', icon: '⚡' },
+              { id: 'groq', label: 'Groq LPU', badge: 'SUB-300MS', icon: '⚡' },
+              { id: 'gemini', label: 'Google Gemini', badge: 'VISION', icon: '✨' },
               { id: 'openrouter', label: 'OpenRouter GPT', badge: 'TOP', icon: '🌐' },
               { id: 'cohere', label: 'Cohere R+', badge: 'REASONING', icon: '🧠' },
               { id: 'llm7', label: 'LLM7 Nemo', badge: 'SPEED', icon: '🚀' },
-              { id: 'gemini', label: 'Google Gemini', badge: 'VISION', icon: '✨' },
-              { id: 'groq', label: 'Groq LPU', badge: 'INSTANT', icon: '⚡' },
             ].map((prov) => (
               <button
                 key={prov.id}
@@ -357,6 +366,31 @@ export default function AIStudyPage() {
                 </span>
               </button>
             ))}
+          </div>
+
+          {/* Optional Custom API Key Setting */}
+          <div className="pt-2 border-t border-white/10 mt-1">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[9px] font-bold text-slate-400">Custom Key (Groq / Gemini / OpenAI):</span>
+              {customKey ? (
+                <span className="text-[8px] font-mono text-emerald-400">✓ Key Saved</span>
+              ) : (
+                <span className="text-[8px] font-mono text-slate-500">Vault Default</span>
+              )}
+            </div>
+            <input
+              type="password"
+              value={customKey}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCustomKey(val);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('jack_user_custom_ai_key', val.trim());
+                }
+              }}
+              placeholder="Optional: Paste gsk_..., AIzaSy..., or sk-..."
+              className="w-full px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[10px] text-white placeholder-slate-500 focus:outline-none focus:border-violet-400/50"
+            />
           </div>
         </div>
 
@@ -409,31 +443,17 @@ export default function AIStudyPage() {
               className="py-1 px-2 rounded-xl bg-violet-600/30 border border-violet-400/50 text-violet-200 text-[10px] font-black focus:outline-none cursor-pointer"
               title="Switch Active AI Engine"
             >
-              <option value="auto" className="bg-[#0C1525]">⚡ Auto Failover</option>
+              <option value="auto" className="bg-[#0C1525]">⚡ Auto (Groq Ultra-Fast)</option>
+              <option value="groq" className="bg-[#0C1525]">⚡ Groq LPU (Sub-300ms)</option>
+              <option value="gemini" className="bg-[#0C1525]">✨ Google Gemini</option>
               <option value="openrouter" className="bg-[#0C1525]">🌐 OpenRouter GPT</option>
               <option value="cohere" className="bg-[#0C1525]">🧠 Cohere R+</option>
               <option value="llm7" className="bg-[#0C1525]">🚀 LLM7 Nemo</option>
-              <option value="gemini" className="bg-[#0C1525]">✨ Google Gemini</option>
-              <option value="groq" className="bg-[#0C1525]">⚡ Groq LPU</option>
             </select>
-
-            {isAdminOrAuthorized && (
-              <button
-                onClick={() => {
-                  playClickSound();
-                  setLiveCallOpen(true);
-                }}
-                className="px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black flex items-center gap-1 shadow-[0_0_8px_rgba(16,185,129,0.3)] transition active:scale-95 cursor-pointer"
-                title="Switch to 1-on-1 Live Voice Call"
-              >
-                <PhoneCall className="w-3 h-3 animate-pulse" />
-                <span>Call</span>
-              </button>
-            )}
 
             <button
               onClick={() => setViewStep('catalog')}
-              className="px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-[10px] font-black cursor-pointer"
+              className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 text-[10px] font-black cursor-pointer"
             >
               Library
             </button>
@@ -561,20 +581,7 @@ export default function AIStudyPage() {
           <h1 className="text-sm font-black uppercase tracking-wider text-white">AI Study Workspace</h1>
         </div>
         <div className="flex items-center gap-1.5">
-          {isAdminOrAuthorized && (
-            <button
-              onClick={() => {
-                playClickSound();
-                setLiveCallOpen(true);
-              }}
-              className="flex items-center gap-1 py-1 px-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-[10px] font-black shadow-[0_0_10px_rgba(16,185,129,0.35)] cursor-pointer active:scale-95 transition-all"
-              title="Switch to 1-on-1 Live Voice Call"
-            >
-              <PhoneCall className="w-3 h-3 text-white animate-pulse" />
-              <span>Live Call</span>
-            </button>
-          )}
-          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[9px] font-black border border-amber-400/40">
+          <span className="px-2.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-black border border-amber-400/40">
             20 MODES
           </span>
         </div>

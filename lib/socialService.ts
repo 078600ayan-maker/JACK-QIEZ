@@ -1247,6 +1247,19 @@ export function subscribeUserMessages(
     onUpdate(combined);
   };
 
+  // Listen for instant local updates across tabs / components
+  const handleLocalUpdate = (e: Event) => {
+    try {
+      const updated = getLocalDMs();
+      onUpdate(updated);
+    } catch {}
+  };
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('jack_dms_updated', handleLocalUpdate);
+    window.addEventListener('storage', handleLocalUpdate);
+  }
+
   try {
     // Query 1: messages where I am the SENDER (no orderBy = no composite index needed)
     const qSent = query(
@@ -1287,7 +1300,13 @@ export function subscribeUserMessages(
     onUpdate(initialMsgs);
   }
 
-  return () => unsubList.forEach((u) => u());
+  return () => {
+    unsubList.forEach((u) => u());
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('jack_dms_updated', handleLocalUpdate);
+      window.removeEventListener('storage', handleLocalUpdate);
+    }
+  };
 }
 
 export async function sendDirectMessageInCloud(
@@ -1314,10 +1333,13 @@ export async function sendDirectMessageInCloud(
   // Always save locally immediately for zero-lag 100% reliable messaging
   if (typeof window !== 'undefined') {
     try {
-      const raw = localStorage.getItem('jack_quiz_dms');
+      const LOCAL_KEY = `jack_quiz_dms_${sender.uid}`;
+      const raw = localStorage.getItem(LOCAL_KEY) || localStorage.getItem('jack_quiz_dms');
       const list: ChatMessage[] = raw ? JSON.parse(raw) : [];
       list.push(msgData);
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(list));
       localStorage.setItem('jack_quiz_dms', JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('jack_dms_updated', { detail: list }));
     } catch (e) {
       console.warn('localStorage DM save failed:', e);
     }

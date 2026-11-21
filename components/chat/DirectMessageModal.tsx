@@ -11,6 +11,8 @@ import {
   Paperclip,
   File as FileIcon,
   Search,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { useUserStore } from '@/store/useUserStore';
 import {
@@ -55,10 +57,20 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
   const [activeThread, setActiveThread] = useState<ConversationThread | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [copiedMsgId, setCopiedMsgId] = useState<string | null>(null);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
   const docInputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleCopyText = (text: string, id: string) => {
+    if (!text) return;
+    try {
+      navigator.clipboard.writeText(text);
+      setCopiedMsgId(id);
+      setTimeout(() => setCopiedMsgId(null), 2000);
+    } catch {}
+  };
 
   // Open to targetUser's thread if passed
   useEffect(() => {
@@ -185,17 +197,52 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
   const handleSend = async () => {
     if (!profile || !activeThread) return;
     if (!inputText.trim() && !selectedMedia) return;
+
+    const textToSend = inputText.trim();
+    const mediaToSend = selectedMedia;
+
+    // Immediately clear input fields for 0ms instantaneous feedback
+    setInputText('');
+    setSelectedMedia(null);
     setSending(true);
     playPop();
+
+    // Create optimistic message
+    const tempId = `opt_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    const optimisticMsg: ChatMessage = {
+      id: tempId,
+      senderUid: profile.uid,
+      senderName: profile.name || profile.displayName || 'Scholar',
+      senderPhoto: profile.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
+      senderUsername: profile.username || 'scholar',
+      recipientUid: activeThread.partnerUid,
+      text: textToSend,
+      photoDataUrl: mediaToSend?.type === 'photo' ? mediaToSend.url : undefined,
+      createdAt: new Date().toISOString(),
+      read: false,
+    };
+
+    // Immediately update local UI so user sees it sent without waiting
+    setAllMessages((prev) => [...prev, optimisticMsg]);
+    setActiveThread((prev) =>
+      prev
+        ? {
+            ...prev,
+            lastMessage: optimisticMsg,
+            messages: [...prev.messages, optimisticMsg],
+          }
+        : null
+    );
+
     try {
       await sendDirectMessageInCloud(
         profile,
         activeThread.partnerUid,
-        inputText,
-        selectedMedia?.type === 'photo' ? selectedMedia.url : undefined
+        textToSend,
+        mediaToSend?.type === 'photo' ? mediaToSend.url : undefined
       );
-      setInputText('');
-      setSelectedMedia(null);
+    } catch (err) {
+      console.warn('[DirectMessageModal] send failed:', err);
     } finally {
       setSending(false);
     }
@@ -391,7 +438,22 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                             />
                           </div>
                         )}
-                        {msg.text && <p className="font-semibold break-words">{msg.text}</p>}
+                        {msg.text && (
+                          <div className="flex items-start justify-between gap-1.5 group/msg">
+                            <p className="font-semibold break-words flex-1">{msg.text}</p>
+                            <button
+                              onClick={() => handleCopyText(msg.text, msg.id)}
+                              className="opacity-70 hover:opacity-100 transition p-0.5 text-white/80 hover:text-white shrink-0 cursor-pointer"
+                              title="Copy / Save Message"
+                            >
+                              {copiedMsgId === msg.id ? (
+                                <Check className="w-3.5 h-3.5 text-emerald-300" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        )}
                         <div className="flex items-center justify-end gap-1 text-[8px] text-white/80 pt-0.5">
                           <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                           <CheckCheck className="w-3.5 h-3.5 text-emerald-300" />
@@ -434,7 +496,22 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
                             />
                           </div>
                         )}
-                        {msg.text && <p className="font-semibold break-words">{msg.text}</p>}
+                        {msg.text && (
+                          <div className="flex items-start justify-between gap-1.5 group/msg">
+                            <p className="font-semibold break-words flex-1">{msg.text}</p>
+                            <button
+                              onClick={() => handleCopyText(msg.text, msg.id)}
+                              className="opacity-70 hover:opacity-100 transition p-0.5 text-slate-400 hover:text-white shrink-0 cursor-pointer"
+                              title="Copy / Save Message"
+                            >
+                              {copiedMsgId === msg.id ? (
+                                <Check className="w-3.5 h-3.5 text-emerald-300" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                          </div>
+                        )}
                         <div className="flex items-center justify-end gap-1 text-[8px] text-slate-400 pt-0.5">
                           <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
