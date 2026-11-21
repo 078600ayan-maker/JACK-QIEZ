@@ -19,7 +19,7 @@ import { useUserStore } from '@/store/useUserStore';
 import { createDuelRoom, joinDuelRoomByPin, subscribeDuelRoom } from '@/lib/socialService';
 
 interface GameInfo {
-  id: 'carrom' | 'tank' | 'hockey' | 'cannon' | 'chess' | 'connect4' | 'snakes' | 'checkers' | 'archery' | 'boxing';
+  id: 'carrom' | 'tank' | 'hockey' | 'cannon';
   name: string;
   tag: string;
   badge: string;
@@ -74,72 +74,6 @@ const GAMES: GameInfo[] = [
     bgGradient: 'from-rose-950/70 via-[#1F0E13] to-[#0D0507]',
     borderColor: 'border-rose-400/50',
     accentColor: 'text-rose-300',
-  },
-  {
-    id: 'chess',
-    name: 'Grandmaster Chess 3D',
-    tag: 'Strategy Mind Relaxing',
-    badge: 'TACTIC 3D',
-    icon: '♟️',
-    desc: 'Pixelated 3D chess board, real-time move engine, timer clocks & AI bot grandmaster mode.',
-    bgGradient: 'from-purple-950/70 via-[#190C28] to-[#0A0512]',
-    borderColor: 'border-purple-400/50',
-    accentColor: 'text-purple-300',
-  },
-  {
-    id: 'connect4',
-    name: 'Voxel Four in a Row',
-    tag: 'Mind Battle',
-    badge: 'SOLVER',
-    icon: '🟡',
-    desc: 'Vertical 7x6 3D voxel grid, gravity drop physics, combo chains & tactical block prediction.',
-    bgGradient: 'from-yellow-950/70 via-[#261E0A] to-[#0D0A04]',
-    borderColor: 'border-yellow-400/50',
-    accentColor: 'text-yellow-300',
-  },
-  {
-    id: 'snakes',
-    name: 'Pixel Arena Duel 3D',
-    tag: 'Arcade Survival',
-    badge: 'FAST 60FPS',
-    icon: '🐍',
-    desc: 'Dynamic 3D voxel snakes, power-up speed orbs, wall wraps & competitive survival duels.',
-    bgGradient: 'from-lime-950/70 via-[#14230C] to-[#070D04]',
-    borderColor: 'border-lime-400/50',
-    accentColor: 'text-lime-300',
-  },
-  {
-    id: 'checkers',
-    name: 'Royal Checkers 3D',
-    tag: 'Tabletop Classic',
-    badge: 'JUMP 3D',
-    icon: '👑',
-    desc: 'Diagonal multi-jump captures, crowned kings, smooth physics slide & 2-player lobby.',
-    bgGradient: 'from-orange-950/70 via-[#28130B] to-[#0F0704]',
-    borderColor: 'border-orange-400/50',
-    accentColor: 'text-orange-300',
-  },
-  {
-    id: 'archery',
-    name: 'Voxel Archery Showdown',
-    tag: 'Aim & Precision',
-    badge: 'BULLSEYE',
-    icon: '🏹',
-    desc: '3D wind trajectory deflection, moving targets, distance calculations & precision score duel.',
-    bgGradient: 'from-teal-950/70 via-[#0A2422] to-[#030E0D]',
-    borderColor: 'border-teal-400/50',
-    accentColor: 'text-teal-300',
-  },
-  {
-    id: 'boxing',
-    name: 'Retro 3D Boxer Brawl',
-    tag: 'Action Arcade',
-    badge: 'KNOCKOUT',
-    icon: '🥊',
-    desc: 'Pixelated Minecraft-style boxing ring, jab/uppercut/dodge mechanics & stamina management.',
-    bgGradient: 'from-red-950/70 via-[#2A0C0E] to-[#120405]',
-    borderColor: 'border-red-400/50',
-    accentColor: 'text-red-300',
   },
 ];
 

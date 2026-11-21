@@ -342,66 +342,6 @@ export function DualArenaHub({ onBack }: DualArenaProps) {
                 borderColor: 'border-rose-400/40',
                 accentColor: 'text-rose-300',
                 desc: 'Turn-based destructible voxel terrain, wind physics, cluster mortars & plasma piercers.'
-              },
-              {
-                id: 'chess',
-                name: 'Grandmaster Chess 3D',
-                tag: 'Mind Relaxing',
-                icon: '♟️',
-                bgGradient: 'from-purple-950/60 to-indigo-950/30',
-                borderColor: 'border-purple-400/40',
-                accentColor: 'text-purple-300',
-                desc: 'Pixelated 3D chess board, timer clocks, legal moves & AI bot grandmaster mode.'
-              },
-              {
-                id: 'connect4',
-                name: 'Voxel Four in a Row',
-                tag: 'Strategy Tactic',
-                icon: '🟡',
-                bgGradient: 'from-yellow-950/60 to-amber-950/30',
-                borderColor: 'border-yellow-400/40',
-                accentColor: 'text-yellow-300',
-                desc: 'Vertical 7x6 3D voxel grid, gravity drop physics, combo chains & tactical block.'
-              },
-              {
-                id: 'snakes',
-                name: 'Pixel Arena Duel 3D',
-                tag: 'Arcade Survival',
-                icon: '🐍',
-                bgGradient: 'from-lime-950/60 to-green-950/30',
-                borderColor: 'border-lime-400/40',
-                accentColor: 'text-lime-300',
-                desc: 'Dynamic 3D voxel snakes, power-up speed orbs & competitive multiplayer arena.'
-              },
-              {
-                id: 'checkers',
-                name: 'Royal Checkers 3D',
-                tag: 'Tabletop Classic',
-                icon: '👑',
-                bgGradient: 'from-orange-950/60 to-red-950/30',
-                borderColor: 'border-orange-400/40',
-                accentColor: 'text-orange-300',
-                desc: 'Diagonal multi-jump captures, crowned kings, smooth physics slide & friend lobby.'
-              },
-              {
-                id: 'archery',
-                name: 'Voxel Archery Showdown',
-                tag: 'Aim & Precision',
-                icon: '🏹',
-                bgGradient: 'from-teal-950/60 to-emerald-950/30',
-                borderColor: 'border-teal-400/40',
-                accentColor: 'text-teal-300',
-                desc: '3D wind deflection, moving targets, distance calculations & score duel.'
-              },
-              {
-                id: 'boxing',
-                name: 'Retro 3D Boxer Brawl',
-                tag: 'Action Arcade',
-                icon: '🥊',
-                bgGradient: 'from-red-950/60 to-rose-950/30',
-                borderColor: 'border-red-400/40',
-                accentColor: 'text-red-300',
-                desc: 'Minecraft-style pixelated boxing ring, jab/uppercut/dodge & stamina management.'
               }
             ].map((game) => (
               <a

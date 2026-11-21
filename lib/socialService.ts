@@ -1323,21 +1323,27 @@ export async function sendDirectMessageInCloud(
 ): Promise<boolean> {
   if (!sender.uid || !recipientUid || (!text.trim() && !photoDataUrl)) return false;
   const msgId = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-  const msgData: ChatMessage = {
+  const cleanSenderName = (sender.name || sender.displayName || sender.email?.split('@')[0] || 'Scholar').trim();
+  const cleanSenderPhoto = sender.photoURL || '/assets/profile_photos/IMG_20261109_001512.png';
+  const cleanSenderUsername = sender.username || normalizeUsername(cleanSenderName, sender.uid);
+
+  const rawMsgData: Record<string, any> = {
     id: msgId,
     senderUid: sender.uid,
-    senderName: sender.name || sender.displayName || 'Scholar',
-    senderPhoto: sender.photoURL || '/assets/profile_photos/IMG_20261109_001512.png',
-    senderUsername: sender.username || 'scholar',
+    senderName: cleanSenderName,
+    senderPhoto: cleanSenderPhoto,
+    senderUsername: cleanSenderUsername,
     recipientUid,
-    recipientName: recipientName || undefined,
-    recipientPhoto: recipientPhoto || undefined,
-    recipientUsername: recipientUsername || undefined,
     text: text.trim(),
-    photoDataUrl: photoDataUrl || undefined,
     createdAt: new Date().toISOString(),
     read: false,
   };
+  if (photoDataUrl) rawMsgData.photoDataUrl = photoDataUrl;
+  if (recipientName) rawMsgData.recipientName = recipientName;
+  if (recipientPhoto) rawMsgData.recipientPhoto = recipientPhoto;
+  if (recipientUsername) rawMsgData.recipientUsername = recipientUsername;
+
+  const msgData = rawMsgData as ChatMessage;
 
   // Always save locally immediately for zero-lag 100% reliable messaging
   if (typeof window !== 'undefined') {

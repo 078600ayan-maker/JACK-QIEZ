@@ -108,7 +108,7 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
     }
   }, [activeThread?.messages, selectedMedia]);
 
-  // Keep active thread messages in sync
+  // Keep active thread messages in sync and update partner metadata
   useEffect(() => {
     if (!activeThread || !profile?.uid) return;
     const updated = allMessages.filter(
@@ -116,7 +116,24 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
         (m.senderUid === profile.uid && m.recipientUid === activeThread.partnerUid) ||
         (m.senderUid === activeThread.partnerUid && m.recipientUid === profile.uid)
     );
-    setActiveThread((prev) => prev ? { ...prev, messages: updated } : null);
+
+    // Resolve latest partner name, photo, and username from incoming messages
+    const latestIncoming = [...updated].reverse().find((m) => m.senderUid === activeThread.partnerUid);
+    const resolvedName = latestIncoming?.senderName || activeThread.partnerName;
+    const resolvedPhoto = latestIncoming?.senderPhoto || activeThread.partnerPhoto;
+    const resolvedUsername = latestIncoming?.senderUsername || activeThread.partnerUsername;
+
+    setActiveThread((prev) =>
+      prev
+        ? {
+            ...prev,
+            partnerName: resolvedName,
+            partnerPhoto: resolvedPhoto,
+            partnerUsername: resolvedUsername,
+            messages: updated,
+          }
+        : null
+    );
   }, [allMessages]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Build conversation threads (Instagram inbox style)
@@ -150,13 +167,22 @@ export const DirectMessageModal: React.FC<DirectMessageModalProps> = ({
         existing.messages.push(msg);
         if (msg.createdAt > existing.lastMessage.createdAt) {
           existing.lastMessage = msg;
-          if (isIncoming && msg.senderName) existing.partnerName = msg.senderName;
-          if (isIncoming && msg.senderPhoto) existing.partnerPhoto = msg.senderPhoto;
-          if (isIncoming && msg.senderUsername) existing.partnerUsername = msg.senderUsername;
-          if (!isIncoming && msg.recipientName && (!existing.partnerName || existing.partnerName.startsWith('Scholar '))) {
+        }
+        if (isIncoming) {
+          if (msg.senderName && (!existing.partnerName || existing.partnerName.startsWith('Scholar '))) {
+            existing.partnerName = msg.senderName;
+          }
+          if (msg.senderPhoto && (!existing.partnerPhoto || existing.partnerPhoto.includes('IMG_20261109_001512'))) {
+            existing.partnerPhoto = msg.senderPhoto;
+          }
+          if (msg.senderUsername && !existing.partnerUsername) {
+            existing.partnerUsername = msg.senderUsername;
+          }
+        } else {
+          if (msg.recipientName && (!existing.partnerName || existing.partnerName.startsWith('Scholar '))) {
             existing.partnerName = msg.recipientName;
           }
-          if (!isIncoming && msg.recipientPhoto && (!existing.partnerPhoto || existing.partnerPhoto.includes('IMG_20261109_001512'))) {
+          if (msg.recipientPhoto && (!existing.partnerPhoto || existing.partnerPhoto.includes('IMG_20261109_001512'))) {
             existing.partnerPhoto = msg.recipientPhoto;
           }
         }
