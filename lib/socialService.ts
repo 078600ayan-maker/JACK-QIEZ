@@ -1203,53 +1203,91 @@ export function subscribeUserMessages(
 ): Unsubscribe {
   if (!currentUid) return () => {};
 
+  const LOCAL_KEY = `jack_quiz_dms_${currentUid}`;
+  const LEGACY_KEY = 'jack_quiz_dms';
+
   const getLocalDMs = (): ChatMessage[] => {
     if (typeof window === 'undefined') return [];
     try {
-      const raw = localStorage.getItem('jack_quiz_dms');
-      return raw ? JSON.parse(raw) : [];
+      // Try user-scoped key first, fall back to legacy
+      const raw = localStorage.getItem(LOCAL_KEY) || localStorage.getItem(LEGACY_KEY);
+      const all: ChatMessage[] = raw ? JSON.parse(raw) : [];
+      // Filter only messages involving this user
+      return all.filter(
+        (m) => m.recipientUid === currentUid || m.senderUid === currentUid
+      );
     } catch {
       return [];
     }
   };
 
+  const saveLocalDMs = (msgs: ChatMessage[]) => {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(msgs));
+    } catch {}
+  };
+
+  // Immediately emit local messages for zero-lag UI
   const initialMsgs = getLocalDMs();
   onUpdate(initialMsgs);
 
+  // Subscribe to sent messages (senderUid = currentUid)
+  const unsubList: Unsubscribe[] = [];
+
+  const mergeAndEmit = (cloudMsgs: ChatMessage[]) => {
+    const local = getLocalDMs();
+    const map = new Map<string, ChatMessage>();
+    local.forEach((m) => map.set(m.id, m));
+    cloudMsgs.forEach((m) => map.set(m.id, m));
+    const combined = Array.from(map.values()).sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+    saveLocalDMs(combined);
+    onUpdate(combined);
+  };
+
   try {
-    const q = query(
+    // Query 1: messages where I am the SENDER (no orderBy = no composite index needed)
+    const qSent = query(
       collection(db, 'direct_messages'),
-      limit(100)
+      where('senderUid', '==', currentUid),
+      limit(80)
     );
-    return onSnapshot(
-      q,
-      (snap) => {
-        const cloudMsgs: ChatMessage[] = [];
-        snap.forEach((docSnap) => {
-          const data = docSnap.data() as Omit<ChatMessage, 'id'>;
-          if (data.recipientUid === currentUid || data.senderUid === currentUid) {
-            cloudMsgs.push({ id: docSnap.id, ...data });
-          }
-        });
-        const local = getLocalDMs();
-        const map = new Map<string, ChatMessage>();
-        local.forEach((m) => map.set(m.id, m));
-        cloudMsgs.forEach((m) => map.set(m.id, m));
-        const combined = Array.from(map.values()).sort(
-          (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        );
-        onUpdate(combined);
-      },
-      (err) => {
-        console.warn('subscribeUserMessages fallback to local storage:', err);
-        onUpdate(getLocalDMs());
-      }
+
+    // Query 2: messages where I am the RECIPIENT (no orderBy = no composite index needed)
+    const qReceived = query(
+      collection(db, 'direct_messages'),
+      where('recipientUid', '==', currentUid),
+      limit(80)
     );
+
+    let sentMsgs: ChatMessage[] = [];
+    let receivedMsgs: ChatMessage[] = [];
+
+    const unsubSent = onSnapshot(qSent, (snap) => {
+      sentMsgs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatMessage));
+      mergeAndEmit([...sentMsgs, ...receivedMsgs]);
+    }, (err) => {
+      console.warn('[DM] sent query error, using local:', err);
+      onUpdate(getLocalDMs());
+    });
+
+    const unsubReceived = onSnapshot(qReceived, (snap) => {
+      receivedMsgs = snap.docs.map((d) => ({ id: d.id, ...d.data() } as ChatMessage));
+      mergeAndEmit([...sentMsgs, ...receivedMsgs]);
+    }, (err) => {
+      console.warn('[DM] received query error, using local:', err);
+      onUpdate(getLocalDMs());
+    });
+
+    unsubList.push(unsubSent, unsubReceived);
   } catch (err) {
     console.warn('subscribeUserMessages setup failed:', err);
     onUpdate(initialMsgs);
-    return () => {};
   }
+
+  return () => unsubList.forEach((u) => u());
 }
 
 export async function sendDirectMessageInCloud(

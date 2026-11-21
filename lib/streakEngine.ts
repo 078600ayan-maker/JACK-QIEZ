@@ -184,14 +184,15 @@ export function buildWeeklyStreakStrip(
   const todayKey = toLocalDateKey(now);
   const joinKey = getEffectiveJoinDateKey(profile, now);
   const activeDates = getResolvedActiveDates(profile, now);
-  let availableFreezes = (profile?.streakFreezes ?? 1);
+  const totalFreezes = profile?.streakFreezes ?? 1;
 
   // Compute Monday of current week (0=Mon .. 6=Sun)
   const jsDay = now.getDay();
   const mondayOffset = jsDay === 0 ? -6 : 1 - jsDay;
   const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset);
 
-  return labels.map((label, idx) => {
+  // First pass: build raw status for each cell
+  const rawCells: WeeklyDayCell[] = labels.map((label, idx) => {
     const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + idx);
     const dateKey = toLocalDateKey(d);
     const isToday = dateKey === todayKey;
@@ -203,21 +204,23 @@ export function buildWeeklyStreakStrip(
       status = 'upcoming';
     } else if (activeDates.has(dateKey) || isToday) {
       status = 'active';
-    } else if (availableFreezes > 0 && !isToday) {
-      status = 'frozen';
-      availableFreezes -= 1;
     } else {
-      status = 'missed';
+      status = 'missed'; // Will be promoted to 'frozen' below if freezes available
     }
 
-    return {
-      label,
-      dateKey,
-      dayOfMonth: d.getDate(),
-      isToday,
-      status,
-    };
+    return { label, dateKey, dayOfMonth: d.getDate(), isToday, status };
   });
+
+  // Second pass: use freezes smartly — apply from most recent missed day backwards
+  let freezeBudget = totalFreezes;
+  for (let i = rawCells.length - 1; i >= 0; i--) {
+    if (rawCells[i].status === 'missed' && freezeBudget > 0) {
+      rawCells[i].status = 'frozen';
+      freezeBudget -= 1;
+    }
+  }
+
+  return rawCells;
 }
 
 /**
@@ -235,8 +238,9 @@ export function buildMonthlyStreakMatrix(
   const todayKey = toLocalDateKey(now);
   const joinKey = getEffectiveJoinDateKey(profile, now);
   const activeDates = getResolvedActiveDates(profile, now);
-  let availableFreezes = (profile?.streakFreezes ?? 1);
+  const totalFreezes = profile?.streakFreezes ?? 1;
 
+  // First pass: assign raw statuses
   const cells: MonthlyDayCell[] = [];
   for (let dayNum = 1; dayNum <= daysInMonth; dayNum += 1) {
     const d = new Date(year, month, dayNum);
@@ -250,20 +254,22 @@ export function buildMonthlyStreakMatrix(
       status = 'upcoming';
     } else if (activeDates.has(dateKey) || isToday) {
       status = 'active';
-    } else if (availableFreezes > 0 && !isToday && dateKey >= joinKey) {
-      status = 'frozen';
-      availableFreezes -= 1;
     } else {
-      status = 'missed';
+      status = 'missed'; // Will be promoted to 'frozen' below
     }
 
-    cells.push({
-      dayNum,
-      dateKey,
-      isToday,
-      status,
-    });
+    cells.push({ dayNum, dateKey, isToday, status });
   }
+
+  // Second pass: apply freeze budget from most-recent missed days backwards
+  let freezeBudget = totalFreezes;
+  for (let i = cells.length - 1; i >= 0; i--) {
+    if (cells[i].status === 'missed' && freezeBudget > 0) {
+      cells[i].status = 'frozen';
+      freezeBudget -= 1;
+    }
+  }
+
   return cells;
 }
 
